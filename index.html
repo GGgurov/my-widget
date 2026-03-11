@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>SUPREME REALTIME WIDGET v5</title>
+    <title>SUPREME REALTIME WIDGET v5.1</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -10,42 +10,30 @@
     <style>
         :root { --accent: #ff0044; --gold: #ffd700; }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; }
+        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; }
         
-        /* ПАНЕЛЬ УПРАВЛЕНИЯ */
-        .admin-panel { 
-            display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; 
-            background: #0a0a0a; color: #eee; position: fixed; inset: 0; z-index: 9999;
-        }
-        .sidebar { 
-            background: #111; border-right: 1px solid #222; padding: 25px; 
-            overflow-y: auto; display: flex; flex-direction: column; gap: 15px; 
-        }
-        .preview-zone { 
-            display: flex; align-items: center; justify-content: center; 
-            background: #1a1a1a; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; 
-        }
+        /* ПАНЕЛЬ */
+        .admin-panel { display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
+        .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .preview-zone { display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; background-color: #151515; }
 
         /* ВИДЖЕТ */
         .widget-wrap { transition: all 0.3s ease; }
-        .glass-card { position: relative; padding: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .glass-card { padding: 30px; border: 1px solid rgba(255,255,255,0.1); position: relative; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
         .progress-box { width: 100%; background: rgba(0,0,0,0.5); border-radius: 100px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); }
         
-        .donors-block { margin-top: 20px; display: flex; flex-direction: column; }
-        .donor-row { 
-            display: flex; justify-content: space-between; padding: 12px 18px; 
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; 
-        }
+        .top-donors-title { display: inline-block; padding: 8px 16px; font-weight: 700; border-radius: 4px; margin-top: 25px; margin-bottom: 10px; }
+        .donor-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
 
-        /* ИНТЕРФЕЙС АДМИНКИ */
+        /* ИНТЕРФЕЙС */
         .card-header { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 10px; }
-        .input-row { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 9px; color: #666; font-weight: 700; }
-        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; }
-        .btn-save { background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 20px; box-shadow: 0 0 20px rgba(255,0,68,0.4); }
-        .btn-save:hover { filter: brightness(1.2); }
+        input { background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; }
+        label { font-size: 9px; color: #666; font-weight: 700; text-transform: uppercase; }
+        .btn-save { background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 10px; font-family: 'Unbounded'; }
+        .btn-copy { background: #222; color: #aaa; border: 1px solid #333; padding: 10px; border-radius: 6px; font-size: 10px; cursor: pointer; margin-top: 5px; font-family: 'Unbounded'; }
         
         .obs-mode-active { background: transparent !important; }
     </style>
@@ -55,43 +43,42 @@
 <div id="app">
     <div v-if="!isObs" class="admin-panel">
         <div class="sidebar">
-            <h2 style="margin:0; font-weight:900">SUPREME <span style="color:var(--accent)">v5</span></h2>
+            <h2 style="margin:0; font-weight:900">SUPREME <span style="color:var(--accent)">v5.1</span></h2>
             
-            <div class="card-header">Основные данные</div>
-            <div class="input-row"><label>Текст цели</label><input v-model="s.goalTitle"></div>
-            <div style="display:flex; gap:10px">
-                <div class="input-row" style="flex:1"><label>Собрано</label><input type="number" v-model="s.current"></div>
-                <div class="input-row" style="flex:1"><label>Нужно</label><input v-model="s.max"></div>
-            </div>
-
-            <div class="card-header">Внешний вид</div>
-            <div style="display:flex; gap:10px">
-                <div class="input-row" style="flex:1"><label>Масштаб: {{s.scale}}</label><input type="range" min="0.5" max="2" step="0.1" v-model="s.scale"></div>
-                <div class="input-row" style="flex:1"><label>Ширина: {{s.width}}px</label><input type="range" min="300" max="900" v-model="s.width"></div>
+            <div class="card-header">Контент</div>
+            <div style="display:flex; flex-direction:column; gap:5px">
+                <label>Заголовок цели</label><input v-model="s.goalTitle">
             </div>
             <div style="display:flex; gap:10px">
-                <div class="input-row" style="flex:1"><label>Стекло: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model="s.glass"></div>
-                <div class="input-row" style="flex:1"><label>Углы: {{s.radius}}px</label><input type="range" min="0" max="80" v-model="s.radius"></div>
-            </div>
-
-            <div class="card-header">Шрифты и Цвета</div>
-            <div style="display:flex; gap:10px">
-                <div class="input-row" style="flex:1"><label>Заголовок: {{s.fTitle}}px</label><input type="range" min="10" max="50" v-model="s.fTitle"></div>
-                <div class="input-row" style="flex:1"><label>Сумма: {{s.fSum}}px</label><input type="range" min="10" max="50" v-model="s.fSum"></div>
-            </div>
-            <div style="display:flex; gap:10px">
-                <input type="color" v-model="s.c1" style="flex:1; height:40px">
-                <input type="color" v-model="s.c2" style="flex:1; height:40px">
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Собрано</label><input type="number" v-model="s.current"></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Нужно</label><input v-model="s.max"></div>
             </div>
 
             <div class="card-header">Топ донатов</div>
-            <div class="input-row"><label>Кол-во мест</label><input type="number" min="0" max="10" v-model="s.donorCount"></div>
-            <div v-for="i in parseInt(s.donorCount)" :key="i" class="input-row" style="margin-bottom:5px">
-                <input type="text" v-model="s.donors[i-1]" :placeholder="'Место ' + i">
+            <div style="display:flex; flex-direction:column; gap:5px"><label>Заголовок списка</label><input v-model="s.topTitle"></div>
+            <div style="display:flex; flex-direction:column; gap:5px"><label>Кол-во мест</label><input type="number" min="0" max="10" v-model="s.donorCount"></div>
+            <div v-for="i in parseInt(s.donorCount)" :key="i" style="margin-top:5px">
+                <input v-model="s.donors[i-1]" :placeholder="'Место ' + i" style="width:100%">
             </div>
 
-            <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ ИЗМЕНЕНИЯ</button>
-            <p style="font-size:10px; color:#555; text-align:center">Изменения применятся во всех источниках мгновенно</p>
+            <div class="card-header">Настройки Вида</div>
+            <div style="display:flex; gap:10px">
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Масштаб: {{s.scale}}</label><input type="range" min="0.5" max="2" step="0.1" v-model="s.scale"></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Ширина: {{s.width}}px</label><input type="range" min="300" max="900" v-model="s.width"></div>
+            </div>
+            <div style="display:flex; gap:10px">
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Стекло: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model="s.glass"></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Углы: {{s.radius}}px</label><input type="range" min="0" max="80" v-model="s.radius"></div>
+            </div>
+
+            <div class="card-header">Шрифты</div>
+            <div style="display:flex; gap:10px">
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Заголовок: {{s.fTitle}}px</label><input type="range" min="10" max="50" v-model="s.fTitle"></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:5px"><label>Сумма: {{s.fSum}}px</label><input type="range" min="10" max="50" v-model="s.fSum"></div>
+            </div>
+
+            <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ</button>
+            <button class="btn-copy" @click="copyWidgetLink">СКОПИРОВАТЬ ССЫЛКУ ДЛЯ ТТ</button>
         </div>
 
         <div class="preview-zone">
@@ -104,11 +91,12 @@
                     <div class="progress-box" :style="{height: (s.fSum*0.9)+'px'}">
                         <div class="progress-bar" :style="barStyle"></div>
                     </div>
-                    <div class="donors-block" v-if="s.donorCount > 0">
-                        <div class="donor-row" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.8)+'px'}">
-                            <span>{{i+1}}. {{d}}</span>
-                        </div>
-                    </div>
+                    <div v-if="s.topTitle" class="top-donors-title" :style="topTitleStyle">{{ s.topTitle }}</div>
+                    <ul class="donor-list" v-if="s.donorCount > 0">
+                        <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.75)+'px'}">
+                            {{i+1}}. {{d}}
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -123,11 +111,12 @@
             <div class="progress-box" :style="{height: (s.fSum*0.9)+'px'}">
                 <div class="progress-bar" :style="barStyle"></div>
             </div>
-            <div class="donors-block" v-if="s.donorCount > 0">
-                <div class="donor-row" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.8)+'px'}">
-                    <span>{{i+1}}. {{d}}</span>
-                </div>
-            </div>
+            <div v-if="s.topTitle" class="top-donors-title" :style="topTitleStyle">{{ s.topTitle }}</div>
+            <ul class="donor-list" v-if="s.donorCount > 0">
+                <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.75)+'px'}">
+                    {{i+1}}. {{d}}
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -135,12 +124,11 @@
 <script>
 const { createApp, ref, computed, onMounted } = Vue;
 
-// ТВОЙ КОНФИГ
 const firebaseConfig = {
     apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
     authDomain: "tt-widget-88711.firebaseapp.com",
     projectId: "tt-widget-88711",
-    databaseURL: "https://tt-widget-88711-default-rtdb.firebaseio.com", // Добавил URL БД
+    databaseURL: "https://tt-widget-88711-default-rtdb.firebaseio.com",
     storageBucket: "tt-widget-88711.firebasestorage.app",
     messagingSenderId: "997435022478",
     appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
@@ -153,9 +141,10 @@ createApp({
     setup() {
         const isObs = ref(false);
         const s = ref({
-            goalTitle: 'На интернет:',
-            current: 4028,
-            max: '7.990тг',
+            goalTitle: 'На мечту:',
+            current: 0,
+            max: '10.000',
+            topTitle: 'ТОП 3 ДНЯ',
             scale: 1.0,
             width: 500,
             glass: 0.6,
@@ -165,7 +154,7 @@ createApp({
             c1: '#8a0022',
             c2: '#ff0044',
             donorCount: 3,
-            donors: ['Айдын - 750', '', '', '', '', '']
+            donors: ['', '', '']
         });
 
         const varGold = '#ffd700';
@@ -174,22 +163,24 @@ createApp({
             const params = new URLSearchParams(window.location.search);
             if (params.get('view') === 'widget') isObs.value = true;
 
-            // СЛУШАЕМ ОБНОВЛЕНИЯ ИЗ БАЗЫ
             db.ref('widget_data').on('value', (snapshot) => {
-                if (snapshot.exists()) {
-                    s.value = snapshot.val();
-                }
+                if (snapshot.exists()) s.value = snapshot.val();
             });
         });
 
         const saveToFirebase = () => {
-            db.ref('widget_data').set(s.value).then(() => {
-                alert("ДАННЫЕ ОБНОВЛЕНЫ ВЕЗДЕ!");
+            db.ref('widget_data').set(JSON.parse(JSON.stringify(s.value))).then(() => {
+                alert("СОХРАНЕНО!");
             });
         };
 
+        const copyWidgetLink = () => {
+            const url = window.location.origin + window.location.pathname + '?view=widget';
+            navigator.clipboard.writeText(url);
+            alert("Ссылка для TikTok Studio скопирована!\nВставь её как источник браузер.");
+        };
+
         const formattedCurrent = computed(() => s.value.current.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
-        
         const progressPercent = computed(() => {
             let m = parseFloat(s.value.max.toString().replace(/[\s.]/g, '').replace(/[^\d]/g, ''));
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
@@ -200,7 +191,7 @@ createApp({
             background: `rgba(15,15,15,${s.value.glass})`,
             borderRadius: s.value.radius + 'px',
             backdropFilter: 'blur(15px)',
-            boxShadow: `0 20px 50px rgba(0,0,0,${s.value.glass})`
+            border: `1px solid rgba(255,255,255,0.1)`
         }));
 
         const barStyle = computed(() => ({
@@ -209,12 +200,18 @@ createApp({
             boxShadow: `0 0 20px ${s.value.c2}aa`
         }));
 
+        const topTitleStyle = computed(() => ({
+            fontSize: (s.value.fTitle * 0.9) + 'px',
+            borderLeft: `4px solid ${s.value.c1}`,
+            background: `linear-gradient(90deg, ${s.value.c1}33, transparent)`
+        }));
+
         const scaleStyle = computed(() => ({
             transform: `scale(${s.value.scale})`,
             transformOrigin: isObs.value ? 'top left' : 'center'
         }));
 
-        return { s, isObs, varGold, formattedCurrent, cardStyle, barStyle, scaleStyle, saveToFirebase };
+        return { s, isObs, varGold, formattedCurrent, cardStyle, barStyle, scaleStyle, topTitleStyle, saveToFirebase, copyWidgetLink };
     }
 }).mount('#app');
 </script>
