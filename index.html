@@ -2,17 +2,14 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Панель управления виджетом</title>
+    <title>ULTRA WIDGET CONFIGURATOR</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
         :root {
             --bg-color: #050505;
-            --glass-bg: rgba(20, 20, 20, 0.6);
-            --glass-border: rgba(255, 215, 0, 0.15);
             --accent-gold: #ffd700;
             --accent-red: #ff0044;
-            --text-main: #ffffff;
         }
 
         body {
@@ -20,31 +17,28 @@
             padding: 0;
             font-family: 'Unbounded', sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-main);
+            color: #fff;
+            overflow-x: hidden;
         }
 
-        /* --- СТИЛИ ДЛЯ OBS ВИДЖЕТА --- */
-        .obs-mode {
-            background-color: transparent !important;
-        }
+        /* --- ОБЩИЕ СТИЛИ ВИДЖЕТА --- */
         .widget-container {
-            width: 500px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
             padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 215, 0, 0.05);
+            box-sizing: border-box;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease-out;
         }
+
         .header-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
             font-size: 20px;
             font-weight: 700;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
         }
+
         .progress-bar-bg {
             width: 100%;
             height: 28px;
@@ -52,24 +46,23 @@
             border-radius: 14px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,1);
             margin-bottom: 30px;
         }
+
         .progress-fill {
             height: 100%;
-            border-radius: 14px;
-            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         .top-donors-title {
             display: inline-block;
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
             padding: 8px 16px;
-            border-left: 4px solid var(--accent-gold);
-            border-radius: 4px;
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 20px;
+            border-radius: 4px;
         }
+
         .donor-list {
             list-style: none;
             padding: 0;
@@ -78,215 +71,291 @@
             flex-direction: column;
             gap: 12px;
         }
+
         .donor-item {
             display: flex;
             align-items: center;
             font-size: 16px;
-            background: rgba(255, 255, 255, 0.02);
             padding: 10px 15px;
             border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* --- ПАНЕЛЬ УПРАВЛЕНИЯ --- */
+        /* --- АДМИНКА --- */
         .dashboard {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 420px 1fr;
             min-height: 100vh;
-            background: radial-gradient(circle at top left, #1a0b12, #050505);
         }
+
         .control-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--glass-border);
-            padding: 40px 30px;
+            background: #111;
+            border-right: 1px solid #222;
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 20px;
             overflow-y: auto;
+            max-height: 100vh;
         }
+
         .preview-area {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px;
-            position: relative;
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            /* Фон "шахматка" для понимания прозрачности */
+            background-color: #1a1a1a;
+            background-image: linear-gradient(45deg, #222 25%, transparent 25%), linear-gradient(-45deg, #222 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #222 75%), linear-gradient(-45deg, transparent 75%, #222 75%);
             background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
-        h2 { margin: 0 0 10px 0; font-size: 24px; color: var(--accent-gold); }
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; }
         input {
-            width: 100%;
-            box-sizing: border-box;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Unbounded', sans-serif;
-            outline: none;
+            background: #000; border: 1px solid #333; color: #fff;
+            padding: 10px; border-radius: 6px; font-family: 'Unbounded';
         }
-        input:focus { border-color: var(--accent-gold); }
-        .obs-link-box {
-            margin-top: auto;
-            background: rgba(0,0,0,0.8);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--accent-red);
-        }
-        button {
-            width: 100%;
-            background: linear-gradient(90deg, var(--accent-red), #8a0022);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-family: 'Unbounded', sans-serif;
-            font-weight: 700;
-            cursor: pointer;
+        input[type="range"] { padding: 0; cursor: pointer; }
+
+        .obs-mode { background: transparent !important; }
+        .obs-mode-body { background: transparent !important; }
+
+        .copy-btn {
+            background: var(--accent-red); color: #fff; border: none;
+            padding: 15px; border-radius: 8px; font-family: 'Unbounded';
+            font-weight: 700; cursor: pointer; margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <div v-if="isObs" class="widget-container obs-mode">
-        <div class="header-row">
-            <span>{{ goalTitle }}</span>
-            <span>{{ formattedCurrent }} / {{ maxAmount }}</span>
+    <div v-if="isObs" class="obs-mode" :style="widgetScaleStyle">
+        <div class="widget-container" :style="containerStyle">
+            <div class="header-row">
+                <span>{{ goalTitle }}</span>
+                <span>{{ formattedCurrent }} / {{ maxAmount }}</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-fill" :style="progressStyle"></div>
+            </div>
+            <div class="top-donors-title" v-if="topTitle" :style="topTitleStyle">{{ topTitle }}</div>
+            <ul class="donor-list">
+                <li class="donor-item" v-for="(d, i) in topDonors" :key="i" v-show="d && d !== 'Пусто'">
+                    {{ i + 1 }}) {{ d }}
+                </li>
+            </ul>
         </div>
-        <div class="progress-bar-bg">
-            <div class="progress-fill" :style="{ width: progressPercent + '%', background: progressGradient }"></div>
-        </div>
-        <div class="top-donors-title" v-if="topTitle">{{ topTitle }}</div>
-        <ul class="donor-list">
-            <li class="donor-item" v-for="(donor, index) in topDonors" :key="index" v-show="donor && donor !== 'Пусто'">
-                {{ index + 1 }}) {{ donor }}
-            </li>
-        </ul>
     </div>
 
     <div v-else class="dashboard">
         <div class="control-panel">
-            <h2>НАСТРОЙКИ</h2>
-            <div class="input-group"><label>Цель</label><input type="text" v-model="goalTitle"></div>
-            <div style="display: flex; gap: 15px;">
-                <div class="input-group" style="flex: 1;"><label>Собрано</label><input type="number" v-model="currentAmount"></div>
-                <div class="input-group" style="flex: 1;"><label>Нужно</label><input type="text" v-model="maxAmount"></div>
+            <h2 style="color: var(--accent-gold); margin:0">DESIGNER v2</h2>
+            
+            <div class="input-group">
+                <label>Текст цели</label>
+                <input type="text" v-model="goalTitle">
             </div>
+
+            <div style="display:flex; gap:10px">
+                <div class="input-group"><label>Собрано</label><input type="number" v-model="currentAmount"></div>
+                <div class="input-group"><label>Нужно</label><input type="text" v-model="maxAmount"></div>
+            </div>
+
+            <hr style="border:0; border-top:1px solid #333; width:100%">
+
+            <div class="input-group">
+                <label>Масштаб виджета: {{ widgetScale }}</label>
+                <input type="range" min="0.5" max="2" step="0.1" v-model="widgetScale">
+            </div>
+
+            <div class="input-group">
+                <label>Ширина контейнера: {{ widgetWidth }}px</label>
+                <input type="range" min="300" max="800" step="10" v-model="widgetWidth">
+            </div>
+
+            <div class="input-group">
+                <label>Прозрачность стекла: {{ glassOpacity }}</label>
+                <input type="range" min="0" max="1" step="0.1" v-model="glassOpacity">
+            </div>
+
+            <div class="input-group">
+                <label>Закругление углов: {{ borderRadius }}px</label>
+                <input type="range" min="0" max="50" v-model="borderRadius">
+            </div>
+
             <div class="input-group">
                 <label>Цвета градиента</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="color" v-model="color1" style="width: 50px; padding: 2px;">
-                    <input type="color" v-model="color2" style="width: 50px; padding: 2px;">
+                <div style="display:flex; gap:10px">
+                    <input type="color" v-model="color1" style="flex:1; height:40px">
+                    <input type="color" v-model="color2" style="flex:1; height:40px">
                 </div>
             </div>
-            <div class="input-group"><label>Заголовок топа</label><input type="text" v-model="topTitle"></div>
-            <div class="input-group"><label>Топ 1</label><input type="text" v-model="topDonors[0]"></div>
-            <div class="input-group"><label>Топ 2</label><input type="text" v-model="topDonors[1]"></div>
-            <div class="input-group"><label>Топ 3</label><input type="text" v-model="topDonors[2]"></div>
 
-            <div class="obs-link-box">
-                <button @click="copyLink">КОПИРОВАТЬ ССЫЛКУ ДЛЯ OBS</button>
-                <input type="text" readonly :value="generatedUrl" id="obsUrl" style="font-size: 10px; margin-top: 10px; border: none; background: transparent; color: #666;">
+            <div class="input-group">
+                <label>Топ донатов</label>
+                <input type="text" v-model="topTitle" placeholder="Заголовок">
+                <input type="text" v-for="(d, i) in 3" :key="i" v-model="topDonors[i]" :placeholder="'Место ' + (i+1)">
             </div>
+
+            <button class="copy-btn" @click="copyLink">СКОПИРОВАТЬ ССЫЛКУ</button>
+            <p style="font-size:9px; color:#555; word-break: break-all;">{{ generatedUrl }}</p>
         </div>
 
         <div class="preview-area">
-            <div class="widget-container">
-                <div class="header-row">
-                    <span>{{ goalTitle }}</span>
-                    <span>{{ formattedCurrent }} / {{ maxAmount }}</span>
+            <div :style="widgetScaleStyle">
+                <div class="widget-container" :style="containerStyle">
+                    <div class="header-row">
+                        <span>{{ goalTitle }}</span>
+                        <span>{{ formattedCurrent }} / {{ maxAmount }}</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" :style="progressStyle"></div>
+                    </div>
+                    <div class="top-donors-title" v-if="topTitle" :style="topTitleStyle">{{ topTitle }}</div>
+                    <ul class="donor-list">
+                        <li class="donor-item" v-for="(d, i) in topDonors" :key="i" v-show="d && d !== 'Пусто'">
+                            {{ i + 1 }}) {{ d }}
+                        </li>
+                    </ul>
                 </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-fill" :style="{ width: progressPercent + '%', background: progressGradient, boxShadow: '0 0 20px ' + color2 + '60' }"></div>
-                </div>
-                <div class="top-donors-title" v-if="topTitle">{{ topTitle }}</div>
-                <ul class="donor-list">
-                    <li class="donor-item" v-for="(donor, index) in topDonors" :key="index" v-show="donor && donor !== 'Пусто'">
-                        {{ index + 1 }}) {{ donor }}
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const { createApp, ref, computed, onMounted } = Vue;
+const { createApp, ref, computed, onMounted, watch } = Vue;
 
-    createApp({
-        setup() {
-            const goalTitle = ref('На интернет:');
-            const currentAmount = ref(4028);
-            const maxAmount = ref('7.990тг');
-            const color1 = ref('#8a0022');
-            const color2 = ref('#ffaa00');
-            const topTitle = ref('ТОП 3 ДНЯ');
-            const topDonors = ref(['Айдын. Б - 750тг', 'Пусто', 'Пусто']);
-            const isObs = ref(false);
+createApp({
+    setup() {
+        // Загрузка сохраненных настроек или дефолт
+        const saved = JSON.parse(localStorage.getItem('widgetSettings') || '{}');
 
-            onMounted(() => {
-                const params = new URLSearchParams(window.location.search);
-                if (params.get('obs') === '1') {
-                    isObs.value = true;
-                    document.body.classList.add('obs-mode');
-                    if (params.has('goal')) goalTitle.value = decodeURIComponent(params.get('goal'));
-                    if (params.has('cur')) currentAmount.value = params.get('cur');
-                    if (params.has('max')) maxAmount.value = decodeURIComponent(params.get('max'));
-                    if (params.has('c1')) color1.value = decodeURIComponent(params.get('c1'));
-                    if (params.has('c2')) color2.value = decodeURIComponent(params.get('c2'));
-                    if (params.has('tt')) topTitle.value = decodeURIComponent(params.get('tt'));
-                    if (params.has('d1')) topDonors.value[0] = decodeURIComponent(params.get('d1'));
-                    if (params.has('d2')) topDonors.value[1] = decodeURIComponent(params.get('d2'));
-                    if (params.has('d3')) topDonors.value[2] = decodeURIComponent(params.get('d3'));
-                }
-            });
+        const goalTitle = ref(saved.goalTitle || 'На интернет:');
+        const currentAmount = ref(saved.currentAmount || 4028);
+        const maxAmount = ref(saved.maxAmount || '7.990тг');
+        const color1 = ref(saved.color1 || '#8a0022');
+        const color2 = ref(saved.color2 || '#ffaa00');
+        const topTitle = ref(saved.topTitle || 'ТОП 3 ДНЯ');
+        const topDonors = ref(saved.topDonors || ['Айдын. Б - 750тг', 'Пусто', 'Пусто']);
+        
+        // Новые гибкие настройки
+        const widgetScale = ref(saved.widgetScale || 1.0);
+        const widgetWidth = ref(saved.widgetWidth || 500);
+        const glassOpacity = ref(saved.glassOpacity || 0.6);
+        const borderRadius = ref(saved.borderRadius || 24);
 
-            // Исправленная логика прогресса
-            const progressPercent = computed(() => {
-                // Очищаем maxAmount от точек, пробелов и букв
-                let cleanedMax = maxAmount.value.toString().replace(/[\s.]/g, '').replace(/[^\d]/g, '');
-                let maxNum = parseFloat(cleanedMax);
-                
-                if (!maxNum || maxNum <= 0) return 0;
-                let percent = (currentAmount.value / maxNum) * 100;
-                return Math.min(Math.max(percent, 0), 100);
-            });
+        const isObs = ref(false);
 
-            // Форматирование текущей суммы (добавляет пробелы: 4028 -> 4 028)
-            const formattedCurrent = computed(() => {
-                return currentAmount.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-            });
-
-            const progressGradient = computed(() => `linear-gradient(90deg, ${color1.value}, ${color2.value})`);
-
-            const generatedUrl = computed(() => {
-                const url = new URL(window.location.href.split('?')[0]);
-                url.searchParams.set('obs', '1');
-                url.searchParams.set('goal', encodeURIComponent(goalTitle.value));
-                url.searchParams.set('cur', currentAmount.value);
-                url.searchParams.set('max', encodeURIComponent(maxAmount.value));
-                url.searchParams.set('c1', encodeURIComponent(color1.value));
-                url.searchParams.set('c2', encodeURIComponent(color2.value));
-                url.searchParams.set('tt', encodeURIComponent(topTitle.value));
-                url.searchParams.set('d1', encodeURIComponent(topDonors.value[0]));
-                url.searchParams.set('d2', encodeURIComponent(topDonors.value[1]));
-                url.searchParams.set('d3', encodeURIComponent(topDonors.value[2]));
-                return url.toString();
-            });
-
-            const copyLink = () => {
-                navigator.clipboard.writeText(generatedUrl.value);
-                alert('Ссылка скопирована!');
+        // Сохранение в память браузера при каждом изменении
+        watch([goalTitle, currentAmount, maxAmount, color1, color2, topTitle, topDonors, widgetScale, widgetWidth, glassOpacity, borderRadius], () => {
+            const settings = {
+                goalTitle: goalTitle.value,
+                currentAmount: currentAmount.value,
+                maxAmount: maxAmount.value,
+                color1: color1.value,
+                color2: color2.value,
+                topTitle: topTitle.value,
+                topDonors: topDonors.value,
+                widgetScale: widgetScale.value,
+                widgetWidth: widgetWidth.value,
+                glassOpacity: glassOpacity.value,
+                borderRadius: borderRadius.value
             };
+            localStorage.setItem('widgetSettings', JSON.stringify(settings));
+        }, { deep: true });
 
-            return { goalTitle, currentAmount, maxAmount, color1, color2, topTitle, topDonors, isObs, progressPercent, formattedCurrent, progressGradient, generatedUrl, copyLink };
-        }
-    }).mount('#app');
+        onMounted(() => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('obs') === '1') {
+                isObs.value = true;
+                document.body.classList.add('obs-mode-body');
+                // Загружаем параметры из URL (для OBS)
+                if (params.has('goal')) goalTitle.value = decodeURIComponent(params.get('goal'));
+                if (params.has('cur')) currentAmount.value = params.get('cur');
+                if (params.has('max')) maxAmount.value = decodeURIComponent(params.get('max'));
+                if (params.has('c1')) color1.value = decodeURIComponent(params.get('c1'));
+                if (params.has('c2')) color2.value = decodeURIComponent(params.get('c2'));
+                if (params.has('sc')) widgetScale.value = params.get('sc');
+                if (params.has('wd')) widgetWidth.value = params.get('wd');
+                if (params.has('op')) glassOpacity.value = params.get('op');
+                if (params.has('br')) borderRadius.value = params.get('br');
+                if (params.has('tt')) topTitle.value = decodeURIComponent(params.get('tt'));
+                if (params.has('d1')) topDonors.value[0] = decodeURIComponent(params.get('d1'));
+                if (params.has('d2')) topDonors.value[1] = decodeURIComponent(params.get('d2'));
+                if (params.has('d3')) topDonors.value[2] = decodeURIComponent(params.get('d3'));
+            }
+        });
+
+        const progressPercent = computed(() => {
+            let cleanedMax = maxAmount.value.toString().replace(/[\s.]/g, '').replace(/[^\d]/g, '');
+            let maxNum = parseFloat(cleanedMax);
+            return maxNum > 0 ? Math.min((currentAmount.value / maxNum) * 100, 100) : 0;
+        });
+
+        const formattedCurrent = computed(() => currentAmount.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+
+        // Динамические стили
+        const containerStyle = computed(() => ({
+            width: `${widgetWidth.value}px`,
+            background: `rgba(20, 20, 20, ${glassOpacity.value})`,
+            backdropFilter: 'blur(16px)',
+            borderRadius: `${borderRadius.value}px`,
+            border: `1px solid rgba(255, 215, 0, ${glassOpacity.value * 0.25})`
+        }));
+
+        const widgetScaleStyle = computed(() => ({
+            transform: `scale(${widgetScale.value})`,
+            transformOrigin: 'center'
+        }));
+
+        const progressStyle = computed(() => ({
+            width: `${progressPercent.value}%`,
+            background: `linear-gradient(90deg, ${color1.value}, ${color2.value})`,
+            boxShadow: `0 0 20px ${color2.value}60`
+        }));
+
+        const topTitleStyle = computed(() => ({
+            background: `linear-gradient(90deg, ${color1.value}33, transparent)`,
+            borderLeft: `4px solid ${color1.value}`
+        }));
+
+        const generatedUrl = computed(() => {
+            const url = new URL(window.location.href.split('?')[0]);
+            url.searchParams.set('obs', '1');
+            url.searchParams.set('goal', encodeURIComponent(goalTitle.value));
+            url.searchParams.set('cur', currentAmount.value);
+            url.searchParams.set('max', encodeURIComponent(maxAmount.value));
+            url.searchParams.set('c1', encodeURIComponent(color1.value));
+            url.searchParams.set('c2', encodeURIComponent(color2.value));
+            url.searchParams.set('sc', widgetScale.value);
+            url.searchParams.set('wd', widgetWidth.value);
+            url.searchParams.set('op', glassOpacity.value);
+            url.searchParams.set('br', borderRadius.value);
+            url.searchParams.set('tt', encodeURIComponent(topTitle.value));
+            url.searchParams.set('d1', encodeURIComponent(topDonors.value[0]));
+            url.searchParams.set('d2', encodeURIComponent(topDonors.value[1]));
+            url.searchParams.set('d3', encodeURIComponent(topDonors.value[2]));
+            return url.toString();
+        });
+
+        const copyLink = () => {
+            navigator.clipboard.writeText(generatedUrl.value);
+            alert('Ссылка для TikTok / OBS скопирована!');
+        };
+
+        return {
+            goalTitle, currentAmount, maxAmount, color1, color2, topTitle, topDonors,
+            widgetScale, widgetWidth, glassOpacity, borderRadius,
+            isObs, progressPercent, formattedCurrent,
+            containerStyle, widgetScaleStyle, progressStyle, topTitleStyle,
+            generatedUrl, copyLink
+        };
+    }
+}).mount('#app');
 </script>
 </body>
 </html>
