@@ -2,172 +2,219 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>FINAL ULTIMATE WIDGET</title>
+    <title>SUPREME REALTIME WIDGET v5</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        :root { --accent-red: #ff0044; }
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; }
+        :root { --accent: #ff0044; --gold: #ffd700; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; }
         
-        /* Фон только для админки */
-        .dashboard { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; background: #050505; }
-        
-        .widget-container { display: flex; flex-direction: column; padding: 30px; box-sizing: border-box; }
-        .header-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; font-weight: 700; }
-        .progress-bar-bg { width: 100%; background: rgba(0, 0, 0, 0.8); border-radius: 50px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 25px; }
-        .progress-fill { height: 100%; transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        
-        .top-donors-title { display: inline-block; padding: 8px 16px; font-size: 18px; font-weight: 700; border-radius: 4px; }
-        .donor-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; }
-        .donor-item { display: flex; align-items: center; padding: 10px 15px; border-radius: 8px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); }
+        /* ПАНЕЛЬ УПРАВЛЕНИЯ */
+        .admin-panel { 
+            display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; 
+            background: #0a0a0a; color: #eee; position: fixed; inset: 0; z-index: 9999;
+        }
+        .sidebar { 
+            background: #111; border-right: 1px solid #222; padding: 25px; 
+            overflow-y: auto; display: flex; flex-direction: column; gap: 15px; 
+        }
+        .preview-zone { 
+            display: flex; align-items: center; justify-content: center; 
+            background: #1a1a1a; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; 
+        }
 
-        /* АДМИНКА */
-        .control-panel { background: #111; border-right: 1px solid #222; padding: 20px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; max-height: 100vh; color: #fff; }
-        .preview-area { display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 20px 20px; }
+        /* ВИДЖЕТ */
+        .widget-wrap { transition: all 0.3s ease; }
+        .glass-card { position: relative; padding: 30px; border: 1px solid rgba(255,255,255,0.1); }
+        .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; }
+        .progress-box { width: 100%; background: rgba(0,0,0,0.5); border-radius: 100px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); }
         
-        .section-label { font-size: 10px; color: #ffd700; letter-spacing: 1px; margin-top: 10px; text-transform: uppercase; border-bottom: 1px solid #222; }
-        input { background: #000; border: 1px solid #333; color: #fff; padding: 8px; border-radius: 4px; font-family: 'Unbounded'; font-size: 12px; }
-        .copy-btn { background: var(--accent-red); color: #fff; border: none; padding: 15px; border-radius: 8px; font-family: 'Unbounded'; font-weight: 900; cursor: pointer; margin-top: 10px; }
+        .donors-block { margin-top: 20px; display: flex; flex-direction: column; }
+        .donor-row { 
+            display: flex; justify-content: space-between; padding: 12px 18px; 
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; 
+        }
+
+        /* ИНТЕРФЕЙС АДМИНКИ */
+        .card-header { font-size: 10px; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid #333; padding-bottom: 5px; margin-top: 10px; }
+        .input-row { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 9px; color: #666; font-weight: 700; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; }
+        .btn-save { background: var(--accent); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 20px; box-shadow: 0 0 20px rgba(255,0,68,0.4); }
+        .btn-save:hover { filter: brightness(1.2); }
         
-        /* Сброс фона для OBS */
-        .is-obs-mode { background: transparent !important; }
+        .obs-mode-active { background: transparent !important; }
     </style>
 </head>
-<body :class="{'is-obs-mode': isObs}">
+<body :class="{'obs-mode-active': isObs}">
 
 <div id="app">
-    <div :class="{'dashboard': !isObs}">
-        
-        <div v-if="!isObs" class="control-panel">
-            <h3 style="margin:0">FIXED BUILD v4</h3>
+    <div v-if="!isObs" class="admin-panel">
+        <div class="sidebar">
+            <h2 style="margin:0; font-weight:900">SUPREME <span style="color:var(--accent)">v5</span></h2>
             
-            <div class="section-label">Контент</div>
-            <input type="text" v-model="goalTitle" placeholder="Цель">
-            <div style="display:flex; gap:5px">
-                <input type="number" v-model="currentAmount" style="width:50%">
-                <input type="text" v-model="maxAmount" style="width:50%">
+            <div class="card-header">Основные данные</div>
+            <div class="input-row"><label>Текст цели</label><input v-model="s.goalTitle"></div>
+            <div style="display:flex; gap:10px">
+                <div class="input-row" style="flex:1"><label>Собрано</label><input type="number" v-model="s.current"></div>
+                <div class="input-row" style="flex:1"><label>Нужно</label><input v-model="s.max"></div>
             </div>
 
-            <div class="section-label">Размеры и Отступы</div>
-            <label style="font-size:9px">Масштаб: {{scale}}</label><input type="range" min="0.5" max="2" step="0.1" v-model="scale">
-            <label style="font-size:9px">Ширина: {{width}}px</label><input type="range" min="300" max="800" v-model="width">
-            <label style="font-size:9px">Отступ списка: {{spacing}}px</label><input type="range" min="0" max="50" v-model="spacing">
-            
-            <div class="section-label">Шрифты</div>
-            <label style="font-size:9px">Заголовок: {{fTitle}}px</label><input type="range" min="12" max="40" v-model="fTitle">
-            <label style="font-size:9px">Сумма: {{fSum}}px</label><input type="range" min="12" max="40" v-model="fSum">
-
-            <div class="section-label">Цвета</div>
-            <div style="display:flex; gap:5px">
-                <input type="color" v-model="c1" style="flex:1">
-                <input type="color" v-model="c2" style="flex:1">
+            <div class="card-header">Внешний вид</div>
+            <div style="display:flex; gap:10px">
+                <div class="input-row" style="flex:1"><label>Масштаб: {{s.scale}}</label><input type="range" min="0.5" max="2" step="0.1" v-model="s.scale"></div>
+                <div class="input-row" style="flex:1"><label>Ширина: {{s.width}}px</label><input type="range" min="300" max="900" v-model="s.width"></div>
             </div>
-            <label style="font-size:9px">Прозрачность стекла: {{glass}}</label><input type="range" min="0" max="1" step="0.1" v-model="glass">
+            <div style="display:flex; gap:10px">
+                <div class="input-row" style="flex:1"><label>Стекло: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model="s.glass"></div>
+                <div class="input-row" style="flex:1"><label>Углы: {{s.radius}}px</label><input type="range" min="0" max="80" v-model="s.radius"></div>
+            </div>
 
-            <div class="section-label">Топ донатов</div>
-            <input type="text" v-model="topTitle">
-            <input type="text" v-for="(d, i) in 3" :key="i" v-model="topDonors[i]" :placeholder="'Место '+(i+1)">
+            <div class="card-header">Шрифты и Цвета</div>
+            <div style="display:flex; gap:10px">
+                <div class="input-row" style="flex:1"><label>Заголовок: {{s.fTitle}}px</label><input type="range" min="10" max="50" v-model="s.fTitle"></div>
+                <div class="input-row" style="flex:1"><label>Сумма: {{s.fSum}}px</label><input type="range" min="10" max="50" v-model="s.fSum"></div>
+            </div>
+            <div style="display:flex; gap:10px">
+                <input type="color" v-model="s.c1" style="flex:1; height:40px">
+                <input type="color" v-model="s.c2" style="flex:1; height:40px">
+            </div>
 
-            <button class="copy-btn" @click="copyLink">СКОПИРОВАТЬ ССЫЛКУ</button>
+            <div class="card-header">Топ донатов</div>
+            <div class="input-row"><label>Кол-во мест</label><input type="number" min="0" max="10" v-model="s.donorCount"></div>
+            <div v-for="i in parseInt(s.donorCount)" :key="i" class="input-row" style="margin-bottom:5px">
+                <input type="text" v-model="s.donors[i-1]" :placeholder="'Место ' + i">
+            </div>
+
+            <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ ИЗМЕНЕНИЯ</button>
+            <p style="font-size:10px; color:#555; text-align:center">Изменения применятся во всех источниках мгновенно</p>
         </div>
 
-        <div :class="{'preview-area': !isObs}">
-            <div :style="{transform: `scale(${scale})`, transformOrigin: isObs ? 'top left' : 'center'}">
-                <div class="widget-container" :style="containerStyle">
-                    <div class="header-row">
-                        <span :style="{fontSize: fTitle+'px'}">{{ goalTitle }}</span>
-                        <span :style="{fontSize: fSum+'px', color: '#ffd700'}">{{ formattedCurrent }} / {{ maxAmount }}</span>
+        <div class="preview-zone">
+            <div class="widget-wrap" :style="scaleStyle">
+                <div class="glass-card" :style="cardStyle">
+                    <div class="goal-header">
+                        <span :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
+                        <span :style="{fontSize: s.fSum+'px', color: varGold}">{{ formattedCurrent }} / {{ s.max }}</span>
                     </div>
-                    <div class="progress-bar-bg" :style="{height: (fSum*0.8)+'px'}">
-                        <div class="progress-fill" :style="progressStyle"></div>
+                    <div class="progress-box" :style="{height: (s.fSum*0.9)+'px'}">
+                        <div class="progress-bar" :style="barStyle"></div>
                     </div>
-                    <div v-if="topTitle" class="top-donors-title" :style="topTitleStyle">{{ topTitle }}</div>
-                    <ul class="donor-list" :style="{marginTop: spacing + 'px', gap: (spacing/2) + 'px'}">
-                        <li class="donor-item" v-for="(d, i) in topDonors" :key="i" v-show="d && d !== 'Пусто'" :style="{fontSize: (fTitle*0.8)+'px'}">
-                            {{ i + 1 }}) {{ d }}
-                        </li>
-                    </ul>
+                    <div class="donors-block" v-if="s.donorCount > 0">
+                        <div class="donor-row" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.8)+'px'}">
+                            <span>{{i+1}}. {{d}}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div v-if="isObs" class="widget-wrap" :style="[scaleStyle, {position:'absolute', top:0, left:0}]">
+        <div class="glass-card" :style="cardStyle">
+            <div class="goal-header">
+                <span :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
+                <span :style="{fontSize: s.fSum+'px', color: varGold}">{{ formattedCurrent }} / {{ s.max }}</span>
+            </div>
+            <div class="progress-box" :style="{height: (s.fSum*0.9)+'px'}">
+                <div class="progress-bar" :style="barStyle"></div>
+            </div>
+            <div class="donors-block" v-if="s.donorCount > 0">
+                <div class="donor-row" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.8)+'px'}">
+                    <span>{{i+1}}. {{d}}</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
-const { createApp, ref, computed, onMounted, watch } = Vue;
+const { createApp, ref, computed, onMounted } = Vue;
+
+// ТВОЙ КОНФИГ
+const firebaseConfig = {
+    apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
+    authDomain: "tt-widget-88711.firebaseapp.com",
+    projectId: "tt-widget-88711",
+    databaseURL: "https://tt-widget-88711-default-rtdb.firebaseio.com", // Добавил URL БД
+    storageBucket: "tt-widget-88711.firebasestorage.app",
+    messagingSenderId: "997435022478",
+    appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 createApp({
     setup() {
-        const goalTitle = ref('На интернет:');
-        const currentAmount = ref(4028);
-        const maxAmount = ref('7.990тг');
-        const scale = ref(1.0);
-        const width = ref(500);
-        const spacing = ref(20);
-        const fTitle = ref(20);
-        const fSum = ref(20);
-        const glass = ref(0.6);
-        const c1 = ref('#8a0022');
-        const c2 = ref('#ff0044');
-        const topTitle = ref('ТОП 3 ДНЯ');
-        const topDonors = ref(['Айдын - 750', '', '']);
         const isObs = ref(false);
+        const s = ref({
+            goalTitle: 'На интернет:',
+            current: 4028,
+            max: '7.990тг',
+            scale: 1.0,
+            width: 500,
+            glass: 0.6,
+            radius: 24,
+            fTitle: 20,
+            fSum: 20,
+            c1: '#8a0022',
+            c2: '#ff0044',
+            donorCount: 3,
+            donors: ['Айдын - 750', '', '', '', '', '']
+        });
+
+        const varGold = '#ffd700';
 
         onMounted(() => {
-            const p = new URLSearchParams(window.location.search);
-            if (p.get('obs') === '1') {
-                isObs.value = true;
-                if (p.has('gt')) goalTitle.value = decodeURIComponent(p.get('gt'));
-                if (p.has('ca')) currentAmount.value = p.get('ca');
-                if (p.has('ma')) maxAmount.value = decodeURIComponent(p.get('ma'));
-                if (p.has('sc')) scale.value = p.get('sc');
-                if (p.has('wd')) width.value = p.get('wd');
-                if (p.has('sp')) spacing.value = p.get('sp');
-                if (p.has('ft')) fTitle.value = p.get('ft');
-                if (p.has('fs')) fSum.value = p.get('fs');
-                if (p.has('gl')) glass.value = p.get('gl');
-                if (p.has('c1')) c1.value = decodeURIComponent(p.get('c1'));
-                if (p.has('c2')) c2.value = decodeURIComponent(p.get('c2'));
-                if (p.has('tt')) topTitle.value = decodeURIComponent(p.get('tt'));
-                if (p.has('d1')) topDonors.value[0] = decodeURIComponent(p.get('d1'));
-                if (p.has('d2')) topDonors.value[1] = decodeURIComponent(p.get('d2'));
-                if (p.has('d3')) topDonors.value[2] = decodeURIComponent(p.get('d3'));
-            }
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('view') === 'widget') isObs.value = true;
+
+            // СЛУШАЕМ ОБНОВЛЕНИЯ ИЗ БАЗЫ
+            db.ref('widget_data').on('value', (snapshot) => {
+                if (snapshot.exists()) {
+                    s.value = snapshot.val();
+                }
+            });
         });
 
-        const formattedCurrent = computed(() => currentAmount.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
-        const progressPercent = computed(() => {
-            let m = parseFloat(maxAmount.value.toString().replace(/[\s.]/g, '').replace(/[^\d]/g, ''));
-            return m > 0 ? Math.min((currentAmount.value / m) * 100, 100) : 0;
-        });
-
-        const containerStyle = computed(() => ({ width: width.value + 'px', background: `rgba(15,15,15,${glass.value})`, borderRadius: '24px', backdropFilter: 'blur(10px)', border: `1px solid rgba(255,255,255,0.1)` }));
-        const progressStyle = computed(() => ({ width: progressPercent.value + '%', background: `linear-gradient(90deg, ${c1.value}, ${c2.value})`, boxShadow: `0 0 15px ${c2.value}80` }));
-        const topTitleStyle = computed(() => ({ borderLeft: `4px solid ${c1.value}`, background: `linear-gradient(90deg, ${c1.value}33, transparent)` }));
-
-        const copyLink = () => {
-            const u = new URL(window.location.href.split('?')[0]);
-            u.searchParams.set('obs', '1');
-            u.searchParams.set('gt', encodeURIComponent(goalTitle.value));
-            u.searchParams.set('ca', currentAmount.value);
-            u.searchParams.set('ma', encodeURIComponent(maxAmount.value));
-            u.searchParams.set('sc', scale.value);
-            u.searchParams.set('wd', width.value);
-            u.searchParams.set('sp', spacing.value);
-            u.searchParams.set('ft', fTitle.value);
-            u.searchParams.set('fs', fSum.value);
-            u.searchParams.set('gl', glass.value);
-            u.searchParams.set('c1', encodeURIComponent(c1.value));
-            u.searchParams.set('c2', encodeURIComponent(c2.value));
-            u.searchParams.set('tt', encodeURIComponent(topTitle.value));
-            u.searchParams.set('d1', encodeURIComponent(topDonors.value[0]));
-            u.searchParams.set('d2', encodeURIComponent(topDonors.value[1]));
-            u.searchParams.set('d3', encodeURIComponent(topDonors.value[2]));
-            navigator.clipboard.writeText(u.toString());
-            alert('Ссылка скопирована!');
+        const saveToFirebase = () => {
+            db.ref('widget_data').set(s.value).then(() => {
+                alert("ДАННЫЕ ОБНОВЛЕНЫ ВЕЗДЕ!");
+            });
         };
 
-        return { goalTitle, currentAmount, maxAmount, scale, width, spacing, fTitle, fSum, glass, c1, c2, topTitle, topDonors, isObs, formattedCurrent, containerStyle, progressStyle, topTitleStyle, copyLink };
+        const formattedCurrent = computed(() => s.value.current.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+        
+        const progressPercent = computed(() => {
+            let m = parseFloat(s.value.max.toString().replace(/[\s.]/g, '').replace(/[^\d]/g, ''));
+            return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
+        });
+
+        const cardStyle = computed(() => ({
+            width: s.value.width + 'px',
+            background: `rgba(15,15,15,${s.value.glass})`,
+            borderRadius: s.value.radius + 'px',
+            backdropFilter: 'blur(15px)',
+            boxShadow: `0 20px 50px rgba(0,0,0,${s.value.glass})`
+        }));
+
+        const barStyle = computed(() => ({
+            width: progressPercent.value + '%',
+            background: `linear-gradient(90deg, ${s.value.c1}, ${s.value.c2})`,
+            boxShadow: `0 0 20px ${s.value.c2}aa`
+        }));
+
+        const scaleStyle = computed(() => ({
+            transform: `scale(${s.value.scale})`,
+            transformOrigin: isObs.value ? 'top left' : 'center'
+        }));
+
+        return { s, isObs, varGold, formattedCurrent, cardStyle, barStyle, scaleStyle, saveToFirebase };
     }
 }).mount('#app');
 </script>
