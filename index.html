@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V7.0 - PREMIUM EDITION</title>
+    <title>SUPREME WIDGET V7.1 - PREMIUM EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -65,12 +65,16 @@
         
         .obs-mode-active { background: transparent !important; }
 
-        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ДИЗАЙН ОТЖИМАНИЙ --- */
-        .pushup-premium {
+        /* --- НОВЫЙ ФОН ОТЖИМАНИЙ: ПЛОТНЫЙ, НО СТИЛЬНЫЙ --- */
+        .pushup-solid-premium {
+            background: linear-gradient(145deg, #3c1473, #240a4a); /* Плотный фиолетовый градиент */
+            border: 2px solid rgba(138, 43, 226, 0.5); /* Аккуратная рамка */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(138, 43, 226, 0.15); /* Мощная тень для контраста с вебкой */
             display: flex;
             flex-direction: column;
-            gap: 18px; 
-            padding: 22px 30px !important; /* Чуть тоньше паддинги чем у главного блока */
+            gap: 15px; 
+            padding: 22px 30px !important; 
+            width: 100%;
         }
         .pushup-row {
             display: flex;
@@ -96,22 +100,22 @@
         .pushup-value {
             font-weight: 900;
             font-size: 1.25em;
-            text-shadow: 0 0 15px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
         .pushup-divider {
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             width: 100%;
         }
         .pushup-label {
-            opacity: 0.7;
+            opacity: 0.9; /* Сделал ярче, чтобы поверх вебки лучше читалось */
             font-size: 0.9em;
-            font-weight: 400;
+            font-weight: 700;
         }
         .pushup-total {
             font-weight: 900;
             font-size: 1.25em;
-            text-shadow: 0 0 15px rgba(0,0,0,0.8);
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         @media (max-width: 768px) {
@@ -119,7 +123,7 @@
             .preview-zone { order: 1; min-height: 350px; border-bottom: 2px solid #222; }
             .sidebar { order: 2; border-right: none; padding: 15px; }
             .glass-card { padding: 20px; }
-            .pushup-premium { padding: 15px 20px !important; }
+            .pushup-solid-premium { padding: 15px 20px !important; }
         }
     </style>
 </head>
@@ -201,7 +205,7 @@
                         </ul>
                     </div>
 
-                    <div class="glass-card pushup-premium" v-if="s.pushupShow" :style="[cardStyle, {fontSize: (s.fTitle*0.85)+'px'}]">
+                    <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
                         <div class="pushup-row">
                             <div class="pushup-brand">
                                 <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
@@ -243,7 +247,7 @@
                 </ul>
             </div>
 
-            <div class="glass-card pushup-premium" v-if="s.pushupShow" :style="[cardStyle, {fontSize: (s.fTitle*0.85)+'px'}]">
+            <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
                 <div class="pushup-row">
                     <div class="pushup-brand">
                         <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
@@ -322,12 +326,13 @@ createApp({
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
         });
 
+        /* ВОТ ТУТ ИСПРАВИЛ ПРИВЯЗКУ ШИРИНЫ, ТЕПЕРЬ ПОЛЗУНОК РАБОТАЕТ ЖЕЛЕЗОБЕТОННО */
         const layoutStyle = computed(() => ({
-            width: '100%',
-            minWidth: s.value.width + 'px', 
+            width: s.value.width + 'px',
+            maxWidth: '100vw', 
             display: 'flex',
             flexDirection: 'column',
-            gap: '15px' /* Сделал отступ между блоками чуть меньше, чтобы смотрелось цельнее */
+            gap: '15px'
         }));
 
         const cardStyle = computed(() => ({
