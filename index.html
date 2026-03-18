@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V8.0 - FULL CONTROL EDITION</title>
+    <title>SUPREME WIDGET V9.0 - ULTIMATE SANDBOX</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -17,14 +17,34 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; }
+        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; }
         
         .admin-panel { display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
         .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .preview-zone { display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; background-color: #151515; padding: 20px; overflow: hidden; }
+        
+        /* Холст для перетаскивания */
+        .preview-zone { 
+            position: relative; 
+            background-image: radial-gradient(#333 1px, transparent 1px); 
+            background-size: 30px 30px; 
+            background-color: #151515; 
+            overflow: hidden; 
+        }
 
-        .widget-wrap { transition: all 0.3s ease; width: 100%; display: flex; justify-content: center; }
-        .glass-card { padding: 30px; position: relative; transition: all 0.3s ease; width: 100%; }
+        .widget-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: top left; }
+        
+        /* Классы для перетаскиваемых объектов */
+        .draggable-card {
+            position: absolute;
+            cursor: grab;
+            transition: box-shadow 0.2s;
+        }
+        .draggable-card:active {
+            cursor: grabbing;
+            box-shadow: 0 0 40px rgba(255,0,68,0.3) !important;
+        }
+
+        .glass-card { position: relative; width: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
         .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
@@ -38,9 +58,8 @@
         
         .top-donors-title { display: inline-block; padding: 8px 16px; font-weight: 700; border-radius: 4px; margin-top: 25px; margin-bottom: 10px; }
         .donor-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        
         .donor-item { display: flex; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; word-break: break-word; }
-        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05)) !important; border: 1px solid rgba(255,215,0,0.4) !important; color: var(--gold) !important; box-shadow: 0 0 20px rgba(255,215,0,0.1); font-weight: 900; }
+        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05)) !important; border: 1px solid rgba(255,215,0,0.4) !important; color: var(--gold) !important; font-weight: 900; }
         .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.12), rgba(224,224,224,0.03)) !important; border: 1px solid rgba(224,224,224,0.3) !important; color: var(--silver) !important; font-weight: 700; }
         .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), rgba(205,127,50,0.02)) !important; border: 1px solid rgba(205,127,50,0.3) !important; color: var(--bronze) !important; font-weight: 700; }
 
@@ -51,11 +70,9 @@
         
         input[type="text"], input[type="number"] { background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; width: 100%; transition: border 0.3s; }
         input[type="text"]:focus, input[type="number"]:focus { border-color: #ff0044; outline: none; }
-        
-        input[type="range"] { width: 100%; accent-color: #ff0044; }
+        input[type="range"] { width: 100%; accent-color: #ff0044; cursor: pointer; }
         input[type="color"] { width: 100%; height: 35px; border: none; border-radius: 6px; cursor: pointer; background: transparent; }
         input[type="checkbox"] { width: 20px; height: 20px; accent-color: #ff0044; cursor: pointer; }
-        
         label { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; }
         
         .btn-save { background: linear-gradient(90deg, #ff0044, #cc0036); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 20px; font-family: 'Unbounded'; text-transform: uppercase; box-shadow: 0 0 25px rgba(255,0,68,0.4); transition: transform 0.2s; }
@@ -65,82 +82,28 @@
         
         .obs-mode-active { background: transparent !important; }
 
-        /* --- БЛОК ОТЖИМАНИЙ --- */
+        /* БЛОК ОТЖИМАНИЙ */
         .pushup-solid-premium {
-            background: linear-gradient(145deg, #3c1473, #240a4a); 
-            border: 2px solid rgba(138, 43, 226, 0.5); 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(138, 43, 226, 0.15); 
             display: flex;
             flex-direction: column;
-            gap: 15px; 
-            padding: 22px 30px !important; 
             width: 100%;
         }
-        .pushup-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .pushup-brand {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .pushup-icon {
-            /* Свечение убрано полностью, оставлен только белый цвет */
-            filter: brightness(0) invert(1);
-            transform: rotate(-15deg);
-            object-fit: contain;
-        }
-        .pushup-title {
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .pushup-value {
-            font-weight: 900;
-            font-size: 1.25em;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-        .pushup-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            width: 100%;
-        }
-        .pushup-label {
-            opacity: 0.9;
-            font-size: 0.9em;
-            font-weight: 700;
-        }
-        .pushup-total {
-            font-weight: 900;
-            font-size: 1.25em;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+        .pushup-row { display: flex; justify-content: space-between; align-items: center; }
+        .pushup-brand { display: flex; align-items: center; gap: 15px; }
+        .pushup-icon { filter: brightness(0) invert(1); transform: rotate(-15deg); object-fit: contain; }
+        .pushup-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .pushup-value { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .pushup-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); width: 100%; }
+        .pushup-label { opacity: 0.9; font-size: 0.9em; font-weight: 700; }
+        .pushup-total { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 
-        /* --- СТИЛИ ДЛЯ РЕДАКТИРУЕМОГО ТЕКСТА В АДМИНКЕ --- */
-        .editable {
-            cursor: text;
-            border-bottom: 1px dashed rgba(255,255,255,0.4);
-            transition: all 0.2s;
-            padding: 2px 4px;
-            margin: -2px -4px;
-            border-radius: 4px;
-        }
+        /* СТИЛИ РЕДАКТИРОВАНИЯ */
+        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.3); transition: all 0.2s; padding: 2px 4px; margin: -2px -4px; border-radius: 4px; }
         .editable:hover { background: rgba(255,255,255,0.1); }
-        .editable:focus {
-            background: rgba(255,255,255,0.2);
-            outline: none;
-            border-bottom: 1px solid #ff0044;
-        }
-
-        @media (max-width: 768px) {
-            .admin-panel { grid-template-columns: 1fr; grid-template-rows: auto 1fr; position: relative; min-height: 100vh; }
-            .preview-zone { order: 1; min-height: 350px; border-bottom: 2px solid #222; }
-            .sidebar { order: 2; border-right: none; padding: 15px; }
-            .glass-card { padding: 20px; }
-            .pushup-solid-premium { padding: 15px 20px !important; }
-        }
+        .editable:focus { background: rgba(255,255,255,0.2); outline: none; border-bottom: 1px solid #ff0044; }
+        
+        /* В OBS убираем подчеркивание */
+        .obs-mode-active .editable { border: none !important; background: transparent !important; }
     </style>
 </head>
 <body :class="{'obs-mode-active': isObs}">
@@ -149,12 +112,21 @@
     <div v-if="!isObs" class="admin-panel">
         <div class="sidebar">
             <h2 style="margin:0; font-weight:900; font-size: 24px;">WIDGET <span style="color:#ff0044">BUILDER</span></h2>
+            <p style="font-size: 11px; color: #aaa; line-height: 1.4; margin-top: 5px;">
+                🖱️ <b>Тяни мышкой:</b> хватай фон блоков, чтобы их двигать.<br>
+                ✏️ <b>Текст:</b> кликай по текстам справа, чтобы переписать.
+            </p>
             
             <div class="card-header">Смысл и Данные</div>
             <div class="row">
                 <div class="input-group"><label>Текущий результат (цифрой)</label><input type="number" v-model="s.current"></div>
             </div>
-            <p style="font-size: 10px; color: #888; text-align: center; margin-top: 5px;">* Чтобы изменить текст, просто кликни по нему на виджете справа!</p>
+
+            <div class="card-header">Отступы (Padding)</div>
+            <div class="row">
+                <div class="input-group"><label>Внутри главного: {{s.mainPadding}}px</label><input type="range" min="10" max="80" step="1" v-model="s.mainPadding"></div>
+                <div class="input-group"><label>Внутри доп.: {{s.pushupPadding}}px</label><input type="range" min="10" max="80" step="1" v-model="s.pushupPadding"></div>
+            </div>
 
             <div class="card-header">Челлендж: Доп. панель</div>
             <div class="row" style="align-items: center;">
@@ -164,20 +136,29 @@
             <div class="row" v-if="s.pushupShow">
                 <div class="input-group"><label>Размер иконки: {{s.pushupIconSize}}px</label><input type="range" min="10" max="150" step="1" v-model="s.pushupIconSize"></div>
             </div>
+            <div class="row" v-if="s.pushupShow">
+                <div class="input-group"><label>Расстояние между строками: {{s.pushupGap}}px</label><input type="range" min="5" max="50" step="1" v-model="s.pushupGap"></div>
+            </div>
 
-            <div class="card-header">Визуал и Цвета</div>
+            <div class="card-header">Фон Доп. Панели</div>
             <div class="row">
-                <div class="input-group"><label>Градиент (Начало)</label><input type="color" v-model="s.c1"></div>
-                <div class="input-group"><label>Градиент (Конец)</label><input type="color" v-model="s.c2"></div>
+                <div class="input-group"><label>Цвет 1 (Градиент)</label><input type="color" v-model="s.pushupBg1"></div>
+                <div class="input-group"><label>Цвет 2 (Градиент)</label><input type="color" v-model="s.pushupBg2"></div>
+            </div>
+
+            <div class="card-header">Визуал и Цвета Главного Окна</div>
+            <div class="row">
+                <div class="input-group"><label>Цвет 1 (Бар)</label><input type="color" v-model="s.c1"></div>
+                <div class="input-group"><label>Цвет 2 (Бар)</label><input type="color" v-model="s.c2"></div>
             </div>
             <div class="row">
-                <div class="input-group"><label>Цвет текста суммы</label><input type="color" v-model="s.cSum"></div>
+                <div class="input-group"><label>Цвет акцентов/цифр</label><input type="color" v-model="s.cSum"></div>
                 <div class="input-group"><label>Тон стекла (RGB)</label><input type="color" v-model="s.bgHex"></div>
             </div>
             <div class="input-group"><label>Плотность стекла: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model="s.glass"></div>
 
             <div class="card-header">Размеры и Форма</div>
-            <div class="input-group"><label>Ширина виджета: {{s.width}}px</label><input type="range" min="250" max="1200" step="10" v-model="s.width"></div>
+            <div class="input-group"><label>Ширина виджетов: {{s.width}}px</label><input type="range" min="250" max="1200" step="10" v-model="s.width"></div>
             <div class="input-group"><label>Скругление углов: {{s.radius}}px</label><input type="range" min="0" max="100" step="1" v-model="s.radius"></div>
             <div class="row">
                 <div class="input-group"><label>Размер Заголовка: {{s.fTitle}}px</label><input type="range" min="10" max="80" step="1" v-model="s.fTitle"></div>
@@ -194,8 +175,8 @@
 
         <div class="preview-zone">
             <div class="widget-wrap" :style="scaleStyleAdmin">
-                <div :style="layoutStyle">
-                    
+                
+                <div class="draggable-card" @mousedown="startDrag('main', $event)" :style="mainCardPos">
                     <div class="glass-card" :style="cardStyle">
                         <div class="goal-header">
                             <span class="editable" contenteditable="true" spellcheck="false" @blur="s.goalTitle = $event.target.textContent" :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
@@ -212,12 +193,14 @@
                             <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i"
                                 :class="'rank-' + (i+1)"
                                 :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.7)+'px'}">
-                                <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}<span class="editable" contenteditable="true" spellcheck="false" @blur="s.donors[i] = $event.target.textContent">{{ s.donors[i] || 'Имя участника...' }}</span></span>
+                                <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}<span class="editable" contenteditable="true" spellcheck="false" @blur="s.donors[i] = $event.target.textContent">{{ s.donors[i] || 'Имя...' }}</span></span>
                             </li>
                         </ul>
                     </div>
+                </div>
 
-                    <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
+                <div class="draggable-card" v-if="s.pushupShow" @mousedown="startDrag('pushup', $event)" :style="pushupCardPos">
+                    <div class="pushup-solid-premium" :style="pushupStyle">
                         <div class="pushup-row">
                             <div class="pushup-brand">
                                 <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
@@ -231,15 +214,14 @@
                             <div class="editable pushup-total" contenteditable="true" spellcheck="false" @blur="s.pushupCountText = $event.target.textContent" :style="{color: s.cSum}">{{ s.pushupCountText }}</div>
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
     </div>
 
-    <div v-if="isObs" class="widget-wrap" :style="[scaleStyleOBS, {position:'absolute', top:0, left:0, width: '100%'}]">
-        <div :style="layoutStyle">
-            
+    <div v-if="isObs" class="widget-wrap" :style="scaleStyleOBS">
+        <div class="draggable-card" :style="mainCardPos">
             <div class="glass-card" :style="cardStyle">
                 <div class="goal-header">
                     <span :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
@@ -258,8 +240,10 @@
                     </li>
                 </ul>
             </div>
+        </div>
 
-            <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
+        <div class="draggable-card" v-if="s.pushupShow" :style="pushupCardPos">
+            <div class="pushup-solid-premium" :style="pushupStyle">
                 <div class="pushup-row">
                     <div class="pushup-brand">
                         <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
@@ -273,7 +257,6 @@
                     <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCountText }}</div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -298,19 +281,60 @@ createApp({
     setup() {
         const isObs = ref(false);
         const s = ref({
+            // Основные
             goalTitle: 'СБОР НА ТУРНИР:', current: 2500, max: '10.000',
             topTitle: 'ТОП УЧАСТНИКОВ', donorCount: 3, donors: ['Player One', 'Cyber Ninja', ''],
             scale: 1.0, width: 600, glass: 0.6, radius: 24, fTitle: 22, fSum: 24,
             c1: '#8a0022', c2: '#ff0044', cSum: '#ffd700', bgHex: '#0f0f0f',
             
+            // Координаты и отступы
+            mainX: 50, mainY: 50, mainPadding: 30,
+            pushupX: 50, pushupY: 450, pushupPadding: 22,
+            
             // Настройки доп. панели
             pushupShow: true,
             pushupIconSize: 36,
+            pushupGap: 15,
+            pushupBg1: '#3c1473', pushupBg2: '#240a4a',
             pushupMainTitle: 'ОТЖИМАНИЯ',
             pushupText: '1 раз - 50тг',
             pushupLabel: 'Отжался за сегодня:',
-            pushupCountText: '7 Раз(а)' // Теперь это единое текстовое поле
+            pushupCountText: '7 Раз(а)'
         });
+
+        // ЛОГИКА ПЕРЕТАСКИВАНИЯ (DRAG & DROP)
+        let activeDrag = null;
+        let startX = 0; let startY = 0;
+        let initialX = 0; let initialY = 0;
+
+        const startDrag = (elem, e) => {
+            if (isObs.value) return; // В OBS не таскаем
+            if (e.target.classList.contains('editable') || e.target.tagName.toLowerCase() === 'input') return; // Не мешаем кликать по тексту
+            
+            activeDrag = elem;
+            startX = e.clientX;
+            startY = e.clientY;
+            initialX = s.value[elem + 'X'];
+            initialY = s.value[elem + 'Y'];
+
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+        };
+
+        const drag = (e) => {
+            if (!activeDrag) return;
+            // Учитываем зум (scale) чтобы мышка не "убегала" от блока
+            const dx = (e.clientX - startX) / s.value.scale;
+            const dy = (e.clientY - startY) / s.value.scale;
+            s.value[activeDrag + 'X'] = initialX + dx;
+            s.value[activeDrag + 'Y'] = initialY + dy;
+        };
+
+        const stopDrag = () => {
+            activeDrag = null;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDrag);
+        };
 
         onMounted(() => {
             const params = new URLSearchParams(window.location.search);
@@ -318,11 +342,17 @@ createApp({
             db.ref('widget_data_v6').on('value', snap => { 
                 if (snap.exists()) {
                     let data = snap.val();
-                    // Чтобы при загрузке старых данных не было пустых полей
-                    if(!data.pushupMainTitle) data.pushupMainTitle = 'ОТЖИМАНИЯ';
-                    if(!data.pushupLabel) data.pushupLabel = 'Отжался за сегодня:';
-                    if(!data.pushupCountText) data.pushupCountText = (data.pushupCount !== undefined ? data.pushupCount + ' Раз(а)' : '0 Раз(а)');
-                    if(!data.pushupIconSize) data.pushupIconSize = 36;
+                    // Защита от старых сохранений, где этих данных еще не было
+                    if(data.mainX === undefined) data.mainX = 50;
+                    if(data.mainY === undefined) data.mainY = 50;
+                    if(data.pushupX === undefined) data.pushupX = 50;
+                    if(data.pushupY === undefined) data.pushupY = 450;
+                    if(data.mainPadding === undefined) data.mainPadding = 30;
+                    if(data.pushupPadding === undefined) data.pushupPadding = 22;
+                    if(data.pushupGap === undefined) data.pushupGap = 15;
+                    if(!data.pushupBg1) data.pushupBg1 = '#3c1473';
+                    if(!data.pushupBg2) data.pushupBg2 = '#240a4a';
+                    
                     s.value = { ...s.value, ...data }; 
                 }
             });
@@ -330,7 +360,7 @@ createApp({
 
         const saveToFirebase = () => {
             db.ref('widget_data_v6').set(JSON.parse(JSON.stringify(s.value)))
-                .then(() => alert("ОПУБЛИКОВАНО! Настройки отправлены в виджет."))
+                .then(() => alert("ОПУБЛИКОВАНО! Позиции и настройки сохранены."))
                 .catch(err => alert("Ошибка базы: " + err.message));
         };
 
@@ -351,20 +381,33 @@ createApp({
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
         });
 
-        const layoutStyle = computed(() => ({
-            width: s.value.width + 'px',
-            maxWidth: '100vw', 
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '15px'
+        // СТИЛИ ПОЗИЦИЙ
+        const mainCardPos = computed(() => ({
+            left: s.value.mainX + 'px',
+            top: s.value.mainY + 'px',
+            width: s.value.width + 'px'
+        }));
+
+        const pushupCardPos = computed(() => ({
+            left: s.value.pushupX + 'px',
+            top: s.value.pushupY + 'px',
+            width: s.value.width + 'px'
         }));
 
         const cardStyle = computed(() => ({
-            width: '100%', 
+            padding: s.value.mainPadding + 'px',
             background: `rgba(${hexToRgb(s.value.bgHex)}, ${s.value.glass})`,
             borderRadius: s.value.radius + 'px',
             backdropFilter: 'blur(15px)',
             border: `1px solid rgba(255,255,255,0.1)`
+        }));
+
+        const pushupStyle = computed(() => ({
+            padding: s.value.pushupPadding + 'px',
+            gap: s.value.pushupGap + 'px',
+            borderRadius: s.value.radius + 'px',
+            fontSize: (s.value.fTitle * 0.85) + 'px',
+            background: `linear-gradient(145deg, ${s.value.pushupBg1}, ${s.value.pushupBg2})`
         }));
 
         const barStyle = computed(() => ({
@@ -382,7 +425,11 @@ createApp({
         const scaleStyleAdmin = computed(() => ({ transform: `scale(${isObs.value ? s.value.scale : 1})` }));
         const scaleStyleOBS = computed(() => ({ transform: `scale(${s.value.scale})`, transformOrigin: 'top left' }));
 
-        return { s, isObs, formattedCurrent, layoutStyle, cardStyle, barStyle, scaleStyleAdmin, scaleStyleOBS, topTitleStyle, saveToFirebase, copyWidgetLink };
+        return { 
+            s, isObs, formattedCurrent, cardStyle, barStyle, pushupStyle, 
+            scaleStyleAdmin, scaleStyleOBS, topTitleStyle, mainCardPos, pushupCardPos,
+            startDrag, saveToFirebase, copyWidgetLink 
+        };
     }
 }).mount('#app');
 </script>
