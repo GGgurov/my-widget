@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V6.2 - CONSTRUCTOR EDITION</title>
+    <title>SUPREME WIDGET V7.0 - PREMIUM EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -12,7 +12,6 @@
         :root { --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; }
         * { box-sizing: border-box; }
         
-        /* Скроллбары для админки */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
@@ -20,19 +19,16 @@
 
         body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; }
         
-        /* АДМИНКА */
         .admin-panel { display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
         .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .preview-zone { display: flex; align-items: center; justify-content: center; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; background-color: #151515; padding: 20px; overflow: hidden; }
 
-        /* ВИДЖЕТ */
         .widget-wrap { transition: all 0.3s ease; width: 100%; display: flex; justify-content: center; }
-        .glass-card { padding: 30px; position: relative; transition: all 0.3s ease; }
+        .glass-card { padding: 30px; position: relative; transition: all 0.3s ease; width: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
         .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
         
-        /* Анимация свечения */
         .progress-bar::after {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
@@ -43,14 +39,11 @@
         .top-donors-title { display: inline-block; padding: 8px 16px; font-weight: 700; border-radius: 4px; margin-top: 25px; margin-bottom: 10px; }
         .donor-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         
-        /* СТИЛИ ДЛЯ ТОПОВ */
         .donor-item { display: flex; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; word-break: break-word; }
-        
         .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05)) !important; border: 1px solid rgba(255,215,0,0.4) !important; color: var(--gold) !important; box-shadow: 0 0 20px rgba(255,215,0,0.1); font-weight: 900; }
         .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.12), rgba(224,224,224,0.03)) !important; border: 1px solid rgba(224,224,224,0.3) !important; color: var(--silver) !important; font-weight: 700; }
         .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), rgba(205,127,50,0.02)) !important; border: 1px solid rgba(205,127,50,0.3) !important; color: var(--bronze) !important; font-weight: 700; }
 
-        /* ИНТЕРФЕЙС АДМИНКИ */
         .card-header { font-size: 11px; color: #fff; background: #222; padding: 8px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; font-weight: 900; border-left: 3px solid #ff0044; }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
         .row { display: flex; gap: 10px; align-items: flex-end; }
@@ -72,76 +65,61 @@
         
         .obs-mode-active { background: transparent !important; }
 
-        /* --- ПЛАШКА ОТЖИМАНИЙ --- */
-        .pushup-widget {
+        /* --- НОВЫЙ ПРЕМИАЛЬНЫЙ ДИЗАЙН ОТЖИМАНИЙ --- */
+        .pushup-premium {
             display: flex;
             flex-direction: column;
-            gap: 12px; 
-            width: 100%;
+            gap: 18px; 
+            padding: 22px 30px !important; /* Чуть тоньше паддинги чем у главного блока */
         }
-        .pushup-top {
-            background: rgba(56, 22, 108, 0.9);
-            padding: 16px 20px;
+        .pushup-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pushup-brand {
             display: flex;
             align-items: center;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
             gap: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
         }
-        
-        .pushup-logo-container {
-            width: 65px; /* ВОТ ТУТ УВЕЛИЧЕНО */
-            height: 65px; /* ВОТ ТУТ УВЕЛИЧЕНО */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(-25deg); 
-            filter: drop-shadow(0 0 4px rgba(255,255,255,0.8)); /* Свечение чуть ярче */
-            flex-shrink: 0; 
+        .pushup-icon {
+            width: 36px;
+            height: 36px;
+            filter: brightness(0) invert(1) drop-shadow(0 0 3px rgba(255,255,255,0.4));
+            transform: rotate(-15deg);
         }
-        
-        .pushup-logo-image {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            filter: brightness(0) invert(1); 
-        }
-
         .pushup-title {
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
-        .pushup-cost {
-            margin-left: auto;
+        .pushup-value {
             font-weight: 900;
+            font-size: 1.25em;
+            text-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
-        .pushup-bottom {
-            background: rgba(92, 54, 166, 0.9);
-            padding: 16px 20px;
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            gap: 15px;
+        .pushup-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            width: 100%;
+        }
+        .pushup-label {
+            opacity: 0.7;
+            font-size: 0.9em;
             font-weight: 400;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
         }
-        .pushup-count {
+        .pushup-total {
             font-weight: 900;
-            font-size: 1.1em;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5); 
+            font-size: 1.25em;
+            text-shadow: 0 0 15px rgba(0,0,0,0.8);
         }
 
-        /* --- АДАПТИВ ДЛЯ МОБИЛОК --- */
         @media (max-width: 768px) {
             .admin-panel { grid-template-columns: 1fr; grid-template-rows: auto 1fr; position: relative; min-height: 100vh; }
             .preview-zone { order: 1; min-height: 350px; border-bottom: 2px solid #222; }
             .sidebar { order: 2; border-right: none; padding: 15px; }
             .glass-card { padding: 20px; }
+            .pushup-premium { padding: 15px 20px !important; }
         }
     </style>
 </head>
@@ -223,17 +201,18 @@
                         </ul>
                     </div>
 
-                    <div class="pushup-widget" v-if="s.pushupShow" :style="{fontSize: (s.fTitle*0.85)+'px'}">
-                        <div class="pushup-top">
-                            <div class="pushup-logo-container">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" alt="kettlebell" class="pushup-logo-image">
+                    <div class="glass-card pushup-premium" v-if="s.pushupShow" :style="[cardStyle, {fontSize: (s.fTitle*0.85)+'px'}]">
+                        <div class="pushup-row">
+                            <div class="pushup-brand">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
+                                <span class="pushup-title">ОТЖИМАНИЯ</span>
                             </div>
-                            <span class="pushup-title">ОТЖИМАНИЯ</span>
-                            <span class="pushup-cost" :style="{fontSize: '1.2em', color: s.cSum}">{{ s.pushupText }}</span>
+                            <div class="pushup-value" :style="{color: s.cSum}">{{ s.pushupText }}</div>
                         </div>
-                        <div class="pushup-bottom">
-                            <span style="opacity: 0.9;">Отжался за сегодня:</span>
-                            <span class="pushup-count" :style="{color: s.cSum}">{{ s.pushupCount }} Раз (а)</span>
+                        <div class="pushup-divider"></div>
+                        <div class="pushup-row">
+                            <div class="pushup-label">Отжался за сегодня:</div>
+                            <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCount }} Раз(а)</div>
                         </div>
                     </div>
 
@@ -242,7 +221,7 @@
         </div>
     </div>
 
-    <div v-if="isObs" class="widget-wrap" :style="[scaleStyleOBS, {position:'absolute', top:0, left:0}]">
+    <div v-if="isObs" class="widget-wrap" :style="[scaleStyleOBS, {position:'absolute', top:0, left:0, width: '100%'}]">
         <div :style="layoutStyle">
             
             <div class="glass-card" :style="cardStyle">
@@ -264,17 +243,18 @@
                 </ul>
             </div>
 
-            <div class="pushup-widget" v-if="s.pushupShow" :style="{fontSize: (s.fTitle*0.85)+'px'}">
-                <div class="pushup-top">
-                    <div class="pushup-logo-container">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" alt="kettlebell" class="pushup-logo-image">
+            <div class="glass-card pushup-premium" v-if="s.pushupShow" :style="[cardStyle, {fontSize: (s.fTitle*0.85)+'px'}]">
+                <div class="pushup-row">
+                    <div class="pushup-brand">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
+                        <span class="pushup-title">ОТЖИМАНИЯ</span>
                     </div>
-                    <span class="pushup-title">ОТЖИМАНИЯ</span>
-                    <span class="pushup-cost" :style="{fontSize: '1.2em', color: s.cSum}">{{ s.pushupText }}</span>
+                    <div class="pushup-value" :style="{color: s.cSum}">{{ s.pushupText }}</div>
                 </div>
-                <div class="pushup-bottom">
-                    <span style="opacity: 0.9;">Отжался за сегодня:</span>
-                    <span class="pushup-count" :style="{color: s.cSum}">{{ s.pushupCount }} Раз (а)</span>
+                <div class="pushup-divider"></div>
+                <div class="pushup-row">
+                    <div class="pushup-label">Отжался за сегодня:</div>
+                    <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCount }} Раз(а)</div>
                 </div>
             </div>
 
@@ -343,11 +323,11 @@ createApp({
         });
 
         const layoutStyle = computed(() => ({
-            width: '100vw',
-            maxWidth: s.value.width + 'px',
+            width: '100%',
+            minWidth: s.value.width + 'px', 
             display: 'flex',
             flexDirection: 'column',
-            gap: '20px'
+            gap: '15px' /* Сделал отступ между блоками чуть меньше, чтобы смотрелось цельнее */
         }));
 
         const cardStyle = computed(() => ({
