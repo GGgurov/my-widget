@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V7.1 - PREMIUM EDITION</title>
+    <title>SUPREME WIDGET V8.0 - FULL CONTROL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -65,11 +65,11 @@
         
         .obs-mode-active { background: transparent !important; }
 
-        /* --- НОВЫЙ ФОН ОТЖИМАНИЙ: ПЛОТНЫЙ, НО СТИЛЬНЫЙ --- */
+        /* --- БЛОК ОТЖИМАНИЙ --- */
         .pushup-solid-premium {
-            background: linear-gradient(145deg, #3c1473, #240a4a); /* Плотный фиолетовый градиент */
-            border: 2px solid rgba(138, 43, 226, 0.5); /* Аккуратная рамка */
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(138, 43, 226, 0.15); /* Мощная тень для контраста с вебкой */
+            background: linear-gradient(145deg, #3c1473, #240a4a); 
+            border: 2px solid rgba(138, 43, 226, 0.5); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(138, 43, 226, 0.15); 
             display: flex;
             flex-direction: column;
             gap: 15px; 
@@ -87,10 +87,10 @@
             gap: 15px;
         }
         .pushup-icon {
-            width: 36px;
-            height: 36px;
-            filter: brightness(0) invert(1) drop-shadow(0 0 3px rgba(255,255,255,0.4));
+            /* Свечение убрано полностью, оставлен только белый цвет */
+            filter: brightness(0) invert(1);
             transform: rotate(-15deg);
+            object-fit: contain;
         }
         .pushup-title {
             font-weight: 800;
@@ -108,7 +108,7 @@
             width: 100%;
         }
         .pushup-label {
-            opacity: 0.9; /* Сделал ярче, чтобы поверх вебки лучше читалось */
+            opacity: 0.9;
             font-size: 0.9em;
             font-weight: 700;
         }
@@ -116,6 +116,22 @@
             font-weight: 900;
             font-size: 1.25em;
             text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        /* --- СТИЛИ ДЛЯ РЕДАКТИРУЕМОГО ТЕКСТА В АДМИНКЕ --- */
+        .editable {
+            cursor: text;
+            border-bottom: 1px dashed rgba(255,255,255,0.4);
+            transition: all 0.2s;
+            padding: 2px 4px;
+            margin: -2px -4px;
+            border-radius: 4px;
+        }
+        .editable:hover { background: rgba(255,255,255,0.1); }
+        .editable:focus {
+            background: rgba(255,255,255,0.2);
+            outline: none;
+            border-bottom: 1px solid #ff0044;
         }
 
         @media (max-width: 768px) {
@@ -135,20 +151,18 @@
             <h2 style="margin:0; font-weight:900; font-size: 24px;">WIDGET <span style="color:#ff0044">BUILDER</span></h2>
             
             <div class="card-header">Смысл и Данные</div>
-            <div class="input-group"><label>Заголовок (Цель)</label><input v-model="s.goalTitle"></div>
             <div class="row">
-                <div class="input-group"><label>Текущий результат</label><input type="number" v-model="s.current"></div>
-                <div class="input-group"><label>Финальная цель</label><input v-model="s.max"></div>
+                <div class="input-group"><label>Текущий результат (цифрой)</label><input type="number" v-model="s.current"></div>
             </div>
+            <p style="font-size: 10px; color: #888; text-align: center; margin-top: 5px;">* Чтобы изменить текст, просто кликни по нему на виджете справа!</p>
 
-            <div class="card-header">Челлендж: Отжимания</div>
+            <div class="card-header">Челлендж: Доп. панель</div>
             <div class="row" style="align-items: center;">
                 <label style="font-size: 11px; color: #fff;">Показывать плашку?</label>
                 <input type="checkbox" v-model="s.pushupShow">
             </div>
             <div class="row" v-if="s.pushupShow">
-                <div class="input-group"><label>Условие (Текст)</label><input v-model="s.pushupText"></div>
-                <div class="input-group"><label>Сделано (Кол-во)</label><input type="number" v-model="s.pushupCount"></div>
+                <div class="input-group"><label>Размер иконки: {{s.pushupIconSize}}px</label><input type="range" min="10" max="150" step="1" v-model="s.pushupIconSize"></div>
             </div>
 
             <div class="card-header">Визуал и Цвета</div>
@@ -172,11 +186,7 @@
             <div class="input-group"><label>Масштаб в OBS: {{s.scale}}</label><input type="range" min="0.5" max="3" step="0.1" v-model="s.scale"></div>
 
             <div class="card-header">Списки и Топы</div>
-            <div class="input-group"><label>Заголовок списка</label><input v-model="s.topTitle"></div>
             <div class="input-group"><label>Количество строк (до 10)</label><input type="number" min="0" max="10" v-model="s.donorCount"></div>
-            <div v-for="i in parseInt(s.donorCount)" :key="i" class="input-group">
-                <input v-model="s.donors[i-1]" :placeholder="'Участник ' + i">
-            </div>
 
             <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ В OBS</button>
             <button class="btn-copy" @click="copyWidgetLink">СКОПИРОВАТЬ ССЫЛКУ ДЛЯ OBS</button>
@@ -188,19 +198,21 @@
                     
                     <div class="glass-card" :style="cardStyle">
                         <div class="goal-header">
-                            <span :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
-                            <span :style="{fontSize: s.fSum+'px', color: s.cSum, fontWeight: 900}">{{ formattedCurrent }} / {{ s.max }}</span>
+                            <span class="editable" contenteditable="true" spellcheck="false" @blur="s.goalTitle = $event.target.textContent" :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
+                            <span :style="{fontSize: s.fSum+'px', color: s.cSum, fontWeight: 900}">
+                                {{ formattedCurrent }} / <span class="editable" contenteditable="true" spellcheck="false" @blur="s.max = $event.target.textContent">{{ s.max }}</span>
+                            </span>
                         </div>
                         <div class="progress-box" :style="{height: (s.fSum*0.8)+'px', borderRadius: (s.radius/2)+'px'}">
                             <div class="progress-bar" :style="barStyle"></div>
                         </div>
                         
-                        <div v-if="s.topTitle && s.donorCount > 0" class="top-donors-title" :style="topTitleStyle">{{ s.topTitle }}</div>
+                        <div v-if="s.donorCount > 0" class="top-donors-title editable" contenteditable="true" spellcheck="false" @blur="s.topTitle = $event.target.textContent" :style="topTitleStyle">{{ s.topTitle }}</div>
                         <ul class="donor-list" v-if="s.donorCount > 0">
-                            <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" 
+                            <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i"
                                 :class="'rank-' + (i+1)"
                                 :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.7)+'px'}">
-                                <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}{{ d }}</span>
+                                <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}<span class="editable" contenteditable="true" spellcheck="false" @blur="s.donors[i] = $event.target.textContent">{{ s.donors[i] || 'Имя участника...' }}</span></span>
                             </li>
                         </ul>
                     </div>
@@ -208,15 +220,15 @@
                     <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
                         <div class="pushup-row">
                             <div class="pushup-brand">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
-                                <span class="pushup-title">ОТЖИМАНИЯ</span>
+                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
+                                <span class="editable pushup-title" contenteditable="true" spellcheck="false" @blur="s.pushupMainTitle = $event.target.textContent">{{ s.pushupMainTitle }}</span>
                             </div>
-                            <div class="pushup-value" :style="{color: s.cSum}">{{ s.pushupText }}</div>
+                            <div class="editable pushup-value" contenteditable="true" spellcheck="false" @blur="s.pushupText = $event.target.textContent" :style="{color: s.cSum}">{{ s.pushupText }}</div>
                         </div>
                         <div class="pushup-divider"></div>
                         <div class="pushup-row">
-                            <div class="pushup-label">Отжался за сегодня:</div>
-                            <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCount }} Раз(а)</div>
+                            <div class="editable pushup-label" contenteditable="true" spellcheck="false" @blur="s.pushupLabel = $event.target.textContent">{{ s.pushupLabel }}</div>
+                            <div class="editable pushup-total" contenteditable="true" spellcheck="false" @blur="s.pushupCountText = $event.target.textContent" :style="{color: s.cSum}">{{ s.pushupCountText }}</div>
                         </div>
                     </div>
 
@@ -250,15 +262,15 @@
             <div class="pushup-solid-premium" v-if="s.pushupShow" :style="{borderRadius: s.radius + 'px', fontSize: (s.fTitle*0.85)+'px'}">
                 <div class="pushup-row">
                     <div class="pushup-brand">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon">
-                        <span class="pushup-title">ОТЖИМАНИЯ</span>
+                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
+                        <span class="pushup-title">{{ s.pushupMainTitle }}</span>
                     </div>
                     <div class="pushup-value" :style="{color: s.cSum}">{{ s.pushupText }}</div>
                 </div>
                 <div class="pushup-divider"></div>
                 <div class="pushup-row">
-                    <div class="pushup-label">Отжался за сегодня:</div>
-                    <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCount }} Раз(а)</div>
+                    <div class="pushup-label">{{ s.pushupLabel }}</div>
+                    <div class="pushup-total" :style="{color: s.cSum}">{{ s.pushupCountText }}</div>
                 </div>
             </div>
 
@@ -290,16 +302,29 @@ createApp({
             topTitle: 'ТОП УЧАСТНИКОВ', donorCount: 3, donors: ['Player One', 'Cyber Ninja', ''],
             scale: 1.0, width: 600, glass: 0.6, radius: 24, fTitle: 22, fSum: 24,
             c1: '#8a0022', c2: '#ff0044', cSum: '#ffd700', bgHex: '#0f0f0f',
+            
+            // Настройки доп. панели
             pushupShow: true,
+            pushupIconSize: 36,
+            pushupMainTitle: 'ОТЖИМАНИЯ',
             pushupText: '1 раз - 50тг',
-            pushupCount: 0
+            pushupLabel: 'Отжался за сегодня:',
+            pushupCountText: '7 Раз(а)' // Теперь это единое текстовое поле
         });
 
         onMounted(() => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('view') === 'widget') isObs.value = true;
             db.ref('widget_data_v6').on('value', snap => { 
-                if (snap.exists()) s.value = { ...s.value, ...snap.val() }; 
+                if (snap.exists()) {
+                    let data = snap.val();
+                    // Чтобы при загрузке старых данных не было пустых полей
+                    if(!data.pushupMainTitle) data.pushupMainTitle = 'ОТЖИМАНИЯ';
+                    if(!data.pushupLabel) data.pushupLabel = 'Отжался за сегодня:';
+                    if(!data.pushupCountText) data.pushupCountText = (data.pushupCount !== undefined ? data.pushupCount + ' Раз(а)' : '0 Раз(а)');
+                    if(!data.pushupIconSize) data.pushupIconSize = 36;
+                    s.value = { ...s.value, ...data }; 
+                }
             });
         });
 
@@ -326,7 +351,6 @@ createApp({
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
         });
 
-        /* ВОТ ТУТ ИСПРАВИЛ ПРИВЯЗКУ ШИРИНЫ, ТЕПЕРЬ ПОЛЗУНОК РАБОТАЕТ ЖЕЛЕЗОБЕТОННО */
         const layoutStyle = computed(() => ({
             width: s.value.width + 'px',
             maxWidth: '100vw', 
