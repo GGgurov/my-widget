@@ -91,13 +91,26 @@
             gap: 15px;
         }
         
-        /* СТИЛИ ДЛЯ КАРТИНКИ-ГИРИ */
-        .pushup-logo {
-            width: 40px; /* Размер гири */
-            height: 40px;
-            object-fit: contain; /* Чтобы не растягивалась */
-            transform: rotate(-25deg); /* Фирменный наклон */
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); /* Тень для объема */
+        /* СТИЛИ ДЛЯ ВСТАВКИ ИКОНКИ ГИРИ */
+        .pushup-logo-container {
+            width: 38px; /* Чуть уменьшил для баланса */
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Фирменный наклон */
+            transform: rotate(-25deg); 
+            /* Добавляем белое свечение (фулл-белая) */
+            filter: drop-shadow(0 0 2px #fff); 
+            flex-shrink: 0; /* Не даем сжиматься */
+        }
+        
+        .pushup-logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Делаем иконку идеально белой (на всякий случай, если ссылка сменится) */
+            filter: brightness(0) invert(1); 
         }
 
         .pushup-title {
@@ -206,7 +219,9 @@
 
                     <div class="pushup-widget" v-if="s.pushupShow" :style="{fontSize: (s.fTitle*0.85)+'px'}">
                         <div class="pushup-top">
-                            <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" alt="kettlebell" class="pushup-logo">
+                            <div class="pushup-logo-container">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" alt="kettlebell" class="pushup-logo-image">
+                            </div>
                             <span class="pushup-title">ОТЖИМАНИЯ</span>
                             <span class="pushup-cost" :style="{fontSize: '1.2em'}">{{ s.pushupText }}</span>
                         </div>
@@ -242,7 +257,9 @@
 
             <div class="pushup-widget" v-if="s.pushupShow" :style="{fontSize: (s.fTitle*0.85)+'px'}">
                 <div class="pushup-top">
-                    <img src="https://i.imgur.com/G4Y4h4L.png" alt="kettlebell" class="pushup-logo">
+                    <div class="pushup-logo-container">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" alt="kettlebell" class="pushup-logo-image">
+                    </div>
                     <span class="pushup-title">ОТЖИМАНИЯ</span>
                     <span class="pushup-cost" :style="{fontSize: '1.2em'}">{{ s.pushupText }}</span>
                 </div>
