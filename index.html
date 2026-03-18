@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V9.0 - ULTIMATE SANDBOX</title>
+    <title>SUPREME WIDGET V9.1 - MAGNETIC SANDBOX</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -22,7 +22,6 @@
         .admin-panel { display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
         .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         
-        /* Холст для перетаскивания */
         .preview-zone { 
             position: relative; 
             background-image: radial-gradient(#333 1px, transparent 1px); 
@@ -33,15 +32,28 @@
 
         .widget-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: top left; }
         
-        /* Классы для перетаскиваемых объектов */
+        /* ЛИНИЯ МАГНИТА (КАК В PHOTOSHOP) */
+        .snap-guide {
+            position: absolute;
+            top: -2000px; bottom: -2000px;
+            width: 1px;
+            background: #00ffcc;
+            box-shadow: 0 0 10px #00ffcc;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
         .draggable-card {
             position: absolute;
             cursor: grab;
             transition: box-shadow 0.2s;
+            z-index: 10;
         }
         .draggable-card:active {
             cursor: grabbing;
             box-shadow: 0 0 40px rgba(255,0,68,0.3) !important;
+            z-index: 99;
         }
 
         .glass-card { position: relative; width: 100%; }
@@ -82,7 +94,6 @@
         
         .obs-mode-active { background: transparent !important; }
 
-        /* БЛОК ОТЖИМАНИЙ */
         .pushup-solid-premium {
             display: flex;
             flex-direction: column;
@@ -92,18 +103,23 @@
         .pushup-brand { display: flex; align-items: center; gap: 15px; }
         .pushup-icon { filter: brightness(0) invert(1); transform: rotate(-15deg); object-fit: contain; }
         .pushup-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-        .pushup-value { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .pushup-value { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; }
         .pushup-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); width: 100%; }
         .pushup-label { opacity: 0.9; font-size: 0.9em; font-weight: 700; }
-        .pushup-total { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .pushup-total { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; }
 
-        /* СТИЛИ РЕДАКТИРОВАНИЯ */
-        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.3); transition: all 0.2s; padding: 2px 4px; margin: -2px -4px; border-radius: 4px; }
-        .editable:hover { background: rgba(255,255,255,0.1); }
-        .editable:focus { background: rgba(255,255,255,0.2); outline: none; border-bottom: 1px solid #ff0044; }
+        /* ИСПРАВЛЕННЫЕ СТИЛИ РЕДАКТИРОВАНИЯ (ЧТОБЫ НЕ ЛОМАЛИ СЕТКУ) */
+        .editable { 
+            cursor: text; 
+            border-bottom: 1px dashed rgba(255,255,255,0.4); 
+            transition: all 0.2s; 
+            padding-bottom: 2px;
+            display: inline-block;
+        }
+        .editable:hover { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .editable:focus { background: rgba(255,255,255,0.2); outline: none; border-bottom: 1px solid #ff0044; border-radius: 4px; }
         
-        /* В OBS убираем подчеркивание */
-        .obs-mode-active .editable { border: none !important; background: transparent !important; }
+        .obs-mode-active .editable { border: none !important; background: transparent !important; padding-bottom: 0;}
     </style>
 </head>
 <body :class="{'obs-mode-active': isObs}">
@@ -113,7 +129,7 @@
         <div class="sidebar">
             <h2 style="margin:0; font-weight:900; font-size: 24px;">WIDGET <span style="color:#ff0044">BUILDER</span></h2>
             <p style="font-size: 11px; color: #aaa; line-height: 1.4; margin-top: 5px;">
-                🖱️ <b>Тяни мышкой:</b> хватай фон блоков, чтобы их двигать.<br>
+                🧲 <b>Магнит:</b> тащи блок по горизонтали, и он сам прилипнет ровно по центру к другому!<br>
                 ✏️ <b>Текст:</b> кликай по текстам справа, чтобы переписать.
             </p>
             
@@ -176,6 +192,8 @@
         <div class="preview-zone">
             <div class="widget-wrap" :style="scaleStyleAdmin">
                 
+                <div v-if="isSnapped" class="snap-guide" :style="{left: s.mainX + 'px'}"></div>
+
                 <div class="draggable-card" @mousedown="startDrag('main', $event)" :style="mainCardPos">
                     <div class="glass-card" :style="cardStyle">
                         <div class="goal-header">
@@ -280,36 +298,31 @@ const db = firebase.database();
 createApp({
     setup() {
         const isObs = ref(false);
+        const isSnapped = ref(false); // Состояние привязки магнитом
+
         const s = ref({
-            // Основные
             goalTitle: 'СБОР НА ТУРНИР:', current: 2500, max: '10.000',
             topTitle: 'ТОП УЧАСТНИКОВ', donorCount: 3, donors: ['Player One', 'Cyber Ninja', ''],
             scale: 1.0, width: 600, glass: 0.6, radius: 24, fTitle: 22, fSum: 24,
             c1: '#8a0022', c2: '#ff0044', cSum: '#ffd700', bgHex: '#0f0f0f',
             
-            // Координаты и отступы
             mainX: 50, mainY: 50, mainPadding: 30,
             pushupX: 50, pushupY: 450, pushupPadding: 22,
             
-            // Настройки доп. панели
-            pushupShow: true,
-            pushupIconSize: 36,
-            pushupGap: 15,
+            pushupShow: true, pushupIconSize: 36, pushupGap: 15,
             pushupBg1: '#3c1473', pushupBg2: '#240a4a',
-            pushupMainTitle: 'ОТЖИМАНИЯ',
-            pushupText: '1 раз - 50тг',
-            pushupLabel: 'Отжался за сегодня:',
-            pushupCountText: '7 Раз(а)'
+            pushupMainTitle: 'ОТЖИМАНИЯ', pushupText: '1 раз - 50тг',
+            pushupLabel: 'Отжался за сегодня:', pushupCountText: '7 Раз(а)'
         });
 
-        // ЛОГИКА ПЕРЕТАСКИВАНИЯ (DRAG & DROP)
+        // ЛОГИКА ПЕРЕТАСКИВАНИЯ И МАГНИТА
         let activeDrag = null;
         let startX = 0; let startY = 0;
         let initialX = 0; let initialY = 0;
 
         const startDrag = (elem, e) => {
-            if (isObs.value) return; // В OBS не таскаем
-            if (e.target.classList.contains('editable') || e.target.tagName.toLowerCase() === 'input') return; // Не мешаем кликать по тексту
+            if (isObs.value) return; 
+            if (e.target.classList.contains('editable') || e.target.tagName.toLowerCase() === 'input') return; 
             
             activeDrag = elem;
             startX = e.clientX;
@@ -323,15 +336,37 @@ createApp({
 
         const drag = (e) => {
             if (!activeDrag) return;
-            // Учитываем зум (scale) чтобы мышка не "убегала" от блока
             const dx = (e.clientX - startX) / s.value.scale;
             const dy = (e.clientY - startY) / s.value.scale;
-            s.value[activeDrag + 'X'] = initialX + dx;
-            s.value[activeDrag + 'Y'] = initialY + dy;
+            
+            let nx = initialX + dx;
+            let ny = initialY + dy;
+
+            // МАГНИТ (РАДИУС СРАБАТЫВАНИЯ - 20 ПИКСЕЛЕЙ)
+            const snapThreshold = 20;
+            isSnapped.value = false;
+
+            if (s.value.pushupShow) {
+                if (activeDrag === 'main') {
+                    if (Math.abs(nx - s.value.pushupX) < snapThreshold) {
+                        nx = s.value.pushupX; // Прилипаем
+                        isSnapped.value = true;
+                    }
+                } else if (activeDrag === 'pushup') {
+                    if (Math.abs(nx - s.value.mainX) < snapThreshold) {
+                        nx = s.value.mainX; // Прилипаем
+                        isSnapped.value = true;
+                    }
+                }
+            }
+
+            s.value[activeDrag + 'X'] = nx;
+            s.value[activeDrag + 'Y'] = ny;
         };
 
         const stopDrag = () => {
             activeDrag = null;
+            isSnapped.value = false; // Отключаем подсветку линии после отпускания мыши
             document.removeEventListener('mousemove', drag);
             document.removeEventListener('mouseup', stopDrag);
         };
@@ -342,7 +377,6 @@ createApp({
             db.ref('widget_data_v6').on('value', snap => { 
                 if (snap.exists()) {
                     let data = snap.val();
-                    // Защита от старых сохранений, где этих данных еще не было
                     if(data.mainX === undefined) data.mainX = 50;
                     if(data.mainY === undefined) data.mainY = 50;
                     if(data.pushupX === undefined) data.pushupX = 50;
@@ -352,7 +386,6 @@ createApp({
                     if(data.pushupGap === undefined) data.pushupGap = 15;
                     if(!data.pushupBg1) data.pushupBg1 = '#3c1473';
                     if(!data.pushupBg2) data.pushupBg2 = '#240a4a';
-                    
                     s.value = { ...s.value, ...data }; 
                 }
             });
@@ -381,7 +414,6 @@ createApp({
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
         });
 
-        // СТИЛИ ПОЗИЦИЙ
         const mainCardPos = computed(() => ({
             left: s.value.mainX + 'px',
             top: s.value.mainY + 'px',
@@ -407,7 +439,9 @@ createApp({
             gap: s.value.pushupGap + 'px',
             borderRadius: s.value.radius + 'px',
             fontSize: (s.value.fTitle * 0.85) + 'px',
-            background: `linear-gradient(145deg, ${s.value.pushupBg1}, ${s.value.pushupBg2})`
+            background: `linear-gradient(145deg, ${s.value.pushupBg1}, ${s.value.pushupBg2})`,
+            border: `2px solid rgba(255,255,255,0.1)`, /* Вернул строгую рамку */
+            boxShadow: `0 10px 30px rgba(0,0,0,0.8)`
         }));
 
         const barStyle = computed(() => ({
@@ -426,7 +460,7 @@ createApp({
         const scaleStyleOBS = computed(() => ({ transform: `scale(${s.value.scale})`, transformOrigin: 'top left' }));
 
         return { 
-            s, isObs, formattedCurrent, cardStyle, barStyle, pushupStyle, 
+            s, isObs, isSnapped, formattedCurrent, cardStyle, barStyle, pushupStyle, 
             scaleStyleAdmin, scaleStyleOBS, topTitleStyle, mainCardPos, pushupCardPos,
             startDrag, saveToFirebase, copyWidgetLink 
         };
