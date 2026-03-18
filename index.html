@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V6.1 - CONSTRUCTOR EDITION</title>
+    <title>SUPREME WIDGET V6.2 - CONSTRUCTOR EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -74,10 +74,9 @@
 
         /* --- ПЛАШКА ОТЖИМАНИЙ --- */
         .pushup-widget {
-            /* Прозрачный контейнер, убрали рамку и фон */
             display: flex;
             flex-direction: column;
-            gap: 12px; /* Аккуратный отступ между плашками */
+            gap: 12px; 
             width: 100%;
         }
         .pushup-top {
@@ -93,13 +92,13 @@
         }
         
         .pushup-logo-container {
-            width: 38px;
-            height: 38px;
+            width: 65px; /* ВОТ ТУТ УВЕЛИЧЕНО */
+            height: 65px; /* ВОТ ТУТ УВЕЛИЧЕНО */
             display: flex;
             align-items: center;
             justify-content: center;
             transform: rotate(-25deg); 
-            filter: drop-shadow(0 0 2px #fff); 
+            filter: drop-shadow(0 0 4px rgba(255,255,255,0.8)); /* Свечение чуть ярче */
             flex-shrink: 0; 
         }
         
@@ -122,7 +121,7 @@
             background: rgba(92, 54, 166, 0.9);
             padding: 16px 20px;
             display: flex;
-            justify-content: center; /* Центрируем всё содержимое! */
+            justify-content: center; 
             align-items: center;
             gap: 15px;
             font-weight: 400;
@@ -134,7 +133,7 @@
         .pushup-count {
             font-weight: 900;
             font-size: 1.1em;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5); /* Чтобы цифры лучше читались */
+            text-shadow: 0 0 10px rgba(0,0,0,0.5); 
         }
 
         /* --- АДАПТИВ ДЛЯ МОБИЛОК --- */
@@ -343,13 +342,12 @@ createApp({
             return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
         });
 
-        /* --- НОВЫЙ СТИЛЬ ЛЕЙАУТА --- */
         const layoutStyle = computed(() => ({
             width: '100vw',
             maxWidth: s.value.width + 'px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '20px' /* Отступ между стеклом и отжиманиями */
+            gap: '20px'
         }));
 
         const cardStyle = computed(() => ({
