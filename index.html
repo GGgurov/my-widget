@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V10.2 PRO - SOUL EDITION</title>
+    <title>SUPREME WIDGET V10.3 PRO - SOUL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -32,7 +32,6 @@
             overflow: hidden; touch-action: none; 
         }
         
-        /* АДМИН ПАНЕЛЬ - НОВЫЙ ДИЗАЙН */
         .admin-panel { 
             display: grid; 
             grid-template-columns: 420px 1fr; 
@@ -68,7 +67,6 @@
         }
         .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; }
 
-        /* ПЛАВНЫЕ НАПРАВЛЯЮЩИЕ */
         .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 15px #00ffcc; z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
         .guide.active { opacity: 0.8; }
         .guide.v { top: -2000px; bottom: -2000px; width: 1px; }
@@ -102,7 +100,6 @@
         .chal-divider { height: 1px; width: 100%; margin: 8px 0; opacity: 0.15; }
         .chal-label { opacity: 0.8; font-weight: 700; }
 
-        /* ЭЛЕМЕНТЫ ФОРМЫ */
         .card-header { 
             font-size: 11px; color: #888; background: var(--bg-panel); 
             padding: 12px 15px; border-radius: 8px; text-transform: uppercase; 
@@ -124,12 +121,15 @@
         .row > div { flex: 1; }
         
         label { font-size: 10px; color: #aaa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-        input[type="text"], input[type="number"], select { 
+        
+        /* Добавили стили для textarea */
+        input[type="text"], input[type="number"], select, textarea { 
             background: #000; border: 1px solid var(--border-color); color: #fff; 
             padding: 10px 12px; border-radius: 6px; font-family: 'Unbounded'; 
             font-size: 12px; width: 100%; transition: border-color 0.2s;
         }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,68,0.1); }
+        textarea { resize: vertical; min-height: 60px; line-height: 1.4; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,68,0.1); }
         
         .range-wrapper { display: flex; align-items: center; gap: 10px; }
         input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; height: 4px; border-radius: 2px; }
@@ -185,7 +185,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>WIDGET <span>PRO</span></h2>
-                <div class="version-badge">v10.2 SOUL</div>
+                <div class="version-badge">v10.3 SOUL</div>
             </div>
             
             <div class="row">
@@ -201,13 +201,16 @@
                 
                 <div v-if="selectedPanelId === p.id" class="panel-settings">
                     
-                    <!-- Основные настройки -->
                     <template v-if="p.type === 'goal'">
                         <div class="row">
                             <div class="input-group"><label>Текущее</label><input type="number" v-model.number="p.current"></div>
                             <div class="input-group"><label>Цель</label><input type="text" v-model="p.max"></div>
                         </div>
-                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw"></div>
+                        <!-- ИЗМЕНЕНО: Textarea вместо Input для удобного ввода с новых строк -->
+                        <div class="input-group">
+                            <label>Топ донатеров (через запятую или с новой строки)</label>
+                            <textarea v-model="p.donorsRaw" placeholder="Имя 1&#10;Имя 2&#10;Имя 3"></textarea>
+                        </div>
                     </template>
 
                     <template v-if="p.type === 'challenge'">
@@ -232,15 +235,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
-                            <label style="margin:0;">Показать разделитель?</label>
-                            <input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:18px; height:18px; cursor:pointer;">
+                        
+                        <!-- ИЗМЕНЕНО: Добавлена галка для полного скрытия счетчика -->
+                        <div class="row" style="gap: 20px;">
+                            <div class="input-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                                <label style="margin:0;">Разделитель?</label>
+                                <input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:18px; height:18px; cursor:pointer;">
+                            </div>
+                            <div class="input-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                                <label style="margin:0;">Счетчик внизу?</label>
+                                <input type="checkbox" v-model="p.showCount" style="accent-color:var(--primary); width:18px; height:18px; cursor:pointer;">
+                            </div>
                         </div>
                     </template>
 
                     <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
 
-                    <!-- НАСТРОЙКИ ТЕКСТА (НОВОЕ) -->
                     <div style="font-size: 11px; font-weight: 900; color: #fff;">ШРИФТЫ</div>
                     <div class="row">
                         <div class="input-group"><label>Размер Заголовка</label>
@@ -253,7 +263,6 @@
 
                     <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
 
-                    <!-- Размеры -->
                     <div style="font-size: 11px; font-weight: 900; color: #fff;">ГЕОМЕТРИЯ</div>
                     <div class="input-group"><label>Ширина панели</label>
                         <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width || 400}}</span></div>
@@ -269,7 +278,6 @@
 
                     <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
 
-                    <!-- Цвета -->
                     <div style="font-size: 11px; font-weight: 900; color: #fff;">ЦВЕТА И ФОН</div>
                     <div class="row">
                         <div class="input-group"><label>Цвет подложки</label><input type="color" v-model="p.bgColor"></div>
@@ -355,12 +363,15 @@
                 <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.titleSize || 16)*1.2+'px'}">{{ p.value || '1 = 1' }}</div>
             </div>
             
-            <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText || '#fff'}"></div>
-            
-            <div class="chal-row">
-                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: (p.textSize || 14)+'px'}">{{ p.label || 'Всего:' }}</div>
-                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.textSize || 14)*1.2+'px'}">{{ p.count || '0' }}</div>
-            </div>
+            <!-- ИЗМЕНЕНО: Обернули нижнюю часть в v-if, чтобы она полностью скрывалась без поломки верстки -->
+            <template v-if="p.showCount !== false">
+                <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText || '#fff'}"></div>
+                
+                <div class="chal-row">
+                    <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: (p.textSize || 14)+'px'}">{{ p.label || 'Всего:' }}</div>
+                    <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.textSize || 14)*1.2+'px'}">{{ p.count || '0' }}</div>
+                </div>
+            </template>
         </div>
     </div>
 </template>
@@ -402,7 +413,9 @@ const GoalWidget = {
     props: ['p', 'isObs'],
     setup(props) {
         const formattedCurrent = computed(() => (props.p.current || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
-        const donorList = computed(() => props.p.donorsRaw ? props.p.donorsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,5) : []);
+        
+        // ИЗМЕНЕНО: Регулярка теперь режет и по запятым, и по новым строкам (\n)
+        const donorList = computed(() => props.p.donorsRaw ? props.p.donorsRaw.split(/,|\n/).map(s=>s.trim()).filter(Boolean).slice(0,5) : []);
         
         const progressPercent = computed(() => {
             const maxStr = props.p.max ? props.p.max.toString().replace(/[^\d]/g, '') : '0';
@@ -469,7 +482,7 @@ createApp({
             type,
             x: 50, y: 50,
             width: 400, padding: 20, radius: 15,
-            titleSize: 16, textSize: 14, // Новые параметры
+            titleSize: 16, textSize: 14,
             bgColor: '#0f0f0f', bgOpacity: 0.7,
             cText: '#ffffff', cAccent: '#ffd700',
         });
@@ -477,9 +490,10 @@ createApp({
         const addPanel = (type) => {
             let config = createBaseConfig(type);
             if (type === 'goal') {
-                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Донатер, Привет, Supreme', cBar1: '#8a0022', cBar2: '#ff0044' });
+                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Донатер\nПривет\nSupreme', cBar1: '#8a0022', cBar2: '#ff0044' });
             } else {
-                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 35, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true });
+                // ИЗМЕНЕНО: добавлено свойство showCount: true по умолчанию
+                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 35, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true, showCount: true });
             }
             panels.value.push(config);
             selectedPanelId.value = config.id;
@@ -498,12 +512,14 @@ createApp({
             if (p.type === 'goal') {
                 h += (p.titleSize || 16) + 12;
                 h += (p.padding || 20) * 0.7;
-                const donors = p.donorsRaw ? p.donorsRaw.split(',').filter(Boolean).length : 0;
+                const donors = p.donorsRaw ? p.donorsRaw.split(/,|\n/).filter(Boolean).length : 0;
                 if (donors) h += 15 + (Math.min(donors, 5) * ((p.textSize || 14) + 20));
             } else {
                 h += Math.max((p.titleSize || 16), (p.iconSize || 35));
-                if(p.showDivider) h += 17;
-                h += (p.textSize || 14);
+                if(p.showCount !== false) {
+                    if(p.showDivider) h += 17;
+                    h += (p.textSize || 14);
+                }
             }
             return h;
         };
@@ -513,7 +529,7 @@ createApp({
 
         const startDrag = (e, panel) => {
             if (isObs.value) return;
-            if (e.target.classList.contains('editable') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+            if (e.target.classList.contains('editable') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.tagName === 'TEXTAREA') return;
             
             selectedPanelId.value = panel.id;
             const event = e.touches ? e.touches[0] : e;
@@ -554,9 +570,7 @@ createApp({
             let bestSnapX = null, bestSnapY = null;
             let minDiffX = SNAP_TOLERANCE, minDiffY = SNAP_TOLERANCE;
 
-            // УМНАЯ ЛОГИКА МАГНИТОВ
             for (const other of dragInfo.otherPanels) {
-                // X Axis
                 let diffsX = [
                     { val: other.x, snap: other.x },
                     { val: other.x + other.width - curW, snap: targetX + curW },
@@ -570,7 +584,6 @@ createApp({
                     if (diff < minDiffX) { minDiffX = diff; targetX = d.val; bestSnapX = d.snap; }
                 });
 
-                // Y Axis
                 let diffsY = [
                     { val: other.y, snap: other.y },
                     { val: other.y + other.h - curH, snap: targetY + curH },
@@ -633,7 +646,6 @@ createApp({
             width: '100vw', height: '100vh', overflow: 'hidden'
         }));
 
-        // ЗАГЛУШКИ ДЛЯ СОХРАНЕНИЯ (Т.к. конец скрипта был обрезан)
         const saveData = () => {
             db.ref(DB_PATH).set({
                 panels: JSON.parse(JSON.stringify(panels.value)),
@@ -653,14 +665,13 @@ createApp({
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('obs') === '1') isObs.value = true;
             
-            // Загрузка данных из Firebase
             db.ref(DB_PATH).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     if (data.panels) panels.value = data.panels;
                     if (data.globalScale) globalScale.value = data.globalScale;
                 } else if (!isObs.value) {
-                    addPanel('goal'); // Если пусто - создаем дефолтную цель
+                    addPanel('goal');
                 }
             });
         });
