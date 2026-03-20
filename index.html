@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V10 PRO - MULTI-SANDBOX</title>
+    <title>SUPREME WIDGET V10.1 PRO - BUGFIX</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -19,33 +19,26 @@
 
         body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; touch-action: none; }
         
-        /* ADMIN LAYOUT */
         .admin-panel { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
         
-        /* SIDEBAR */
         .sidebar { background: #111; border-right: 1px solid #222; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 20px; }
         .sidebar-header span { color: var(--primary); }
         
-        /* PREVIEW ZONE */
         .preview-zone { position: relative; background-color: #151515; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; }
 
-        /* GUIDES */
         .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 10px #00ffcc; z-index: 100; pointer-events: none; opacity: 0.8; display: none; }
         .guide.v { top: -2000px; bottom: -2000px; width: 1px; }
         .guide.h { left: -2000px; right: -2000px; height: 1px; }
 
-        /* DRAGGABLE CARD CORE */
         .draggable-card { position: absolute; cursor: grab; transition: box-shadow 0.2s, transform 0.1s; z-index: 10; user-select: none; touch-action: none; transform-origin: top left; }
         .draggable-card:active { cursor: grabbing; box-shadow: 0 0 40px rgba(255,0,68,0.2) !important; z-index: 99; transform: scale(1.01); }
         .draggable-card.selected { border: 2px solid #00ffcc !important; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
 
-        /* GLASS STYLE (GENERAL) */
         .glass-panel { position: relative; width: 100%; height: 100%; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
 
-        /* TYPE: GOAL */
         .goal-content { display: flex; flex-direction: column; width: 100%; height: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; gap: 5px; }
         .progress-box { width: 100%; background: rgba(0,0,0,0.5); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
@@ -53,28 +46,22 @@
         .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite linear; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        /* TYPE: DONORS */
         .donor-list { list-style: none; padding: 0; margin: 15px 0 0 0; display: flex; flex-direction: column; gap: 8px; }
         .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
         .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.02)) !important; border-color: rgba(255,215,0,0.3) !important; color: var(--gold) !important; font-weight: 900; }
         .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.08), rgba(224,224,224,0.01)) !important; border-color: rgba(224,224,224,0.2) !important; color: var(--silver) !important; }
         .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.06), rgba(205,127,50,0.01)) !important; border-color: rgba(205,127,50,0.2) !important; color: var(--bronze) !important; }
 
-        /* TYPE: CHALLENGE (DUMBBELL) */
         .chal-content { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: center; }
         .chal-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .chal-brand { display: flex; align-items: center; }
-        
-        /* FIX: Иконка красится CSS маской, размер независим */
-        .chal-icon-mask { background-color: #fff; /* Цвет задается инлайново в Vue */ -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
-        
+        .chal-icon-mask { background-color: #fff; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
         .chal-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .chal-value { font-weight: 900; text-align: right; }
         .chal-divider { height: 1px; width: 100%; margin: 8px 0; opacity: 0.1; }
         .chal-label { opacity: 0.8; font-weight: 700; }
         .chal-total { font-weight: 900; text-align: right; }
 
-        /* UI ELEMENTS */
         .card-header { font-size: 10px; color: #888; background: #1a1a1a; padding: 6px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; font-weight: 700; border-left: 2px solid #333; display: flex; justify-content: space-between; align-items: center;}
         .card-header.active-panel { border-left-color: var(--primary); color: #fff; }
         .input-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
@@ -93,18 +80,13 @@
         .color-item { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; min-width: 60px;}
         input[type="color"] { width: 100%; height: 30px; border: 1px solid #222; border-radius: 4px; cursor: pointer; background: transparent; padding: 0; }
 
-        /* BUTTONS */
         .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        
         .btn-add { background: #222; color: #fff; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; border: 1px solid #333; }
         .btn-add:hover { background: #282828; border-color: #444; }
-        
         .btn-save { background: linear-gradient(135deg, #ff0044, #cc0036); color: #fff; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 13px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
         .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,0,68,0.4); }
-        
         .btn-copy { background: #1a1a1a; color: #aaa; padding: 10px; border-radius: 6px; font-size: 10px; width: 100%; margin-top: 10px; border: 1px solid #222; }
         .btn-copy:hover { background: #222; color: #fff; }
-        
         .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 4px 8px; border-radius: 4px; font-size: 8px; border: 1px solid rgba(255,0,0,0.2); }
         .btn-danger:hover { background: rgba(255,0,0,0.2); }
 
@@ -112,17 +94,14 @@
         .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
         .btn-file { background: #1a1a1a; border: 1px solid #222; color: #ccc; padding: 8px; border-radius: 4px; font-size: 10px; width: 100%; text-align: center; }
 
-        /* EDITABLE TEXT IN PREVIEW */
         .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.2); display: inline-block; transition: background 0.2s; }
         .editable:hover { background: rgba(255,255,255,0.05); }
         .editable:focus { background: rgba(255,255,255,0.1); outline: none; border-bottom-color: var(--primary); }
 
-        /* OBS MODE */
         .obs-mode .admin-panel { display: none; }
         .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; }
         .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; }
 
-        /* RESPONSIVE ADMIN */
         @media (max-width: 900px) {
             .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; position: relative; overflow-y: auto; }
             .sidebar { border-right: none; border-top: 1px solid #222; order: 2; height: auto; overflow-y: visible; }
@@ -144,7 +123,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>WIDGET <span>PRO</span></h2>
-                <div style="font-size: 10px; color: #555;">v10.0</div>
+                <div style="font-size: 10px; color: #555;">v10.1 FIX</div>
             </div>
             
             <div class="row">
@@ -177,16 +156,16 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-group"><label>Размер лого: {{p.iconSize}}px</label>
+                            <div class="input-group"><label>Размер лого: {{p.iconSize || 35}}px</label>
                                 <div class="range-wrapper">
                                     <input type="range" min="10" max="150" v-model.number="p.iconSize">
-                                    <span class="range-val">{{p.iconSize}}</span>
+                                    <span class="range-val">{{p.iconSize || 35}}</span>
                                 </div>
                             </div>
-                            <div class="input-group"><label>Отступ лого: {{p.iconGap}}px</label>
+                            <div class="input-group"><label>Отступ лого: {{p.iconGap || 15}}px</label>
                                 <div class="range-wrapper">
                                     <input type="range" min="0" max="50" v-model.number="p.iconGap">
-                                    <span class="range-val">{{p.iconGap}}</span>
+                                    <span class="range-val">{{p.iconGap || 15}}</span>
                                 </div>
                             </div>
                         </div>
@@ -194,36 +173,34 @@
                     </template>
 
                     <div class="card-header">Размеры и Скругление</div>
-                    <div class="input-group"><label>Ширина: {{p.width}}px</label>
-                        <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width}}</span></div>
+                    <div class="input-group"><label>Ширина: {{p.width || 400}}px</label>
+                        <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width || 400}}</span></div>
                     </div>
                     <div class="row">
-                        <div class="input-group"><label>Padding: {{p.padding}}px</label>
-                            <div class="range-wrapper"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="range-val">{{p.padding}}</span></div>
+                        <div class="input-group"><label>Padding: {{p.padding || 20}}px</label>
+                            <div class="range-wrapper"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="range-val">{{p.padding || 20}}</span></div>
                         </div>
-                        <div class="input-group"><label>Радиус: {{p.radius}}px</label>
-                            <div class="range-wrapper"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="range-val">{{p.radius}}</span></div>
+                        <div class="input-group"><label>Радиус: {{p.radius || 15}}px</label>
+                            <div class="range-wrapper"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="range-val">{{p.radius || 15}}</span></div>
                         </div>
                     </div>
 
                     <div class="card-header">Фон (Стекло)</div>
                     <div class="row">
                         <div class="input-group"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
-                        <div class="input-group"><label>Прозрачность: {{p.bgOpacity}}</label>
-                            <div class="range-wrapper"><input type="range" min="0" max="1" step="0.01" v-model.number="p.bgOpacity"><span class="range-val">{{p.bgOpacity}}</span></div>
+                        <div class="input-group"><label>Прозрачность: {{p.bgOpacity !== undefined ? p.bgOpacity : 0.7}}</label>
+                            <div class="range-wrapper"><input type="range" min="0" max="1" step="0.01" v-model.number="p.bgOpacity"><span class="range-val">{{p.bgOpacity !== undefined ? p.bgOpacity : 0.7}}</span></div>
                         </div>
                     </div>
 
                     <div class="card-header">Цвета Текста и Акцентов</div>
                     <div class="color-picker-group">
                         <div class="color-item"><label>Текст</label><input type="color" v-model="p.cText"></div>
-                        
                         <template v-if="p.type === 'goal'">
                             <div class="color-item"><label>Бар 1</label><input type="color" v-model="p.cBar1"></div>
                             <div class="color-item"><label>Бар 2</label><input type="color" v-model="p.cBar2"></div>
                             <div class="color-item"><label>Сумма</label><input type="color" v-model="p.cAccent"></div>
                         </template>
-                        
                         <template v-if="p.type === 'challenge'">
                             <div class="color-item"><label>Иконка</label><input type="color" v-model="p.cIcon"></div>
                             <div class="color-item"><label>Цифры</label><input type="color" v-model="p.cAccent"></div>
@@ -231,14 +208,15 @@
                     </div>
 
                 </div>
-            </div> <div class="card-header" style="margin-top:20px;">Глобальные настройки OBS</div>
-            <div class="input-group"><label>Масштаб сцены: {{globalScale}}</label>
-                <div class="range-wrapper"><input type="range" min="0.5" max="2" step="0.01" v-model.number="globalScale"><span class="range-val">{{globalScale}}</span></div>
+            </div>
+
+            <div class="card-header" style="margin-top:20px;">Глобальные настройки OBS</div>
+            <div class="input-group"><label>Масштаб сцены: {{globalScale || 1}}</label>
+                <div class="range-wrapper"><input type="range" min="0.5" max="2" step="0.01" v-model.number="globalScale"><span class="range-val">{{globalScale || 1}}</span></div>
             </div>
 
             <button class="btn btn-save" @click="saveData">ОПУБЛИКОВАТЬ</button>
             <button class="btn btn-copy" @click="copyLink">Скопировать ссылку для OBS</button>
-            <div style="font-size: 9px; color: #444; text-align: center; margin-top: 5px;">Двигай плашки справа. Магнит работает автоматически.</div>
         </div>
 
         <div class="preview-zone">
@@ -246,14 +224,13 @@
             <div class="guide h" ref="guideH"></div>
 
             <div class="widget-scene" :style="sceneStyleAdmin">
-                <div v-for="p in panels" :key="p.id" 
-                     class="draggable-card" 
+                <div v-for="p in panels" :key="p.id" 
+                     class="draggable-card" 
                      :class="{'selected': selectedPanelId === p.id}"
                      :style="getCardPos(p)"
                      @mousedown="startDrag($event, p)"
                      @touchstart.passive="startDrag($event, p)"
                      @click="selectedPanelId = p.id">
-                    
                     <component :is="getComponent(p.type)" :p="p" :is-obs="false"></component>
                 </div>
             </div>
@@ -264,18 +241,18 @@
 <template id="tmpl-goal">
     <div class="glass-panel" :style="panelStyle">
         <div class="goal-content">
-            <div class="goal-header" :style="{color: p.cText}">
-                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: p.padding*0.8+'px', fontWeight: 700}">{{ p.title }}</span>
-                <span :style="{fontSize: p.padding*0.9+'px', fontWeight: 900, color: p.cAccent}">
-                    {{ formattedCurrent }} / <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'max')">{{ p.max }}</span>
+            <div class="goal-header" :style="{color: p.cText || '#fff'}">
+                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: (p.padding || 20)*0.8+'px', fontWeight: 700}">{{ p.title || 'ЦЕЛЬ' }}</span>
+                <span :style="{fontSize: (p.padding || 20)*0.9+'px', fontWeight: 900, color: p.cAccent || '#ffd700'}">
+                    {{ formattedCurrent }} / <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'max')">{{ p.max || '1000' }}</span>
                 </span>
             </div>
-            <div class="progress-box" :style="{height: p.padding*0.7+'px', borderRadius: p.radius/2+'px'}">
+            <div class="progress-box" :style="{height: (p.padding || 20)*0.7+'px', borderRadius: (p.radius || 15)/2+'px'}">
                 <div class="progress-bar" :style="barStyle"></div>
             </div>
             
-            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: p.padding*0.65+'px', color: p.cText}">
-                <li v-for="(name, i) in donorList" :key="i" class="donor-item" :class="'rank-'+(i+1)" :style="{borderRadius: p.radius/3+'px'}">
+            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: (p.padding || 20)*0.65+'px', color: p.cText || '#fff'}">
+                <li v-for="(name, i) in donorList" :key="i" class="donor-item" :class="'rank-'+(i+1)" :style="{borderRadius: (p.radius || 15)/3+'px'}">
                     <span>{{ i==0?'👑 ':i==1?'🥈 ':i==2?'🥉 ':(i+1)+'. ' }}{{ name }}</span>
                 </li>
             </ul>
@@ -285,29 +262,28 @@
 
 <template id="tmpl-challenge">
     <div class="glass-panel" :style="panelStyle">
-        <div class="chal-content" :style="{gap: p.iconGap/2 + 'px'}">
+        <div class="chal-content" :style="{gap: (p.iconGap || 15)/2 + 'px'}">
             <div class="chal-row">
-                <div class="chal-brand" :style="{gap: p.iconGap + 'px'}">
+                <div class="chal-brand" :style="{gap: (p.iconGap || 15) + 'px'}">
                     <div class="chal-icon-mask" :style="iconMaskStyle"></div>
-                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText, fontSize: p.padding*0.8+'px'}">{{ p.title }}</div>
+                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText || '#fff', fontSize: (p.padding || 20)*0.8+'px'}">{{ p.title || 'ЧЕЛЛЕНДЖ' }}</div>
                 </div>
-                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent, fontSize: p.padding+'px'}">{{ p.value }}</div>
+                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.padding || 20)+'px'}">{{ p.value || '1 = 1' }}</div>
             </div>
             
-            <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText}"></div>
+            <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText || '#fff'}"></div>
             
             <div class="chal-row">
-                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText, fontSize: p.padding*0.65+'px'}">{{ p.label }}</div>
-                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent, fontSize: p.padding*0.9+'px'}">{{ p.count }}</div>
+                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: (p.padding || 20)*0.65+'px'}">{{ p.label || 'Всего:' }}</div>
+                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.padding || 20)*0.9+'px'}">{{ p.count || '0' }}</div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-const { createApp, ref, computed, onMounted, onBeforeUnmount, watch } = Vue;
+const { createApp, ref, computed, onMounted } = Vue;
 
-// Firebase Config - ОСТАВИЛ ТВОЙ
 const firebaseConfig = {
     apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
     authDomain: "tt-widget-88711.firebaseapp.com",
@@ -319,20 +295,23 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const DB_PATH = 'widget_data_v10'; // НОВАЯ ВЕРСИЯ ДАННЫХ ДЛЯ ПОДДЕРЖКИ МНОЖЕСТВА ПЛАШЕК
+const DB_PATH = 'widget_data_v10'; 
 
-// Дефолтная иконка гантели (которую ты прислал, переведенная в Base64 для надежности, если ссылка умрет)
 const DUMBBELL_ICON = 'https://cdn-icons-png.flaticon.com/512/38/38464.png';
 
-// Хелпер для HEX -> RGBA
+// ЗАЩИТА: Если цвет пустой или поврежденный, вернем прозрачный черный, чтобы не сломать код
 const hexToRgba = (hex, opacity) => {
-    let c = hex.substring(1).split('');
-    if (c.length === 3) c = [c[0], c[0], c[1], c[1], c[2], c[2]];
-    c = '0x' + c.join('');
-    return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255}, ${opacity})`;
+    if (!hex || typeof hex !== 'string') return `rgba(15,15,15,${opacity !== undefined ? opacity : 0.7})`;
+    try {
+        let c = hex.substring(1).split('');
+        if (c.length === 3) c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+        c = '0x' + c.join('');
+        return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255}, ${opacity !== undefined ? opacity : 0.7})`;
+    } catch(e) {
+        return `rgba(15,15,15,0.7)`;
+    }
 };
 
-// --- КОМПОНЕНТ: ЦЕЛЬ ---
 const GoalWidget = {
     template: '#tmpl-goal',
     props: ['p', 'isObs'],
@@ -341,21 +320,22 @@ const GoalWidget = {
         const donorList = computed(() => props.p.donorsRaw ? props.p.donorsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,5) : []);
         
         const progressPercent = computed(() => {
-            const m = parseFloat(props.p.max.toString().replace(/[^\d]/g, ''));
-            return m > 0 ? Math.min((props.p.current / m) * 100, 100) : 0;
+            const maxStr = props.p.max ? props.p.max.toString().replace(/[^\d]/g, '') : '0';
+            const m = parseFloat(maxStr);
+            return m > 0 ? Math.min(((props.p.current || 0) / m) * 100, 100) : 0;
         });
 
         const panelStyle = computed(() => ({
-            padding: props.p.padding + 'px',
-            borderRadius: props.p.radius + 'px',
+            padding: (props.p.padding || 20) + 'px',
+            borderRadius: (props.p.radius || 15) + 'px',
             background: hexToRgba(props.p.bgColor, props.p.bgOpacity),
         }));
 
         const barStyle = computed(() => ({
             width: progressPercent.value + '%',
-            background: `linear-gradient(90deg, ${props.p.cBar1}, ${props.p.cBar2})`,
-            boxShadow: `0 0 15px ${props.p.cBar2}88`,
-            borderRadius: (props.p.radius/2)+'px'
+            background: `linear-gradient(90deg, ${props.p.cBar1 || '#8a0022'}, ${props.p.cBar2 || '#ff0044'})`,
+            boxShadow: `0 0 15px ${props.p.cBar2 || '#ff0044'}88`,
+            borderRadius: ((props.p.radius || 15)/2)+'px'
         }));
 
         const updateText = (e, p, field) => { if(!props.isObs) p[field] = e.target.textContent; };
@@ -364,22 +344,20 @@ const GoalWidget = {
     }
 };
 
-// --- КОМПОНЕНТ: ЧЕЛЛЕНДЖ ---
 const ChallengeWidget = {
     template: '#tmpl-challenge',
     props: ['p', 'isObs'],
     setup(props) {
         const panelStyle = computed(() => ({
-            padding: props.p.padding + 'px',
-            borderRadius: props.p.radius + 'px',
+            padding: (props.p.padding || 20) + 'px',
+            borderRadius: (props.p.radius || 15) + 'px',
             background: hexToRgba(props.p.bgColor, props.p.bgOpacity),
         }));
 
-        // СТИЛЬ ДЛЯ ОКРАШИВАНИЯ ИКОНКИ
         const iconMaskStyle = computed(() => ({
-            width: props.p.iconSize + 'px',
-            height: props.p.iconSize + 'px',
-            backgroundColor: props.p.cIcon, // ЭТО КРАСИТ ИКОНКУ
+            width: (props.p.iconSize || 35) + 'px',
+            height: (props.p.iconSize || 35) + 'px',
+            backgroundColor: props.p.cIcon || '#ffffff',
             '-webkit-mask-image': `url(${props.p.iconUrl || DUMBBELL_ICON})`,
             'mask-image': `url(${props.p.iconUrl || DUMBBELL_ICON})`
         }));
@@ -390,7 +368,6 @@ const ChallengeWidget = {
     }
 };
 
-// --- ГЛАВНОЕ ПРИЛОЖЕНИЕ ---
 createApp({
     components: { GoalWidget, ChallengeWidget },
     setup() {
@@ -402,9 +379,8 @@ createApp({
         const guideV = ref(null);
         const guideH = ref(null);
 
-        // Фабрики дефолтных настроек
         const createBaseConfig = (type) => ({
-            id: Date.now(),
+            id: Date.now() + Math.floor(Math.random()*1000),
             type,
             x: 50, y: 50,
             width: 400, padding: 20, radius: 15,
@@ -430,27 +406,25 @@ createApp({
 
         const getComponent = (type) => type === 'goal' ? 'GoalWidget' : 'ChallengeWidget';
 
-        // КОРРЕКТНЫЙ РАСЧЕТ ВЫСОТЫ ПЛАШКИ (приблизительный, т.к. текст может переноситься)
-        // Нужен для работы магнита по нижнему краю.
         const estimateHeight = (p) => {
-            let h = p.padding * 2;
+            if (!p) return 100;
+            let h = (p.padding || 20) * 2;
             if (p.type === 'goal') {
-                h += p.padding * 0.9 + 12; // header
-                h += p.padding * 0.7; // bar
+                h += (p.padding || 20) * 0.9 + 12;
+                h += (p.padding || 20) * 0.7;
                 const donors = p.donorsRaw ? p.donorsRaw.split(',').filter(Boolean).length : 0;
-                if (donors) h += 15 + (Math.min(donors, 5) * (p.padding * 0.65 + 20 + 8));
+                if (donors) h += 15 + (Math.min(donors, 5) * ((p.padding || 20) * 0.65 + 20 + 8));
             } else {
-                h += p.padding; // row1 value height
+                h += (p.padding || 20);
                 if(p.showDivider) h += 17;
-                h += p.padding * 0.9; // row2 count height
-                if(p.iconSize > h - p.padding*2) h = p.iconSize + p.padding*2; // Если иконка огромная
+                h += (p.padding || 20) * 0.9;
+                if((p.iconSize || 35) > h - (p.padding || 20)*2) h = (p.iconSize || 35) + (p.padding || 20)*2;
             }
             return h;
         };
 
-        // ДРАГ & ЭДВАНСЕД МАГНИТ
         let dragInfo = null;
-        const SNAP_TOLERANCE = 15; // Пиксели чувствительности магнита
+        const SNAP_TOLERANCE = 15; 
 
         const startDrag = (e, panel) => {
             if (isObs.value) return;
@@ -463,13 +437,13 @@ createApp({
                 panel,
                 startX: event.clientX,
                 startY: event.clientY,
-                initialX: panel.x,
-                initialY: panel.y,
+                initialX: panel.x || 0,
+                initialY: panel.y || 0,
                 otherPanels: panels.value.filter(p => p.id !== panel.id).map(p => ({
                     ...p,
-                    h: estimateHeight(p), // Предрассчитанная высота
-                    cx: p.x + p.width / 2, // Центр X
-                    cy: p.y + estimateHeight(p) / 2 // Центр Y
+                    h: estimateHeight(p),
+                    cx: (p.x || 0) + (p.width || 400) / 2,
+                    cy: (p.y || 0) + estimateHeight(p) / 2
                 }))
             };
 
@@ -483,46 +457,32 @@ createApp({
             if(e.cancelable && e.touches) e.preventDefault(); 
             
             const event = e.touches ? e.touches[0] : e;
-            const mouseDx = (event.clientX - dragInfo.startX) / globalScale.value;
-            const mouseDy = (event.clientY - dragInfo.startY) / globalScale.value;
+            const mouseDx = (event.clientX - dragInfo.startX) / (globalScale.value || 1);
+            const mouseDy = (event.clientY - dragInfo.startY) / (globalScale.value || 1);
             
             let newX = dragInfo.initialX + mouseDx;
             let newY = dragInfo.initialY + mouseDy;
             
-            const curW = dragInfo.panel.width;
+            const curW = dragInfo.panel.width || 400;
             const curH = estimateHeight(dragInfo.panel);
             
             let snapX = null, snapY = null;
             let showV = false, showH = false;
 
-            // Логика МАГНИТА (Перебор осей других плашек)
             for (const other of dragInfo.otherPanels) {
-                // --- ГОР ПРИВЯЗКИ (X) ---
-                // Лево-Лево
                 if (Math.abs(newX - other.x) < SNAP_TOLERANCE) { newX = other.x; snapX = newX; showV = true; }
-                // Право-Право
                 else if (Math.abs((newX + curW) - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width - curW; snapX = newX + curW; showV = true; }
-                // Центр-Центр
                 else if (Math.abs((newX + curW/2) - other.cx) < SNAP_TOLERANCE) { newX = other.cx - curW/2; snapX = other.cx; showV = true; }
-                // Право-Лево (прилипание сбоку)
                 else if (Math.abs((newX + curW) - other.x) < SNAP_TOLERANCE) { newX = other.x - curW; snapX = other.x; showV = true; }
-                // Лево-Право (прилипание сбоку)
                 else if (Math.abs(newX - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width; snapX = newX; showV = true; }
 
-                // --- ВЕРТ ПРИВЯЗКИ (Y) ---
-                // Топ-Топ
                 if (Math.abs(newY - other.y) < SNAP_TOLERANCE) { newY = other.y; snapY = newY; showH = true; }
-                // Бот-Бот
                 else if (Math.abs((newY + curH) - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h - curH; snapY = newY + curH; showH = true; }
-                // Центр-Центр
                 else if (Math.abs((newY + curH/2) - other.cy) < SNAP_TOLERANCE) { newY = other.cy - curH/2; snapY = other.cy; showH = true; }
-                // Бот-Топ (прилипание снизу/сверху)
                 else if (Math.abs((newY + curH) - other.y) < SNAP_TOLERANCE) { newY = other.y - curH; snapY = other.y; showH = true; }
-                // Топ-Бот (прилипание снизу/сверху)
                 else if (Math.abs(newY - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h; snapY = newY; showH = true; }
             }
 
-            // Управление линиями гидов
             if (showV && guideV.value) { guideV.value.style.display = 'block'; guideV.value.style.left = snapX + 'px'; }
             else if(guideV.value) guideV.value.style.display = 'none';
             
@@ -543,48 +503,28 @@ createApp({
             document.removeEventListener('touchend', stopDrag);
         };
 
-        // Загрузка кастомной иконки
         const uploadIcon = (e, panel) => {
             const file = e.target.files[0];
             if (!file) return;
             if (file.size > 500 * 1024) { alert("Файл слишком большой! Максимум 500Кб."); return; }
             
             const reader = new FileReader();
-            reader.onload = (event) => { panel.iconUrl = event.target.result; }; // Сохраняем как Base64
+            reader.onload = (event) => { panel.iconUrl = event.target.result; }; 
             reader.readAsDataURL(file);
         };
 
-        // Стили координат и масштаба
-        const getCardPos = (p) => ({ left: p.x + 'px', top: p.y + 'px', width: p.width + 'px' });
-        const sceneStyleAdmin = computed(() => ({ transform: `scale(${globalScale.value})` })); // В админке скейлим саму сцену
-        const sceneStyle = computed(() => ({ transform: `scale(${globalScale.value})`, transformOrigin: 'top left' })); // В OBS от угла
+        const getCardPos = (p) => ({ left: (p.x || 0) + 'px', top: (p.y || 0) + 'px', width: (p.width || 400) + 'px' });
+        const sceneStyleAdmin = computed(() => ({ transform: `scale(${globalScale.value || 1})` })); 
+        const sceneStyle = computed(() => ({ transform: `scale(${globalScale.value || 1})`, transformOrigin: 'top left' })); 
 
-        // Firebase Взаимодействие
         const saveData = () => {
-            // Очищаем proxy объекты перед сохранением
             const dataToSave = JSON.parse(JSON.stringify({
-                scale: globalScale.value,
-                panels: panels.value
+                scale: globalScale.value || 1.0,
+                panels: panels.value || []
             }));
             db.ref(DB_PATH).set(dataToSave)
                 .then(() => alert("Опубликовано! Обновите источник в OBS."))
                 .catch(err => alert("Ошибка Firebase: " + err.message));
-        };
-
-        const loadData = () => {
-            db.ref(DB_PATH).once('value', snap => {
-                if (snap.exists()) {
-                    const data = snap.val();
-                    globalScale.value = data.scale || 1.0;
-                    panels.value = data.panels || [];
-                    if (panels.value.length) selectedPanelId.value = panels.value[0].id;
-                } else {
-                    // Если данных нет, создаем дефолтную пару
-                    addPanel('goal');
-                    addPanel('challenge');
-                    panels.value[1].y = 200; // Сдвинем вторую вниз
-                }
-            });
         };
 
         const copyLink = () => {
@@ -592,16 +532,29 @@ createApp({
             navigator.clipboard.writeText(url).then(() => alert("Ссылка скопирована. Добавьте её в OBS как 'Браузер'."));
         };
 
+        // ИСПРАВЛЕННАЯ СИНХРОНИЗАЦИЯ С FIREBASE
         onMounted(() => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('view') === 'widget') isObs.value = true;
-            loadData();
-            // Слушаем изменения в реальном времени для OBS
-            if(isObs.value) db.ref(DB_PATH).on('value', snap => {
-                if(snap.exists()){
+            
+            db.ref(DB_PATH).on('value', snap => {
+                if (snap.exists()) {
                     const data = snap.val();
-                    globalScale.value = data.scale;
-                    panels.value = data.panels;
+                    globalScale.value = data.scale || 1.0;
+                    // Если panels в базе нет, подставляем пустой массив, чтобы не сломать v-for
+                    panels.value = data.panels || [];
+                    
+                    // Выбираем первую плашку для админки, если ничего не выбрано
+                    if (!isObs.value && !selectedPanelId.value && panels.value.length > 0) {
+                        selectedPanelId.value = panels.value[0].id;
+                    }
+                } else {
+                    // Если данных в базе ВООБЩЕ нет (первый запуск)
+                    if (!isObs.value && panels.value.length === 0) {
+                        addPanel('goal');
+                        addPanel('challenge');
+                        if (panels.value[1]) panels.value[1].y = 200;
+                    }
                 }
             });
         });
