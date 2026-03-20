@@ -3,110 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V10.1 PRO - BUGFIX</title>
+    <title>SUPREME WIDGET V10.2 PRO - SOUL EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        :root { --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; --primary: #ff0044; }
+        :root { 
+            --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; 
+            --primary: #ff0044; --primary-hover: #ff3366;
+            --bg-dark: #0a0a0a; --bg-panel: #111111;
+        }
         * { box-sizing: border-box; outline: none; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; touch-action: none; }
+        body { 
+            margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; 
+            background: transparent; color: #fff; overflow: hidden; touch-action: none; 
+        }
         
-        .admin-panel { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
+        /* Сетка админ-панели */
+        .admin-panel { 
+            display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; 
+            background: var(--bg-dark); position: fixed; inset: 0; z-index: 9999; 
+        }
         
-        .sidebar { background: #111; border-right: 1px solid #222; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 20px; }
+        /* Боковая панель (Sidebar) */
+        .sidebar { 
+            background: var(--bg-panel); border-right: 1px solid rgba(255,255,255,0.05); 
+            padding: 25px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; 
+            box-shadow: 5px 0 20px rgba(0,0,0,0.5); z-index: 20;
+        }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 22px; letter-spacing: -0.5px; }
         .sidebar-header span { color: var(--primary); }
         
-        .preview-zone { position: relative; background-color: #151515; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
-        .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; }
+        /* Зона превью */
+        .preview-zone { 
+            position: relative; background-color: #151515; 
+            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); 
+            background-size: 30px 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; 
+        }
+        .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 10px #00ffcc; z-index: 100; pointer-events: none; opacity: 0.8; display: none; }
+        /* Направляющие (Магниты) */
+        .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 8px #00ffcc; z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.15s ease; }
         .guide.v { top: -2000px; bottom: -2000px; width: 1px; }
         .guide.h { left: -2000px; right: -2000px; height: 1px; }
 
-        .draggable-card { position: absolute; cursor: grab; transition: box-shadow 0.2s, transform 0.1s; z-index: 10; user-select: none; touch-action: none; transform-origin: top left; }
-        .draggable-card:active { cursor: grabbing; box-shadow: 0 0 40px rgba(255,0,68,0.2) !important; z-index: 99; transform: scale(1.01); }
-        .draggable-card.selected { border: 2px solid #00ffcc !important; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
+        /* Драг-карточки */
+        .draggable-card { 
+            position: absolute; cursor: grab; z-index: 10; user-select: none; touch-action: none; 
+            transform-origin: top left; will-change: transform, left, top;
+            transition: box-shadow 0.3s ease, border 0.3s ease;
+        }
+        .draggable-card:active { cursor: grabbing; z-index: 99; }
+        .draggable-card.selected .glass-panel { 
+            border: 1px solid rgba(0, 255, 204, 0.6) !important; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,204,0.15); 
+        }
 
-        .glass-panel { position: relative; width: 100%; height: 100%; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
+        /* Эффект Стекла (Glassmorphism) */
+        .glass-panel { 
+            position: relative; width: 100%; height: 100%; 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            overflow: hidden; transition: all 0.3s ease;
+        }
 
+        /* Стили компонентов (Цель) */
         .goal-content { display: flex; flex-direction: column; width: 100%; height: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; gap: 5px; }
-        .progress-box { width: 100%; background: rgba(0,0,0,0.5); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        .progress-bar { height: 100%; transition: width 0.5s ease-out; position: relative; }
-        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite linear; }
+        .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.08); position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+        .progress-bar { height: 100%; transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); animation: shimmer 2.5s infinite linear; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
+        /* Список донатеров */
         .donor-list { list-style: none; padding: 0; margin: 15px 0 0 0; display: flex; flex-direction: column; gap: 8px; }
-        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.02)) !important; border-color: rgba(255,215,0,0.3) !important; color: var(--gold) !important; font-weight: 900; }
-        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.08), rgba(224,224,224,0.01)) !important; border-color: rgba(224,224,224,0.2) !important; color: var(--silver) !important; }
-        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.06), rgba(205,127,50,0.01)) !important; border-color: rgba(205,127,50,0.2) !important; color: var(--bronze) !important; }
+        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); transition: transform 0.2s; }
+        .donor-item:hover { transform: translateX(4px); }
+        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent) !important; border-color: rgba(255,215,0,0.4) !important; color: var(--gold) !important; font-weight: 900; }
+        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.1), transparent) !important; border-color: rgba(224,224,224,0.3) !important; color: var(--silver) !important; }
+        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), transparent) !important; border-color: rgba(205,127,50,0.3) !important; color: var(--bronze) !important; }
 
+        /* Стили компонентов (Челлендж) */
         .chal-content { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: center; }
         .chal-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .chal-brand { display: flex; align-items: center; }
         .chal-icon-mask { background-color: #fff; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
         .chal-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
         .chal-value { font-weight: 900; text-align: right; }
-        .chal-divider { height: 1px; width: 100%; margin: 8px 0; opacity: 0.1; }
+        .chal-divider { height: 1px; width: 100%; margin: 12px 0; opacity: 0.15; }
         .chal-label { opacity: 0.8; font-weight: 700; }
         .chal-total { font-weight: 900; text-align: right; }
 
-        .card-header { font-size: 10px; color: #888; background: #1a1a1a; padding: 6px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; font-weight: 700; border-left: 2px solid #333; display: flex; justify-content: space-between; align-items: center;}
-        .card-header.active-panel { border-left-color: var(--primary); color: #fff; }
-        .input-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
-        .row { display: flex; gap: 8px; }
+        /* UI Элементы Админки */
+        .card-header { 
+            font-size: 11px; color: #888; background: #1a1a1a; padding: 10px 12px; 
+            border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
+            margin-top: 15px; font-weight: 700; border-left: 3px solid #333; 
+            display: flex; justify-content: space-between; align-items: center;
+            transition: all 0.2s;
+        }
+        .card-header.active-panel { border-left-color: var(--primary); color: #fff; background: #222; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
         
-        label { font-size: 9px; color: #aaa; text-transform: uppercase; font-weight: 700; }
-        input[type="text"], input[type="number"], select { background: #000; border: 1px solid #222; color: #fff; padding: 8px; border-radius: 4px; font-family: 'Unbounded'; font-size: 11px; width: 100%; }
-        input:focus, select:focus { border-color: var(--primary); }
+        label { font-size: 10px; color: #bbb; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        input[type="text"], input[type="number"], select { 
+            background: #0d0d0d; border: 1px solid #2a2a2a; color: #fff; padding: 10px; 
+            border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; width: 100%; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(255,0,68,0.2); }
         
-        .range-wrapper { display: flex; align-items: center; gap: 8px; }
+        .range-wrapper { display: flex; align-items: center; gap: 10px; }
         input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; margin: 0; }
-        .range-val { font-size: 10px; color: #fff; width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
+        .range-val { font-size: 11px; color: #fff; width: 35px; text-align: right; font-variant-numeric: tabular-nums; background: #1a1a1a; padding: 4px; border-radius: 4px;}
         
-        .color-picker-group { display: flex; gap: 5px; flex-wrap: wrap; }
-        .color-item { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; min-width: 60px;}
-        input[type="color"] { width: 100%; height: 30px; border: 1px solid #222; border-radius: 4px; cursor: pointer; background: transparent; padding: 0; }
+        .color-picker-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .color-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; min-width: 60px;}
+        input[type="color"] { width: 100%; height: 35px; border: none; border-radius: 6px; cursor: pointer; background: transparent; padding: 0; }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: 1px solid #333; border-radius: 6px; }
 
-        .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-add { background: #222; color: #fff; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; border: 1px solid #333; }
-        .btn-add:hover { background: #282828; border-color: #444; }
-        .btn-save { background: linear-gradient(135deg, #ff0044, #cc0036); color: #fff; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 13px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
-        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,0,68,0.4); }
-        .btn-copy { background: #1a1a1a; color: #aaa; padding: 10px; border-radius: 6px; font-size: 10px; width: 100%; margin-top: 10px; border: 1px solid #222; }
-        .btn-copy:hover { background: #222; color: #fff; }
-        .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 4px 8px; border-radius: 4px; font-size: 8px; border: 1px solid rgba(255,0,0,0.2); }
-        .btn-danger:hover { background: rgba(255,0,0,0.2); }
+        .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-add { background: #1a1a1a; color: #fff; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; border: 1px solid #333; }
+        .btn-add:hover { background: #252525; border-color: #555; transform: translateY(-1px); }
+        .btn-save { background: linear-gradient(135deg, var(--primary), #cc0036); color: #fff; padding: 16px; border-radius: 8px; font-weight: 900; font-size: 14px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,0,68,0.5); }
+        .btn-copy { background: #111; color: #888; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; margin-top: 10px; border: 1px solid #222; }
+        .btn-copy:hover { background: #1a1a1a; color: #fff; border-color: #444;}
+        .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 6px 10px; border-radius: 4px; font-size: 9px; border: 1px solid rgba(255,0,0,0.2); }
+        .btn-danger:hover { background: rgba(255,0,0,0.2); color: #fff; }
 
         .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
         .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-        .btn-file { background: #1a1a1a; border: 1px solid #222; color: #ccc; padding: 8px; border-radius: 4px; font-size: 10px; width: 100%; text-align: center; }
+        .btn-file { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; text-align: center; transition: background 0.2s; }
+        .file-input-wrapper:hover .btn-file { background: #222; color: #fff; }
 
-        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.2); display: inline-block; transition: background 0.2s; }
+        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.3); display: inline-block; transition: background 0.2s, border-color 0.2s; padding: 2px 4px; border-radius: 4px; margin: -2px -4px; }
         .editable:hover { background: rgba(255,255,255,0.05); }
         .editable:focus { background: rgba(255,255,255,0.1); outline: none; border-bottom-color: var(--primary); }
 
         .obs-mode .admin-panel { display: none; }
-        .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; }
-        .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; }
+        .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; padding: 0; margin: 0; }
+        .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; transition: none; }
 
+        /* Фикс для мобилок */
         @media (max-width: 900px) {
-            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; position: relative; overflow-y: auto; }
-            .sidebar { border-right: none; border-top: 1px solid #222; order: 2; height: auto; overflow-y: visible; }
-            .preview-zone { order: 1; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
-            .widget-scene { transform: scale(0.8); }
+            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; overflow: hidden; }
+            .sidebar { border-right: none; border-top: 1px solid #333; order: 2; height: 100%; overflow-y: auto; padding-bottom: 40px; }
+            .preview-zone { order: 1; height: 100%; border-bottom: 1px solid #222; }
+            .widget-scene { transform: scale(0.65); } /* Чуть мельче для мобилок */
         }
     </style>
 </head>
@@ -123,7 +179,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>WIDGET <span>PRO</span></h2>
-                <div style="font-size: 10px; color: #555;">v10.1 FIX</div>
+                <div style="font-size: 11px; color: #666; font-weight: bold;">SOUL EDITION</div>
             </div>
             
             <div class="row">
@@ -137,14 +193,24 @@
                     <button class="btn btn-danger" @click.stop="removePanel(p.id)">УДАЛИТЬ</button>
                 </div>
                 
-                <div v-if="selectedPanelId === p.id" class="panel-settings" style="padding: 10px 5px; background: #141414; border-radius: 0 0 4px 4px; margin-bottom: 10px;">
+                <div v-if="selectedPanelId === p.id" class="panel-settings" style="padding: 15px 10px; background: #141414; border-radius: 0 0 6px 6px; margin-bottom: 10px; border: 1px solid #222; border-top: none;">
                     
                     <template v-if="p.type === 'goal'">
                         <div class="row">
                             <div class="input-group"><label>Текущее</label><input type="number" v-model.number="p.current"></div>
                             <div class="input-group"><label>Цель</label><input type="text" v-model="p.max"></div>
                         </div>
-                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw"></div>
+                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw" placeholder="Имя1, Имя2, Имя3"></div>
+                        
+                        <div class="card-header" style="margin-top: 10px;">Размеры Текста</div>
+                        <div class="row">
+                            <div class="input-group"><label>Заголовок: {{p.tsTitle || 16}}px</label>
+                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsTitle"><span class="range-val">{{p.tsTitle || 16}}</span></div>
+                            </div>
+                            <div class="input-group"><label>Сумма: {{p.tsValue || 18}}px</label>
+                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsValue"><span class="range-val">{{p.tsValue || 18}}</span></div>
+                            </div>
+                        </div>
                     </template>
 
                     <template v-if="p.type === 'challenge'">
@@ -169,7 +235,18 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-group"><label>Показать разделитель?</label><input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:16px; height:16px;"></div>
+                        
+                        <div class="card-header" style="margin-top: 10px;">Размеры Текста</div>
+                        <div class="row">
+                            <div class="input-group"><label>Заголовок: {{p.tsTitle || 16}}px</label>
+                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsTitle"><span class="range-val">{{p.tsTitle || 16}}</span></div>
+                            </div>
+                            <div class="input-group"><label>Значение: {{p.tsValue || 20}}px</label>
+                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsValue"><span class="range-val">{{p.tsValue || 20}}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 10px;"><label style="display: flex; align-items: center; gap: 10px; cursor: pointer;"><input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:18px; height:18px; margin:0;"> Показать разделитель?</label></div>
                     </template>
 
                     <div class="card-header">Размеры и Скругление</div>
@@ -177,10 +254,10 @@
                         <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width || 400}}</span></div>
                     </div>
                     <div class="row">
-                        <div class="input-group"><label>Padding: {{p.padding || 20}}px</label>
+                        <div class="input-group"><label>Внутр. отступ: {{p.padding || 20}}px</label>
                             <div class="range-wrapper"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="range-val">{{p.padding || 20}}</span></div>
                         </div>
-                        <div class="input-group"><label>Радиус: {{p.radius || 15}}px</label>
+                        <div class="input-group"><label>Скругление: {{p.radius || 15}}px</label>
                             <div class="range-wrapper"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="range-val">{{p.radius || 15}}</span></div>
                         </div>
                     </div>
@@ -242,16 +319,16 @@
     <div class="glass-panel" :style="panelStyle">
         <div class="goal-content">
             <div class="goal-header" :style="{color: p.cText || '#fff'}">
-                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: (p.padding || 20)*0.8+'px', fontWeight: 700}">{{ p.title || 'ЦЕЛЬ' }}</span>
-                <span :style="{fontSize: (p.padding || 20)*0.9+'px', fontWeight: 900, color: p.cAccent || '#ffd700'}">
+                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: (p.tsTitle || 16)+'px', fontWeight: 700}">{{ p.title || 'ЦЕЛЬ' }}</span>
+                <span :style="{fontSize: (p.tsValue || 18)+'px', fontWeight: 900, color: p.cAccent || '#ffd700'}">
                     {{ formattedCurrent }} / <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'max')">{{ p.max || '1000' }}</span>
                 </span>
             </div>
-            <div class="progress-box" :style="{height: (p.padding || 20)*0.7+'px', borderRadius: (p.radius || 15)/2+'px'}">
+            <div class="progress-box" :style="{height: Math.max((p.padding || 20)*0.7, 10)+'px', borderRadius: (p.radius || 15)/2+'px'}">
                 <div class="progress-bar" :style="barStyle"></div>
             </div>
             
-            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: (p.padding || 20)*0.65+'px', color: p.cText || '#fff'}">
+            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: Math.max((p.tsTitle || 16)*0.7, 10)+'px', color: p.cText || '#fff'}">
                 <li v-for="(name, i) in donorList" :key="i" class="donor-item" :class="'rank-'+(i+1)" :style="{borderRadius: (p.radius || 15)/3+'px'}">
                     <span>{{ i==0?'👑 ':i==1?'🥈 ':i==2?'🥉 ':(i+1)+'. ' }}{{ name }}</span>
                 </li>
@@ -266,16 +343,16 @@
             <div class="chal-row">
                 <div class="chal-brand" :style="{gap: (p.iconGap || 15) + 'px'}">
                     <div class="chal-icon-mask" :style="iconMaskStyle"></div>
-                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText || '#fff', fontSize: (p.padding || 20)*0.8+'px'}">{{ p.title || 'ЧЕЛЛЕНДЖ' }}</div>
+                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText || '#fff', fontSize: (p.tsTitle || 16)+'px'}">{{ p.title || 'ЧЕЛЛЕНДЖ' }}</div>
                 </div>
-                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.padding || 20)+'px'}">{{ p.value || '1 = 1' }}</div>
+                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.tsValue || 20)+'px'}">{{ p.value || '1 = 1' }}</div>
             </div>
             
             <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText || '#fff'}"></div>
             
             <div class="chal-row">
-                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: (p.padding || 20)*0.65+'px'}">{{ p.label || 'Всего:' }}</div>
-                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.padding || 20)*0.9+'px'}">{{ p.count || '0' }}</div>
+                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: Math.max((p.tsTitle || 16)*0.8, 10)+'px'}">{{ p.label || 'Всего:' }}</div>
+                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: Math.max((p.tsValue || 20)*0.9, 12)+'px'}">{{ p.count || '0' }}</div>
             </div>
         </div>
     </div>
@@ -293,13 +370,14 @@ const firebaseConfig = {
     messagingSenderId: "997435022478",
     appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
 };
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
 const DB_PATH = 'widget_data_v10'; 
 
 const DUMBBELL_ICON = 'https://cdn-icons-png.flaticon.com/512/38/38464.png';
 
-// ЗАЩИТА: Если цвет пустой или поврежденный, вернем прозрачный черный, чтобы не сломать код
 const hexToRgba = (hex, opacity) => {
     if (!hex || typeof hex !== 'string') return `rgba(15,15,15,${opacity !== undefined ? opacity : 0.7})`;
     try {
@@ -383,17 +461,18 @@ createApp({
             id: Date.now() + Math.floor(Math.random()*1000),
             type,
             x: 50, y: 50,
-            width: 400, padding: 20, radius: 15,
-            bgColor: '#0f0f0f', bgOpacity: 0.7,
-            cText: '#ffffff', cAccent: '#ffd700',
+            width: 400, padding: 25, radius: 16,
+            bgColor: '#0f0f0f', bgOpacity: 0.75,
+            cText: '#ffffff', cAccent: '#ff0044',
+            tsTitle: 16, tsValue: 20 // Новые переменные для текста
         });
 
         const addPanel = (type) => {
             let config = createBaseConfig(type);
             if (type === 'goal') {
-                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Донатер, Привет, Supreme', cBar1: '#8a0022', cBar2: '#ff0044' });
+                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Supreme, Донатер, Зритель', cBar1: '#8a0022', cBar2: '#ff0044', tsTitle: 16, tsValue: 18 });
             } else {
-                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 35, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true });
+                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 40, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true, tsTitle: 18, tsValue: 22 });
             }
             panels.value.push(config);
             selectedPanelId.value = config.id;
@@ -406,21 +485,10 @@ createApp({
 
         const getComponent = (type) => type === 'goal' ? 'GoalWidget' : 'ChallengeWidget';
 
+        // Упрощенная высота для магнитов
         const estimateHeight = (p) => {
             if (!p) return 100;
-            let h = (p.padding || 20) * 2;
-            if (p.type === 'goal') {
-                h += (p.padding || 20) * 0.9 + 12;
-                h += (p.padding || 20) * 0.7;
-                const donors = p.donorsRaw ? p.donorsRaw.split(',').filter(Boolean).length : 0;
-                if (donors) h += 15 + (Math.min(donors, 5) * ((p.padding || 20) * 0.65 + 20 + 8));
-            } else {
-                h += (p.padding || 20);
-                if(p.showDivider) h += 17;
-                h += (p.padding || 20) * 0.9;
-                if((p.iconSize || 35) > h - (p.padding || 20)*2) h = (p.iconSize || 35) + (p.padding || 20)*2;
-            }
-            return h;
+            return p.type === 'goal' ? 200 : 150; 
         };
 
         let dragInfo = null;
@@ -472,22 +540,18 @@ createApp({
             for (const other of dragInfo.otherPanels) {
                 if (Math.abs(newX - other.x) < SNAP_TOLERANCE) { newX = other.x; snapX = newX; showV = true; }
                 else if (Math.abs((newX + curW) - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width - curW; snapX = newX + curW; showV = true; }
-                else if (Math.abs((newX + curW/2) - other.cx) < SNAP_TOLERANCE) { newX = other.cx - curW/2; snapX = other.cx; showV = true; }
-                else if (Math.abs((newX + curW) - other.x) < SNAP_TOLERANCE) { newX = other.x - curW; snapX = other.x; showV = true; }
                 else if (Math.abs(newX - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width; snapX = newX; showV = true; }
 
                 if (Math.abs(newY - other.y) < SNAP_TOLERANCE) { newY = other.y; snapY = newY; showH = true; }
                 else if (Math.abs((newY + curH) - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h - curH; snapY = newY + curH; showH = true; }
-                else if (Math.abs((newY + curH/2) - other.cy) < SNAP_TOLERANCE) { newY = other.cy - curH/2; snapY = other.cy; showH = true; }
-                else if (Math.abs((newY + curH) - other.y) < SNAP_TOLERANCE) { newY = other.y - curH; snapY = other.y; showH = true; }
                 else if (Math.abs(newY - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h; snapY = newY; showH = true; }
             }
 
-            if (showV && guideV.value) { guideV.value.style.display = 'block'; guideV.value.style.left = snapX + 'px'; }
-            else if(guideV.value) guideV.value.style.display = 'none';
+            if (showV && guideV.value) { guideV.value.style.opacity = '0.8'; guideV.value.style.left = snapX + 'px'; }
+            else if(guideV.value) guideV.value.style.opacity = '0';
             
-            if (showH && guideH.value) { guideH.value.style.display = 'block'; guideH.value.style.top = snapY + 'px'; }
-            else if(guideH.value) guideH.value.style.display = 'none';
+            if (showH && guideH.value) { guideH.value.style.opacity = '0.8'; guideH.value.style.top = snapY + 'px'; }
+            else if(guideH.value) guideH.value.style.opacity = '0';
 
             dragInfo.panel.x = Math.round(newX);
             dragInfo.panel.y = Math.round(newY);
@@ -495,8 +559,8 @@ createApp({
 
         const stopDrag = () => {
             dragInfo = null;
-            if(guideV.value) guideV.value.style.display = 'none';
-            if(guideH.value) guideH.value.style.display = 'none';
+            if(guideV.value) guideV.value.style.opacity = '0';
+            if(guideH.value) guideH.value.style.opacity = '0';
             document.removeEventListener('mousemove', onDrag);
             document.removeEventListener('touchmove', onDrag);
             document.removeEventListener('mouseup', stopDrag);
@@ -514,55 +578,53 @@ createApp({
         };
 
         const getCardPos = (p) => ({ left: (p.x || 0) + 'px', top: (p.y || 0) + 'px', width: (p.width || 400) + 'px' });
-        const sceneStyleAdmin = computed(() => ({ transform: `scale(${globalScale.value || 1})` })); 
-        const sceneStyle = computed(() => ({ transform: `scale(${globalScale.value || 1})`, transformOrigin: 'top left' })); 
+        
+        const sceneStyleAdmin = computed(() => ({
+            transform: `scale(${globalScale.value || 1})`
+        }));
+        
+        const sceneStyle = computed(() => ({
+            transform: `scale(${globalScale.value || 1})`,
+            transformOrigin: 'top left'
+        }));
 
+        // Сохранение и логика Firebase
         const saveData = () => {
-            const dataToSave = JSON.parse(JSON.stringify({
-                scale: globalScale.value || 1.0,
-                panels: panels.value || []
-            }));
-            db.ref(DB_PATH).set(dataToSave)
-                .then(() => alert("Опубликовано! Обновите источник в OBS."))
-                .catch(err => alert("Ошибка Firebase: " + err.message));
+            db.ref(DB_PATH).set({
+                panels: panels.value,
+                globalScale: globalScale.value
+            }).then(() => alert("Успешно опубликовано!"))
+              .catch(err => alert("Ошибка сохранения: " + err.message));
         };
 
         const copyLink = () => {
-            const url = window.location.origin + window.location.pathname + '?view=widget';
-            navigator.clipboard.writeText(url).then(() => alert("Ссылка скопирована. Добавьте её в OBS как 'Браузер'."));
+            const url = window.location.href.split('?')[0] + '?obs=true';
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Ссылка скопирована! Вставь её в источник браузера в OBS.');
+            });
         };
 
-        // ИСПРАВЛЕННАЯ СИНХРОНИЗАЦИЯ С FIREBASE
         onMounted(() => {
             const params = new URLSearchParams(window.location.search);
-            if (params.get('view') === 'widget') isObs.value = true;
-            
+            if (params.get('obs') === 'true') {
+                isObs.value = true;
+                document.body.style.background = 'transparent';
+            }
+
             db.ref(DB_PATH).on('value', snap => {
-                if (snap.exists()) {
-                    const data = snap.val();
-                    globalScale.value = data.scale || 1.0;
-                    // Если panels в базе нет, подставляем пустой массив, чтобы не сломать v-for
-                    panels.value = data.panels || [];
-                    
-                    // Выбираем первую плашку для админки, если ничего не выбрано
-                    if (!isObs.value && !selectedPanelId.value && panels.value.length > 0) {
-                        selectedPanelId.value = panels.value[0].id;
-                    }
-                } else {
-                    // Если данных в базе ВООБЩЕ нет (первый запуск)
-                    if (!isObs.value && panels.value.length === 0) {
-                        addPanel('goal');
-                        addPanel('challenge');
-                        if (panels.value[1]) panels.value[1].y = 200;
-                    }
+                const data = snap.val();
+                if (data) {
+                    if (data.panels) panels.value = data.panels;
+                    if (data.globalScale) globalScale.value = data.globalScale;
                 }
             });
         });
 
-        return {
+        return { 
             isObs, panels, globalScale, selectedPanelId, guideV, guideH,
-            addPanel, removePanel, getComponent, startDrag, getCardPos, 
-            sceneStyle, sceneStyleAdmin, uploadIcon, saveData, copyLink
+            addPanel, removePanel, getComponent, getCardPos,
+            startDrag, uploadIcon,
+            sceneStyleAdmin, sceneStyle, saveData, copyLink
         };
     }
 }).mount('#app');
