@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V9.1 - MAGNETIC SANDBOX</title>
+    <title>SUPREME WIDGET V9.2 - FIXED & POLISHED</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -17,10 +17,10 @@
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; }
+        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; touch-action: none; }
         
-        .admin-panel { display: grid; grid-template-columns: 450px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
-        .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .admin-panel { display: grid; grid-template-columns: 450px 1fr; height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
+        .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; height: 100%; }
         
         .preview-zone { 
             position: relative; 
@@ -28,44 +28,29 @@
             background-size: 30px 30px; 
             background-color: #151515; 
             overflow: hidden; 
+            height: 100%;
+        }
+
+        /* Адаптация под телефоны */
+        @media (max-width: 768px) {
+            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 50vh 50vh; }
+            .sidebar { padding: 15px; border-right: none; border-bottom: 2px solid #ff0044; }
+            body { touch-action: auto; /* Возвращаем скролл для сайдбара на мобилке */ }
+            .preview-zone { touch-action: none; /* Зона превью без скролла, только драг */ }
         }
 
         .widget-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: top left; }
         
-        /* ЛИНИЯ МАГНИТА (КАК В PHOTOSHOP) */
-        .snap-guide {
-            position: absolute;
-            top: -2000px; bottom: -2000px;
-            width: 1px;
-            background: #00ffcc;
-            box-shadow: 0 0 10px #00ffcc;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.7;
-        }
+        .snap-guide { position: absolute; top: -2000px; bottom: -2000px; width: 1px; background: #00ffcc; box-shadow: 0 0 10px #00ffcc; z-index: 0; pointer-events: none; opacity: 0.7; }
 
-        .draggable-card {
-            position: absolute;
-            cursor: grab;
-            transition: box-shadow 0.2s;
-            z-index: 10;
-        }
-        .draggable-card:active {
-            cursor: grabbing;
-            box-shadow: 0 0 40px rgba(255,0,68,0.3) !important;
-            z-index: 99;
-        }
+        .draggable-card { position: absolute; cursor: grab; transition: box-shadow 0.2s; z-index: 10; }
+        .draggable-card:active { cursor: grabbing; box-shadow: 0 0 40px rgba(255,0,68,0.3) !important; z-index: 99; }
 
         .glass-card { position: relative; width: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
         .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
-        
-        .progress-bar::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite linear;
-        }
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shimmer 2s infinite linear; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         
         .top-donors-title { display: inline-block; padding: 8px 16px; font-weight: 700; border-radius: 4px; margin-top: 25px; margin-bottom: 10px; }
@@ -89,36 +74,24 @@
         
         .btn-save { background: linear-gradient(90deg, #ff0044, #cc0036); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 20px; font-family: 'Unbounded'; text-transform: uppercase; box-shadow: 0 0 25px rgba(255,0,68,0.4); transition: transform 0.2s; }
         .btn-save:hover { transform: scale(1.02); }
-        .btn-copy { background: #222; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: 'Unbounded'; transition: background 0.3s; }
+        .btn-copy { background: #222; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 6px; font-size: 11px; cursor: pointer; font-family: 'Unbounded'; transition: background 0.3s; margin-bottom: 20px;}
         .btn-copy:hover { background: #333; }
         
         .obs-mode-active { background: transparent !important; }
 
-        .pushup-solid-premium {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
+        .pushup-solid-premium { display: flex; flex-direction: column; width: 100%; position: relative; }
         .pushup-row { display: flex; justify-content: space-between; align-items: center; }
         .pushup-brand { display: flex; align-items: center; gap: 15px; }
-        .pushup-icon { filter: brightness(0) invert(1); transform: rotate(-15deg); object-fit: contain; }
+        .pushup-icon { filter: brightness(0) invert(1); object-fit: contain; flex-shrink: 0; /* Фикс: иконка не плющится */ }
         .pushup-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
         .pushup-value { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; }
         .pushup-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); width: 100%; }
         .pushup-label { opacity: 0.9; font-size: 0.9em; font-weight: 700; }
         .pushup-total { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; }
 
-        /* ИСПРАВЛЕННЫЕ СТИЛИ РЕДАКТИРОВАНИЯ (ЧТОБЫ НЕ ЛОМАЛИ СЕТКУ) */
-        .editable { 
-            cursor: text; 
-            border-bottom: 1px dashed rgba(255,255,255,0.4); 
-            transition: all 0.2s; 
-            padding-bottom: 2px;
-            display: inline-block;
-        }
+        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.4); transition: all 0.2s; padding-bottom: 2px; display: inline-block; }
         .editable:hover { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .editable:focus { background: rgba(255,255,255,0.2); outline: none; border-bottom: 1px solid #ff0044; border-radius: 4px; }
-        
         .obs-mode-active .editable { border: none !important; background: transparent !important; padding-bottom: 0;}
     </style>
 </head>
@@ -128,20 +101,16 @@
     <div v-if="!isObs" class="admin-panel">
         <div class="sidebar">
             <h2 style="margin:0; font-weight:900; font-size: 24px;">WIDGET <span style="color:#ff0044">BUILDER</span></h2>
-            <p style="font-size: 11px; color: #aaa; line-height: 1.4; margin-top: 5px;">
-                🧲 <b>Магнит:</b> тащи блок по горизонтали, и он сам прилипнет ровно по центру к другому!<br>
-                ✏️ <b>Текст:</b> кликай по текстам справа, чтобы переписать.
-            </p>
             
             <div class="card-header">Смысл и Данные</div>
             <div class="row">
-                <div class="input-group"><label>Текущий результат (цифрой)</label><input type="number" v-model="s.current"></div>
+                <div class="input-group"><label>Текущий результат</label><input type="number" v-model="s.current"></div>
             </div>
 
             <div class="card-header">Отступы (Padding)</div>
             <div class="row">
-                <div class="input-group"><label>Внутри главного: {{s.mainPadding}}px</label><input type="range" min="10" max="80" step="1" v-model="s.mainPadding"></div>
-                <div class="input-group"><label>Внутри доп.: {{s.pushupPadding}}px</label><input type="range" min="10" max="80" step="1" v-model="s.pushupPadding"></div>
+                <div class="input-group"><label>Внутри главного: {{s.mainPadding}}px</label><input type="range" min="10" max="80" step="1" v-model.number="s.mainPadding"></div>
+                <div class="input-group"><label>Внутри доп.: {{s.pushupPadding}}px</label><input type="range" min="10" max="80" step="1" v-model.number="s.pushupPadding"></div>
             </div>
 
             <div class="card-header">Челлендж: Доп. панель</div>
@@ -150,19 +119,15 @@
                 <input type="checkbox" v-model="s.pushupShow">
             </div>
             <div class="row" v-if="s.pushupShow">
-                <div class="input-group"><label>Размер иконки: {{s.pushupIconSize}}px</label><input type="range" min="10" max="150" step="1" v-model="s.pushupIconSize"></div>
+                <div class="input-group"><label>Размер иконки: {{s.pushupIconSize}}px</label><input type="range" min="10" max="150" step="1" v-model.number="s.pushupIconSize"></div>
             </div>
             <div class="row" v-if="s.pushupShow">
-                <div class="input-group"><label>Расстояние между строками: {{s.pushupGap}}px</label><input type="range" min="5" max="50" step="1" v-model="s.pushupGap"></div>
+                <div class="input-group"><label>Расстояние между строками: {{s.pushupGap}}px</label><input type="range" min="5" max="50" step="1" v-model.number="s.pushupGap"></div>
             </div>
 
-            <div class="card-header">Фон Доп. Панели</div>
-            <div class="row">
-                <div class="input-group"><label>Цвет 1 (Градиент)</label><input type="color" v-model="s.pushupBg1"></div>
-                <div class="input-group"><label>Цвет 2 (Градиент)</label><input type="color" v-model="s.pushupBg2"></div>
-            </div>
+            <!-- Убрал выбор цвета для нижней плашки, теперь она прозрачная под цвет основного виджета -->
 
-            <div class="card-header">Визуал и Цвета Главного Окна</div>
+            <div class="card-header">Визуал и Цвета</div>
             <div class="row">
                 <div class="input-group"><label>Цвет 1 (Бар)</label><input type="color" v-model="s.c1"></div>
                 <div class="input-group"><label>Цвет 2 (Бар)</label><input type="color" v-model="s.c2"></div>
@@ -171,22 +136,22 @@
                 <div class="input-group"><label>Цвет акцентов/цифр</label><input type="color" v-model="s.cSum"></div>
                 <div class="input-group"><label>Тон стекла (RGB)</label><input type="color" v-model="s.bgHex"></div>
             </div>
-            <div class="input-group"><label>Плотность стекла: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model="s.glass"></div>
+            <div class="input-group"><label>Плотность стекла: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model.number="s.glass"></div>
 
             <div class="card-header">Размеры и Форма</div>
-            <div class="input-group"><label>Ширина виджетов: {{s.width}}px</label><input type="range" min="250" max="1200" step="10" v-model="s.width"></div>
-            <div class="input-group"><label>Скругление углов: {{s.radius}}px</label><input type="range" min="0" max="100" step="1" v-model="s.radius"></div>
+            <div class="input-group"><label>Ширина виджетов: {{s.width}}px</label><input type="range" min="250" max="1200" step="10" v-model.number="s.width"></div>
+            <div class="input-group"><label>Скругление углов: {{s.radius}}px</label><input type="range" min="0" max="100" step="1" v-model.number="s.radius"></div>
             <div class="row">
-                <div class="input-group"><label>Размер Заголовка: {{s.fTitle}}px</label><input type="range" min="10" max="80" step="1" v-model="s.fTitle"></div>
-                <div class="input-group"><label>Размер Суммы: {{s.fSum}}px</label><input type="range" min="10" max="80" step="1" v-model="s.fSum"></div>
+                <div class="input-group"><label>Размер Заголовка: {{s.fTitle}}px</label><input type="range" min="10" max="80" step="1" v-model.number="s.fTitle"></div>
+                <div class="input-group"><label>Размер Суммы: {{s.fSum}}px</label><input type="range" min="10" max="80" step="1" v-model.number="s.fSum"></div>
             </div>
-            <div class="input-group"><label>Масштаб в OBS: {{s.scale}}</label><input type="range" min="0.5" max="3" step="0.1" v-model="s.scale"></div>
+            <div class="input-group"><label>Масштаб в OBS: {{s.scale}}</label><input type="range" min="0.5" max="3" step="0.1" v-model.number="s.scale"></div>
 
             <div class="card-header">Списки и Топы</div>
-            <div class="input-group"><label>Количество строк (до 10)</label><input type="number" min="0" max="10" v-model="s.donorCount"></div>
+            <div class="input-group"><label>Количество строк (до 10)</label><input type="number" min="0" max="10" v-model.number="s.donorCount"></div>
 
             <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ В OBS</button>
-            <button class="btn-copy" @click="copyWidgetLink">СКОПИРОВАТЬ ССЫЛКУ ДЛЯ OBS</button>
+            <button class="btn-copy" @click="copyWidgetLink">СКОПИРОВАТЬ ССЫЛКУ</button>
         </div>
 
         <div class="preview-zone">
@@ -194,7 +159,8 @@
                 
                 <div v-if="isSnapped" class="snap-guide" :style="{left: s.mainX + 'px'}"></div>
 
-                <div class="draggable-card" @mousedown="startDrag('main', $event)" :style="mainCardPos">
+                <!-- Добавлены события touchstart для телефонов -->
+                <div class="draggable-card" @mousedown="startDrag('main', $event)" @touchstart="startDrag('main', $event)" :style="mainCardPos">
                     <div class="glass-card" :style="cardStyle">
                         <div class="goal-header">
                             <span class="editable" contenteditable="true" spellcheck="false" @blur="s.goalTitle = $event.target.textContent" :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
@@ -217,11 +183,12 @@
                     </div>
                 </div>
 
-                <div class="draggable-card" v-if="s.pushupShow" @mousedown="startDrag('pushup', $event)" :style="pushupCardPos">
-                    <div class="pushup-solid-premium" :style="pushupStyle">
+                <div class="draggable-card" v-if="s.pushupShow" @mousedown="startDrag('pushup', $event)" @touchstart="startDrag('pushup', $event)" :style="pushupCardPos">
+                    <div class="pushup-solid-premium glass-card" :style="pushupStyle">
                         <div class="pushup-row">
                             <div class="pushup-brand">
-                                <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
+                                <!-- Новая иконка -->
+                                <img src="https://cdn-icons-png.flaticon.com/512/38/38464.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
                                 <span class="editable pushup-title" contenteditable="true" spellcheck="false" @blur="s.pushupMainTitle = $event.target.textContent">{{ s.pushupMainTitle }}</span>
                             </div>
                             <div class="editable pushup-value" contenteditable="true" spellcheck="false" @blur="s.pushupText = $event.target.textContent" :style="{color: s.cSum}">{{ s.pushupText }}</div>
@@ -238,6 +205,7 @@
         </div>
     </div>
 
+    <!-- Режим OBS (без изменений структуры, применяем те же стили) -->
     <div v-if="isObs" class="widget-wrap" :style="scaleStyleOBS">
         <div class="draggable-card" :style="mainCardPos">
             <div class="glass-card" :style="cardStyle">
@@ -261,10 +229,10 @@
         </div>
 
         <div class="draggable-card" v-if="s.pushupShow" :style="pushupCardPos">
-            <div class="pushup-solid-premium" :style="pushupStyle">
+            <div class="pushup-solid-premium glass-card" :style="pushupStyle">
                 <div class="pushup-row">
                     <div class="pushup-brand">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2307/2307896.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
+                        <img src="https://cdn-icons-png.flaticon.com/512/38/38464.png" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
                         <span class="pushup-title">{{ s.pushupMainTitle }}</span>
                     </div>
                     <div class="pushup-value" :style="{color: s.cSum}">{{ s.pushupText }}</div>
@@ -298,7 +266,7 @@ const db = firebase.database();
 createApp({
     setup() {
         const isObs = ref(false);
-        const isSnapped = ref(false); // Состояние привязки магнитом
+        const isSnapped = ref(false);
 
         const s = ref({
             goalTitle: 'СБОР НА ТУРНИР:', current: 2500, max: '10.000',
@@ -310,12 +278,10 @@ createApp({
             pushupX: 50, pushupY: 450, pushupPadding: 22,
             
             pushupShow: true, pushupIconSize: 36, pushupGap: 15,
-            pushupBg1: '#3c1473', pushupBg2: '#240a4a',
             pushupMainTitle: 'ОТЖИМАНИЯ', pushupText: '1 раз - 50тг',
             pushupLabel: 'Отжался за сегодня:', pushupCountText: '7 Раз(а)'
         });
 
-        // ЛОГИКА ПЕРЕТАСКИВАНИЯ И МАГНИТА
         let activeDrag = null;
         let startX = 0; let startY = 0;
         let initialX = 0; let initialY = 0;
@@ -325,36 +291,44 @@ createApp({
             if (e.target.classList.contains('editable') || e.target.tagName.toLowerCase() === 'input') return; 
             
             activeDrag = elem;
-            startX = e.clientX;
-            startY = e.clientY;
+            
+            // Поддержка Touch (телефоны)
+            const event = e.touches ? e.touches[0] : e;
+            startX = event.clientX;
+            startY = event.clientY;
+            
             initialX = s.value[elem + 'X'];
             initialY = s.value[elem + 'Y'];
 
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchmove', drag, {passive: false});
+            document.addEventListener('touchend', stopDrag);
         };
 
         const drag = (e) => {
             if (!activeDrag) return;
-            const dx = (e.clientX - startX) / s.value.scale;
-            const dy = (e.clientY - startY) / s.value.scale;
+            if (e.touches) e.preventDefault(); // Предотвращаем скролл экрана при перетаскивании
+            
+            const event = e.touches ? e.touches[0] : e;
+            const dx = (event.clientX - startX) / s.value.scale;
+            const dy = (event.clientY - startY) / s.value.scale;
             
             let nx = initialX + dx;
             let ny = initialY + dy;
 
-            // МАГНИТ (РАДИУС СРАБАТЫВАНИЯ - 20 ПИКСЕЛЕЙ)
             const snapThreshold = 20;
             isSnapped.value = false;
 
             if (s.value.pushupShow) {
                 if (activeDrag === 'main') {
                     if (Math.abs(nx - s.value.pushupX) < snapThreshold) {
-                        nx = s.value.pushupX; // Прилипаем
+                        nx = s.value.pushupX; 
                         isSnapped.value = true;
                     }
                 } else if (activeDrag === 'pushup') {
                     if (Math.abs(nx - s.value.mainX) < snapThreshold) {
-                        nx = s.value.mainX; // Прилипаем
+                        nx = s.value.mainX; 
                         isSnapped.value = true;
                     }
                 }
@@ -366,9 +340,11 @@ createApp({
 
         const stopDrag = () => {
             activeDrag = null;
-            isSnapped.value = false; // Отключаем подсветку линии после отпускания мыши
+            isSnapped.value = false;
             document.removeEventListener('mousemove', drag);
             document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchmove', drag);
+            document.removeEventListener('touchend', stopDrag);
         };
 
         onMounted(() => {
@@ -377,6 +353,7 @@ createApp({
             db.ref('widget_data_v6').on('value', snap => { 
                 if (snap.exists()) {
                     let data = snap.val();
+                    // Заполняем дефолты, если в базе пусто
                     if(data.mainX === undefined) data.mainX = 50;
                     if(data.mainY === undefined) data.mainY = 50;
                     if(data.pushupX === undefined) data.pushupX = 50;
@@ -384,8 +361,6 @@ createApp({
                     if(data.mainPadding === undefined) data.mainPadding = 30;
                     if(data.pushupPadding === undefined) data.pushupPadding = 22;
                     if(data.pushupGap === undefined) data.pushupGap = 15;
-                    if(!data.pushupBg1) data.pushupBg1 = '#3c1473';
-                    if(!data.pushupBg2) data.pushupBg2 = '#240a4a';
                     s.value = { ...s.value, ...data }; 
                 }
             });
@@ -434,14 +409,16 @@ createApp({
             border: `1px solid rgba(255,255,255,0.1)`
         }));
 
+        // Теперь плашка отжиманий берет стили прозрачности от основного карточного стиля (glass)
         const pushupStyle = computed(() => ({
             padding: s.value.pushupPadding + 'px',
             gap: s.value.pushupGap + 'px',
             borderRadius: s.value.radius + 'px',
             fontSize: (s.value.fTitle * 0.85) + 'px',
-            background: `linear-gradient(145deg, ${s.value.pushupBg1}, ${s.value.pushupBg2})`,
-            border: `2px solid rgba(255,255,255,0.1)`, /* Вернул строгую рамку */
-            boxShadow: `0 10px 30px rgba(0,0,0,0.8)`
+            background: `rgba(${hexToRgb(s.value.bgHex)}, ${s.value.glass})`,
+            backdropFilter: 'blur(15px)',
+            border: `1px solid rgba(255,255,255,0.1)`,
+            boxShadow: `0 10px 30px rgba(0,0,0,0.5)`
         }));
 
         const barStyle = computed(() => ({
