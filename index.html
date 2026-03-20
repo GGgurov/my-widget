@@ -10,159 +10,165 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
         :root { 
-            --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; 
-            --primary: #ff0044; --primary-hover: #ff3366;
-            --bg-dark: #0a0a0a; --bg-panel: #111111;
+            --gold: #ffd700; 
+            --silver: #e0e0e0; 
+            --bronze: #cd7f32; 
+            --primary: #ff0044;
+            --bg-dark: #0a0a0a;
+            --bg-panel: #141414;
+            --border-color: #2a2a2a;
         }
         * { box-sizing: border-box; outline: none; }
         
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
         body { 
-            margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; 
-            background: transparent; color: #fff; overflow: hidden; touch-action: none; 
+            margin: 0; padding: 0; 
+            font-family: 'Unbounded', sans-serif; 
+            background: transparent; color: #fff; 
+            overflow: hidden; touch-action: none; 
         }
         
-        /* Сетка админ-панели */
+        /* АДМИН ПАНЕЛЬ - НОВЫЙ ДИЗАЙН */
         .admin-panel { 
-            display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; 
-            background: var(--bg-dark); position: fixed; inset: 0; z-index: 9999; 
+            display: grid; 
+            grid-template-columns: 420px 1fr; 
+            min-height: 100vh; 
+            background: var(--bg-dark); 
+            position: fixed; inset: 0; z-index: 9999; 
+            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
         }
         
-        /* Боковая панель (Sidebar) */
         .sidebar { 
-            background: var(--bg-panel); border-right: 1px solid rgba(255,255,255,0.05); 
-            padding: 25px 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; 
-            box-shadow: 5px 0 20px rgba(0,0,0,0.5); z-index: 20;
+            background: rgba(17, 17, 17, 0.95); 
+            border-right: 1px solid var(--border-color); 
+            padding: 25px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            backdrop-filter: blur(10px);
         }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 22px; letter-spacing: -0.5px; }
-        .sidebar-header span { color: var(--primary); }
         
-        /* Зона превью */
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 22px; letter-spacing: 1px;}
+        .sidebar-header span { color: var(--primary); }
+        .version-badge { background: #222; padding: 4px 8px; border-radius: 6px; font-size: 10px; color: #aaa; font-weight: 700; }
+        
         .preview-zone { 
-            position: relative; background-color: #151515; 
-            background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); 
-            background-size: 30px 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; 
+            position: relative; 
+            background-color: #0f0f0f; 
+            background-image: radial-gradient(#2a2a2a 1px, transparent 1px); 
+            background-size: 30px 30px; 
+            overflow: hidden; 
+            display: flex; align-items: center; justify-content: center; 
         }
-        .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; }
 
-        /* Направляющие (Магниты) */
-        .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 8px #00ffcc; z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.15s ease; }
+        /* ПЛАВНЫЕ НАПРАВЛЯЮЩИЕ */
+        .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 15px #00ffcc; z-index: 100; pointer-events: none; opacity: 0; transition: opacity 0.2s ease; }
+        .guide.active { opacity: 0.8; }
         .guide.v { top: -2000px; bottom: -2000px; width: 1px; }
         .guide.h { left: -2000px; right: -2000px; height: 1px; }
 
-        /* Драг-карточки */
-        .draggable-card { 
-            position: absolute; cursor: grab; z-index: 10; user-select: none; touch-action: none; 
-            transform-origin: top left; will-change: transform, left, top;
-            transition: box-shadow 0.3s ease, border 0.3s ease;
-        }
-        .draggable-card:active { cursor: grabbing; z-index: 99; }
-        .draggable-card.selected .glass-panel { 
-            border: 1px solid rgba(0, 255, 204, 0.6) !important; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(0,255,204,0.15); 
-        }
+        .draggable-card { position: absolute; cursor: grab; transition: box-shadow 0.2s ease, transform 0.1s ease; z-index: 10; user-select: none; touch-action: none; transform-origin: top left; }
+        .draggable-card:active { cursor: grabbing; box-shadow: 0 10px 40px rgba(255,0,68,0.3) !important; z-index: 99; transform: scale(1.02); }
+        .draggable-card.selected { border: 2px solid #00ffcc !important; box-shadow: 0 0 30px rgba(0,255,204,0.2); border-radius: inherit; }
 
-        /* Эффект Стекла (Glassmorphism) */
-        .glass-panel { 
-            position: relative; width: 100%; height: 100%; 
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            overflow: hidden; transition: all 0.3s ease;
-        }
+        .glass-panel { position: relative; width: 100%; height: 100%; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
 
-        /* Стили компонентов (Цель) */
-        .goal-content { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        .goal-content, .chal-content { display: flex; flex-direction: column; width: 100%; height: 100%; }
         .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; gap: 5px; }
-        .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.08); position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
-        .progress-bar { height: 100%; transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; }
-        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent); animation: shimmer 2.5s infinite linear; }
+        .progress-box { width: 100%; background: rgba(0,0,0,0.5); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .progress-bar { height: 100%; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite linear; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        /* Список донатеров */
         .donor-list { list-style: none; padding: 0; margin: 15px 0 0 0; display: flex; flex-direction: column; gap: 8px; }
-        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); transition: transform 0.2s; }
-        .donor-item:hover { transform: translateX(4px); }
-        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), transparent) !important; border-color: rgba(255,215,0,0.4) !important; color: var(--gold) !important; font-weight: 900; }
-        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.1), transparent) !important; border-color: rgba(224,224,224,0.3) !important; color: var(--silver) !important; }
-        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), transparent) !important; border-color: rgba(205,127,50,0.3) !important; color: var(--bronze) !important; }
+        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
+        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.02)) !important; border-color: rgba(255,215,0,0.4) !important; color: var(--gold) !important; font-weight: 900; }
+        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.1), rgba(224,224,224,0.01)) !important; border-color: rgba(224,224,224,0.3) !important; color: var(--silver) !important; }
+        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), rgba(205,127,50,0.01)) !important; border-color: rgba(205,127,50,0.3) !important; color: var(--bronze) !important; }
 
-        /* Стили компонентов (Челлендж) */
-        .chal-content { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: center; }
+        .chal-content { justify-content: center; }
         .chal-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .chal-brand { display: flex; align-items: center; }
         .chal-icon-mask { background-color: #fff; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
         .chal-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .chal-value { font-weight: 900; text-align: right; }
-        .chal-divider { height: 1px; width: 100%; margin: 12px 0; opacity: 0.15; }
+        .chal-value, .chal-total { font-weight: 900; text-align: right; }
+        .chal-divider { height: 1px; width: 100%; margin: 8px 0; opacity: 0.15; }
         .chal-label { opacity: 0.8; font-weight: 700; }
-        .chal-total { font-weight: 900; text-align: right; }
 
-        /* UI Элементы Админки */
+        /* ЭЛЕМЕНТЫ ФОРМЫ */
         .card-header { 
-            font-size: 11px; color: #888; background: #1a1a1a; padding: 10px 12px; 
-            border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; 
-            margin-top: 15px; font-weight: 700; border-left: 3px solid #333; 
-            display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.2s;
+            font-size: 11px; color: #888; background: var(--bg-panel); 
+            padding: 12px 15px; border-radius: 8px; text-transform: uppercase; 
+            letter-spacing: 1px; margin-top: 5px; font-weight: 700; 
+            border-left: 3px solid #333; display: flex; justify-content: space-between; 
+            align-items: center; transition: all 0.2s ease;
         }
-        .card-header.active-panel { border-left-color: var(--primary); color: #fff; background: #222; }
-        .input-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-        .row { display: flex; gap: 10px; }
+        .card-header.active-panel { border-left-color: var(--primary); color: #fff; background: #1a1a1a; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .card-header:hover:not(.active-panel) { background: #181818; border-left-color: #555; }
+        
+        .panel-settings {
+            padding: 15px; background: var(--bg-panel); border-radius: 0 0 8px 8px; 
+            margin-bottom: 15px; border: 1px solid var(--border-color); border-top: none;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .row { display: flex; gap: 12px; }
         .row > div { flex: 1; }
         
-        label { font-size: 10px; color: #bbb; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        label { font-size: 10px; color: #aaa; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
         input[type="text"], input[type="number"], select { 
-            background: #0d0d0d; border: 1px solid #2a2a2a; color: #fff; padding: 10px; 
-            border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; width: 100%; 
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #000; border: 1px solid var(--border-color); color: #fff; 
+            padding: 10px 12px; border-radius: 6px; font-family: 'Unbounded'; 
+            font-size: 12px; width: 100%; transition: border-color 0.2s;
         }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 8px rgba(255,0,68,0.2); }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255,0,68,0.1); }
         
         .range-wrapper { display: flex; align-items: center; gap: 10px; }
-        input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; margin: 0; }
-        .range-val { font-size: 11px; color: #fff; width: 35px; text-align: right; font-variant-numeric: tabular-nums; background: #1a1a1a; padding: 4px; border-radius: 4px;}
+        input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; height: 4px; border-radius: 2px; }
+        .range-val { font-size: 11px; color: #fff; width: 35px; text-align: right; font-variant-numeric: tabular-nums; background: #000; padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); }
         
-        .color-picker-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .color-item { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; min-width: 60px;}
-        input[type="color"] { width: 100%; height: 35px; border: none; border-radius: 6px; cursor: pointer; background: transparent; padding: 0; }
-        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
-        input[type="color"]::-webkit-color-swatch { border: 1px solid #333; border-radius: 6px; }
+        .color-picker-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); gap: 10px; }
+        .color-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        input[type="color"] { width: 100%; height: 35px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; background: #000; padding: 2px; }
 
-        .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 5px; }
-        .btn-add { background: #1a1a1a; color: #fff; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; border: 1px solid #333; }
-        .btn-add:hover { background: #252525; border-color: #555; transform: translateY(-1px); }
-        .btn-save { background: linear-gradient(135deg, var(--primary), #cc0036); color: #fff; padding: 16px; border-radius: 8px; font-weight: 900; font-size: 14px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
-        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,0,68,0.5); }
-        .btn-copy { background: #111; color: #888; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; margin-top: 10px; border: 1px solid #222; }
-        .btn-copy:hover { background: #1a1a1a; color: #fff; border-color: #444;}
-        .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 6px 10px; border-radius: 4px; font-size: 9px; border: 1px solid rgba(255,0,0,0.2); }
-        .btn-danger:hover { background: rgba(255,0,0,0.2); color: #fff; }
+        .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .btn-add { background: #1a1a1a; color: #fff; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; border: 1px solid var(--border-color); }
+        .btn-add:hover { background: #252525; border-color: #444; transform: translateY(-1px); }
+        
+        .btn-save { background: linear-gradient(135deg, #ff0044, #cc0036); color: #fff; padding: 18px; border-radius: 10px; font-weight: 900; font-size: 14px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,0,68,0.5); }
+        
+        .btn-copy { background: transparent; color: #aaa; padding: 12px; border-radius: 8px; font-size: 11px; width: 100%; border: 1px dashed #444; }
+        .btn-copy:hover { background: #1a1a1a; color: #fff; border-color: #666; }
+        
+        .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 6px 10px; border-radius: 6px; font-size: 9px; border: 1px solid rgba(255,0,0,0.2); }
+        .btn-danger:hover { background: #ff4444; color: #fff; }
 
         .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-        .btn-file { background: #1a1a1a; border: 1px solid #333; color: #ccc; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; text-align: center; transition: background 0.2s; }
-        .file-input-wrapper:hover .btn-file { background: #222; color: #fff; }
+        .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; height: 100%; }
+        .btn-file { background: #000; border: 1px solid var(--border-color); color: #ccc; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; text-align: center; transition: all 0.2s;}
+        .file-input-wrapper:hover .btn-file { border-color: var(--primary); color: #fff; }
 
-        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.3); display: inline-block; transition: background 0.2s, border-color 0.2s; padding: 2px 4px; border-radius: 4px; margin: -2px -4px; }
-        .editable:hover { background: rgba(255,255,255,0.05); }
-        .editable:focus { background: rgba(255,255,255,0.1); outline: none; border-bottom-color: var(--primary); }
+        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.3); display: inline-block; transition: background 0.2s, border-color 0.2s; }
+        .editable:hover { background: rgba(255,255,255,0.08); border-bottom-style: solid; }
+        .editable:focus { background: rgba(255,255,255,0.15); outline: none; border-bottom: 2px solid var(--primary); }
 
         .obs-mode .admin-panel { display: none; }
-        .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; padding: 0; margin: 0; }
-        .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; transition: none; }
+        .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; }
+        .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; transform: none !important;}
 
-        /* Фикс для мобилок */
         @media (max-width: 900px) {
-            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; overflow: hidden; }
-            .sidebar { border-right: none; border-top: 1px solid #333; order: 2; height: 100%; overflow-y: auto; padding-bottom: 40px; }
-            .preview-zone { order: 1; height: 100%; border-bottom: 1px solid #222; }
-            .widget-scene { transform: scale(0.65); } /* Чуть мельче для мобилок */
+            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 50vh 50vh; overflow: hidden; }
+            .sidebar { border-right: none; border-top: 1px solid var(--border-color); order: 2; height: 100%; overflow-y: auto; }
+            .preview-zone { order: 1; height: 100%; z-index: 10; border-bottom: 1px solid var(--border-color); }
         }
     </style>
 </head>
@@ -179,7 +185,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>WIDGET <span>PRO</span></h2>
-                <div style="font-size: 11px; color: #666; font-weight: bold;">SOUL EDITION</div>
+                <div class="version-badge">v10.2 SOUL</div>
             </div>
             
             <div class="row">
@@ -193,24 +199,15 @@
                     <button class="btn btn-danger" @click.stop="removePanel(p.id)">УДАЛИТЬ</button>
                 </div>
                 
-                <div v-if="selectedPanelId === p.id" class="panel-settings" style="padding: 15px 10px; background: #141414; border-radius: 0 0 6px 6px; margin-bottom: 10px; border: 1px solid #222; border-top: none;">
+                <div v-if="selectedPanelId === p.id" class="panel-settings">
                     
+                    <!-- Основные настройки -->
                     <template v-if="p.type === 'goal'">
                         <div class="row">
                             <div class="input-group"><label>Текущее</label><input type="number" v-model.number="p.current"></div>
                             <div class="input-group"><label>Цель</label><input type="text" v-model="p.max"></div>
                         </div>
-                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw" placeholder="Имя1, Имя2, Имя3"></div>
-                        
-                        <div class="card-header" style="margin-top: 10px;">Размеры Текста</div>
-                        <div class="row">
-                            <div class="input-group"><label>Заголовок: {{p.tsTitle || 16}}px</label>
-                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsTitle"><span class="range-val">{{p.tsTitle || 16}}</span></div>
-                            </div>
-                            <div class="input-group"><label>Сумма: {{p.tsValue || 18}}px</label>
-                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsValue"><span class="range-val">{{p.tsValue || 18}}</span></div>
-                            </div>
-                        </div>
+                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw"></div>
                     </template>
 
                     <template v-if="p.type === 'challenge'">
@@ -222,65 +219,75 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-group"><label>Размер лого: {{p.iconSize || 35}}px</label>
+                            <div class="input-group"><label>Размер лого</label>
                                 <div class="range-wrapper">
                                     <input type="range" min="10" max="150" v-model.number="p.iconSize">
                                     <span class="range-val">{{p.iconSize || 35}}</span>
                                 </div>
                             </div>
-                            <div class="input-group"><label>Отступ лого: {{p.iconGap || 15}}px</label>
+                            <div class="input-group"><label>Отступ лого</label>
                                 <div class="range-wrapper">
                                     <input type="range" min="0" max="50" v-model.number="p.iconGap">
                                     <span class="range-val">{{p.iconGap || 15}}</span>
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="card-header" style="margin-top: 10px;">Размеры Текста</div>
-                        <div class="row">
-                            <div class="input-group"><label>Заголовок: {{p.tsTitle || 16}}px</label>
-                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsTitle"><span class="range-val">{{p.tsTitle || 16}}</span></div>
-                            </div>
-                            <div class="input-group"><label>Значение: {{p.tsValue || 20}}px</label>
-                                <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.tsValue"><span class="range-val">{{p.tsValue || 20}}</span></div>
-                            </div>
+                        <div class="input-group" style="flex-direction: row; align-items: center; justify-content: space-between;">
+                            <label style="margin:0;">Показать разделитель?</label>
+                            <input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:18px; height:18px; cursor:pointer;">
                         </div>
-
-                        <div class="input-group" style="margin-top: 10px;"><label style="display: flex; align-items: center; gap: 10px; cursor: pointer;"><input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:18px; height:18px; margin:0;"> Показать разделитель?</label></div>
                     </template>
 
-                    <div class="card-header">Размеры и Скругление</div>
-                    <div class="input-group"><label>Ширина: {{p.width || 400}}px</label>
+                    <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
+
+                    <!-- НАСТРОЙКИ ТЕКСТА (НОВОЕ) -->
+                    <div style="font-size: 11px; font-weight: 900; color: #fff;">ШРИФТЫ</div>
+                    <div class="row">
+                        <div class="input-group"><label>Размер Заголовка</label>
+                            <div class="range-wrapper"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="range-val">{{p.titleSize || 16}}</span></div>
+                        </div>
+                        <div class="input-group"><label>Размер Текста</label>
+                            <div class="range-wrapper"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="range-val">{{p.textSize || 14}}</span></div>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
+
+                    <!-- Размеры -->
+                    <div style="font-size: 11px; font-weight: 900; color: #fff;">ГЕОМЕТРИЯ</div>
+                    <div class="input-group"><label>Ширина панели</label>
                         <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width || 400}}</span></div>
                     </div>
                     <div class="row">
-                        <div class="input-group"><label>Внутр. отступ: {{p.padding || 20}}px</label>
+                        <div class="input-group"><label>Внутренний отступ (Pad)</label>
                             <div class="range-wrapper"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="range-val">{{p.padding || 20}}</span></div>
                         </div>
-                        <div class="input-group"><label>Скругление: {{p.radius || 15}}px</label>
+                        <div class="input-group"><label>Скругление углов</label>
                             <div class="range-wrapper"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="range-val">{{p.radius || 15}}</span></div>
                         </div>
                     </div>
 
-                    <div class="card-header">Фон (Стекло)</div>
+                    <hr style="border: 0; height: 1px; background: #222; width: 100%; margin: 5px 0;">
+
+                    <!-- Цвета -->
+                    <div style="font-size: 11px; font-weight: 900; color: #fff;">ЦВЕТА И ФОН</div>
                     <div class="row">
-                        <div class="input-group"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
-                        <div class="input-group"><label>Прозрачность: {{p.bgOpacity !== undefined ? p.bgOpacity : 0.7}}</label>
+                        <div class="input-group"><label>Цвет подложки</label><input type="color" v-model="p.bgColor"></div>
+                        <div class="input-group"><label>Прозрачность фона</label>
                             <div class="range-wrapper"><input type="range" min="0" max="1" step="0.01" v-model.number="p.bgOpacity"><span class="range-val">{{p.bgOpacity !== undefined ? p.bgOpacity : 0.7}}</span></div>
                         </div>
                     </div>
 
-                    <div class="card-header">Цвета Текста и Акцентов</div>
                     <div class="color-picker-group">
                         <div class="color-item"><label>Текст</label><input type="color" v-model="p.cText"></div>
                         <template v-if="p.type === 'goal'">
                             <div class="color-item"><label>Бар 1</label><input type="color" v-model="p.cBar1"></div>
                             <div class="color-item"><label>Бар 2</label><input type="color" v-model="p.cBar2"></div>
-                            <div class="color-item"><label>Сумма</label><input type="color" v-model="p.cAccent"></div>
+                            <div class="color-item"><label>Акцент</label><input type="color" v-model="p.cAccent"></div>
                         </template>
                         <template v-if="p.type === 'challenge'">
                             <div class="color-item"><label>Иконка</label><input type="color" v-model="p.cIcon"></div>
-                            <div class="color-item"><label>Цифры</label><input type="color" v-model="p.cAccent"></div>
+                            <div class="color-item"><label>Акцент</label><input type="color" v-model="p.cAccent"></div>
                         </template>
                     </div>
 
@@ -288,12 +295,12 @@
             </div>
 
             <div class="card-header" style="margin-top:20px;">Глобальные настройки OBS</div>
-            <div class="input-group"><label>Масштаб сцены: {{globalScale || 1}}</label>
+            <div class="input-group"><label>Масштаб сцены</label>
                 <div class="range-wrapper"><input type="range" min="0.5" max="2" step="0.01" v-model.number="globalScale"><span class="range-val">{{globalScale || 1}}</span></div>
             </div>
 
-            <button class="btn btn-save" @click="saveData">ОПУБЛИКОВАТЬ</button>
-            <button class="btn btn-copy" @click="copyLink">Скопировать ссылку для OBS</button>
+            <button class="btn btn-save" @click="saveData">СОХРАНИТЬ И ОПУБЛИКОВАТЬ</button>
+            <button class="btn btn-copy" @click="copyLink">🔗 Скопировать ссылку для OBS</button>
         </div>
 
         <div class="preview-zone">
@@ -319,16 +326,16 @@
     <div class="glass-panel" :style="panelStyle">
         <div class="goal-content">
             <div class="goal-header" :style="{color: p.cText || '#fff'}">
-                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: (p.tsTitle || 16)+'px', fontWeight: 700}">{{ p.title || 'ЦЕЛЬ' }}</span>
-                <span :style="{fontSize: (p.tsValue || 18)+'px', fontWeight: 900, color: p.cAccent || '#ffd700'}">
+                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: (p.titleSize || 16) + 'px', fontWeight: 700}">{{ p.title || 'ЦЕЛЬ' }}</span>
+                <span :style="{fontSize: (p.titleSize || 16)*1.1 + 'px', fontWeight: 900, color: p.cAccent || '#ffd700'}">
                     {{ formattedCurrent }} / <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'max')">{{ p.max || '1000' }}</span>
                 </span>
             </div>
-            <div class="progress-box" :style="{height: Math.max((p.padding || 20)*0.7, 10)+'px', borderRadius: (p.radius || 15)/2+'px'}">
+            <div class="progress-box" :style="{height: (p.padding || 20)*0.7+'px', borderRadius: (p.radius || 15)/2+'px'}">
                 <div class="progress-bar" :style="barStyle"></div>
             </div>
             
-            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: Math.max((p.tsTitle || 16)*0.7, 10)+'px', color: p.cText || '#fff'}">
+            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: (p.textSize || 14) + 'px', color: p.cText || '#fff'}">
                 <li v-for="(name, i) in donorList" :key="i" class="donor-item" :class="'rank-'+(i+1)" :style="{borderRadius: (p.radius || 15)/3+'px'}">
                     <span>{{ i==0?'👑 ':i==1?'🥈 ':i==2?'🥉 ':(i+1)+'. ' }}{{ name }}</span>
                 </li>
@@ -343,16 +350,16 @@
             <div class="chal-row">
                 <div class="chal-brand" :style="{gap: (p.iconGap || 15) + 'px'}">
                     <div class="chal-icon-mask" :style="iconMaskStyle"></div>
-                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText || '#fff', fontSize: (p.tsTitle || 16)+'px'}">{{ p.title || 'ЧЕЛЛЕНДЖ' }}</div>
+                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText || '#fff', fontSize: (p.titleSize || 16)+'px'}">{{ p.title || 'ЧЕЛЛЕНДЖ' }}</div>
                 </div>
-                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.tsValue || 20)+'px'}">{{ p.value || '1 = 1' }}</div>
+                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.titleSize || 16)*1.2+'px'}">{{ p.value || '1 = 1' }}</div>
             </div>
             
             <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText || '#fff'}"></div>
             
             <div class="chal-row">
-                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: Math.max((p.tsTitle || 16)*0.8, 10)+'px'}">{{ p.label || 'Всего:' }}</div>
-                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: Math.max((p.tsValue || 20)*0.9, 12)+'px'}">{{ p.count || '0' }}</div>
+                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText || '#fff', fontSize: (p.textSize || 14)+'px'}">{{ p.label || 'Всего:' }}</div>
+                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent || '#ffd700', fontSize: (p.textSize || 14)*1.2+'px'}">{{ p.count || '0' }}</div>
             </div>
         </div>
     </div>
@@ -461,18 +468,18 @@ createApp({
             id: Date.now() + Math.floor(Math.random()*1000),
             type,
             x: 50, y: 50,
-            width: 400, padding: 25, radius: 16,
-            bgColor: '#0f0f0f', bgOpacity: 0.75,
-            cText: '#ffffff', cAccent: '#ff0044',
-            tsTitle: 16, tsValue: 20 // Новые переменные для текста
+            width: 400, padding: 20, radius: 15,
+            titleSize: 16, textSize: 14, // Новые параметры
+            bgColor: '#0f0f0f', bgOpacity: 0.7,
+            cText: '#ffffff', cAccent: '#ffd700',
         });
 
         const addPanel = (type) => {
             let config = createBaseConfig(type);
             if (type === 'goal') {
-                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Supreme, Донатер, Зритель', cBar1: '#8a0022', cBar2: '#ff0044', tsTitle: 16, tsValue: 18 });
+                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Донатер, Привет, Supreme', cBar1: '#8a0022', cBar2: '#ff0044' });
             } else {
-                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 40, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true, tsTitle: 18, tsValue: 22 });
+                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 35, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true });
             }
             panels.value.push(config);
             selectedPanelId.value = config.id;
@@ -485,10 +492,20 @@ createApp({
 
         const getComponent = (type) => type === 'goal' ? 'GoalWidget' : 'ChallengeWidget';
 
-        // Упрощенная высота для магнитов
         const estimateHeight = (p) => {
             if (!p) return 100;
-            return p.type === 'goal' ? 200 : 150; 
+            let h = (p.padding || 20) * 2;
+            if (p.type === 'goal') {
+                h += (p.titleSize || 16) + 12;
+                h += (p.padding || 20) * 0.7;
+                const donors = p.donorsRaw ? p.donorsRaw.split(',').filter(Boolean).length : 0;
+                if (donors) h += 15 + (Math.min(donors, 5) * ((p.textSize || 14) + 20));
+            } else {
+                h += Math.max((p.titleSize || 16), (p.iconSize || 35));
+                if(p.showDivider) h += 17;
+                h += (p.textSize || 14);
+            }
+            return h;
         };
 
         let dragInfo = null;
@@ -528,39 +545,66 @@ createApp({
             const mouseDx = (event.clientX - dragInfo.startX) / (globalScale.value || 1);
             const mouseDy = (event.clientY - dragInfo.startY) / (globalScale.value || 1);
             
-            let newX = dragInfo.initialX + mouseDx;
-            let newY = dragInfo.initialY + mouseDy;
+            let targetX = dragInfo.initialX + mouseDx;
+            let targetY = dragInfo.initialY + mouseDy;
             
             const curW = dragInfo.panel.width || 400;
             const curH = estimateHeight(dragInfo.panel);
             
-            let snapX = null, snapY = null;
-            let showV = false, showH = false;
+            let bestSnapX = null, bestSnapY = null;
+            let minDiffX = SNAP_TOLERANCE, minDiffY = SNAP_TOLERANCE;
 
+            // УМНАЯ ЛОГИКА МАГНИТОВ
             for (const other of dragInfo.otherPanels) {
-                if (Math.abs(newX - other.x) < SNAP_TOLERANCE) { newX = other.x; snapX = newX; showV = true; }
-                else if (Math.abs((newX + curW) - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width - curW; snapX = newX + curW; showV = true; }
-                else if (Math.abs(newX - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width; snapX = newX; showV = true; }
+                // X Axis
+                let diffsX = [
+                    { val: other.x, snap: other.x },
+                    { val: other.x + other.width - curW, snap: targetX + curW },
+                    { val: other.cx - curW/2, snap: other.cx },
+                    { val: other.x - curW, snap: other.x },
+                    { val: other.x + other.width, snap: other.x + other.width }
+                ];
+                
+                diffsX.forEach(d => {
+                    let diff = Math.abs(targetX - d.val);
+                    if (diff < minDiffX) { minDiffX = diff; targetX = d.val; bestSnapX = d.snap; }
+                });
 
-                if (Math.abs(newY - other.y) < SNAP_TOLERANCE) { newY = other.y; snapY = newY; showH = true; }
-                else if (Math.abs((newY + curH) - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h - curH; snapY = newY + curH; showH = true; }
-                else if (Math.abs(newY - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h; snapY = newY; showH = true; }
+                // Y Axis
+                let diffsY = [
+                    { val: other.y, snap: other.y },
+                    { val: other.y + other.h - curH, snap: targetY + curH },
+                    { val: other.cy - curH/2, snap: other.cy },
+                    { val: other.y - curH, snap: other.y },
+                    { val: other.y + other.h, snap: other.y + other.h }
+                ];
+
+                diffsY.forEach(d => {
+                    let diff = Math.abs(targetY - d.val);
+                    if (diff < minDiffY) { minDiffY = diff; targetY = d.val; bestSnapY = d.snap; }
+                });
             }
 
-            if (showV && guideV.value) { guideV.value.style.opacity = '0.8'; guideV.value.style.left = snapX + 'px'; }
-            else if(guideV.value) guideV.value.style.opacity = '0';
+            if (bestSnapX !== null && guideV.value) { 
+                guideV.value.classList.add('active'); guideV.value.style.left = bestSnapX + 'px'; 
+            } else if(guideV.value) {
+                guideV.value.classList.remove('active');
+            }
             
-            if (showH && guideH.value) { guideH.value.style.opacity = '0.8'; guideH.value.style.top = snapY + 'px'; }
-            else if(guideH.value) guideH.value.style.opacity = '0';
+            if (bestSnapY !== null && guideH.value) { 
+                guideH.value.classList.add('active'); guideH.value.style.top = bestSnapY + 'px'; 
+            } else if(guideH.value) {
+                guideH.value.classList.remove('active');
+            }
 
-            dragInfo.panel.x = Math.round(newX);
-            dragInfo.panel.y = Math.round(newY);
+            dragInfo.panel.x = Math.round(targetX);
+            dragInfo.panel.y = Math.round(targetY);
         };
 
         const stopDrag = () => {
             dragInfo = null;
-            if(guideV.value) guideV.value.style.opacity = '0';
-            if(guideH.value) guideH.value.style.opacity = '0';
+            if(guideV.value) guideV.value.classList.remove('active');
+            if(guideH.value) guideH.value.classList.remove('active');
             document.removeEventListener('mousemove', onDrag);
             document.removeEventListener('touchmove', onDrag);
             document.removeEventListener('mouseup', stopDrag);
@@ -580,51 +624,52 @@ createApp({
         const getCardPos = (p) => ({ left: (p.x || 0) + 'px', top: (p.y || 0) + 'px', width: (p.width || 400) + 'px' });
         
         const sceneStyleAdmin = computed(() => ({
-            transform: `scale(${globalScale.value || 1})`
-        }));
-        
-        const sceneStyle = computed(() => ({
             transform: `scale(${globalScale.value || 1})`,
-            transformOrigin: 'top left'
+            width: '100%', height: '100%'
         }));
 
-        // Сохранение и логика Firebase
+        const sceneStyle = computed(() => ({
+            transform: `scale(${globalScale.value || 1})`,
+            width: '100vw', height: '100vh', overflow: 'hidden'
+        }));
+
+        // ЗАГЛУШКИ ДЛЯ СОХРАНЕНИЯ (Т.к. конец скрипта был обрезан)
         const saveData = () => {
             db.ref(DB_PATH).set({
-                panels: panels.value,
+                panels: JSON.parse(JSON.stringify(panels.value)),
                 globalScale: globalScale.value
-            }).then(() => alert("Успешно опубликовано!"))
-              .catch(err => alert("Ошибка сохранения: " + err.message));
+            }).then(() => alert('Настройки успешно опубликованы!'))
+              .catch(e => alert('Ошибка сохранения: ' + e.message));
         };
 
         const copyLink = () => {
-            const url = window.location.href.split('?')[0] + '?obs=true';
-            navigator.clipboard.writeText(url).then(() => {
-                alert('Ссылка скопирована! Вставь её в источник браузера в OBS.');
-            });
+            const url = new URL(window.location.href);
+            url.searchParams.set('obs', '1');
+            navigator.clipboard.writeText(url.toString())
+                .then(() => alert('Ссылка скопирована! Вставьте её в OBS как источник браузера.'));
         };
 
         onMounted(() => {
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('obs') === 'true') {
-                isObs.value = true;
-                document.body.style.background = 'transparent';
-            }
-
-            db.ref(DB_PATH).on('value', snap => {
-                const data = snap.val();
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('obs') === '1') isObs.value = true;
+            
+            // Загрузка данных из Firebase
+            db.ref(DB_PATH).on('value', (snapshot) => {
+                const data = snapshot.val();
                 if (data) {
                     if (data.panels) panels.value = data.panels;
                     if (data.globalScale) globalScale.value = data.globalScale;
+                } else if (!isObs.value) {
+                    addPanel('goal'); // Если пусто - создаем дефолтную цель
                 }
             });
         });
 
         return { 
-            isObs, panels, globalScale, selectedPanelId, guideV, guideH,
-            addPanel, removePanel, getComponent, getCardPos,
-            startDrag, uploadIcon,
-            sceneStyleAdmin, sceneStyle, saveData, copyLink
+            isObs, panels, globalScale, selectedPanelId, 
+            addPanel, removePanel, getComponent, getCardPos, 
+            startDrag, sceneStyleAdmin, sceneStyle, 
+            guideV, guideH, uploadIcon, saveData, copyLink 
         };
     }
 }).mount('#app');
