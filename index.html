@@ -3,298 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUPREME WIDGET V10 - GLASS & MAGNETS</title>
+    <title>SUPREME WIDGET V10 PRO - MULTI-SANDBOX</title>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        :root { --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; }
-        * { box-sizing: border-box; }
+        :root { --gold: #ffd700; --silver: #e0e0e0; --bronze: #cd7f32; --primary: #ff0044; }
+        * { box-sizing: border-box; outline: none; }
         
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; }
+        body { margin: 0; padding: 0; font-family: 'Unbounded', sans-serif; background: transparent; color: #fff; overflow: hidden; touch-action: none; }
         
-        .admin-panel { display: grid; grid-template-columns: 450px 1fr; height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
-        .sidebar { background: #111; border-right: 1px solid #222; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; height: 100%; }
+        /* ADMIN LAYOUT */
+        .admin-panel { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; background: #0a0a0a; position: fixed; inset: 0; z-index: 9999; }
         
-        /* Мобильная адаптация админки */
-        @media (max-width: 768px) {
-            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; }
-            .sidebar { border-right: none; border-top: 2px solid #333; }
-        }
-
-        .preview-zone { 
-            position: relative; 
-            background-image: radial-gradient(#333 1px, transparent 1px); 
-            background-size: 30px 30px; 
-            background-color: #151515; 
-            overflow: hidden; 
-            height: 100%;
-        }
-
-        .widget-wrap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: top left; }
+        /* SIDEBAR */
+        .sidebar { background: #111; border-right: 1px solid #222; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .sidebar-header h2 { margin: 0; font-weight: 900; font-size: 20px; }
+        .sidebar-header span { color: var(--primary); }
         
-        /* ЛИНИИ МАГНИТА */
-        .snap-guide-x, .snap-guide-y {
-            position: absolute;
-            background: #00ffcc;
-            box-shadow: 0 0 8px #00ffcc;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.8;
-        }
-        .snap-guide-x { top: -3000px; bottom: -3000px; width: 1px; }
-        .snap-guide-y { left: -3000px; right: -3000px; height: 1px; }
+        /* PREVIEW ZONE */
+        .preview-zone { position: relative; background-color: #151515; background-image: radial-gradient(#333 1px, transparent 1px); background-size: 30px 30px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .widget-scene { position: relative; width: 100%; height: 100%; transform-origin: center center; }
 
-        .draggable-card {
-            position: absolute;
-            cursor: grab;
-            transition: box-shadow 0.2s;
-            z-index: 10;
-        }
-        .draggable-card:active {
-            cursor: grabbing;
-            box-shadow: 0 0 40px rgba(255,0,68,0.3) !important;
-            z-index: 99;
-        }
+        /* GUIDES */
+        .guide { position: absolute; background: #00ffcc; box-shadow: 0 0 10px #00ffcc; z-index: 100; pointer-events: none; opacity: 0.8; display: none; }
+        .guide.v { top: -2000px; bottom: -2000px; width: 1px; }
+        .guide.h { left: -2000px; right: -2000px; height: 1px; }
 
-        /* ОБЩИЙ СТИЛЬ СТЕКЛА ДЛЯ ВСЕХ ПЛАШЕК */
-        .glass-panel {
-            position: relative; 
-            width: 100%;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        /* DRAGGABLE CARD CORE */
+        .draggable-card { position: absolute; cursor: grab; transition: box-shadow 0.2s, transform 0.1s; z-index: 10; user-select: none; touch-action: none; transform-origin: top left; }
+        .draggable-card:active { cursor: grabbing; box-shadow: 0 0 40px rgba(255,0,68,0.2) !important; z-index: 99; transform: scale(1.01); }
+        .draggable-card.selected { border: 2px solid #00ffcc !important; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
 
-        .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .progress-box { width: 100%; background: rgba(0,0,0,0.6); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        .progress-bar { height: 100%; transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); position: relative; }
-        
-        .progress-bar::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: shimmer 2s infinite linear;
-        }
+        /* GLASS STYLE (GENERAL) */
+        .glass-panel { position: relative; width: 100%; height: 100%; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); overflow: hidden; }
+
+        /* TYPE: GOAL */
+        .goal-content { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        .goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; flex-wrap: wrap; gap: 5px; }
+        .progress-box { width: 100%; background: rgba(0,0,0,0.5); overflow: hidden; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .progress-bar { height: 100%; transition: width 0.5s ease-out; position: relative; }
+        .progress-bar::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: shimmer 2s infinite linear; }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        
-        .top-donors-title { display: inline-block; padding: 8px 16px; font-weight: 700; border-radius: 4px; margin-top: 25px; margin-bottom: 10px; }
-        .donor-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
-        .donor-item { display: flex; justify-content: space-between; padding: 12px 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s; word-break: break-word; }
-        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05)) !important; border: 1px solid rgba(255,215,0,0.4) !important; color: var(--gold) !important; font-weight: 900; }
-        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.12), rgba(224,224,224,0.03)) !important; border: 1px solid rgba(224,224,224,0.3) !important; color: var(--silver) !important; font-weight: 700; }
-        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1), rgba(205,127,50,0.02)) !important; border: 1px solid rgba(205,127,50,0.3) !important; color: var(--bronze) !important; font-weight: 700; }
 
-        /* Элементы управления */
-        .card-header { font-size: 11px; color: #fff; background: #222; padding: 8px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; font-weight: 900; border-left: 3px solid #ff0044; display: flex; justify-content: space-between; align-items: center;}
-        .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-        .row > div { flex: 1; min-width: 120px; }
-        
-        input[type="text"], input[type="number"] { background: #000; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 6px; font-family: 'Unbounded'; font-size: 12px; width: 100%; transition: border 0.3s; }
-        input[type="text"]:focus, input[type="number"]:focus { border-color: #ff0044; outline: none; }
-        input[type="range"] { width: 100%; accent-color: #ff0044; cursor: pointer; }
-        input[type="color"] { width: 100%; height: 35px; border: none; border-radius: 6px; cursor: pointer; background: transparent; }
-        
-        .btn-action { background: #333; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-family: 'Unbounded'; font-size: 10px; cursor: pointer; transition: 0.2s; }
-        .btn-action:hover { background: #ff0044; }
-        
-        .btn-add-challenge { background: #00ccff; color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: 900; cursor: pointer; width: 100%; margin-top: 10px; }
-        
-        .btn-save { background: linear-gradient(90deg, #ff0044, #cc0036); color: #fff; border: none; padding: 18px; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 20px; font-family: 'Unbounded'; text-transform: uppercase; box-shadow: 0 0 25px rgba(255,0,68,0.4); transition: transform 0.2s; }
-        .btn-save:hover { transform: scale(1.02); }
-        
-        .obs-mode-active { background: transparent !important; }
+        /* TYPE: DONORS */
+        .donor-list { list-style: none; padding: 0; margin: 15px 0 0 0; display: flex; flex-direction: column; gap: 8px; }
+        .donor-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
+        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,215,0,0.02)) !important; border-color: rgba(255,215,0,0.3) !important; color: var(--gold) !important; font-weight: 900; }
+        .rank-2 { background: linear-gradient(90deg, rgba(224,224,224,0.08), rgba(224,224,224,0.01)) !important; border-color: rgba(224,224,224,0.2) !important; color: var(--silver) !important; }
+        .rank-3 { background: linear-gradient(90deg, rgba(205,127,50,0.06), rgba(205,127,50,0.01)) !important; border-color: rgba(205,127,50,0.2) !important; color: var(--bronze) !important; }
 
-        /* Внутренности плашки челленджа */
-        .challenge-content { display: flex; flex-direction: column; width: 100%; }
-        .pushup-row { display: flex; justify-content: space-between; align-items: center; }
-        .pushup-brand { display: flex; align-items: center; gap: 15px; flex: 1; }
-        .pushup-icon { flex-shrink: 0; object-fit: contain; }
-        .pushup-title { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; word-break: break-word; }
-        .pushup-value { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; flex-shrink: 0; margin-left: 10px; }
-        .pushup-divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); width: 100%; }
-        .pushup-label { opacity: 0.9; font-size: 0.9em; font-weight: 700; word-break: break-word; }
-        .pushup-total { font-weight: 900; font-size: 1.25em; text-shadow: 0 0 10px rgba(0,0,0,0.5); text-align: right; flex-shrink: 0; margin-left: 10px;}
+        /* TYPE: CHALLENGE (DUMBBELL) */
+        .chal-content { display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: center; }
+        .chal-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .chal-brand { display: flex; align-items: center; }
+        
+        /* FIX: Иконка красится CSS маской, размер независим */
+        .chal-icon-mask { background-color: #fff; /* Цвет задается инлайново в Vue */ -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
+        
+        .chal-title { font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .chal-value { font-weight: 900; text-align: right; }
+        .chal-divider { height: 1px; width: 100%; margin: 8px 0; opacity: 0.1; }
+        .chal-label { opacity: 0.8; font-weight: 700; }
+        .chal-total { font-weight: 900; text-align: right; }
 
-        .editable { 
-            cursor: text; 
-            border-bottom: 1px dashed rgba(255,255,255,0.4); 
-            transition: all 0.2s; 
-            padding-bottom: 2px;
-            display: inline-block;
+        /* UI ELEMENTS */
+        .card-header { font-size: 10px; color: #888; background: #1a1a1a; padding: 6px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; font-weight: 700; border-left: 2px solid #333; display: flex; justify-content: space-between; align-items: center;}
+        .card-header.active-panel { border-left-color: var(--primary); color: #fff; }
+        .input-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+        .row { display: flex; gap: 8px; }
+        .row > div { flex: 1; }
+        
+        label { font-size: 9px; color: #aaa; text-transform: uppercase; font-weight: 700; }
+        input[type="text"], input[type="number"], select { background: #000; border: 1px solid #222; color: #fff; padding: 8px; border-radius: 4px; font-family: 'Unbounded'; font-size: 11px; width: 100%; }
+        input:focus, select:focus { border-color: var(--primary); }
+        
+        .range-wrapper { display: flex; align-items: center; gap: 8px; }
+        input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; margin: 0; }
+        .range-val { font-size: 10px; color: #fff; width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
+        
+        .color-picker-group { display: flex; gap: 5px; flex-wrap: wrap; }
+        .color-item { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; min-width: 60px;}
+        input[type="color"] { width: 100%; height: 30px; border: 1px solid #222; border-radius: 4px; cursor: pointer; background: transparent; padding: 0; }
+
+        /* BUTTONS */
+        .btn { font-family: 'Unbounded'; text-transform: uppercase; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        
+        .btn-add { background: #222; color: #fff; padding: 10px; border-radius: 6px; font-size: 11px; width: 100%; border: 1px solid #333; }
+        .btn-add:hover { background: #282828; border-color: #444; }
+        
+        .btn-save { background: linear-gradient(135deg, #ff0044, #cc0036); color: #fff; padding: 15px; border-radius: 8px; font-weight: 900; font-size: 13px; margin-top: auto; box-shadow: 0 4px 15px rgba(255,0,68,0.3); }
+        .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,0,68,0.4); }
+        
+        .btn-copy { background: #1a1a1a; color: #aaa; padding: 10px; border-radius: 6px; font-size: 10px; width: 100%; margin-top: 10px; border: 1px solid #222; }
+        .btn-copy:hover { background: #222; color: #fff; }
+        
+        .btn-danger { background: rgba(255,0,0,0.1); color: #ff4444; padding: 4px 8px; border-radius: 4px; font-size: 8px; border: 1px solid rgba(255,0,0,0.2); }
+        .btn-danger:hover { background: rgba(255,0,0,0.2); }
+
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+        .btn-file { background: #1a1a1a; border: 1px solid #222; color: #ccc; padding: 8px; border-radius: 4px; font-size: 10px; width: 100%; text-align: center; }
+
+        /* EDITABLE TEXT IN PREVIEW */
+        .editable { cursor: text; border-bottom: 1px dashed rgba(255,255,255,0.2); display: inline-block; transition: background 0.2s; }
+        .editable:hover { background: rgba(255,255,255,0.05); }
+        .editable:focus { background: rgba(255,255,255,0.1); outline: none; border-bottom-color: var(--primary); }
+
+        /* OBS MODE */
+        .obs-mode .admin-panel { display: none; }
+        .obs-mode .editable { border: none !important; background: transparent !important; pointer-events: none; }
+        .obs-mode .draggable-card { cursor: default !important; border: none !important; box-shadow: none !important; }
+
+        /* RESPONSIVE ADMIN */
+        @media (max-width: 900px) {
+            .admin-panel { grid-template-columns: 1fr; grid-template-rows: 40vh 60vh; position: relative; overflow-y: auto; }
+            .sidebar { border-right: none; border-top: 1px solid #222; order: 2; height: auto; overflow-y: visible; }
+            .preview-zone { order: 1; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid #222; }
+            .widget-scene { transform: scale(0.8); }
         }
-        .editable:hover { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        .editable:focus { background: rgba(255,255,255,0.2); outline: none; border-bottom: 1px solid #ff0044; border-radius: 4px; }
-        .obs-mode-active .editable { border: none !important; background: transparent !important; padding-bottom: 0;}
-        
-        .challenge-admin-card { background: #1a1a1a; padding: 10px; border-radius: 8px; margin-top: 10px; border: 1px solid #333; }
     </style>
 </head>
-<body :class="{'obs-mode-active': isObs}">
+<body>
 
-<div id="app">
-    <div v-if="!isObs" class="admin-panel">
-        <div class="sidebar">
-            <h2 style="margin:0; font-weight:900; font-size: 24px;">WIDGET <span style="color:#ff0044">BUILDER</span></h2>
-            
-            <div class="card-header">Главный Сбор</div>
-            <div class="row">
-                <div class="input-group"><label>Собрано сейчас</label><input type="number" v-model.number="s.current"></div>
-                <div class="input-group"><label>Отступ (Padding)</label><input type="range" min="10" max="80" v-model.number="s.mainPadding"></div>
-            </div>
-
-            <div class="card-header">Челленджи (Плашки)</div>
-            <button class="btn-add-challenge" @click="addChallenge">➕ ДОБАВИТЬ ЧЕЛЛЕНДЖ</button>
-            
-            <div v-for="(chal, index) in s.challenges" :key="chal.id" class="challenge-admin-card">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <strong style="font-size: 12px; color: #00ccff;">Челлендж #{{index + 1}}</strong>
-                    <button class="btn-action" @click="removeChallenge(index)">Удалить</button>
-                </div>
-                <div class="input-group" style="margin-bottom: 10px;">
-                    <label>Ссылка на иконку (URL)</label>
-                    <input type="text" v-model="chal.icon" placeholder="https://...">
-                </div>
-            </div>
-
-            <div class="card-header" v-if="s.challenges.length > 0">Стиль Челленджей</div>
-            <div class="row" v-if="s.challenges.length > 0">
-                <div class="input-group"><label>Размер иконок</label><input type="range" min="20" max="150" v-model.number="s.pushupIconSize"></div>
-                <div class="input-group"><label>Внутр. отступ</label><input type="range" min="10" max="80" v-model.number="s.pushupPadding"></div>
-                <div class="input-group"><label>Отступ строк</label><input type="range" min="5" max="50" v-model.number="s.pushupGap"></div>
-            </div>
-
-            <div class="card-header">Визуал и Цвета</div>
-            <div class="row">
-                <div class="input-group"><label>Цвет прогресса 1</label><input type="color" v-model="s.c1"></div>
-                <div class="input-group"><label>Цвет прогресса 2</label><input type="color" v-model="s.c2"></div>
-                <div class="input-group"><label>Цвет акцентов</label><input type="color" v-model="s.cSum"></div>
-            </div>
-            
-            <div class="card-header">Прозрачность и Фон</div>
-            <div class="row">
-                <div class="input-group"><label>Цвет подложки</label><input type="color" v-model="s.bgHex"></div>
-                <div class="input-group"><label>Стекло Основы: {{s.glass}}</label><input type="range" min="0" max="1" step="0.05" v-model.number="s.glass"></div>
-                <div class="input-group"><label>Стекло Челленджей: {{s.challengeGlass}}</label><input type="range" min="0" max="1" step="0.05" v-model.number="s.challengeGlass"></div>
-            </div>
-
-            <div class="card-header">Размеры и Форма</div>
-            <div class="row">
-                <div class="input-group"><label>Ширина: {{s.width}}px</label><input type="range" min="250" max="1200" step="10" v-model.number="s.width"></div>
-                <div class="input-group"><label>Скругление: {{s.radius}}px</label><input type="range" min="0" max="100" v-model.number="s.radius"></div>
-            </div>
-            <div class="row">
-                <div class="input-group"><label>Шрифт Заголовков</label><input type="range" min="10" max="80" v-model.number="s.fTitle"></div>
-                <div class="input-group"><label>Шрифт Сумм</label><input type="range" min="10" max="80" v-model.number="s.fSum"></div>
-            </div>
-            <div class="input-group"><label>Масштаб OBS: {{s.scale}}</label><input type="range" min="0.5" max="3" step="0.1" v-model.number="s.scale"></div>
-
-            <div class="card-header">Топ Донатеров</div>
-            <div class="input-group"><label>Количество строк (до 10)</label><input type="number" min="0" max="10" v-model.number="s.donorCount"></div>
-
-            <button class="btn-save" @click="saveToFirebase">ОПУБЛИКОВАТЬ</button>
-            <button class="btn-action" style="padding: 15px; font-size: 12px; margin-bottom: 40px;" @click="copyWidgetLink">СКОПИРОВАТЬ ССЫЛКУ ДЛЯ OBS</button>
-        </div>
-
-        <div class="preview-zone">
-            <div class="widget-wrap" :style="scaleStyleAdmin">
-                
-                <div v-if="snapX !== null" class="snap-guide-x" :style="{left: snapX + 'px'}"></div>
-                <div v-if="snapY !== null" class="snap-guide-y" :style="{top: snapY + 'px'}"></div>
-
-                <div class="draggable-card" @mousedown="startDrag('main', $event)" :style="getPosStyle(s.mainX, s.mainY)">
-                    <div class="glass-panel" :style="mainCardStyle">
-                        <div class="goal-header">
-                            <span class="editable" contenteditable="true" spellcheck="false" @blur="s.goalTitle = $event.target.textContent" :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
-                            <span :style="{fontSize: s.fSum+'px', color: s.cSum, fontWeight: 900}">
-                                {{ formattedCurrent }} / <span class="editable" contenteditable="true" spellcheck="false" @blur="s.max = $event.target.textContent">{{ s.max }}</span>
-                            </span>
-                        </div>
-                        <div class="progress-box" :style="{height: (s.fSum*0.8)+'px', borderRadius: (s.radius/2)+'px'}">
-                            <div class="progress-bar" :style="barStyle"></div>
-                        </div>
-                        
-                        <div v-if="s.donorCount > 0" class="top-donors-title editable" contenteditable="true" spellcheck="false" @blur="s.topTitle = $event.target.textContent" :style="topTitleStyle">{{ s.topTitle }}</div>
-                        <ul class="donor-list" v-if="s.donorCount > 0">
-                            <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i"
-                                :class="'rank-' + (i+1)" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.7)+'px'}">
-                                <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}<span class="editable" contenteditable="true" spellcheck="false" @blur="s.donors[i] = $event.target.textContent">{{ s.donors[i] || 'Имя...' }}</span></span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="draggable-card" v-for="(chal, index) in s.challenges" :key="chal.id" 
-                     @mousedown="startDrag('challenge_' + index, $event)" :style="getPosStyle(chal.x, chal.y)">
-                    <div class="glass-panel challenge-content" :style="challengeCardStyle">
-                        <div class="pushup-row">
-                            <div class="pushup-brand">
-                                <img :src="chal.icon" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
-                                <span class="editable pushup-title" contenteditable="true" spellcheck="false" @blur="chal.title = $event.target.textContent">{{ chal.title }}</span>
-                            </div>
-                            <div class="editable pushup-value" contenteditable="true" spellcheck="false" @blur="chal.value = $event.target.textContent" :style="{color: s.cSum}">{{ chal.value }}</div>
-                        </div>
-                        <div class="pushup-divider"></div>
-                        <div class="pushup-row">
-                            <div class="editable pushup-label" contenteditable="true" spellcheck="false" @blur="chal.label = $event.target.textContent">{{ chal.label }}</div>
-                            <div class="editable pushup-total" contenteditable="true" spellcheck="false" @blur="chal.total = $event.target.textContent" :style="{color: s.cSum}">{{ chal.total }}</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+<div id="app" :class="{'obs-mode': isObs}">
+    <div v-if="isObs" class="widget-scene" :style="sceneStyle">
+        <div v-for="p in panels" :key="p.id" class="draggable-card" :style="getCardPos(p)">
+            <component :is="getComponent(p.type)" :p="p" :is-obs="true"></component>
         </div>
     </div>
 
-    <div v-if="isObs" class="widget-wrap" :style="scaleStyleOBS">
-        <div class="draggable-card" :style="getPosStyle(s.mainX, s.mainY)">
-            <div class="glass-panel" :style="mainCardStyle">
-                <div class="goal-header">
-                    <span :style="{fontSize: s.fTitle+'px'}">{{ s.goalTitle }}</span>
-                    <span :style="{fontSize: s.fSum+'px', color: s.cSum, fontWeight: 900}">{{ formattedCurrent }} / {{ s.max }}</span>
-                </div>
-                <div class="progress-box" :style="{height: (s.fSum*0.8)+'px', borderRadius: (s.radius/2)+'px'}">
-                    <div class="progress-bar" :style="barStyle"></div>
-                </div>
-                <div v-if="s.topTitle && s.donorCount > 0" class="top-donors-title" :style="topTitleStyle">{{ s.topTitle }}</div>
-                <ul class="donor-list" v-if="s.donorCount > 0">
-                    <li class="donor-item" v-for="(d, i) in s.donors.slice(0, s.donorCount)" :key="i" v-show="d" 
-                        :class="'rank-' + (i+1)" :style="{borderRadius: (s.radius/3)+'px', fontSize: (s.fTitle*0.7)+'px'}">
-                        <span>{{ i === 0 ? '👑 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : (i+1) + '. ' }}{{ d }}</span>
-                    </li>
-                </ul>
+    <div v-else class="admin-panel">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>WIDGET <span>PRO</span></h2>
+                <div style="font-size: 10px; color: #555;">v10.0</div>
             </div>
+            
+            <div class="row">
+                <button class="btn btn-add" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
+                <button class="btn btn-add" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
+            </div>
+
+            <div v-for="(p, index) in panels" :key="p.id">
+                <div class="card-header" :class="{'active-panel': selectedPanelId === p.id}" @click="selectedPanelId = p.id" style="cursor:pointer">
+                    <span>#{{index + 1}} {{ p.type === 'goal' ? 'ЦЕЛЬ' : 'ЧЕЛЛЕНДЖ' }}</span>
+                    <button class="btn btn-danger" @click.stop="removePanel(p.id)">УДАЛИТЬ</button>
+                </div>
+                
+                <div v-if="selectedPanelId === p.id" class="panel-settings" style="padding: 10px 5px; background: #141414; border-radius: 0 0 4px 4px; margin-bottom: 10px;">
+                    
+                    <template v-if="p.type === 'goal'">
+                        <div class="row">
+                            <div class="input-group"><label>Текущее</label><input type="number" v-model.number="p.current"></div>
+                            <div class="input-group"><label>Цель</label><input type="text" v-model="p.max"></div>
+                        </div>
+                        <div class="input-group"><label>Топ донатеров (через запятую)</label><input type="text" v-model="p.donorsRaw"></div>
+                    </template>
+
+                    <template v-if="p.type === 'challenge'">
+                        <div class="input-group">
+                            <label>Логотип плашки</label>
+                            <div class="file-input-wrapper">
+                                <button class="btn-file">Выбрать картинку</button>
+                                <input type="file" accept="image/*" @change="uploadIcon($event, p)">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group"><label>Размер лого: {{p.iconSize}}px</label>
+                                <div class="range-wrapper">
+                                    <input type="range" min="10" max="150" v-model.number="p.iconSize">
+                                    <span class="range-val">{{p.iconSize}}</span>
+                                </div>
+                            </div>
+                            <div class="input-group"><label>Отступ лого: {{p.iconGap}}px</label>
+                                <div class="range-wrapper">
+                                    <input type="range" min="0" max="50" v-model.number="p.iconGap">
+                                    <span class="range-val">{{p.iconGap}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group"><label>Показать разделитель?</label><input type="checkbox" v-model="p.showDivider" style="accent-color:var(--primary); width:16px; height:16px;"></div>
+                    </template>
+
+                    <div class="card-header">Размеры и Скругление</div>
+                    <div class="input-group"><label>Ширина: {{p.width}}px</label>
+                        <div class="range-wrapper"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="range-val">{{p.width}}</span></div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group"><label>Padding: {{p.padding}}px</label>
+                            <div class="range-wrapper"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="range-val">{{p.padding}}</span></div>
+                        </div>
+                        <div class="input-group"><label>Радиус: {{p.radius}}px</label>
+                            <div class="range-wrapper"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="range-val">{{p.radius}}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-header">Фон (Стекло)</div>
+                    <div class="row">
+                        <div class="input-group"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
+                        <div class="input-group"><label>Прозрачность: {{p.bgOpacity}}</label>
+                            <div class="range-wrapper"><input type="range" min="0" max="1" step="0.01" v-model.number="p.bgOpacity"><span class="range-val">{{p.bgOpacity}}</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card-header">Цвета Текста и Акцентов</div>
+                    <div class="color-picker-group">
+                        <div class="color-item"><label>Текст</label><input type="color" v-model="p.cText"></div>
+                        
+                        <template v-if="p.type === 'goal'">
+                            <div class="color-item"><label>Бар 1</label><input type="color" v-model="p.cBar1"></div>
+                            <div class="color-item"><label>Бар 2</label><input type="color" v-model="p.cBar2"></div>
+                            <div class="color-item"><label>Сумма</label><input type="color" v-model="p.cAccent"></div>
+                        </template>
+                        
+                        <template v-if="p.type === 'challenge'">
+                            <div class="color-item"><label>Иконка</label><input type="color" v-model="p.cIcon"></div>
+                            <div class="color-item"><label>Цифры</label><input type="color" v-model="p.cAccent"></div>
+                        </template>
+                    </div>
+
+                </div>
+            </div> <div class="card-header" style="margin-top:20px;">Глобальные настройки OBS</div>
+            <div class="input-group"><label>Масштаб сцены: {{globalScale}}</label>
+                <div class="range-wrapper"><input type="range" min="0.5" max="2" step="0.01" v-model.number="globalScale"><span class="range-val">{{globalScale}}</span></div>
+            </div>
+
+            <button class="btn btn-save" @click="saveData">ОПУБЛИКОВАТЬ</button>
+            <button class="btn btn-copy" @click="copyLink">Скопировать ссылку для OBS</button>
+            <div style="font-size: 9px; color: #444; text-align: center; margin-top: 5px;">Двигай плашки справа. Магнит работает автоматически.</div>
         </div>
 
-        <div class="draggable-card" v-for="chal in s.challenges" :key="chal.id" :style="getPosStyle(chal.x, chal.y)">
-            <div class="glass-panel challenge-content" :style="challengeCardStyle">
-                <div class="pushup-row">
-                    <div class="pushup-brand">
-                        <img :src="chal.icon" class="pushup-icon" :style="{width: s.pushupIconSize + 'px', height: s.pushupIconSize + 'px'}">
-                        <span class="pushup-title">{{ chal.title }}</span>
-                    </div>
-                    <div class="pushup-value" :style="{color: s.cSum}">{{ chal.value }}</div>
-                </div>
-                <div class="pushup-divider"></div>
-                <div class="pushup-row">
-                    <div class="pushup-label">{{ chal.label }}</div>
-                    <div class="pushup-total" :style="{color: s.cSum}">{{ chal.total }}</div>
+        <div class="preview-zone">
+            <div class="guide v" ref="guideV"></div>
+            <div class="guide h" ref="guideH"></div>
+
+            <div class="widget-scene" :style="sceneStyleAdmin">
+                <div v-for="p in panels" :key="p.id" 
+                     class="draggable-card" 
+                     :class="{'selected': selectedPanelId === p.id}"
+                     :style="getCardPos(p)"
+                     @mousedown="startDrag($event, p)"
+                     @touchstart.passive="startDrag($event, p)"
+                     @click="selectedPanelId = p.id">
+                    
+                    <component :is="getComponent(p.type)" :p="p" :is-obs="false"></component>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-const { createApp, ref, computed, onMounted } = Vue;
+<template id="tmpl-goal">
+    <div class="glass-panel" :style="panelStyle">
+        <div class="goal-content">
+            <div class="goal-header" :style="{color: p.cText}">
+                <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{fontSize: p.padding*0.8+'px', fontWeight: 700}">{{ p.title }}</span>
+                <span :style="{fontSize: p.padding*0.9+'px', fontWeight: 900, color: p.cAccent}">
+                    {{ formattedCurrent }} / <span class="editable" :contenteditable="!isObs" @blur="updateText($event, p, 'max')">{{ p.max }}</span>
+                </span>
+            </div>
+            <div class="progress-box" :style="{height: p.padding*0.7+'px', borderRadius: p.radius/2+'px'}">
+                <div class="progress-bar" :style="barStyle"></div>
+            </div>
+            
+            <ul v-if="donorList.length" class="donor-list" :style="{fontSize: p.padding*0.65+'px', color: p.cText}">
+                <li v-for="(name, i) in donorList" :key="i" class="donor-item" :class="'rank-'+(i+1)" :style="{borderRadius: p.radius/3+'px'}">
+                    <span>{{ i==0?'👑 ':i==1?'🥈 ':i==2?'🥉 ':(i+1)+'. ' }}{{ name }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</template>
 
+<template id="tmpl-challenge">
+    <div class="glass-panel" :style="panelStyle">
+        <div class="chal-content" :style="{gap: p.iconGap/2 + 'px'}">
+            <div class="chal-row">
+                <div class="chal-brand" :style="{gap: p.iconGap + 'px'}">
+                    <div class="chal-icon-mask" :style="iconMaskStyle"></div>
+                    <div class="chal-title editable" :contenteditable="!isObs" @blur="updateText($event, p, 'title')" :style="{color: p.cText, fontSize: p.padding*0.8+'px'}">{{ p.title }}</div>
+                </div>
+                <div class="chal-value editable" :contenteditable="!isObs" @blur="updateText($event, p, 'value')" :style="{color: p.cAccent, fontSize: p.padding+'px'}">{{ p.value }}</div>
+            </div>
+            
+            <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor: p.cText}"></div>
+            
+            <div class="chal-row">
+                <div class="chal-label editable" :contenteditable="!isObs" @blur="updateText($event, p, 'label')" :style="{color: p.cText, fontSize: p.padding*0.65+'px'}">{{ p.label }}</div>
+                <div class="chal-total editable" :contenteditable="!isObs" @blur="updateText($event, p, 'count')" :style="{color: p.cAccent, fontSize: p.padding*0.9+'px'}">{{ p.count }}</div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+const { createApp, ref, computed, onMounted, onBeforeUnmount, watch } = Vue;
+
+// Firebase Config - ОСТАВИЛ ТВОЙ
 const firebaseConfig = {
     apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
     authDomain: "tt-widget-88711.firebaseapp.com",
@@ -306,183 +319,297 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const DB_PATH = 'widget_data_v10'; // НОВАЯ ВЕРСИЯ ДАННЫХ ДЛЯ ПОДДЕРЖКИ МНОЖЕСТВА ПЛАШЕК
 
-createApp({
-    setup() {
-        const isObs = ref(false);
-        const snapX = ref(null);
-        const snapY = ref(null);
+// Дефолтная иконка гантели (которую ты прислал, переведенная в Base64 для надежности, если ссылка умрет)
+const DUMBBELL_ICON = 'https://cdn-icons-png.flaticon.com/512/38/38464.png';
 
-        const s = ref({
-            goalTitle: 'СБОР НА ТУРНИР:', current: 2500, max: '10.000',
-            topTitle: 'ТОП УЧАСТНИКОВ', donorCount: 3, donors: ['Player One', 'Cyber Ninja', ''],
-            scale: 1.0, width: 600, glass: 0.6, challengeGlass: 0.6, radius: 24, fTitle: 22, fSum: 24,
-            c1: '#8a0022', c2: '#ff0044', cSum: '#ffd700', bgHex: '#0f0f0f',
-            
-            mainX: 50, mainY: 50, mainPadding: 30,
-            pushupIconSize: 36, pushupGap: 15, pushupPadding: 22,
-            
-            challenges: [
-                {
-                    id: Date.now(),
-                    x: 50, y: 450,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/38/38464.png',
-                    title: 'ОТЖИМАНИЯ', value: '1 раз - 50тг',
-                    label: 'Отжался за сегодня:', total: '7 Раз(а)'
-                }
-            ]
+// Хелпер для HEX -> RGBA
+const hexToRgba = (hex, opacity) => {
+    let c = hex.substring(1).split('');
+    if (c.length === 3) c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+    c = '0x' + c.join('');
+    return `rgba(${(c >> 16) & 255}, ${(c >> 8) & 255}, ${c & 255}, ${opacity})`;
+};
+
+// --- КОМПОНЕНТ: ЦЕЛЬ ---
+const GoalWidget = {
+    template: '#tmpl-goal',
+    props: ['p', 'isObs'],
+    setup(props) {
+        const formattedCurrent = computed(() => (props.p.current || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+        const donorList = computed(() => props.p.donorsRaw ? props.p.donorsRaw.split(',').map(s=>s.trim()).filter(Boolean).slice(0,5) : []);
+        
+        const progressPercent = computed(() => {
+            const m = parseFloat(props.p.max.toString().replace(/[^\d]/g, ''));
+            return m > 0 ? Math.min((props.p.current / m) * 100, 100) : 0;
         });
 
-        // ДОБАВЛЕНИЕ И УДАЛЕНИЕ ЧЕЛЛЕНДЖЕЙ
-        const addChallenge = () => {
-            s.value.challenges.push({
-                id: Date.now(),
-                x: s.value.mainX, 
-                y: s.value.mainY + 200, // Появляется чуть ниже главного
-                icon: 'https://cdn-icons-png.flaticon.com/512/38/38464.png',
-                title: 'НОВЫЙ ЧЕЛЛЕНДЖ', value: 'Условие',
-                label: 'Сделано:', total: '0'
-            });
-        };
-        const removeChallenge = (index) => { s.value.challenges.splice(index, 1); };
+        const panelStyle = computed(() => ({
+            padding: props.p.padding + 'px',
+            borderRadius: props.p.radius + 'px',
+            background: hexToRgba(props.p.bgColor, props.p.bgOpacity),
+        }));
 
-        // ЛОГИКА DRAG & DROP + УМНЫЙ МАГНИТ
-        let activeDrag = null;
-        let startX = 0; let startY = 0;
-        let initialX = 0; let initialY = 0;
+        const barStyle = computed(() => ({
+            width: progressPercent.value + '%',
+            background: `linear-gradient(90deg, ${props.p.cBar1}, ${props.p.cBar2})`,
+            boxShadow: `0 0 15px ${props.p.cBar2}88`,
+            borderRadius: (props.p.radius/2)+'px'
+        }));
 
-        const startDrag = (elemId, e) => {
-            if (isObs.value) return; 
-            if (e.target.classList.contains('editable') || e.target.tagName.toLowerCase() === 'input') return; 
-            
-            activeDrag = elemId;
-            startX = e.clientX; startY = e.clientY;
-            
-            if (elemId === 'main') {
-                initialX = s.value.mainX; initialY = s.value.mainY;
+        const updateText = (e, p, field) => { if(!props.isObs) p[field] = e.target.textContent; };
+
+        return { formattedCurrent, donorList, panelStyle, barStyle, updateText };
+    }
+};
+
+// --- КОМПОНЕНТ: ЧЕЛЛЕНДЖ ---
+const ChallengeWidget = {
+    template: '#tmpl-challenge',
+    props: ['p', 'isObs'],
+    setup(props) {
+        const panelStyle = computed(() => ({
+            padding: props.p.padding + 'px',
+            borderRadius: props.p.radius + 'px',
+            background: hexToRgba(props.p.bgColor, props.p.bgOpacity),
+        }));
+
+        // СТИЛЬ ДЛЯ ОКРАШИВАНИЯ ИКОНКИ
+        const iconMaskStyle = computed(() => ({
+            width: props.p.iconSize + 'px',
+            height: props.p.iconSize + 'px',
+            backgroundColor: props.p.cIcon, // ЭТО КРАСИТ ИКОНКУ
+            '-webkit-mask-image': `url(${props.p.iconUrl || DUMBBELL_ICON})`,
+            'mask-image': `url(${props.p.iconUrl || DUMBBELL_ICON})`
+        }));
+
+        const updateText = (e, p, field) => { if(!props.isObs) p[field] = e.target.textContent; };
+
+        return { panelStyle, iconMaskStyle, updateText };
+    }
+};
+
+// --- ГЛАВНОЕ ПРИЛОЖЕНИЕ ---
+createApp({
+    components: { GoalWidget, ChallengeWidget },
+    setup() {
+        const isObs = ref(false);
+        const panels = ref([]);
+        const globalScale = ref(1.0);
+        const selectedPanelId = ref(null);
+        
+        const guideV = ref(null);
+        const guideH = ref(null);
+
+        // Фабрики дефолтных настроек
+        const createBaseConfig = (type) => ({
+            id: Date.now(),
+            type,
+            x: 50, y: 50,
+            width: 400, padding: 20, radius: 15,
+            bgColor: '#0f0f0f', bgOpacity: 0.7,
+            cText: '#ffffff', cAccent: '#ffd700',
+        });
+
+        const addPanel = (type) => {
+            let config = createBaseConfig(type);
+            if (type === 'goal') {
+                Object.assign(config, { title: 'СБОР НА СТРИМ:', current: 0, max: '10 000', donorsRaw: 'Донатер, Привет, Supreme', cBar1: '#8a0022', cBar2: '#ff0044' });
             } else {
-                const idx = parseInt(elemId.split('_')[1]);
-                initialX = s.value.challenges[idx].x; initialY = s.value.challenges[idx].y;
+                Object.assign(config, { title: 'ОТЖИМАНИЯ', value: '1 раз = 50р', label: 'Всего за сегодня:', count: '0 раз', iconSize: 35, iconGap: 15, cIcon: '#ffffff', iconUrl: DUMBBELL_ICON, showDivider: true });
             }
-
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', stopDrag);
+            panels.value.push(config);
+            selectedPanelId.value = config.id;
         };
 
-        const drag = (e) => {
-            if (!activeDrag) return;
-            const dx = (e.clientX - startX) / s.value.scale;
-            const dy = (e.clientY - startY) / s.value.scale;
-            
-            let nx = initialX + dx;
-            let ny = initialY + dy;
+        const removePanel = (id) => {
+            panels.value = panels.value.filter(p => p.id !== id);
+            if (selectedPanelId.value === id) selectedPanelId.value = panels.value.length ? panels.value[0].id : null;
+        };
 
-            // МАГНИТ (ПО ОСЯМ X И Y)
-            const snapThreshold = 15;
-            snapX.value = null; snapY.value = null;
-            
-            // Собираем координаты всех ДРУГИХ плашек
-            let targets = [];
-            if (activeDrag !== 'main') targets.push({x: s.value.mainX, y: s.value.mainY});
-            s.value.challenges.forEach((chal, i) => {
-                if (activeDrag !== 'challenge_' + i) targets.push({x: chal.x, y: chal.y});
-            });
+        const getComponent = (type) => type === 'goal' ? 'GoalWidget' : 'ChallengeWidget';
 
-            // Проверяем прилипание
-            for (let t of targets) {
-                if (Math.abs(nx - t.x) < snapThreshold) { nx = t.x; snapX.value = t.x; } // Липнет левый край
-                // Если нужно центрирование по X, логика сложнее (зависит от width), но ширина у всех одинаковая, так что X совпадает.
-                
-                // Вертикальное прилипание (например, выравнивание верхних краев)
-                if (Math.abs(ny - t.y) < snapThreshold) { ny = t.y; snapY.value = t.y; }
-            }
-
-            // Сохраняем новые координаты
-            if (activeDrag === 'main') {
-                s.value.mainX = nx; s.value.mainY = ny;
+        // КОРРЕКТНЫЙ РАСЧЕТ ВЫСОТЫ ПЛАШКИ (приблизительный, т.к. текст может переноситься)
+        // Нужен для работы магнита по нижнему краю.
+        const estimateHeight = (p) => {
+            let h = p.padding * 2;
+            if (p.type === 'goal') {
+                h += p.padding * 0.9 + 12; // header
+                h += p.padding * 0.7; // bar
+                const donors = p.donorsRaw ? p.donorsRaw.split(',').filter(Boolean).length : 0;
+                if (donors) h += 15 + (Math.min(donors, 5) * (p.padding * 0.65 + 20 + 8));
             } else {
-                const idx = parseInt(activeDrag.split('_')[1]);
-                s.value.challenges[idx].x = nx; s.value.challenges[idx].y = ny;
+                h += p.padding; // row1 value height
+                if(p.showDivider) h += 17;
+                h += p.padding * 0.9; // row2 count height
+                if(p.iconSize > h - p.padding*2) h = p.iconSize + p.padding*2; // Если иконка огромная
             }
+            return h;
+        };
+
+        // ДРАГ & ЭДВАНСЕД МАГНИТ
+        let dragInfo = null;
+        const SNAP_TOLERANCE = 15; // Пиксели чувствительности магнита
+
+        const startDrag = (e, panel) => {
+            if (isObs.value) return;
+            if (e.target.classList.contains('editable') || e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+            
+            selectedPanelId.value = panel.id;
+            const event = e.touches ? e.touches[0] : e;
+            
+            dragInfo = {
+                panel,
+                startX: event.clientX,
+                startY: event.clientY,
+                initialX: panel.x,
+                initialY: panel.y,
+                otherPanels: panels.value.filter(p => p.id !== panel.id).map(p => ({
+                    ...p,
+                    h: estimateHeight(p), // Предрассчитанная высота
+                    cx: p.x + p.width / 2, // Центр X
+                    cy: p.y + estimateHeight(p) / 2 // Центр Y
+                }))
+            };
+
+            document.addEventListener(e.touches ? 'touchmove' : 'mousemove', onDrag, {passive: false});
+            document.addEventListener(e.touches ? 'touchend' : 'mouseup', stopDrag);
+            if(e.cancelable && e.touches) e.preventDefault();
+        };
+
+        const onDrag = (e) => {
+            if (!dragInfo) return;
+            if(e.cancelable && e.touches) e.preventDefault(); 
+            
+            const event = e.touches ? e.touches[0] : e;
+            const mouseDx = (event.clientX - dragInfo.startX) / globalScale.value;
+            const mouseDy = (event.clientY - dragInfo.startY) / globalScale.value;
+            
+            let newX = dragInfo.initialX + mouseDx;
+            let newY = dragInfo.initialY + mouseDy;
+            
+            const curW = dragInfo.panel.width;
+            const curH = estimateHeight(dragInfo.panel);
+            
+            let snapX = null, snapY = null;
+            let showV = false, showH = false;
+
+            // Логика МАГНИТА (Перебор осей других плашек)
+            for (const other of dragInfo.otherPanels) {
+                // --- ГОР ПРИВЯЗКИ (X) ---
+                // Лево-Лево
+                if (Math.abs(newX - other.x) < SNAP_TOLERANCE) { newX = other.x; snapX = newX; showV = true; }
+                // Право-Право
+                else if (Math.abs((newX + curW) - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width - curW; snapX = newX + curW; showV = true; }
+                // Центр-Центр
+                else if (Math.abs((newX + curW/2) - other.cx) < SNAP_TOLERANCE) { newX = other.cx - curW/2; snapX = other.cx; showV = true; }
+                // Право-Лево (прилипание сбоку)
+                else if (Math.abs((newX + curW) - other.x) < SNAP_TOLERANCE) { newX = other.x - curW; snapX = other.x; showV = true; }
+                // Лево-Право (прилипание сбоку)
+                else if (Math.abs(newX - (other.x + other.width)) < SNAP_TOLERANCE) { newX = other.x + other.width; snapX = newX; showV = true; }
+
+                // --- ВЕРТ ПРИВЯЗКИ (Y) ---
+                // Топ-Топ
+                if (Math.abs(newY - other.y) < SNAP_TOLERANCE) { newY = other.y; snapY = newY; showH = true; }
+                // Бот-Бот
+                else if (Math.abs((newY + curH) - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h - curH; snapY = newY + curH; showH = true; }
+                // Центр-Центр
+                else if (Math.abs((newY + curH/2) - other.cy) < SNAP_TOLERANCE) { newY = other.cy - curH/2; snapY = other.cy; showH = true; }
+                // Бот-Топ (прилипание снизу/сверху)
+                else if (Math.abs((newY + curH) - other.y) < SNAP_TOLERANCE) { newY = other.y - curH; snapY = other.y; showH = true; }
+                // Топ-Бот (прилипание снизу/сверху)
+                else if (Math.abs(newY - (other.y + other.h)) < SNAP_TOLERANCE) { newY = other.y + other.h; snapY = newY; showH = true; }
+            }
+
+            // Управление линиями гидов
+            if (showV && guideV.value) { guideV.value.style.display = 'block'; guideV.value.style.left = snapX + 'px'; }
+            else if(guideV.value) guideV.value.style.display = 'none';
+            
+            if (showH && guideH.value) { guideH.value.style.display = 'block'; guideH.value.style.top = snapY + 'px'; }
+            else if(guideH.value) guideH.value.style.display = 'none';
+
+            dragInfo.panel.x = Math.round(newX);
+            dragInfo.panel.y = Math.round(newY);
         };
 
         const stopDrag = () => {
-            activeDrag = null;
-            snapX.value = null; snapY.value = null;
-            document.removeEventListener('mousemove', drag);
+            dragInfo = null;
+            if(guideV.value) guideV.value.style.display = 'none';
+            if(guideH.value) guideH.value.style.display = 'none';
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('touchmove', onDrag);
             document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+        };
+
+        // Загрузка кастомной иконки
+        const uploadIcon = (e, panel) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.size > 500 * 1024) { alert("Файл слишком большой! Максимум 500Кб."); return; }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => { panel.iconUrl = event.target.result; }; // Сохраняем как Base64
+            reader.readAsDataURL(file);
+        };
+
+        // Стили координат и масштаба
+        const getCardPos = (p) => ({ left: p.x + 'px', top: p.y + 'px', width: p.width + 'px' });
+        const sceneStyleAdmin = computed(() => ({ transform: `scale(${globalScale.value})` })); // В админке скейлим саму сцену
+        const sceneStyle = computed(() => ({ transform: `scale(${globalScale.value})`, transformOrigin: 'top left' })); // В OBS от угла
+
+        // Firebase Взаимодействие
+        const saveData = () => {
+            // Очищаем proxy объекты перед сохранением
+            const dataToSave = JSON.parse(JSON.stringify({
+                scale: globalScale.value,
+                panels: panels.value
+            }));
+            db.ref(DB_PATH).set(dataToSave)
+                .then(() => alert("Опубликовано! Обновите источник в OBS."))
+                .catch(err => alert("Ошибка Firebase: " + err.message));
+        };
+
+        const loadData = () => {
+            db.ref(DB_PATH).once('value', snap => {
+                if (snap.exists()) {
+                    const data = snap.val();
+                    globalScale.value = data.scale || 1.0;
+                    panels.value = data.panels || [];
+                    if (panels.value.length) selectedPanelId.value = panels.value[0].id;
+                } else {
+                    // Если данных нет, создаем дефолтную пару
+                    addPanel('goal');
+                    addPanel('challenge');
+                    panels.value[1].y = 200; // Сдвинем вторую вниз
+                }
+            });
+        };
+
+        const copyLink = () => {
+            const url = window.location.origin + window.location.pathname + '?view=widget';
+            navigator.clipboard.writeText(url).then(() => alert("Ссылка скопирована. Добавьте её в OBS как 'Браузер'."));
         };
 
         onMounted(() => {
             const params = new URLSearchParams(window.location.search);
             if (params.get('view') === 'widget') isObs.value = true;
-            db.ref('widget_data_v10').on('value', snap => { 
-                if (snap.exists()) {
-                    let data = snap.val();
-                    if(!data.challenges) data.challenges = [];
-                    s.value = { ...s.value, ...data }; 
+            loadData();
+            // Слушаем изменения в реальном времени для OBS
+            if(isObs.value) db.ref(DB_PATH).on('value', snap => {
+                if(snap.exists()){
+                    const data = snap.val();
+                    globalScale.value = data.scale;
+                    panels.value = data.panels;
                 }
             });
         });
 
-        const saveToFirebase = () => {
-            db.ref('widget_data_v10').set(JSON.parse(JSON.stringify(s.value)))
-                .then(() => alert("ОПУБЛИКОВАНО!"))
-                .catch(err => alert("Ошибка базы: " + err.message));
-        };
-
-        const copyWidgetLink = () => {
-            const url = window.location.origin + window.location.pathname + '?view=widget';
-            navigator.clipboard.writeText(url);
-            alert("Ссылка скопирована!");
-        };
-
-        const hexToRgb = (hex) => {
-            let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-            return result ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : '15,15,15';
-        };
-
-        const formattedCurrent = computed(() => (s.value.current || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
-        const progressPercent = computed(() => {
-            const m = parseFloat(s.value.max.toString().replace(/[^\d]/g, ''));
-            return m > 0 ? Math.min((s.value.current / m) * 100, 100) : 0;
-        });
-
-        const getPosStyle = (x, y) => ({ left: x + 'px', top: y + 'px', width: s.value.width + 'px' });
-
-        const mainCardStyle = computed(() => ({
-            padding: s.value.mainPadding + 'px',
-            background: `rgba(${hexToRgb(s.value.bgHex)}, ${s.value.glass})`,
-            borderRadius: s.value.radius + 'px'
-        }));
-
-        const challengeCardStyle = computed(() => ({
-            padding: s.value.pushupPadding + 'px',
-            gap: s.value.pushupGap + 'px',
-            background: `rgba(${hexToRgb(s.value.bgHex)}, ${s.value.challengeGlass})`,
-            borderRadius: s.value.radius + 'px',
-            fontSize: (s.value.fTitle * 0.85) + 'px'
-        }));
-
-        const barStyle = computed(() => ({
-            width: progressPercent.value + '%',
-            background: `linear-gradient(90deg, ${s.value.c1}, ${s.value.c2})`,
-            boxShadow: `0 0 25px ${s.value.c2}`
-        }));
-
-        const topTitleStyle = computed(() => ({
-            fontSize: (s.value.fTitle * 0.7) + 'px',
-            borderLeft: `4px solid ${s.value.c1}`,
-            background: `linear-gradient(90deg, ${s.value.c1}33, transparent)`
-        }));
-
-        const scaleStyleAdmin = computed(() => ({ transform: `scale(${isObs.value ? s.value.scale : 1})` }));
-        const scaleStyleOBS = computed(() => ({ transform: `scale(${s.value.scale})`, transformOrigin: 'top left' }));
-
-        return { 
-            s, isObs, snapX, snapY, formattedCurrent, mainCardStyle, challengeCardStyle, barStyle, 
-            scaleStyleAdmin, scaleStyleOBS, topTitleStyle, getPosStyle,
-            startDrag, saveToFirebase, copyWidgetLink, addChallenge, removeChallenge 
+        return {
+            isObs, panels, globalScale, selectedPanelId, guideV, guideH,
+            addPanel, removePanel, getComponent, startDrag, getCardPos, 
+            sceneStyle, sceneStyleAdmin, uploadIcon, saveData, copyLink
         };
     }
 }).mount('#app');
