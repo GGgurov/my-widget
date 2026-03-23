@@ -1416,10 +1416,8 @@ createApp({
 
     /* core alert trigger */
     function triggerAlert(name, amt, pushFB){
-      curDonation.name  = name;
-      const numAmt = parseFloat(String(amt).replace(/[^\d.]/g, '')) || 0;
-      const n = parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0;
-curDonation.amount = n.toLocaleString('ru');
+      curDonation.name = name;
+      curDonation.amount = String(Math.round(parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0));
       alertKey.value++;
       alertVis.value=true;
       clearTimeout(alertTimer);
@@ -1431,7 +1429,7 @@ curDonation.amount = n.toLocaleString('ru');
       if(pushFB && db){
         try{
           db.ref('alert').set({
-            name, amount: Number(amt).toLocaleString('ru'),
+            name, amount: String(parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0),
             ts: Date.now(),
             cfg: JSON.parse(JSON.stringify(alertCfg))
           });
@@ -1604,9 +1602,10 @@ curDonation.amount = n.toLocaleString('ru');
       if(mode.value==='alert' && db){
         db.ref('alert').on('value',snap=>{
   const d=snap.val();
-  if(!d) return;
+  if(!d||!d.ts) return;
   if(d.cfg) Object.assign(alertCfg,d.cfg);
-  triggerAlert(d.name, d.amount, false);
+  const cleanAmt = parseFloat(String(d.amount).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0;
+  triggerAlert(d.name, cleanAmt, false);
 });
       }
       if(mode.value==='widget' && db){
