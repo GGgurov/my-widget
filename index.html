@@ -9,9 +9,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-/* ══════════════════════════════════════
-   ROOT VARIABLES
-══════════════════════════════════════ */
 :root {
   --gold: #ffd700;
   --silver: #c8c8c8;
@@ -31,408 +28,116 @@
   --sidebar-w: 400px;
   --tenge: #00c2ff;
 }
-
 *{box-sizing:border-box;outline:none;margin:0;padding:0;}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-track{background:var(--bg);}
 ::-webkit-scrollbar-thumb{background:#222;border-radius:4px;}
 ::-webkit-scrollbar-thumb:hover{background:#333;}
-
-body{
-  font-family:'Unbounded',sans-serif;
-  background:transparent;
-  color:var(--text-bright);
-  overflow:hidden;
-}
-
-/* ══════════════════════════════════════
-   ADMIN LAYOUT
-══════════════════════════════════════ */
-.admin-shell{
-  display:grid;
-  grid-template-columns:var(--sidebar-w) 1fr;
-  height:100vh;
-  background:var(--bg);
-  position:fixed;inset:0;
-}
-
-/* ── SIDEBAR ── */
-.sidebar{
-  display:flex;flex-direction:column;
-  background:var(--panel);
-  border-right:1px solid var(--border);
-  overflow:hidden;
-}
-
-.sidebar-head{
-  padding:16px 18px 12px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-shrink:0;
-}
+body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-bright);overflow:hidden;}
+.admin-shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100vh;background:var(--bg);position:fixed;inset:0;}
+.sidebar{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);overflow:hidden;}
+.sidebar-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .logo{display:flex;align-items:center;gap:10px;}
-.logo-mark{
-  width:32px;height:32px;border-radius:8px;
-  background:linear-gradient(135deg,var(--red),#880022);
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;font-weight:900;letter-spacing:-1px;
-}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--red),#880022);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;letter-spacing:-1px;}
 .logo-name{font-size:13px;font-weight:900;letter-spacing:0.5px;}
 .logo-name span{color:var(--red);}
-.ver-tag{
-  font-size:9px;font-weight:700;color:var(--text-dim);
-  background:#151515;padding:3px 7px;border-radius:20px;
-  border:1px solid var(--border);letter-spacing:0.5px;
-}
-
-/* TABS */
-.tabs{
-  display:flex;gap:3px;
-  padding:10px 12px;
-  background:var(--bg);
-  border-bottom:1px solid var(--border);
-  flex-shrink:0;
-}
-.tab{
-  flex:1;padding:8px 6px;
-  border-radius:var(--radius-sm);
-  font-family:'Unbounded';font-size:9px;font-weight:700;
-  text-transform:uppercase;letter-spacing:0.5px;
-  border:none;cursor:pointer;transition:all .2s;
-  color:var(--text-dim);background:transparent;
-}
+.ver-tag{font-size:9px;font-weight:700;color:var(--text-dim);background:#151515;padding:3px 7px;border-radius:20px;border:1px solid var(--border);letter-spacing:0.5px;}
+.tabs{display:flex;gap:3px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;}
+.tab{flex:1;padding:8px 6px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border:none;cursor:pointer;transition:all .2s;color:var(--text-dim);background:transparent;}
 .tab.on{background:var(--red);color:#fff;box-shadow:0 2px 10px rgba(255,0,68,.3);}
 .tab:not(.on):hover{color:var(--text);background:#1a1a1a;}
-
-/* SCROLL AREA */
-.sidebar-body{
-  flex:1;overflow-y:auto;
-  padding:12px;
-  display:flex;flex-direction:column;gap:8px;
-}
-
-/* ══════════════════════════════════════
-   DONATE FORM — главная фишка v12
-══════════════════════════════════════ */
-.donate-form-card{
-  background:linear-gradient(135deg,#0d0007,#07000d);
-  border:1px solid rgba(255,0,68,.25);
-  border-radius:var(--radius-lg);
-  padding:16px;
-  display:flex;flex-direction:column;gap:12px;
-  position:relative;
-  overflow:hidden;
-}
-.donate-form-card::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at top left,rgba(255,0,68,.07),transparent 60%);
-  pointer-events:none;
-}
-.donate-form-title{
-  display:flex;align-items:center;gap:8px;
-  font-size:10px;font-weight:900;
-  text-transform:uppercase;letter-spacing:1px;
-  color:#fff;
-}
-.donate-form-title .dft-icon{
-  width:22px;height:22px;border-radius:6px;
-  background:var(--red);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;
-}
-.donate-input-row{
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:8px;
-  align-items:end;
-}
-.donate-amount-wrap{
-  position:relative;
-}
-.donate-amount-wrap input{
-  padding-right:36px !important;
-}
-.tenge-badge{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  font-size:14px;font-weight:900;
-  color:var(--tenge);
-  pointer-events:none;
-  line-height:1;
-}
-.donate-name-input{
-  width:100%;
-}
-.donate-btn-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-
-/* Live preview strip */
-.live-preview-strip{
-  background:#0a0a0a;
-  border:1px solid var(--border);
-  border-radius:var(--radius-sm);
-  padding:8px 12px;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:8px;
-}
+.sidebar-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.donate-form-card{background:linear-gradient(135deg,#0d0007,#07000d);border:1px solid rgba(255,0,68,.25);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.donate-form-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(255,0,68,.07),transparent 60%);pointer-events:none;}
+.donate-form-title{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;}
+.donate-form-title .dft-icon{width:22px;height:22px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.donate-input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;}
+.donate-amount-wrap{position:relative;}
+.donate-amount-wrap input{padding-right:36px !important;}
+.tenge-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:900;color:var(--tenge);pointer-events:none;line-height:1;}
+.donate-name-input{width:100%;}
+.donate-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.live-preview-strip{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .lp-label{font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
 .lp-value{font-size:12px;font-weight:900;color:var(--tenge);}
 .lp-name{font-size:10px;font-weight:700;color:var(--text);}
 .lp-sep{width:1px;height:24px;background:var(--border);}
-
-/* COLLAPSIBLE SECTION */
-.sec-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:11px 13px;
-  background:#151515;
-  border:1px solid var(--border);
-  border-radius:var(--radius-md);
-  cursor:pointer;transition:all .2s;
-  user-select:none;
-}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#151515;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;user-select:none;}
 .sec-head:hover{background:#1a1a1a;border-color:var(--border-hi);}
 .sec-head.on{border-color:var(--red);background:#150007;}
 .sec-head-l{display:flex;align-items:center;gap:9px;}
-.sec-dot{
-  width:18px;height:18px;border-radius:50%;
-  background:#1e1e1e;
-  display:flex;align-items:center;justify-content:center;
-  font-size:8px;font-weight:900;color:var(--text-dim);
-  flex-shrink:0;
-}
+.sec-dot{width:18px;height:18px;border-radius:50%;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:var(--text-dim);flex-shrink:0;}
 .sec-head.on .sec-dot{background:var(--red);color:#fff;}
 .sec-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text);}
 .sec-head.on .sec-name{color:#fff;}
-.sec-badge{
-  font-size:8px;padding:2px 6px;border-radius:20px;
-  background:rgba(255,0,68,.12);color:var(--red);
-  font-weight:700;text-transform:uppercase;letter-spacing:.3px;
-}
 .sec-chevron{font-size:9px;color:var(--text-dim);transition:transform .2s;}
 .sec-head.on .sec-chevron{transform:rotate(180deg);}
-
-.sec-body{
-  padding:13px;
-  background:#0c0c0c;
-  border:1px solid var(--border);border-top:none;
-  border-radius:0 0 var(--radius-md) var(--radius-md);
-  display:flex;flex-direction:column;gap:11px;
-}
-
-/* FORM ELEMENTS */
+.sec-body{padding:13px;background:#0c0c0c;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);display:flex;flex-direction:column;gap:11px;}
 .fg{display:flex;flex-direction:column;gap:5px;}
 .fr{display:flex;gap:9px;}
 .fr > *{flex:1;}
-
-label,.lbl{
-  font-size:9px;font-weight:700;color:var(--text-dim);
-  text-transform:uppercase;letter-spacing:.5px;
-}
-
-input[type=text],input[type=number],select,textarea{
-  background:#080808;
-  border:1px solid var(--border);
-  color:var(--text-bright);
-  padding:9px 11px;
-  border-radius:var(--radius-sm);
-  font-family:'Unbounded';font-size:11px;
-  width:100%;
-  transition:border-color .2s,box-shadow .2s;
-}
+label,.lbl{font-size:9px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+input[type=text],input[type=number],select,textarea{background:#080808;border:1px solid var(--border);color:var(--text-bright);padding:9px 11px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:11px;width:100%;transition:border-color .2s,box-shadow .2s;}
 textarea{resize:vertical;min-height:54px;line-height:1.5;}
-input:focus,select:focus,textarea:focus{
-  border-color:var(--red);
-  box-shadow:0 0 0 2px rgba(255,0,68,.1);
-}
+input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(255,0,68,.1);}
 select option{background:#111;}
-
 .rr{display:flex;align-items:center;gap:8px;}
-input[type=range]{
-  flex:1;accent-color:var(--red);
-  cursor:pointer;height:3px;background:var(--border);
-  border-radius:2px;border:none;padding:0;
-}
-.rv{
-  font-size:10px;color:var(--text-bright);
-  min-width:34px;text-align:right;
-  font-variant-numeric:tabular-nums;
-  background:#080808;padding:3px 6px;
-  border-radius:4px;border:1px solid var(--border);
-}
-
+input[type=range]{flex:1;accent-color:var(--red);cursor:pointer;height:3px;background:var(--border);border-radius:2px;border:none;padding:0;}
+.rv{font-size:10px;color:var(--text-bright);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;background:#080808;padding:3px 6px;border-radius:4px;border:1px solid var(--border);}
 .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .ci{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;}
 input[type=color]{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:#000;padding:2px;}
-
-.cb-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:6px 0;
-}
+.cb-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;}
 .cb-row label{font-size:10px;color:var(--text);font-weight:700;text-transform:none;letter-spacing:0;}
 input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:pointer;}
-
 .divider{height:1px;background:var(--border);width:100%;margin:3px 0;}
 .sub-lbl{font-size:10px;font-weight:900;color:var(--text-bright);text-transform:uppercase;letter-spacing:.5px;}
-
-/* BUTTONS */
-.btn{
-  font-family:'Unbounded';text-transform:uppercase;font-weight:700;
-  border:none;cursor:pointer;transition:all .2s;
-  display:flex;align-items:center;justify-content:center;gap:6px;
-  letter-spacing:.3px;
-}
-.btn-red{
-  background:linear-gradient(135deg,#ff0044,#cc0034);
-  color:#fff;padding:15px;border-radius:var(--radius-md);
-  font-size:12px;font-weight:900;width:100%;
-  box-shadow:0 4px 15px rgba(255,0,68,.2);
-}
+.btn{font-family:'Unbounded';text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.3px;}
+.btn-red{background:linear-gradient(135deg,#ff0044,#cc0034);color:#fff;padding:15px;border-radius:var(--radius-md);font-size:12px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(255,0,68,.2);}
 .btn-red:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,0,68,.35);}
-.btn-tenge{
-  background:linear-gradient(135deg,#0088cc,#005588);
-  color:#fff;padding:13px 16px;border-radius:var(--radius-md);
-  font-size:11px;font-weight:900;width:100%;
-  box-shadow:0 4px 15px rgba(0,194,255,.2);
-}
+.btn-tenge{background:linear-gradient(135deg,#0088cc,#005588);color:#fff;padding:13px 16px;border-radius:var(--radius-md);font-size:11px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(0,194,255,.2);}
 .btn-tenge:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,194,255,.35);}
 .btn-tenge:active{transform:scale(.97);}
-.btn-green{
-  background:linear-gradient(135deg,#00aa44,#007730);
-  color:#fff;padding:12px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;
-  box-shadow:0 2px 10px rgba(0,170,68,.2);
-}
+.btn-green{background:linear-gradient(135deg,#00aa44,#007730);color:#fff;padding:12px;border-radius:var(--radius-sm);font-size:10px;width:100%;box-shadow:0 2px 10px rgba(0,170,68,.2);}
 .btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,170,68,.3);}
-.btn-purple{
-  background:linear-gradient(135deg,#7700ff,#5500cc);
-  color:#fff;padding:12px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;
-  box-shadow:0 2px 10px rgba(119,0,255,.2);
-}
+.btn-purple{background:linear-gradient(135deg,#7700ff,#5500cc);color:#fff;padding:12px;border-radius:var(--radius-sm);font-size:10px;width:100%;box-shadow:0 2px 10px rgba(119,0,255,.2);}
 .btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(119,0,255,.3);}
-.btn-ghost{
-  background:transparent;color:var(--text-mid);
-  padding:10px;border-radius:var(--radius-sm);
-  font-size:9px;flex:1;
-  border:1px dashed var(--border-hi);
-}
+.btn-ghost{background:transparent;color:var(--text-mid);padding:10px;border-radius:var(--radius-sm);font-size:9px;flex:1;border:1px dashed var(--border-hi);}
 .btn-ghost:hover{background:#151515;color:var(--text);border-color:#444;}
-.btn-flat{
-  background:#151515;color:var(--text);
-  padding:11px;border-radius:var(--radius-sm);
-  font-size:10px;border:1px solid var(--border);
-}
+.btn-flat{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;border:1px solid var(--border);}
 .btn-flat:hover{background:#1c1c1c;border-color:var(--border-hi);}
-.btn-del{
-  background:rgba(255,0,0,.07);color:#ff4444;
-  padding:5px 8px;border-radius:5px;font-size:8px;
-  border:1px solid rgba(255,0,0,.15);
-}
+.btn-del{background:rgba(255,0,0,.07);color:#ff4444;padding:5px 8px;border-radius:5px;font-size:8px;border:1px solid rgba(255,0,0,.15);}
 .btn-del:hover{background:#ff4444;color:#fff;}
-.btn-add-panel{
-  background:#151515;color:var(--text);
-  padding:11px;border-radius:var(--radius-sm);
-  font-size:10px;flex:1;border:1px solid var(--border);
-}
+.btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);}
 .btn-add-panel:hover{background:#1c1c1c;}
-
-.actions{
-  display:flex;flex-direction:column;gap:8px;
-  padding:12px;
-  border-top:1px solid var(--border);
-  flex-shrink:0;
-}
-
-/* FILE INPUT */
+.actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
 .file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
-.file-wrap input[type=file]{
-  font-size:100px;position:absolute;left:0;top:0;
-  opacity:0;cursor:pointer;height:100%;width:100%;
-}
-.file-btn{
-  background:#080808;border:1px solid var(--border);
-  color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;text-align:center;
-  font-family:'Unbounded';font-weight:700;text-transform:uppercase;
-  letter-spacing:.3px;transition:all .2s;cursor:pointer;
-}
+.file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
+.file-btn{background:#080808;border:1px solid var(--border);color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);font-size:10px;width:100%;text-align:center;font-family:'Unbounded';font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:all .2s;cursor:pointer;}
 .file-wrap:hover .file-btn{border-color:var(--red);color:var(--text-bright);}
 .file-ok{font-size:9px;color:#00cc44;margin-top:3px;font-weight:700;}
 .file-err{font-size:9px;color:#ff4444;margin-top:3px;font-weight:700;}
-
-/* ── PREVIEW ZONE ── */
-.preview-zone{
-  position:relative;
-  background:#0a0a0a;
-  background-image:radial-gradient(#1c1c1c 1px,transparent 1px);
-  background-size:22px 22px;
-  overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-.pz-label{
-  position:absolute;top:14px;left:50%;transform:translateX(-50%);
-  font-size:9px;font-weight:700;color:#222;
-  text-transform:uppercase;letter-spacing:1.5px;
-  pointer-events:none;z-index:5;white-space:nowrap;
-}
-.pz-mode{
-  position:absolute;top:14px;right:16px;
-  font-size:8px;font-weight:700;color:#1e1e1e;
-  text-transform:uppercase;letter-spacing:1px;
-  pointer-events:none;z-index:5;
-}
-
-/* ══════════════════════════════════════
-   WIDGET PANELS
-══════════════════════════════════════ */
+.preview-zone{position:relative;background:#0a0a0a;background-image:radial-gradient(#1c1c1c 1px,transparent 1px);background-size:22px 22px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.pz-label{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:1.5px;pointer-events:none;z-index:5;white-space:nowrap;}
+.pz-mode{position:absolute;top:14px;right:16px;font-size:8px;font-weight:700;color:#1e1e1e;text-transform:uppercase;letter-spacing:1px;pointer-events:none;z-index:5;}
 .widget-scene{position:relative;width:100%;height:100%;transform-origin:center center;}
-
-.draggable{
-  position:absolute;cursor:grab;
-  z-index:10;user-select:none;touch-action:none;
-  transition:box-shadow .15s;
-}
+.draggable{position:absolute;cursor:grab;z-index:10;user-select:none;touch-action:none;transition:box-shadow .15s;}
 .draggable:active{cursor:grabbing;z-index:99;}
-.draggable.sel{
-  outline:1.5px solid rgba(0,255,180,.7);
-  outline-offset:4px;
-  border-radius:inherit;
-}
-
-.glass{
-  position:relative;width:100%;height:100%;
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.05);
-  overflow:hidden;
-}
-
-/* GOAL */
+.draggable.sel{outline:1.5px solid rgba(0,255,180,.7);outline-offset:4px;border-radius:inherit;}
+.glass{position:relative;width:100%;height:100%;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.05);overflow:hidden;}
 .goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
 .prog-track{width:100%;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.04);position:relative;}
 .prog-fill{height:100%;transition:width .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
 .prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmer 2.5s infinite linear;}
 @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
-
-/* Last donor label */
 .ld-section{margin-top:13px;}
-.ld-label{
-  display:inline-flex;align-items:center;gap:5px;
-  font-size:8px;font-weight:900;
-  text-transform:uppercase;letter-spacing:2px;
-  padding:4px 10px;border-radius:20px;
-  margin-bottom:8px;
-  white-space:nowrap;
-}
+.ld-label{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
 .donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
 .donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);}
 .rk-1{background:linear-gradient(90deg,rgba(255,215,0,.13),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
 .rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent) !important;border-color:rgba(200,200,200,.2) !important;color:var(--silver) !important;}
 .rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent) !important;border-color:rgba(205,127,50,.2) !important;color:var(--bronze) !important;}
-
-/* CHALLENGE */
 .chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
 .chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
 .chal-brand{display:flex;align-items:center;}
@@ -441,183 +146,68 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .chal-divider{height:1px;width:100%;margin:7px 0;opacity:.1;}
 .chal-label{opacity:.7;font-weight:700;}
 .chal-val,.chal-total{font-weight:900;text-align:right;}
-
-/* EDITABLE */
 .ed{cursor:text;border-bottom:1px dashed rgba(255,255,255,.2);transition:all .15s;}
 .ed:hover{background:rgba(255,255,255,.05);}
 .ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
 .obs-mode .ed{border:none !important;background:transparent !important;pointer-events:none;}
 .obs-mode .draggable{cursor:default !important;outline:none !important;}
-
-/* GUIDES */
 .guide{position:absolute;background:#00ffb0;box-shadow:0 0 8px #00ffb0;z-index:100;pointer-events:none;opacity:0;transition:opacity .15s;}
 .guide.on{opacity:.65;}
 .guide.gv{top:-3000px;bottom:-3000px;width:1px;}
 .guide.gh{left:-3000px;right:-3000px;height:1px;}
-
-/* ══════════════════════════════════════
-   ALERT OVERLAY
-══════════════════════════════════════ */
-.alert-scene{
-  width:100vw;height:100vh;
-  background:transparent;
-  position:relative;overflow:hidden;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:50px;
-}
-.particle-canvas{
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
-  pointer-events:none;z-index:1;
-}
-.alert-card{
-  position:relative;z-index:2;
-  display:flex;flex-direction:column;align-items:center;
-  padding:28px 36px;
-  gap:12px;
-  text-align:center;
-  min-width:380px;max-width:580px;
-  overflow:hidden;
-}
-.alert-card::before{
-  content:'';position:absolute;inset:0;
-  background:inherit;filter:blur(0);
-  z-index:-1;
-}
-.alert-media{
-  width:100%;max-height:180px;
-  overflow:hidden;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-}
-.alert-media img,.alert-media video{
-  width:100%;height:100%;object-fit:cover;border-radius:10px;
-  max-height:180px;
-}
-.a-label{
-  font-size:10px;font-weight:900;
-  text-transform:uppercase;letter-spacing:3px;
-  opacity:.75;
-}
-.a-name{
-  font-weight:900;
-  text-transform:uppercase;letter-spacing:1px;
-  line-height:1;
-}
-.a-amount{
-  font-weight:900;line-height:1;
-}
-.a-bar{
-  width:80%;height:3px;
-  border-radius:2px;
-  opacity:.4;
-  animation:barShrink linear forwards;
-  transform-origin:left center;
-}
-@keyframes barShrink{
-  0%{transform:scaleX(1);}
-  100%{transform:scaleX(0);}
-}
-
-/* Alert Vue transition */
+.alert-scene{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:50px;}
+.particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.alert-card{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:28px 36px;gap:12px;text-align:center;min-width:380px;max-width:580px;overflow:hidden;}
+.alert-card::before{content:'';position:absolute;inset:0;background:inherit;filter:blur(0);z-index:-1;}
+.alert-media{width:100%;max-height:180px;overflow:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.alert-media img,.alert-media video{width:100%;height:100%;object-fit:cover;border-radius:10px;max-height:180px;}
+.a-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:3px;opacity:.75;}
+.a-name{font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1;}
+.a-amount{font-weight:900;line-height:1;}
+.a-bar{width:80%;height:3px;border-radius:2px;opacity:.4;animation:barShrink linear forwards;transform-origin:left center;}
+@keyframes barShrink{0%{transform:scaleX(1);}100%{transform:scaleX(0);}}
 .alert-enter-active{animation:alertIn .65s cubic-bezier(.34,1.56,.64,1) both;}
 .alert-leave-active{animation:alertOut .45s ease-in both;}
-@keyframes alertIn{
-  0%{transform:translateY(70px) scale(.85);opacity:0;}
-  100%{transform:translateY(0) scale(1);opacity:1;}
-}
-@keyframes alertOut{
-  0%{transform:translateY(0) scale(1);opacity:1;}
-  100%{transform:translateY(-60px) scale(.9);opacity:0;}
-}
-
-/* Staggered text reveals */
+@keyframes alertIn{0%{transform:translateY(70px) scale(.85);opacity:0;}100%{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes alertOut{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-60px) scale(.9);opacity:0;}}
 .a-label{animation:textUp .4s .15s ease both;}
 .a-name{animation:textUp .4s .25s ease both;}
 .a-amount{animation:textUp .4s .35s ease both;}
-.a-bar{animation:barShrink linear .55s forwards;}
-@keyframes textUp{
-  0%{transform:translateY(16px);opacity:0;}
-  100%{transform:translateY(0);opacity:1;}
-}
-
-/* Glow pulse on card */
+@keyframes textUp{0%{transform:translateY(16px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
 .glow-card{animation:glowPulse 2s ease-in-out infinite;}
-@keyframes glowPulse{
-  0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}
-  50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}
-}
-
-/* Alert preview area inside admin */
-.alert-preview-wrap{
-  width:100%;height:100%;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:40px;position:relative;
-}
-
-/* ══════════════════════════════════════
-   TOAST
-══════════════════════════════════════ */
-.toast{
-  position:fixed;bottom:22px;left:50%;
-  transform:translateX(-50%) translateY(14px);
-  background:#151515;border:1px solid var(--border);
-  color:var(--text);padding:11px 18px;
-  border-radius:var(--radius-md);
-  font-size:10px;font-weight:700;
-  transition:all .25s;opacity:0;
-  z-index:99999;pointer-events:none;
-  white-space:nowrap;
-}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}}
+.alert-preview-wrap{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;position:relative;}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:#151515;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:var(--radius-md);font-size:10px;font-weight:700;transition:all .25s;opacity:0;z-index:99999;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.ok{border-color:#00aa44;color:#00cc44;}
 .toast.err{border-color:#ff4444;color:#ff4444;}
 
-/* ══════════════════════════════════════
-   MOBILE / RESPONSIVE
-══════════════════════════════════════ */
-@media(max-width:900px){
-  :root{ --sidebar-w: 100%; }
-  body{ overflow:auto; }
-  .admin-shell{
-    grid-template-columns:1fr;
-    grid-template-rows:auto;
-    height:auto;
-    min-height:100vh;
-    overflow:auto;
-    position:relative;
-  }
-  .sidebar{
-    border-right:none;
-    border-bottom:1px solid var(--border);
-    order:1;
-    max-height:none;
-    overflow:visible;
-  }
-  .sidebar-body{ overflow:visible; padding-bottom:20px; }
-  .preview-zone{
-    order:2;
-    height:60vw;
-    min-height:280px;
-    border-top:1px solid var(--border);
-  }
-  .donate-input-row{
-    grid-template-columns:1fr;
-  }
-  .donate-btn-row{
-    grid-template-columns:1fr;
-  }
-  .color-grid{ grid-template-columns:repeat(3,1fr); }
-  .fr{ flex-wrap:wrap; }
-  .fr > *{ flex:1 1 140px; }
-}
+/* ── FB статус индикатор ── */
+.fb-status{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#0a0a0a;}
+.fb-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;}
+.fb-dot.ok{background:#00cc44;box-shadow:0 0 6px #00cc44;}
+.fb-dot.err{background:#ff4444;}
 
+@media(max-width:900px){
+  :root{--sidebar-w:100%;}
+  body{overflow:auto;}
+  .admin-shell{grid-template-columns:1fr;grid-template-rows:auto;height:auto;min-height:100vh;overflow:auto;position:relative;}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border);order:1;max-height:none;overflow:visible;}
+  .sidebar-body{overflow:visible;padding-bottom:20px;}
+  .preview-zone{order:2;height:60vw;min-height:280px;border-top:1px solid var(--border);}
+  .donate-input-row{grid-template-columns:1fr;}
+  .donate-btn-row{grid-template-columns:1fr;}
+  .color-grid{grid-template-columns:repeat(3,1fr);}
+  .fr{flex-wrap:wrap;}
+  .fr > *{flex:1 1 140px;}
+}
 @media(max-width:480px){
-  .sidebar-head{ padding:12px 14px; }
-  .logo-name{ font-size:11px; }
-  .tabs{ padding:8px 10px; }
-  .tab{ font-size:8px; padding:7px 4px; }
-  .donate-form-card{ padding:13px; }
-  .color-grid{ grid-template-columns:repeat(2,1fr); }
+  .sidebar-head{padding:12px 14px;}
+  .logo-name{font-size:11px;}
+  .tabs{padding:8px 10px;}
+  .tab{font-size:8px;padding:7px 4px;}
+  .donate-form-card{padding:13px;}
+  .color-grid{grid-template-columns:repeat(2,1fr);}
 }
 </style>
 </head>
@@ -625,15 +215,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 <div id="app" :class="{'obs-mode':mode!=='admin'}">
 
-  <!-- ═══════ ALERT OVERLAY ═══════ -->
+  <!-- ALERT OVERLAY -->
   <div v-if="mode==='alert'" class="alert-scene">
     <canvas ref="pcvs" class="particle-canvas"></canvas>
     <transition name="alert">
-      <div v-if="alertVis" class="alert-card glow-card"
-           :style="alertCardStyle">
-        <!-- timer bar -->
+      <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
         <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
-        <!-- media -->
         <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
           <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
         </div>
@@ -647,17 +234,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </transition>
   </div>
 
-  <!-- ═══════ WIDGET OVERLAY ═══════ -->
+  <!-- WIDGET OVERLAY -->
   <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
     <div v-for="p in panels" :key="p.id" class="draggable" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
-  <!-- ═══════ ADMIN ═══════ -->
+  <!-- ADMIN -->
   <div v-else class="admin-shell">
-
-    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-head">
         <div class="logo">
@@ -674,17 +259,21 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
       <div class="sidebar-body">
 
-        <!-- ═══ WIDGETS TAB ═══ -->
+        <!-- WIDGETS TAB -->
         <template v-if="tab==='widgets'">
 
-          <!-- ★★★ ЕДИНАЯ ФОРМА ДОНАТА ★★★ -->
+          <!-- FB статус -->
+          <div class="fb-status">
+            <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
+            <span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span>
+          </div>
+
+          <!-- ФОРМА ДОНАТА -->
           <div class="donate-form-card">
             <div class="donate-form-title">
               <div class="dft-icon">₸</div>
               Быстрый донат
             </div>
-
-            <!-- Live preview -->
             <div class="live-preview-strip" v-if="quickName||quickAmount">
               <div>
                 <div class="lp-label">Донатер</div>
@@ -696,7 +285,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div>
               </div>
             </div>
-
             <div class="donate-input-row">
               <div class="fg">
                 <label>Имя донатера</label>
@@ -710,14 +298,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
             </div>
-
             <div class="donate-btn-row">
-              <button class="btn btn-tenge" @click="doQuickDonate" title="Обновить цель + Alert в OBS">
-                ▶ В OBS + ЦЕЛЬ
-              </button>
-              <button class="btn btn-purple" @click="doQuickTest" title="Тест только здесь">
-                🧪 Тест локально
-              </button>
+              <button class="btn btn-tenge" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
+              <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
             </div>
           </div>
 
@@ -737,10 +320,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <span class="sec-chevron">▼</span>
               </div>
             </div>
-
             <div v-if="selId===p.id" class="sec-body">
-
-              <!-- GOAL -->
               <template v-if="p.type==='goal'">
                 <div class="fr">
                   <div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div>
@@ -751,12 +331,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ">
                 </div>
                 <div class="fg">
-                  <label>Список донатеров (через запятую или новую строку)</label>
-                  <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸&#10;Анна — 100 ₸"></textarea>
+                  <label>Список донатеров</label>
+                  <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
                 </div>
               </template>
-
-              <!-- CHALLENGE -->
               <template v-if="p.type==='challenge'">
                 <div class="fg">
                   <label>Логотип</label>
@@ -778,7 +356,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
                 </div>
               </template>
-
               <div class="divider"></div>
               <div class="sub-lbl">Шрифты</div>
               <div class="fr">
@@ -789,7 +366,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
                 </div>
               </div>
-
               <div class="divider"></div>
               <div class="sub-lbl">Размеры</div>
               <div class="fg"><label>Ширина панели</label>
@@ -803,12 +379,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
                 </div>
               </div>
-
               <div class="divider"></div>
               <div class="sub-lbl">Цвета</div>
               <div class="fr">
                 <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
-                <div class="fg"><label>Прозрачность фона</label>
+                <div class="fg"><label>Прозрачность</label>
                   <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
                 </div>
               </div>
@@ -827,7 +402,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </div>
 
-          <!-- Global -->
           <div class="sec-head">
             <div class="sec-head-l">
               <div class="sec-name">⚙ Глобальные настройки OBS</div>
@@ -840,10 +414,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </div>
         </template>
 
-        <!-- ═══ ALERT TAB ═══ -->
+        <!-- ALERT TAB -->
         <template v-if="tab==='alert'">
-
-          <!-- TRIGGER -->
           <div class="sec-head on">
             <div class="sec-head-l">
               <div class="sec-dot" style="background:var(--red);color:#fff">▶</div>
@@ -856,7 +428,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="fg">
                 <label>Сумма (₸)</label>
                 <div class="donate-amount-wrap">
-                  <input type="number" v-model="tAmount" placeholder="500" min="0">
+                  <input type="number" v-model.number="tAmount" placeholder="500" min="0">
                   <span class="tenge-badge">₸</span>
                 </div>
               </div>
@@ -865,33 +437,26 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <button class="btn btn-purple" @click="doTestLocal">🧪 Тест (только здесь)</button>
           </div>
 
-          <!-- SETTINGS -->
           <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
-            <div class="sec-head-l">
-              <div class="sec-name">🎨 Настройки Alert</div>
-            </div>
+            <div class="sec-head-l"><div class="sec-name">🎨 Настройки Alert</div></div>
             <span class="sec-chevron">▼</span>
           </div>
           <div v-if="alertOpen" class="sec-body">
-
             <div class="fg"><label>Текст метки</label>
               <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
             </div>
             <div class="fg"><label>Длительность (сек)</label>
               <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
             </div>
-
             <div class="divider"></div>
             <div class="sub-lbl">Медиа</div>
-
             <div class="fg"><label>Тип медиа</label>
               <select v-model="alertCfg.mediaType">
                 <option value="none">Без медиа</option>
-                <option value="image">Изображение (загрузить)</option>
+                <option value="image">Изображение</option>
                 <option value="video">Видео (URL)</option>
               </select>
             </div>
-
             <template v-if="alertCfg.mediaType==='image'">
               <div class="fg">
                 <label>Изображение (макс. 1 MB)</label>
@@ -903,16 +468,13 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div v-if="imgErr" class="file-err">{{imgErr}}</div>
               </div>
             </template>
-
             <template v-if="alertCfg.mediaType==='video'">
               <div class="fg"><label>URL видео (mp4 / webm)</label>
                 <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
               </div>
             </template>
-
             <div class="divider"></div>
             <div class="sub-lbl">Звук</div>
-
             <div class="fg">
               <label>Звуковой файл (макс. 2 MB)</label>
               <div class="file-wrap">
@@ -925,24 +487,20 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="fg"><label>Громкость</label>
               <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
             </div>
-
             <div class="divider"></div>
             <div class="sub-lbl">Внешний вид</div>
-
             <div class="fr">
               <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
-              <div class="fg"><label>Прозрачность фона</label>
+              <div class="fg"><label>Прозрачность</label>
                 <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
               </div>
             </div>
-
             <div class="color-grid">
               <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
               <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
               <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
               <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
             </div>
-
             <div class="fr">
               <div class="fg"><label>Размер имени</label>
                 <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
@@ -951,20 +509,16 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
               </div>
             </div>
-
             <div class="fg"><label>Скругление карточки</label>
               <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
             </div>
-
             <div class="divider"></div>
             <div class="sub-lbl">Частицы</div>
             <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
             <div class="fg"><label>Количество частиц</label>
               <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
             </div>
-
           </div>
-
         </template>
 
       </div>
@@ -983,17 +537,13 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div class="preview-zone" ref="previewZone">
       <div class="pz-label">PREVIEW · DRAG TO POSITION</div>
       <div class="pz-mode">OBS OVERLAY</div>
-
-      <!-- guides -->
       <div class="guide gv" :class="{on:guideV}" :style="{left:guideVx+'px'}"></div>
       <div class="guide gh" :class="{on:guideH}" :style="{top:guideHy+'px'}"></div>
 
-      <!-- alert preview -->
       <div v-if="tab==='alert'" class="alert-preview-wrap">
         <canvas ref="pcvs" class="particle-canvas"></canvas>
         <transition name="alert">
-          <div v-if="alertVis" class="alert-card glow-card"
-               :style="alertCardStyle">
+          <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
             <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
             <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
               <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
@@ -1008,7 +558,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </transition>
       </div>
 
-      <!-- widget preview -->
       <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
         <div v-for="p in panels" :key="p.id"
              class="draggable" :class="{sel:selId===p.id}"
@@ -1020,21 +569,14 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- TOAST -->
   <div class="toast" :class="{show:toast.show,ok:toast.type==='ok',err:toast.type==='err'}">{{toast.msg}}</div>
-
 </div>
 
-<!-- ══════════════════════════════════════
-     GOAL COMPONENT
-══════════════════════════════════════ -->
 <script type="text/x-template" id="tpl-goal">
 <div class="glass" :style="glassStyle">
   <div class="goal-wrap" :style="{padding:(p.padding||20)+'px'}">
-    <!-- top labels -->
     <div class="goal-top">
       <span :contenteditable="!isObs" class="ed"
             :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}"
@@ -1043,7 +585,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         {{formatNum(p.current||0)}} / {{p.max||'50 000'}} ₸
       </span>
     </div>
-    <!-- progress bar -->
     <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
       <div class="prog-fill" :style="{
         width:pct+'%',
@@ -1051,27 +592,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         borderRadius:(p.radius||15)+'px'
       }"></div>
     </div>
-    <!-- donors -->
     <div class="ld-section" v-if="donors.length">
-      <div class="ld-label" :style="{
-        background:'rgba(255,255,255,.04)',
-        border:'1px solid rgba(255,255,255,.08)',
-        color:p.cText||'#ccc'
-      }">
-        <span>🎁</span>
-        {{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}
+      <div class="ld-label" :style="{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.08)',color:p.cText||'#ccc'}">
+        <span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}
       </div>
       <ul class="donor-list">
-        <li v-for="(d,i) in donors" :key="i"
-            class="donor-item"
+        <li v-for="(d,i) in donors" :key="i" class="donor-item"
             :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}"
-            :style="{
-              fontSize:(p.textSize||14)+'px',
-              borderRadius:(p.radius||15)+'px',
-              color:p.cText||'#ccc'
-            }">
-          <span>{{d.name}}</span>
-          <span>{{d.amount}}</span>
+            :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
+          <span>{{d.name}}</span><span>{{d.amount}}</span>
         </li>
       </ul>
     </div>
@@ -1079,34 +608,20 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 </div>
 </script>
 
-<!-- ══════════════════════════════════════
-     CHALLENGE COMPONENT
-══════════════════════════════════════ -->
 <script type="text/x-template" id="tpl-challenge">
 <div class="glass" :style="glassStyle">
   <div class="chal-wrap" :style="{padding:(p.padding||20)+'px'}">
     <div class="chal-row">
       <div class="chal-brand">
         <div v-if="p.iconData" class="icon-mask"
-             :style="{
-               width:(p.iconSize||35)+'px',
-               height:(p.iconSize||35)+'px',
-               backgroundColor:p.cIcon||'#fff',
-               maskImage:'url('+p.iconData+')',
-               WebkitMaskImage:'url('+p.iconData+')',
-               marginRight:(p.iconGap||15)+'px'
-             }"></div>
+             :style="{width:(p.iconSize||35)+'px',height:(p.iconSize||35)+'px',backgroundColor:p.cIcon||'#fff',maskImage:'url('+p.iconData+')',WebkitMaskImage:'url('+p.iconData+')',marginRight:(p.iconGap||15)+'px'}"></div>
         <span :contenteditable="!isObs" class="ed chal-title"
               :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}"
               @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
       </div>
       <div v-if="p.showCount">
-        <div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">
-          {{p.current||0}} ₸
-        </div>
-        <div class="chal-total" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#888'}">
-          / {{p.max||'0'}} ₸
-        </div>
+        <div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div>
+        <div class="chal-total" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}} ₸</div>
       </div>
     </div>
     <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
@@ -1119,24 +634,23 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 </script>
 
 <script>
-const { createApp, reactive, computed, ref, watch, onMounted, nextTick, defineComponent } = Vue;
+const { createApp, reactive, computed, ref, onMounted, defineComponent } = Vue;
 
-/* ── helpers ── */
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function hexToRgb(h){
   let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
   return `${r},${g},${b}`;
 }
+/* Универсальная очистка числа — убирает пробелы, ₸, запятые */
+function cleanNum(v){
+  return Math.round(parseFloat(String(v).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0);
+}
 
-/* ── GOAL COMP ── */
 const GoalComp = defineComponent({
   template:'#tpl-goal',
   props:['p','isObs'],
   computed:{
-    pct(){
-      const c=this.p.current||0, m=parseFloat(this.p.max)||1;
-      return Math.min(100,Math.round(c/m*100));
-    },
+    pct(){ const c=this.p.current||0,m=parseFloat(this.p.max)||1; return Math.min(100,Math.round(c/m*100)); },
     donors(){
       const raw=this.p.donorsRaw||'';
       return raw.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean).map(s=>{
@@ -1145,48 +659,25 @@ const GoalComp = defineComponent({
       });
     },
     glassStyle(){
-      const p=this.p;
-      const bg=p.bgColor||'#111111';
-      const op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
-      return {
-        background:`rgba(${hexToRgb(bg)},${op})`,
-        borderRadius:(p.radius||15)+'px',
-        width:(p.width||400)+'px',
-        minHeight:'80px',
-      };
+      const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
+      return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'80px'};
     }
   },
-  methods:{
-    formatNum(n){ return Number(n).toLocaleString('ru'); }
-  }
+  methods:{ formatNum(n){ return Number(n).toLocaleString('ru'); } }
 });
 
-/* ── CHALLENGE COMP ── */
 const ChalComp = defineComponent({
   template:'#tpl-challenge',
   props:['p','isObs'],
   computed:{
-    pct(){
-      const c=this.p.current||0,m=parseFloat(this.p.max)||1;
-      return Math.min(100,Math.round(c/m*100));
-    },
+    pct(){ const c=this.p.current||0,m=parseFloat(this.p.max)||1; return Math.min(100,Math.round(c/m*100)); },
     glassStyle(){
-      const p=this.p;
-      const bg=p.bgColor||'#111111';
-      const op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
-      return {
-        background:`rgba(${hexToRgb(bg)},${op})`,
-        borderRadius:(p.radius||15)+'px',
-        width:(p.width||400)+'px',
-        minHeight:'60px',
-      };
+      const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
+      return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'60px'};
     }
   }
 });
 
-/* ══════════════════════════════════════
-   FIREBASE (optional — если не настроен, работает локально)
-══════════════════════════════════════ */
 const FB_CFG = {
   apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
   authDomain: "tt-widget-88711.firebaseapp.com",
@@ -1194,40 +685,23 @@ const FB_CFG = {
   projectId: "tt-widget-88711",
   storageBucket: "tt-widget-88711.firebasestorage.app",
   messagingSenderId: "997435022478",
-  appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf",
-  measurementId: "G-R136SZ35H3"
+  appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
 };
 let db = null;
 try {
-  if(FB_CFG.apiKey && FB_CFG.databaseURL){
-    firebase.initializeApp(FB_CFG);
-    db = firebase.database();
-  }
-} catch(e){}
+  firebase.initializeApp(FB_CFG);
+  db = firebase.database();
+} catch(e){ console.warn('Firebase error:', e); }
 
-/* ══════════════════════════════════════
-   STORAGE
-══════════════════════════════════════ */
 const STORAGE_KEY = 'wv12_state';
-function loadState(){
-  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); }catch(e){ return null; }
-}
-function saveState(s){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){}
-}
+function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); }catch(e){ return null; } }
+function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
 
-/* ══════════════════════════════════════
-   APP
-══════════════════════════════════════ */
 createApp({
-  components:{
-    'goal-widget': GoalComp,
-    'challenge-widget': ChalComp,
-  },
+  components:{ 'goal-widget':GoalComp, 'challenge-widget':ChalComp },
   setup(){
     const saved = loadState() || {};
     const urlMode = new URLSearchParams(location.search).get('mode');
-
     const mode = ref(urlMode||'admin');
     const tab  = ref('widgets');
     const selId= ref(null);
@@ -1238,38 +712,24 @@ createApp({
     const pcvs = ref(null);
     const wscene = ref(null);
     const previewZone = ref(null);
+    const fbOk = ref(!!db);
 
-    /* panels */
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
-      id:uid(),type:'goal',
-      title:'Цель стрима',current:0,max:'50000',
+      id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
       lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',
-      width:420,padding:20,radius:15,
-      bgColor:'#111111',bgOpacity:.8,
+      width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
       cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
-      titleSize:16,textSize:13,barHeight:14,
-      x:80,y:60
+      titleSize:16,textSize:13,barHeight:14,x:80,y:60
     });
 
-    /* alert config */
     const alertCfg = reactive(Object.assign({
-      labelText:'НОВЫЙ ДОНАТ!',
-      duration:7,
-      mediaType:'none',
-      imageData:null,
-      videoUrl:'',
-      soundData:null,
-      volume:1,
-      bgColor:'#111111',bgOpacity:.9,
-      labelColor:'#aaaaaa',
-      nameColor:'#ffffff',
-      amountColor:'#ffd700',
-      borderColor:'#ffd700',
-      nameFontSize:32,amountFontSize:48,
-      cardRadius:16,
-      particleColor:'#ffd700',
-      particleCount:80,
+      labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',
+      imageData:null,videoUrl:'',soundData:null,volume:1,
+      bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',
+      nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',
+      nameFontSize:32,amountFontSize:48,cardRadius:16,
+      particleColor:'#ffd700',particleCount:80,
     }, saved.alertCfg||{}));
 
     const alertVis = ref(false);
@@ -1277,19 +737,14 @@ createApp({
     const curDonation = reactive({name:'',amount:''});
     let alertTimer = null;
 
-    /* ── Quick donate fields ── */
-    const quickName   = ref('');
+    const quickName = ref('');
     const quickAmount = ref('');
-
-    /* ── Manual alert fields ── */
-    const tName   = ref('');
-    const tAmount = ref('');
-
+    const tName = ref('');
+    const tAmount = ref(null);
     const imgErr = ref('');
     const sndErr = ref('');
-    const toast  = reactive({show:false,msg:'',type:'ok'});
+    const toast = reactive({show:false,msg:'',type:'ok'});
 
-    /* toast helper */
     let toastTm;
     function showToast(msg,type='ok'){
       toast.msg=msg; toast.type=type; toast.show=true;
@@ -1297,15 +752,9 @@ createApp({
       toastTm=setTimeout(()=>toast.show=false,2500);
     }
 
-    /* computed styles */
-    const sceneStyle = computed(()=>({
-      transform:`scale(${globalScale.value})`,
-    }));
-
+    const sceneStyle = computed(()=>({ transform:`scale(${globalScale.value})` }));
     const alertCardStyle = computed(()=>{
-      const c = alertCfg;
-      const bg = c.bgColor||'#111111';
-      const op = c.bgOpacity!==undefined?c.bgOpacity:.9;
+      const c=alertCfg, bg=c.bgColor||'#111111', op=c.bgOpacity!==undefined?c.bgOpacity:.9;
       return {
         background:`rgba(${hexToRgb(bg)},${op})`,
         borderRadius:(c.cardRadius||16)+'px',
@@ -1314,28 +763,15 @@ createApp({
       };
     });
 
-    /* panel position */
-    function cardPos(p){
-      return {
-        left:(p.x||0)+'px',
-        top:(p.y||0)+'px',
-        width:(p.width||400)+'px',
-      };
-    }
-
+    function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
     function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
 
-    /* add / remove panels */
     function addPanel(type){
       panels.push({
-        id:uid(),type,
-        title:type==='goal'?'Цель стрима':'Новый челлендж',
-        current:0,max:'50000',
-        lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',
-        showDivider:true,showCount:true,
-        iconData:null,iconSize:35,iconGap:15,
-        width:400,padding:20,radius:15,
-        bgColor:'#111111',bgOpacity:.8,
+        id:uid(),type,title:type==='goal'?'Цель стрима':'Новый челлендж',
+        current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',
+        showDivider:true,showCount:true,iconData:null,iconSize:35,iconGap:15,
+        width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
         cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff',
         titleSize:16,textSize:13,barHeight:14,
         x:80+(panels.length*30),y:60+(panels.length*30),
@@ -1348,21 +784,27 @@ createApp({
       if(selId.value===id) selId.value=null;
     }
 
-    /* ─────────────────────────────────────────
-       QUICK DONATE — главная фишка v12
-       Вписал имя + сумму → всё происходит само:
-       1. Обновляет current у ВСЕХ goal-панелей
-       2. Добавляет донатера в список первым
-       3. Запускает Alert в OBS (Firebase)
-       4. Очищает поля
-    ───────────────────────────────────────── */
+    /* ── Сохранение состояния ── */
+    function buildState(){
+      return {
+        panels: JSON.parse(JSON.stringify(panels)),
+        alertCfg: JSON.parse(JSON.stringify(alertCfg)),
+        globalScale: globalScale.value,
+      };
+    }
+
+    function pushState(){
+      const state = buildState();
+      saveState(state);
+      if(db){ try{ db.ref('config').set(state); }catch(e){} }
+    }
+
     function applyDonateToGoals(name, amount){
-      const num = parseFloat(amount)||0;
+      const num = cleanNum(amount);
       const entry = `${name} — ${Number(num).toLocaleString('ru')} ₸`;
       panels.forEach(p=>{
         if(p.type==='goal'){
           p.current = (p.current||0) + num;
-          // добавляем донатера в начало списка
           const existing = (p.donorsRaw||'').trim();
           p.donorsRaw = existing ? entry+'\n'+existing : entry;
         }
@@ -1373,53 +815,43 @@ createApp({
     }
 
     function doQuickDonate(){
-  const name = quickName.value.trim();
-  const amt  = parseFloat(quickAmount.value)||0;
-  if(!name){ showToast('Введи имя донатера!','err'); return; }
-  if(!amt)  { showToast('Введи сумму!','err'); return; }
-
-  applyDonateToGoals(name, amt);
-  triggerAlert(name, amt, true);
-  
-  // ↓ ДОБАВЬ ЭТО — автосохранение в Firebase
-  const state={
-    panels: JSON.parse(JSON.stringify(panels)),
-    alertCfg: JSON.parse(JSON.stringify(alertCfg)),
-    globalScale: globalScale.value,
-  };
-  saveState(state);
-  if(db){ try{ db.ref('config').set(state); }catch(e){} }
-
-  showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
-  quickName.value='';
-  quickAmount.value='';
-}
+      const name = quickName.value.trim();
+      const amt  = cleanNum(quickAmount.value);
+      if(!name){ showToast('Введи имя донатера!','err'); return; }
+      if(!amt)  { showToast('Введи сумму!','err'); return; }
+      applyDonateToGoals(name, amt);
+      triggerAlert(name, amt, true);
+      pushState(); // ← автосохранение одной функцией
+      showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
+      quickName.value='';
+      quickAmount.value='';
+    }
 
     function doQuickTest(){
       const name = quickName.value.trim() || 'Тест Донатов';
-      const amt  = parseFloat(quickAmount.value)||500;
+      const amt  = cleanNum(quickAmount.value) || 500;
       triggerAlert(name, amt, false);
     }
 
-    /* manual alert trigger (Alert tab) */
     function doTrigger(){
       const name = tName.value.trim();
-      const amt  = tAmount.value.trim();
+      const amt  = cleanNum(tAmount.value);
       if(!name||!amt){ showToast('Заполни имя и сумму!','err'); return; }
-      triggerAlert(name, parseFloat(amt)||0, true);
+      triggerAlert(name, amt, true);
     }
+
     function doTestLocal(){
       const name = tName.value.trim() || 'Тест';
-      const amt  = parseFloat(tAmount.value)||500;
+      const amt  = cleanNum(tAmount.value) || 500;
       triggerAlert(name, amt, false);
     }
 
-    /* core alert trigger */
     function triggerAlert(name, amt, pushFB){
+      const num = cleanNum(amt); // финальная защита от "не числа"
       curDonation.name = name;
-      curDonation.amount = String(Math.round(parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0));
+      curDonation.amount = Number(num).toLocaleString('ru');
       alertKey.value++;
-      alertVis.value=true;
+      alertVis.value = true;
       clearTimeout(alertTimer);
       playSound();
       spawnParticles();
@@ -1429,7 +861,8 @@ createApp({
       if(pushFB && db){
         try{
           db.ref('alert').set({
-            name, amount: String(parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0),
+            name,
+            amount: num, // ← всегда чистое число, никаких пробелов
             ts: Date.now(),
             cfg: JSON.parse(JSON.stringify(alertCfg))
           });
@@ -1437,20 +870,13 @@ createApp({
       }
     }
 
-    /* sound */
     function playSound(){
       if(!alertCfg.soundData) return;
-      try{
-        const a=new Audio(alertCfg.soundData);
-        a.volume=alertCfg.volume||1;
-        a.play().catch(()=>{});
-      }catch(e){}
+      try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
-    /* particles */
     function spawnParticles(){
-      const canvas=pcvs.value;
-      if(!canvas) return;
+      const canvas=pcvs.value; if(!canvas) return;
       const ctx=canvas.getContext('2d');
       canvas.width=canvas.offsetWidth||800;
       canvas.height=canvas.offsetHeight||600;
@@ -1459,30 +885,16 @@ createApp({
       const color=alertCfg.particleColor||'#ffd700';
       const particles=[];
       for(let i=0;i<count;i++){
-        particles.push({
-          x:Math.random()*canvas.width,
-          y:canvas.height+10,
-          vx:(Math.random()-.5)*4,
-          vy:-(Math.random()*6+3),
-          size:Math.random()*5+2,
-          alpha:1,
-          decay:Math.random()*.015+.008,
-        });
+        particles.push({x:Math.random()*canvas.width,y:canvas.height+10,vx:(Math.random()-.5)*4,vy:-(Math.random()*6+3),size:Math.random()*5+2,alpha:1,decay:Math.random()*.015+.008});
       }
       function frame(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         let alive=false;
         particles.forEach(p=>{
-          if(p.alpha<=0) return;
-          alive=true;
+          if(p.alpha<=0) return; alive=true;
           p.x+=p.vx; p.y+=p.vy; p.vy+=.12; p.alpha-=p.decay;
-          ctx.save();
-          ctx.globalAlpha=Math.max(0,p.alpha);
-          ctx.fillStyle=color;
-          ctx.beginPath();
-          ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-          ctx.fill();
-          ctx.restore();
+          ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha); ctx.fillStyle=color;
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.restore();
         });
         if(alive) requestAnimationFrame(frame);
         else ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1490,17 +902,8 @@ createApp({
       requestAnimationFrame(frame);
     }
 
-    /* save / reset */
     function saveAll(){
-      const state={
-        panels: JSON.parse(JSON.stringify(panels)),
-        alertCfg: JSON.parse(JSON.stringify(alertCfg)),
-        globalScale: globalScale.value,
-      };
-      saveState(state);
-      if(db){
-        try{ db.ref('config').set(state); }catch(e){}
-      }
+      pushState();
       showToast('✓ Сохранено!','ok');
     }
 
@@ -1515,100 +918,80 @@ createApp({
       navigator.clipboard.writeText(url).then(()=>showToast('URL скопирован!','ok'),()=>showToast('Не удалось скопировать','err'));
     }
 
-    /* drag (mouse) */
+    /* drag mouse */
     let drag={active:false,pid:null,ox:0,oy:0,px:0,py:0};
     function startDrag(e,p){
-      drag.active=true; drag.pid=p.id;
-      drag.ox=e.clientX; drag.oy=e.clientY;
-      drag.px=p.x||0; drag.py=p.y||0;
+      drag.active=true; drag.pid=p.id; drag.ox=e.clientX; drag.oy=e.clientY; drag.px=p.x||0; drag.py=p.y||0;
       selId.value=p.id;
-      window.addEventListener('mousemove',onDrag);
-      window.addEventListener('mouseup',endDrag);
+      window.addEventListener('mousemove',onDrag); window.addEventListener('mouseup',endDrag);
     }
     function onDrag(e){
       if(!drag.active) return;
-      const p=panels.find(x=>x.id===drag.pid);
-      if(!p) return;
-      const dx=e.clientX-drag.ox, dy=e.clientY-drag.oy;
-      const sc=globalScale.value||1;
+      const p=panels.find(x=>x.id===drag.pid); if(!p) return;
+      const dx=e.clientX-drag.ox, dy=e.clientY-drag.oy, sc=globalScale.value||1;
       p.x=drag.px+dx/sc; p.y=drag.py+dy/sc;
-      // snap guides
       const zone=previewZone.value;
       if(zone){
-        const w=zone.offsetWidth/sc, h=zone.offsetHeight/sc;
-        const cx=p.x+(p.width||400)/2;
-        guideV.value=Math.abs(cx-w/2)<12;
-        guideVx.value=zone.offsetWidth/2;
-        guideH.value=Math.abs(p.y-h/2)<12;
-        guideHy.value=zone.offsetHeight/2;
+        const w=zone.offsetWidth/sc, h=zone.offsetHeight/sc, cx=p.x+(p.width||400)/2;
+        guideV.value=Math.abs(cx-w/2)<12; guideVx.value=zone.offsetWidth/2;
+        guideH.value=Math.abs(p.y-h/2)<12; guideHy.value=zone.offsetHeight/2;
         if(guideV.value) p.x=w/2-(p.width||400)/2;
         if(guideH.value) p.y=h/2;
       }
     }
     function endDrag(){
-      drag.active=false;
-      guideV.value=false; guideH.value=false;
-      window.removeEventListener('mousemove',onDrag);
-      window.removeEventListener('mouseup',endDrag);
+      drag.active=false; guideV.value=false; guideH.value=false;
+      window.removeEventListener('mousemove',onDrag); window.removeEventListener('mouseup',endDrag);
     }
 
-    /* drag (touch) */
+    /* drag touch */
     function startDragTouch(e,p){
       const t=e.touches[0];
-      drag.active=true; drag.pid=p.id;
-      drag.ox=t.clientX; drag.oy=t.clientY;
-      drag.px=p.x||0; drag.py=p.y||0;
+      drag.active=true; drag.pid=p.id; drag.ox=t.clientX; drag.oy=t.clientY; drag.px=p.x||0; drag.py=p.y||0;
       selId.value=p.id;
-      window.addEventListener('touchmove',onDragTouch,{passive:false});
-      window.addEventListener('touchend',endDrag);
+      window.addEventListener('touchmove',onDragTouch,{passive:false}); window.addEventListener('touchend',endDrag);
     }
     function onDragTouch(e){
-      e.preventDefault();
-      const t=e.touches[0];
-      if(!drag.active) return;
-      const p=panels.find(x=>x.id===drag.pid);
-      if(!p) return;
-      const dx=t.clientX-drag.ox, dy=t.clientY-drag.oy;
-      const sc=globalScale.value||1;
+      e.preventDefault(); const t=e.touches[0]; if(!drag.active) return;
+      const p=panels.find(x=>x.id===drag.pid); if(!p) return;
+      const dx=t.clientX-drag.ox, dy=t.clientY-drag.oy, sc=globalScale.value||1;
       p.x=drag.px+dx/sc; p.y=drag.py+dy/sc;
     }
 
-    /* file uploads */
-    function uploadIcon(e,p){
-      const f=e.target.files[0]; if(!f) return;
-      const r=new FileReader();
-      r.onload=ev=>{ p.iconData=ev.target.result; };
-      r.readAsDataURL(f);
-    }
+    function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
     function uploadAImg(e){
-      imgErr.value='';
-      const f=e.target.files[0]; if(!f) return;
+      imgErr.value=''; const f=e.target.files[0]; if(!f) return;
       if(f.size>1048576){ imgErr.value='Файл >1 MB'; return; }
-      const r=new FileReader();
-      r.onload=ev=>{ alertCfg.imageData=ev.target.result; };
-      r.readAsDataURL(f);
+      const r=new FileReader(); r.onload=ev=>{ alertCfg.imageData=ev.target.result; }; r.readAsDataURL(f);
     }
     function uploadASound(e){
-      sndErr.value='';
-      const f=e.target.files[0]; if(!f) return;
+      sndErr.value=''; const f=e.target.files[0]; if(!f) return;
       if(f.size>2097152){ sndErr.value='Файл >2 MB'; return; }
-      const r=new FileReader();
-      r.onload=ev=>{ alertCfg.soundData=ev.target.result; };
-      r.readAsDataURL(f);
+      const r=new FileReader(); r.onload=ev=>{ alertCfg.soundData=ev.target.result; }; r.readAsDataURL(f);
     }
 
-    /* Firebase listener (for OBS browser source) */
+    /* ── КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ:
+       OBS (widget/alert) слушает Firebase.
+       Админ-панель (телефон/комп) НЕ слушает Firebase автоматически —
+       только при явном нажатии "Сохранить" данные идут В Firebase,
+       а не ИЗ Firebase. Это убирает сброс при открытии с телефона.
+    ── */
     onMounted(()=>{
       if(mode.value==='alert' && db){
+        // OBS alert source — слушаем входящие донаты
+        let lastTs = 0;
         db.ref('alert').on('value',snap=>{
-  const d=snap.val();
-  if(!d||!d.ts) return;
-  if(d.cfg) Object.assign(alertCfg,d.cfg);
-  const cleanAmt = parseFloat(String(d.amount).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0;
-  triggerAlert(d.name, cleanAmt, false);
-});
+          const d=snap.val();
+          if(!d||!d.ts) return;
+          if(d.ts <= lastTs) return; // защита от повторного срабатывания при загрузке
+          lastTs = d.ts;
+          if(d.cfg) Object.assign(alertCfg,d.cfg);
+          const num = cleanNum(d.amount);
+          triggerAlert(d.name, num, false);
+        });
       }
       if(mode.value==='widget' && db){
+        // OBS widget source — слушаем обновления конфига
         db.ref('config').on('value',snap=>{
           const d=snap.val();
           if(!d) return;
@@ -1619,13 +1002,14 @@ createApp({
           if(d.globalScale) globalScale.value=d.globalScale;
         });
       }
+      // Админ-панель — НЕ подписывается на Firebase автоматически
+      // (это решает проблему сброса при открытии с телефона)
     });
 
     return {
-      mode,tab,selId,alertOpen,globalScale,
+      mode,tab,selId,alertOpen,globalScale,fbOk,
       panels,alertCfg,alertVis,alertKey,curDonation,
-      quickName,quickAmount,
-      tName,tAmount,
+      quickName,quickAmount,tName,tAmount,
       imgErr,sndErr,toast,
       guideV,guideH,guideVx,guideHy,
       pcvs,wscene,previewZone,
