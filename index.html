@@ -3,14 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SUPREME WIDGET V11 PRO</title>
+<title>SUPREME WIDGET V11 PRO - SOUL</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <style>
 /* ══════════════════════════════════════
-   ROOT VARIABLES
+   ROOT VARIABLES & BASE
 ══════════════════════════════════════ */
 :root {
   --gold: #ffd700;
@@ -110,6 +109,30 @@ body{
   display:flex;flex-direction:column;gap:8px;
 }
 
+/* ── QUICK DONATION (NEW) ── */
+.quick-donat {
+  background: #110003;
+  border: 1px solid var(--red);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  margin-bottom: 5px;
+  box-shadow: 0 4px 15px rgba(255,0,68,.1);
+}
+.quick-donat .sec-name {
+  color: var(--red);
+  font-size: 11px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quick-donat input {
+  background: #1a0508;
+  border-color: #330011;
+  font-size: 13px;
+}
+.quick-donat input:focus { border-color: var(--red); }
+
 /* COLLAPSIBLE SECTION */
 .sec-head{
   display:flex;align-items:center;justify-content:space-between;
@@ -153,12 +176,10 @@ body{
 .fg{display:flex;flex-direction:column;gap:5px;}
 .fr{display:flex;gap:9px;}
 .fr > *{flex:1;}
-
 label,.lbl{
   font-size:9px;font-weight:700;color:var(--text-dim);
   text-transform:uppercase;letter-spacing:.5px;
 }
-
 input[type=text],input[type=number],select,textarea{
   background:#080808;
   border:1px solid var(--border);
@@ -174,33 +195,12 @@ input:focus,select:focus,textarea:focus{
   border-color:var(--red);
   box-shadow:0 0 0 2px rgba(255,0,68,.1);
 }
-select option{background:#111;}
-
 .rr{display:flex;align-items:center;gap:8px;}
-input[type=range]{
-  flex:1;accent-color:var(--red);
-  cursor:pointer;height:3px;background:var(--border);
-  border-radius:2px;border:none;padding:0;
-}
-.rv{
-  font-size:10px;color:var(--text-bright);
-  min-width:34px;text-align:right;
-  font-variant-numeric:tabular-nums;
-  background:#080808;padding:3px 6px;
-  border-radius:4px;border:1px solid var(--border);
-}
-
+input[type=range]{flex:1;accent-color:var(--red);cursor:pointer;height:3px;background:var(--border);border-radius:2px;border:none;padding:0;}
+.rv{font-size:10px;color:var(--text-bright);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;background:#080808;padding:3px 6px;border-radius:4px;border:1px solid var(--border);}
 .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .ci{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;}
 input[type=color]{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:#000;padding:2px;}
-
-.cb-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:6px 0;
-}
-.cb-row label{font-size:10px;color:var(--text);font-weight:700;text-transform:none;letter-spacing:0;}
-input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:pointer;}
-
 .divider{height:1px;background:var(--border);width:100%;margin:3px 0;}
 .sub-lbl{font-size:10px;font-weight:900;color:var(--text-bright);text-transform:uppercase;letter-spacing:.5px;}
 
@@ -214,37 +214,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .btn-red{
   background:linear-gradient(135deg,#ff0044,#cc0034);
   color:#fff;padding:15px;border-radius:var(--radius-md);
-  font-size:12px;font-weight:900;width:100%;
+  font-size:11px;font-weight:900;width:100%;
   box-shadow:0 4px 15px rgba(255,0,68,.2);
 }
 .btn-red:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,0,68,.35);}
-.btn-green{
-  background:linear-gradient(135deg,#00aa44,#007730);
-  color:#fff;padding:12px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;
-  box-shadow:0 2px 10px rgba(0,170,68,.2);
-}
-.btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,170,68,.3);}
-.btn-purple{
-  background:linear-gradient(135deg,#7700ff,#5500cc);
-  color:#fff;padding:12px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;
-  box-shadow:0 2px 10px rgba(119,0,255,.2);
-}
-.btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(119,0,255,.3);}
-.btn-ghost{
-  background:transparent;color:var(--text-mid);
-  padding:10px;border-radius:var(--radius-sm);
-  font-size:9px;flex:1;
-  border:1px dashed var(--border-hi);
-}
-.btn-ghost:hover{background:#151515;color:var(--text);border-color:#444;}
-.btn-flat{
-  background:#151515;color:var(--text);
-  padding:11px;border-radius:var(--radius-sm);
-  font-size:10px;border:1px solid var(--border);
-}
-.btn-flat:hover{background:#1c1c1c;border-color:var(--border-hi);}
 .btn-del{
   background:rgba(255,0,0,.07);color:#ff4444;
   padding:5px 8px;border-radius:5px;font-size:8px;
@@ -257,30 +230,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   font-size:10px;flex:1;border:1px solid var(--border);
 }
 .btn-add-panel:hover{background:#1c1c1c;}
-
-.actions{
-  display:flex;flex-direction:column;gap:8px;
-  padding:12px;
-  border-top:1px solid var(--border);
-  flex-shrink:0;
-}
-
-/* FILE INPUT */
-.file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
-.file-wrap input[type=file]{
-  font-size:100px;position:absolute;left:0;top:0;
-  opacity:0;cursor:pointer;height:100%;width:100%;
-}
-.file-btn{
-  background:#080808;border:1px solid var(--border);
-  color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);
-  font-size:10px;width:100%;text-align:center;
-  font-family:'Unbounded';font-weight:700;text-transform:uppercase;
-  letter-spacing:.3px;transition:all .2s;cursor:pointer;
-}
-.file-wrap:hover .file-btn{border-color:var(--red);color:var(--text-bright);}
-.file-ok{font-size:9px;color:#00cc44;margin-top:3px;font-weight:700;}
-.file-err{font-size:9px;color:#ff4444;margin-top:3px;font-weight:700;}
 
 /* ── PREVIEW ZONE ── */
 .preview-zone{
@@ -295,32 +244,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   position:absolute;top:14px;left:50%;transform:translateX(-50%);
   font-size:9px;font-weight:700;color:#222;
   text-transform:uppercase;letter-spacing:1.5px;
-  pointer-events:none;z-index:5;white-space:nowrap;
-}
-.pz-mode{
-  position:absolute;top:14px;right:16px;
-  font-size:8px;font-weight:700;color:#1e1e1e;
-  text-transform:uppercase;letter-spacing:1px;
   pointer-events:none;z-index:5;
 }
 
-/* ══════════════════════════════════════
-   WIDGET PANELS
-══════════════════════════════════════ */
+/* WIDGET PANELS */
 .widget-scene{position:relative;width:100%;height:100%;transform-origin:center center;}
-
 .draggable{
-  position:absolute;cursor:grab;
-  z-index:10;user-select:none;touch-action:none;
-  transition:box-shadow .15s;
+  position:absolute;cursor:grab;z-index:10;user-select:none;touch-action:none;
 }
 .draggable:active{cursor:grabbing;z-index:99;}
-.draggable.sel{
-  outline:1.5px solid rgba(0,255,180,.7);
-  outline-offset:4px;
-  border-radius:inherit;
-}
-
 .glass{
   position:relative;width:100%;height:100%;
   backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
@@ -328,15 +260,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   overflow:hidden;
 }
 
-/* GOAL */
+/* GOAL & LIST CSS */
 .goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
-.prog-track{width:100%;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.04);position:relative;}
+.prog-track{width:100%;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.04);position:relative;height:8px; border-radius: 4px;}
 .prog-fill{height:100%;transition:width .5s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
-.prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmer 2.5s infinite linear;}
-@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
-
-/* Last donor label */
 .ld-section{margin-top:13px;}
 .ld-label{
   display:inline-flex;align-items:center;gap:5px;
@@ -348,97 +276,33 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 .donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
 .donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);}
-.rk-1{background:linear-gradient(90deg,rgba(255,215,0,.13),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
-.rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent) !important;border-color:rgba(200,200,200,.2) !important;color:var(--silver) !important;}
-.rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent) !important;border-color:rgba(205,127,50,.2) !important;color:var(--bronze) !important;}
+.rk-0{background:linear-gradient(90deg,rgba(255,215,0,.13),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
 
-/* CHALLENGE */
-.chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
-.chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
-.chal-brand{display:flex;align-items:center;}
-.icon-mask{background-color:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;flex-shrink:0;}
-.chal-title{font-weight:800;text-transform:uppercase;letter-spacing:1px;}
-.chal-divider{height:1px;width:100%;margin:7px 0;opacity:.1;}
-.chal-label{opacity:.7;font-weight:700;}
-.chal-val,.chal-total{font-weight:900;text-align:right;}
-
-/* EDITABLE */
-.ed{cursor:text;border-bottom:1px dashed rgba(255,255,255,.2);transition:all .15s;}
-.ed:hover{background:rgba(255,255,255,.05);}
-.ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
-.obs-mode .ed{border:none !important;background:transparent !important;pointer-events:none;}
-.obs-mode .draggable{cursor:default !important;outline:none !important;}
-
-/* GUIDES */
-.guide{position:absolute;background:#00ffb0;box-shadow:0 0 8px #00ffb0;z-index:100;pointer-events:none;opacity:0;transition:opacity .15s;}
-.guide.on{opacity:.65;}
-.guide.gv{top:-3000px;bottom:-3000px;width:1px;}
-.guide.gh{left:-3000px;right:-3000px;height:1px;}
-
-/* ══════════════════════════════════════
-   ALERT OVERLAY
-══════════════════════════════════════ */
+/* ALERT ANIMATIONS */
 .alert-scene{
   width:100vw;height:100vh;
-  background:transparent;
-  position:relative;overflow:hidden;
+  position:absolute;inset:0;
   display:flex;align-items:flex-end;justify-content:center;
   padding-bottom:50px;
-}
-.particle-canvas{
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
-  pointer-events:none;z-index:1;
+  pointer-events:none; z-index:999;
 }
 .alert-card{
   position:relative;z-index:2;
   display:flex;flex-direction:column;align-items:center;
-  padding:28px 36px;
-  gap:12px;
-  text-align:center;
+  padding:28px 36px; gap:12px; text-align:center;
   min-width:380px;max-width:580px;
-  overflow:hidden;
+  border-radius: 20px;
+  background: rgba(10,10,10,0.9);
+  border: 1px solid var(--red);
+  box-shadow: 0 0 30px rgba(255,0,68,0.3);
 }
-.alert-card::before{
-  content:'';position:absolute;inset:0;
-  background:inherit;filter:blur(0);
-  z-index:-1;
-}
-.alert-media{
-  width:100%;max-height:180px;
-  overflow:hidden;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-}
-.alert-media img,.alert-media video{
-  width:100%;height:100%;object-fit:cover;border-radius:10px;
-  max-height:180px;
-}
-.a-label{
-  font-size:10px;font-weight:900;
-  text-transform:uppercase;letter-spacing:3px;
-  opacity:.75;
-}
-.a-name{
-  font-weight:900;
-  text-transform:uppercase;letter-spacing:1px;
-  line-height:1;
-}
-.a-amount{
-  font-weight:900;line-height:1;
-}
+.a-label{ font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:3px;opacity:.75; }
+.a-name{ font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1; font-size: 32px;}
+.a-amount{ font-weight:900;line-height:1; font-size: 48px; color: var(--gold); }
 .a-bar{
-  width:80%;height:3px;
-  border-radius:2px;
-  opacity:.4;
-  animation:barShrink linear forwards;
+  width:80%;height:3px;border-radius:2px;opacity:.4;
   transform-origin:left center;
 }
-@keyframes barShrink{
-  0%{transform:scaleX(1);}
-  100%{transform:scaleX(0);}
-}
-
-/* Alert Vue transition */
 .alert-enter-active{animation:alertIn .65s cubic-bezier(.34,1.56,.64,1) both;}
 .alert-leave-active{animation:alertOut .45s ease-in both;}
 @keyframes alertIn{
@@ -450,95 +314,88 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   100%{transform:translateY(-60px) scale(.9);opacity:0;}
 }
 
-/* Staggered text reveals */
-.a-label{animation:textUp .4s .15s ease both;}
-.a-name{animation:textUp .4s .25s ease both;}
-.a-amount{animation:textUp .4s .35s ease both;}
-.a-bar{animation:barShrink linear .55s forwards;}
-@keyframes textUp{
-  0%{transform:translateY(16px);opacity:0;}
-  100%{transform:translateY(0);opacity:1;}
+/* RESPONSIVE (MOBILE) */
+@media(max-width:900px){
+  .admin-shell{grid-template-columns:1fr;grid-template-rows:60vh 40vh;}
+  .sidebar{border-right:none;border-top:1px solid var(--border);order:2;}
+  .preview-zone{order:1;border-bottom:1px solid var(--border);}
+  .quick-donat { position: sticky; top: 0; z-index: 10; background: #110003; }
 }
 
-/* Glow pulse on card */
-.glow-card{animation:glowPulse 2s ease-in-out infinite;}
-@keyframes glowPulse{
-  0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}
-  50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}
-}
-
-/* Alert preview area inside admin */
-.alert-preview-wrap{
-  width:100%;height:100%;
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:40px;position:relative;
-}
-
-/* ══════════════════════════════════════
-   TOAST
-══════════════════════════════════════ */
 .toast{
   position:fixed;bottom:22px;left:50%;
   transform:translateX(-50%) translateY(14px);
-  background:#151515;border:1px solid var(--border);
-  color:var(--text);padding:11px 18px;
+  background:#151515;border:1px solid #00aa44;
+  color:#00cc44;padding:11px 18px;
   border-radius:var(--radius-md);
   font-size:10px;font-weight:700;
   transition:all .25s;opacity:0;
   z-index:99999;pointer-events:none;
-  white-space:nowrap;
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.ok{border-color:#00aa44;color:#00cc44;}
-.toast.err{border-color:#ff4444;color:#ff4444;}
-
-/* ══════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════ */
-@media(max-width:900px){
-  .admin-shell{grid-template-columns:1fr;grid-template-rows:55vh 45vh;}
-  .sidebar{border-right:none;border-top:1px solid var(--border);order:2;}
-  .preview-zone{order:1;border-bottom:1px solid var(--border);}
-}
 </style>
 </head>
 <body>
 
-<div id="app" :class="{'obs-mode':mode!=='admin'}">
+<div id="app">
 
-  <!-- ═══════ ALERT OVERLAY ═══════ -->
-  <div v-if="mode==='alert'" class="alert-scene">
-    <canvas ref="pcvs" class="particle-canvas"></canvas>
+  <div class="alert-scene">
     <transition name="alert">
-      <div v-if="alertVis" class="alert-card glow-card"
-           :style="alertCardStyle">
-        <!-- timer bar -->
-        <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
-        <!-- media -->
-        <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
-          <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
-        </div>
-        <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
-          <img :src="alertCfg.imageData" alt="">
-        </div>
-        <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
-        <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
-        <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}}</div>
+      <div v-if="alertVis" class="alert-card">
+        <div class="a-label" :style="{color: alertCfg.labelColor || '#ff0044'}">{{alertCfg.labelText || 'НОВЫЙ ДОНАТ!'}}</div>
+        <div class="a-name">{{curDonation.name}}</div>
+        <div class="a-amount">{{curDonation.amount}}</div>
       </div>
     </transition>
   </div>
 
-  <!-- ═══════ WIDGET OVERLAY ═══════ -->
-  <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
-    <div v-for="p in panels" :key="p.id" class="draggable" :style="cardPos(p)">
-      <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
+  <div v-if="mode==='admin'" class="admin-shell">
+    
+    <div class="preview-zone" ref="previewZone">
+      <div class="pz-label">ОКНО В OBS</div>
+      
+      <div class="widget-scene">
+        <div v-for="p in panels" :key="p.id" class="draggable" :style="{
+          width: p.width + 'px',
+          left: '50px',
+          top: '50px'
+        }">
+          
+          <div v-if="p.type==='goal'" class="glass" :style="{
+            padding: (p.padding||20)+'px',
+            borderRadius: (p.radius||15)+'px',
+            backgroundColor: p.bgColor || 'rgba(0,0,0,0.7)'
+          }">
+            <div class="goal-wrap" :style="{color: p.cText || '#fff'}">
+              <div class="goal-top">
+                <div :style="{fontSize: (p.titleSize||16)+'px', fontWeight: 900}">СОБРАНО:</div>
+                <div :style="{fontSize: (p.titleSize||16)+'px', fontWeight: 900}">{{p.current}} / {{p.max}} ₸</div>
+              </div>
+              <div class="prog-track">
+                <div class="prog-fill" :style="{
+                  width: Math.min((p.current / (p.max||1)) * 100, 100) + '%',
+                  background: p.cBar1 || '#ff0044'
+                }"></div>
+              </div>
+              
+              <div class="ld-section" v-if="p.donorsRaw && p.donorsRaw.trim().length > 0">
+                <div class="ld-label" :style="{background: 'rgba(255,0,68,0.2)', color: '#ff0044'}">
+                  {{p.lastDonorLabel || 'ПОСЛЕДНИЕ ДОНАТЫ'}}
+                </div>
+                <ul class="donor-list">
+                  <li v-for="(donor, idx) in parsedDonors(p.donorsRaw)" :key="idx" class="donor-item" :class="'rk-'+idx" :style="{fontSize: (p.textSize||14)+'px'}">
+                    <span>{{donor.name}}</span>
+                    <span>{{donor.amount}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- ═══════ ADMIN ═══════ -->
-  <div v-else class="admin-shell">
-
-    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-head">
         <div class="logo">
@@ -549,766 +406,218 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </div>
 
       <div class="tabs">
-        <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
-        <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🎉 Alert</button>
+        <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты & Донат</button>
+        <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🎉 Настройки Алерта</button>
       </div>
 
       <div class="sidebar-body">
 
-        <!-- ═══ WIDGETS TAB ═══ -->
         <template v-if="tab==='widgets'">
-          <div class="fr">
-            <button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
-            <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
+          
+          <div class="quick-donat">
+            <div class="sec-name">⚡ БЫСТРЫЙ ДОНАТ (В 1 КЛИК)</div>
+            <div class="fr" style="margin-bottom:10px">
+              <div class="fg">
+                <label>Никнейм</label>
+                <input type="text" v-model="quickName" placeholder="Например: Иван">
+              </div>
+              <div class="fg">
+                <label>Сумма (₸)</label>
+                <input type="number" v-model.number="quickAmount" placeholder="Только цифры">
+              </div>
+            </div>
+            <button class="btn btn-red" @click="processQuickDonation" style="padding: 12px; font-size: 10px;">
+              🔥 ДОБАВИТЬ ВЕЗДЕ (АЛЕРТ + ЦЕЛЬ + СПИСОК)
+            </button>
+          </div>
+
+          <div class="fr" style="margin-bottom: 5px;">
+            <button class="btn btn-add-panel" @click="addPanel('goal')">✚ СОЗДАТЬ ЦЕЛЬ</button>
           </div>
 
           <div v-for="(p,i) in panels" :key="p.id">
             <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
               <div class="sec-head-l">
                 <div class="sec-dot">{{i+1}}</div>
-                <div class="sec-name">{{p.type==='goal'?'🎯 ЦЕЛЬ':'⚡ ЧЕЛЛЕНДЖ'}}</div>
-              </div>
-              <div style="display:flex;gap:7px;align-items:center">
-                <button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button>
-                <span class="sec-chevron">▼</span>
+                <div class="sec-name">🎯 ЦЕЛЬ И СПИСОК</div>
               </div>
             </div>
 
             <div v-if="selId===p.id" class="sec-body">
-
-              <!-- GOAL -->
-              <template v-if="p.type==='goal'">
-                <div class="fr">
-                  <div class="fg"><label>Текущая сумма</label><input type="number" v-model.number="p.current"></div>
-                  <div class="fg"><label>Цель</label><input type="text" v-model="p.max"></div>
-                </div>
-                <div class="fg">
-                  <label>Метка перед донатерами</label>
-                  <input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ">
-                </div>
-                <div class="fg">
-                  <label>Список донатеров (через запятую или новую строку)</label>
-                  <textarea v-model="p.donorsRaw" placeholder="Иван — 500₽&#10;Максим — 300₽&#10;Анна — 100₽"></textarea>
-                </div>
-              </template>
-
-              <!-- CHALLENGE -->
-              <template v-if="p.type==='challenge'">
-                <div class="fg">
-                  <label>Логотип</label>
-                  <div class="file-wrap">
-                    <div class="file-btn">📁 Выбрать изображение</div>
-                    <input type="file" accept="image/*" @change="uploadIcon($event,p)">
-                  </div>
-                </div>
-                <div class="fr">
-                  <div class="fg"><label>Размер лого</label>
-                    <div class="rr"><input type="range" min="10" max="120" v-model.number="p.iconSize"><span class="rv">{{p.iconSize||35}}</span></div>
-                  </div>
-                  <div class="fg"><label>Отступ лого</label>
-                    <div class="rr"><input type="range" min="0" max="50" v-model.number="p.iconGap"><span class="rv">{{p.iconGap||15}}</span></div>
-                  </div>
-                </div>
-                <div class="fr">
-                  <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
-                  <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
-                </div>
-              </template>
-
-              <div class="divider"></div>
-              <div class="sub-lbl">Шрифты</div>
               <div class="fr">
-                <div class="fg"><label>Заголовок</label>
-                  <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
-                </div>
-                <div class="fg"><label>Текст</label>
-                  <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
-                </div>
+                <div class="fg"><label>Текущая сумма</label><input type="number" v-model.number="p.current"></div>
+                <div class="fg"><label>Цель (Максимум)</label><input type="number" v-model.number="p.max"></div>
               </div>
-
+              <div class="fg">
+                <label>Список донатеров (авто-обновляется!)</label>
+                <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
+              </div>
               <div class="divider"></div>
-              <div class="sub-lbl">Размеры</div>
+              <div class="sub-lbl">Дизайн</div>
               <div class="fg"><label>Ширина панели</label>
-                <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
-              </div>
-              <div class="fr">
-                <div class="fg"><label>Отступы</label>
-                  <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
-                </div>
-                <div class="fg"><label>Скругление</label>
-                  <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
-                </div>
-              </div>
-
-              <div class="divider"></div>
-              <div class="sub-lbl">Цвета</div>
-              <div class="fr">
-                <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
-                <div class="fg"><label>Прозрачность фона</label>
-                  <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
-                </div>
+                <div class="rr"><input type="range" min="200" max="800" v-model.number="p.width"><span class="rv">{{p.width}}</span></div>
               </div>
               <div class="color-grid">
+                <div class="ci"><span>Фон</span><input type="color" v-model="p.bgColor"></div>
+                <div class="ci"><span>Прогресс</span><input type="color" v-model="p.cBar1"></div>
                 <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
-                <template v-if="p.type==='goal'">
-                  <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
-                  <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
-                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                </template>
-                <template v-if="p.type==='challenge'">
-                  <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
-                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                </template>
               </div>
-            </div>
-          </div>
-
-          <!-- Global -->
-          <div class="sec-head">
-            <div class="sec-head-l">
-              <div class="sec-name">⚙ Глобальные настройки OBS</div>
-            </div>
-          </div>
-          <div class="sec-body">
-            <div class="fg"><label>Масштаб сцены</label>
-              <div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div>
             </div>
           </div>
         </template>
 
-        <!-- ═══ ALERT TAB ═══ -->
         <template v-if="tab==='alert'">
-
-          <!-- TRIGGER -->
           <div class="sec-head on">
             <div class="sec-head-l">
-              <div class="sec-dot" style="background:var(--red);color:#fff">▶</div>
-              <div class="sec-name">Запустить Alert</div>
+              <div class="sec-name">🎨 Настройки Алерта</div>
             </div>
           </div>
           <div class="sec-body">
-            <div class="fr">
-              <div class="fg"><label>Имя донатера</label><input type="text" v-model="tName" placeholder="Иван Петров"></div>
-              <div class="fg"><label>Сумма</label><input type="text" v-model="tAmount" placeholder="500 ₽"></div>
-            </div>
-            <button class="btn btn-green" @click="doTrigger">▶ ПОКАЗАТЬ В OBS</button>
-            <button class="btn btn-purple" @click="doTestLocal">🧪 Тест (только здесь)</button>
-          </div>
-
-          <!-- SETTINGS -->
-          <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
-            <div class="sec-head-l">
-              <div class="sec-name">🎨 Настройки Alert</div>
-            </div>
-            <span class="sec-chevron">▼</span>
-          </div>
-          <div v-if="alertOpen" class="sec-body">
-
-            <div class="fg"><label>Текст метки</label>
+            <div class="fg"><label>Текст надписи</label>
               <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
             </div>
             <div class="fg"><label>Длительность (сек)</label>
-              <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
+              <div class="rr"><input type="range" min="2" max="15" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration}}s</span></div>
             </div>
-
-            <div class="divider"></div>
-            <div class="sub-lbl">Медиа</div>
-
-            <div class="fg"><label>Тип медиа</label>
-              <select v-model="alertCfg.mediaType">
-                <option value="none">Без медиа</option>
-                <option value="image">Изображение (загрузить)</option>
-                <option value="video">Видео (URL)</option>
-              </select>
-            </div>
-
-            <template v-if="alertCfg.mediaType==='image'">
-              <div class="fg">
-                <label>Изображение (макс. 1 MB)</label>
-                <div class="file-wrap">
-                  <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
-                  <input type="file" accept="image/*" @change="uploadAImg">
-                </div>
-                <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
-                <div v-if="imgErr" class="file-err">{{imgErr}}</div>
-              </div>
-            </template>
-
-            <template v-if="alertCfg.mediaType==='video'">
-              <div class="fg"><label>URL видео (mp4 / webm)</label>
-                <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
-              </div>
-            </template>
-
-            <div class="divider"></div>
-            <div class="sub-lbl">Звук</div>
-
-            <div class="fg">
-              <label>Звуковой файл (макс. 2 MB)</label>
-              <div class="file-wrap">
-                <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
-                <input type="file" accept="audio/*" @change="uploadASound">
-              </div>
-              <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
-              <div v-if="sndErr" class="file-err">{{sndErr}}</div>
-            </div>
-            <div class="fg"><label>Громкость</label>
-              <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
-            </div>
-
-            <div class="divider"></div>
-            <div class="sub-lbl">Внешний вид</div>
-
-            <div class="fr">
-              <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
-              <div class="fg"><label>Прозрачность фона</label>
-                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
-              </div>
-            </div>
-
             <div class="color-grid">
-              <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
-              <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
-              <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
-              <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
+              <div class="ci"><span>Текст</span><input type="color" v-model="alertCfg.labelColor"></div>
             </div>
-
-            <div class="fr">
-              <div class="fg"><label>Размер имени</label>
-                <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
-              </div>
-              <div class="fg"><label>Размер суммы</label>
-                <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
-              </div>
-            </div>
-
-            <div class="fg"><label>Скругление карточки</label>
-              <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.borderRadius"><span class="rv">{{alertCfg.borderRadius||20}}</span></div>
-            </div>
-
           </div>
         </template>
 
-      </div><!-- end sidebar-body -->
-
-      <!-- ACTIONS -->
-      <div class="actions">
-        <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ И ОПУБЛИКОВАТЬ</button>
-        <div class="fr">
-          <button class="btn btn-ghost" @click="copyLink('widget')">🔗 Виджет</button>
-          <button class="btn btn-ghost" @click="copyLink('alert')">🔗 Alert</button>
-        </div>
-      </div>
-    </div><!-- end sidebar -->
-
-    <!-- PREVIEW -->
-    <div class="preview-zone">
-      <div class="pz-label">{{tab==='alert'?'PREVIEW — ALERT OVERLAY':'PREVIEW — WIDGET'}}</div>
-      <div class="pz-mode">DRAG TO POSITION</div>
-      <div class="guide gv" ref="gv"></div>
-      <div class="guide gh" ref="gh"></div>
-
-      <!-- Widget preview -->
-      <div v-if="tab==='widgets'" class="widget-scene" :style="adminSceneStyle">
-        <div v-for="p in panels" :key="p.id"
-             class="draggable" :class="{sel:selId===p.id}"
-             :style="cardPos(p)"
-             @mousedown="startDrag($event,p)"
-             @touchstart.passive="startDrag($event,p)"
-             @click="selId=p.id">
-          <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
-        </div>
-      </div>
-
-      <!-- Alert preview -->
-      <div v-if="tab==='alert'" class="alert-preview-wrap">
-        <canvas ref="pcvsAdmin" class="particle-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
-        <transition name="alert">
-          <div v-if="preVis" class="alert-card glow-card" :style="alertCardStyle">
-            <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="preKey"></div>
-            <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
-              <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
-            </div>
-            <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
-              <img :src="alertCfg.imageData" alt="">
-            </div>
-            <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
-            <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{tName||'Иван Петров'}}</div>
-            <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{tAmount||'500 ₽'}}</div>
-          </div>
-        </transition>
       </div>
     </div>
-  </div><!-- end admin-shell -->
+  </div>
 
-  <!-- TOAST -->
-  <div class="toast" :class="[toastType,{show:toastVis}]">{{toastMsg}}</div>
+  <div class="toast" :class="{show: toastVis}">{{toastMsg}}</div>
+
 </div>
 
-<!-- GOAL TEMPLATE -->
-<template id="tg">
-  <div class="glass" :style="ps">
-    <div class="goal-wrap">
-      <div class="goal-top" :style="{color:p.cText||'#fff'}">
-        <span class="ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.title=e.target.textContent}"
-              :style="{fontSize:(p.titleSize||16)+'px',fontWeight:700}">{{p.title||'ЦЕЛЬ'}}</span>
-        <span :style="{fontSize:(p.titleSize||16)*1.1+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">
-          {{fmtNum}} / <span class="ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.max=e.target.textContent}">{{p.max||'1000'}}</span>
-        </span>
-      </div>
-      <div class="prog-track" :style="{height:(p.padding||20)*.6+'px',borderRadius:(p.radius||15)/2+'px'}">
-        <div class="prog-fill" :style="bs"></div>
-      </div>
-      <div v-if="donors.length" class="ld-section">
-        <div class="ld-label" :style="{color:p.cAccent||'#ffd700',borderColor:(p.cAccent||'#ffd700')+'44',background:'linear-gradient(90deg,'+(p.cAccent||'#ffd700')+'18,'+(p.cAccent||'#ffd700')+'04)'}">
-          ★ {{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}
-        </div>
-        <ul class="donor-list" :style="{fontSize:(p.textSize||14)+'px',color:p.cText||'#fff'}">
-          <li v-for="(n,i) in donors" :key="i" class="donor-item" :class="'rk-'+(i+1)" :style="{borderRadius:(p.radius||15)/3+'px'}">
-            <span>{{i===0?'👑 ':i===1?'🥈 ':i===2?'🥉 ':(i+1)+'. '}}{{n}}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</template>
-
-<!-- CHALLENGE TEMPLATE -->
-<template id="tc">
-  <div class="glass" :style="ps">
-    <div class="chal-wrap" :style="{gap:(p.iconGap||15)/2+'px'}">
-      <div class="chal-row">
-        <div class="chal-brand" :style="{gap:(p.iconGap||15)+'px'}">
-          <div class="icon-mask" :style="im"></div>
-          <div class="chal-title ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.title=e.target.textContent}"
-               :style="{color:p.cText||'#fff',fontSize:(p.titleSize||16)+'px'}">{{p.title||'ЧЕЛЛЕНДЖ'}}</div>
-        </div>
-        <div class="chal-val ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.value=e.target.textContent}"
-             :style="{color:p.cAccent||'#ffd700',fontSize:(p.titleSize||16)*1.2+'px'}">{{p.value||'1=1'}}</div>
-      </div>
-      <template v-if="p.showCount!==false">
-        <div v-if="p.showDivider" class="chal-divider" :style="{backgroundColor:p.cText||'#fff'}"></div>
-        <div class="chal-row">
-          <div class="chal-label ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.label=e.target.textContent}"
-               :style="{color:p.cText||'#fff',fontSize:(p.textSize||14)+'px'}">{{p.label||'Всего:'}}</div>
-          <div class="chal-total ed" :contenteditable="!isObs" @blur="e=>{if(!isObs)p.count=e.target.textContent}"
-               :style="{color:p.cAccent||'#ffd700',fontSize:(p.textSize||14)*1.2+'px'}">{{p.count||'0'}}</div>
-        </div>
-      </template>
-    </div>
-  </div>
-</template>
-
 <script>
-const{createApp,ref,computed,onMounted,nextTick}=Vue;
+const { createApp, ref, onMounted } = Vue;
 
-// ── Firebase ──
-const FC={
-  apiKey:"AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
-  authDomain:"tt-widget-88711.firebaseapp.com",
-  projectId:"tt-widget-88711",
-  databaseURL:"https://tt-widget-88711-default-rtdb.firebaseio.com",
-  storageBucket:"tt-widget-88711.firebasestorage.app",
-  messagingSenderId:"997435022478",
-  appId:"1:997435022478:web:a0ad462f2a7dd074d27ddf"
-};
-if(!firebase.apps.length)firebase.initializeApp(FC);
-const db=firebase.database();
-
-const WP='widget_v11_data';
-const AP='widget_v11_alertcfg';
-const TP='widget_v11_trigger';
-const ICON='https://cdn-icons-png.flaticon.com/512/38/38464.png';
-
-const rgba=(hex,op)=>{
-  if(!hex||typeof hex!=='string')return`rgba(15,15,15,${op??0.7})`;
-  try{
-    let c=hex.substring(1).split('');
-    if(c.length===3)c=[c[0],c[0],c[1],c[1],c[2],c[2]];
-    c='0x'+c.join('');
-    return`rgba(${(c>>16)&255},${(c>>8)&255},${c&255},${op??0.7})`;
-  }catch{return`rgba(15,15,15,0.7)`;}
-};
-
-// ── Goal Widget ──
-const GoalW={
-  template:'#tg',
-  props:['p','isObs'],
-  setup(pr){
-    const fmtNum=computed(()=>(pr.p.current||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '));
-    const donors=computed(()=>pr.p.donorsRaw?pr.p.donorsRaw.split(/,|\n/).map(s=>s.trim()).filter(Boolean).slice(0,5):[]);
-    const pct=computed(()=>{
-      const m=parseFloat((pr.p.max||'0').toString().replace(/[^\d]/g,''));
-      return m>0?Math.min(((pr.p.current||0)/m)*100,100):0;
-    });
-    const ps=computed(()=>({
-      padding:(pr.p.padding||20)+'px',
-      borderRadius:(pr.p.radius||15)+'px',
-      background:rgba(pr.p.bgColor,pr.p.bgOpacity),
-    }));
-    const bs=computed(()=>({
-      width:pct.value+'%',
-      background:`linear-gradient(90deg,${pr.p.cBar1||'#8a0022'},${pr.p.cBar2||'#ff0044'})`,
-      boxShadow:`0 0 14px ${pr.p.cBar2||'#ff0044'}88`,
-      borderRadius:((pr.p.radius||15)/2)+'px',
-    }));
-    return{fmtNum,donors,ps,bs};
-  }
-};
-
-// ── Challenge Widget ──
-const ChalW={
-  template:'#tc',
-  props:['p','isObs'],
-  setup(pr){
-    const ps=computed(()=>({
-      padding:(pr.p.padding||20)+'px',
-      borderRadius:(pr.p.radius||15)+'px',
-      background:rgba(pr.p.bgColor,pr.p.bgOpacity),
-    }));
-    const im=computed(()=>({
-      width:(pr.p.iconSize||35)+'px',
-      height:(pr.p.iconSize||35)+'px',
-      backgroundColor:pr.p.cIcon||'#fff',
-      '-webkit-mask-image':`url(${pr.p.iconUrl||ICON})`,
-      'mask-image':`url(${pr.p.iconUrl||ICON})`,
-    }));
-    return{ps,im};
-  }
-};
-
-// ── Main App ──
 createApp({
-  components:{GoalW,ChalW},
-  setup(){
-    const q=new URLSearchParams(window.location.search);
-    const mode=ref(q.get('mode')||'admin');
+  setup() {
+    // Basic States
+    const mode = ref('admin'); // 'admin' или 'widget'
+    const tab = ref('widgets');
+    const selId = ref(null);
+    const toastVis = ref(false);
+    const toastMsg = ref('');
 
-    const panels=ref([]);
-    const globalScale=ref(1);
-    const selId=ref(null);
-    const tab=ref('widgets');
-    const alertOpen=ref(true);
+    // Quick Donation Model
+    const quickName = ref('');
+    const quickAmount = ref('');
 
-    const alertCfg=ref({
-      labelText:'НОВЫЙ ДОНАТ!',
-      duration:7,
-      mediaType:'none',
-      imageData:'',
-      videoUrl:'',
-      soundData:'',
-      volume:.8,
-      bgColor:'#0a0a0a',
-      bgOpacity:.92,
-      labelColor:'#888888',
-      nameColor:'#ffffff',
-      amountColor:'#ffd700',
-      borderColor:'#ffd700',
-      borderRadius:20,
-      nameFontSize:32,
-      amountFontSize:48,
-    });
-
-    const alertVis=ref(false);
-    const preVis=ref(false);
-    const alertKey=ref(0);
-    const preKey=ref(0);
-    const curDonation=ref({name:'',amount:''});
-
-    const tName=ref('');
-    const tAmount=ref('');
-    const imgErr=ref('');
-    const sndErr=ref('');
-
-    // Toast
-    const toastVis=ref(false);
-    const toastMsg=ref('');
-    const toastType=ref('');
-    let toastT=null;
-    const toast=(m,t='')=>{
-      toastMsg.value=m;toastType.value=t;toastVis.value=true;
-      if(toastT)clearTimeout(toastT);
-      toastT=setTimeout(()=>{toastVis.value=false;},3000);
-    };
-
-    // Refs
-    const gv=ref(null);
-    const gh=ref(null);
-    const pcvs=ref(null);
-    const pcvsAdmin=ref(null);
-
-    // Computed styles
-    const alertCardStyle=computed(()=>{
-      const bg=rgba(alertCfg.value.bgColor,alertCfg.value.bgOpacity);
-      const bc=alertCfg.value.borderColor||'#ffd700';
-      return{
-        background:bg,
-        border:`2px solid ${bc}55`,
-        borderRadius:(alertCfg.value.borderRadius||20)+'px',
-        '--ac':`${bc}55`,
-      };
-    });
-    const sceneStyle=computed(()=>({transform:`scale(${globalScale.value})`}));
-    const adminSceneStyle=computed(()=>({}));
-
-    const cardPos=(p)=>({left:(p.x||50)+'px',top:(p.y||50)+'px',width:(p.width||400)+'px'});
-    const compFor=(t)=>t==='goal'?'GoalW':'ChalW';
-
-    // Panel management
-    const mkBase=(type)=>({
-      id:Date.now()+Math.floor(Math.random()*1000),
-      type,x:50,y:50,
-      width:400,padding:20,radius:15,
-      titleSize:16,textSize:14,
-      bgColor:'#0f0f0f',bgOpacity:.75,
-      cText:'#ffffff',cAccent:'#ffd700',
-    });
-
-    const addPanel=(type)=>{
-      let c=mkBase(type);
-      if(type==='goal'){
-        Object.assign(c,{
-          title:'СБОР НА СТРИМ:',current:0,max:'10 000',
-          donorsRaw:'Максим — 500₽\nИван — 200₽\nАнна — 100₽',
-          lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',
-          cBar1:'#8a0022',cBar2:'#ff0044',
-        });
-      } else {
-        Object.assign(c,{
-          title:'ОТЖИМАНИЯ',value:'1 раз = 50₽',
-          label:'Всего:',count:'0 раз',
-          iconSize:35,iconGap:15,cIcon:'#fff',
-          iconUrl:ICON,showDivider:true,showCount:true,
-        });
+    // Widgets Data
+    const panels = ref([
+      {
+        id: 'goal_1',
+        type: 'goal',
+        current: 0,
+        max: 100000,
+        width: 350,
+        padding: 20,
+        radius: 15,
+        cBar1: '#ff0044',
+        cText: '#ffffff',
+        lastDonorLabel: 'ТОП ДОНАТЕРЫ',
+        donorsRaw: ''
       }
-      panels.value.push(c);
-      selId.value=c.id;
+    ]);
+
+    // Alert Data
+    const alertVis = ref(false);
+    const alertCfg = ref({
+      labelText: 'НОВЫЙ ДОНАТ!',
+      labelColor: '#ff0044',
+      duration: 5
+    });
+    const curDonation = ref({ name: '', amount: '' });
+    let alertTimer = null;
+
+    // --- МАГИЯ БЫСТРОГО ДОНАТА ---
+    const processQuickDonation = () => {
+      if (!quickName.value || !quickAmount.value) {
+        showToast('❌ Введите ник и сумму!');
+        return;
+      }
+
+      const amountVal = Number(quickAmount.value);
+      const formattedAmount = `${amountVal} ₸`; // ВСЕГДА ТЕНГЕ
+
+      // 1. Находим цель и обновляем
+      const goal = panels.value.find(p => p.type === 'goal');
+      if (goal) {
+        // Прибавляем сумму
+        goal.current = (Number(goal.current) || 0) + amountVal;
+        
+        // Вставляем нового донатера в начало списка
+        let currentList = goal.donorsRaw ? goal.donorsRaw.split('\n').filter(x => x.trim() !== '') : [];
+        const newEntry = `${quickName.value} — ${formattedAmount}`;
+        currentList.unshift(newEntry);
+        
+        // Оставляем топ 5, чтобы не засорять виджет
+        goal.donorsRaw = currentList.slice(0, 5).join('\n');
+      }
+
+      // 2. Запускаем Алерт
+      curDonation.value.name = quickName.value;
+      curDonation.value.amount = formattedAmount;
+      
+      triggerAlert();
+
+      // 3. Очищаем инпуты для следующего
+      quickName.value = '';
+      quickAmount.value = '';
+      
+      showToast('🔥 Донат добавлен везде!');
     };
 
-    const removePanel=(id)=>{
-      panels.value=panels.value.filter(p=>p.id!==id);
-      if(selId.value===id)selId.value=panels.value.length?panels.value[0].id:null;
+    const triggerAlert = () => {
+      alertVis.value = false;
+      clearTimeout(alertTimer);
+      
+      setTimeout(() => {
+        alertVis.value = true;
+        alertTimer = setTimeout(() => {
+          alertVis.value = false;
+        }, alertCfg.value.duration * 1000);
+      }, 100);
     };
 
-    // File uploads
-    const uploadIcon=(e,p)=>{
-      const f=e.target.files[0];if(!f)return;
-      const r=new FileReader();r.onload=ev=>{p.iconUrl=ev.target.result;};r.readAsDataURL(f);
-    };
-    const uploadAImg=(e)=>{
-      imgErr.value='';
-      const f=e.target.files[0];if(!f)return;
-      if(f.size>1024*1024){imgErr.value='Файл слишком большой (макс. 1 MB)';return;}
-      const r=new FileReader();r.onload=ev=>{alertCfg.value.imageData=ev.target.result;};r.readAsDataURL(f);
-    };
-    const uploadASound=(e)=>{
-      sndErr.value='';
-      const f=e.target.files[0];if(!f)return;
-      if(f.size>2*1024*1024){sndErr.value='Файл слишком большой (макс. 2 MB)';return;}
-      const r=new FileReader();r.onload=ev=>{alertCfg.value.soundData=ev.target.result;};r.readAsDataURL(f);
-    };
-
-    // Particles
-    let particles=[];
-    let raf=null;
-    const spawnParticles=(canvas)=>{
-      if(!canvas)return;
-      const ctx=canvas.getContext('2d');
-      const w=canvas.width,h=canvas.height;
-      const colors=['#ffd700','#ff0044','#00ffcc','#ffffff','#ff6600','#aa00ff'];
-      particles=Array.from({length:80},()=>({
-        x:w/2+(Math.random()-.5)*300,y:h*.65,
-        vx:(Math.random()-.5)*10,
-        vy:-(Math.random()*12+6),
-        s:Math.random()*7+2,
-        c:colors[Math.floor(Math.random()*colors.length)],
-        life:1,
-        decay:Math.random()*.018+.009,
-        rot:Math.random()*Math.PI*2,
-        rs:(Math.random()-.5)*.25,
-        shape:Math.random()>.5?'rect':'circle',
-      }));
-      if(raf)cancelAnimationFrame(raf);
-      const anim=()=>{
-        ctx.clearRect(0,0,w,h);
-        particles=particles.filter(p=>p.life>0);
-        for(const p of particles){
-          p.x+=p.vx;p.y+=p.vy;p.vy+=.25;
-          p.life-=p.decay;p.rot+=p.rs;
-          ctx.save();ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;
-          ctx.translate(p.x,p.y);ctx.rotate(p.rot);
-          if(p.shape==='circle'){ctx.beginPath();ctx.arc(0,0,p.s/2,0,Math.PI*2);ctx.fill();}
-          else ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s);
-          ctx.restore();
-        }
-        if(particles.length>0)raf=requestAnimationFrame(anim);
-        else ctx.clearRect(0,0,w,h);
-      };
-      anim();
-    };
-
-    // Sound
-    const playSound=()=>{
-      if(!alertCfg.value.soundData)return;
-      try{
-        const a=new Audio(alertCfg.value.soundData);
-        a.volume=alertCfg.value.volume||.8;
-        a.play().catch(()=>{});
-      }catch{}
-    };
-
-    // Alert timers
-    let alertTimer=null;
-    const showAlertObs=(name,amount)=>{
-      if(alertTimer)clearTimeout(alertTimer);
-      curDonation.value={name,amount};
-      alertKey.value++;
-      alertVis.value=true;
-      playSound();
-      nextTick(()=>{
-        const c=pcvs.value;
-        if(c){c.width=window.innerWidth;c.height=window.innerHeight;spawnParticles(c);}
+    const parsedDonors = (raw) => {
+      if(!raw) return [];
+      return raw.split('\n').filter(x => x.trim() !== '').map(line => {
+        const parts = line.split('—');
+        return {
+          name: parts[0] ? parts[0].trim() : '',
+          amount: parts[1] ? parts[1].trim() : ''
+        };
       });
-      alertTimer=setTimeout(()=>{alertVis.value=false;},(alertCfg.value.duration||7)*1000);
     };
 
-    const showPreview=()=>{
-      if(alertTimer)clearTimeout(alertTimer);
-      preVis.value=false;
-      setTimeout(()=>{
-        preKey.value++;
-        preVis.value=true;
-        playSound();
-        nextTick(()=>{
-          const c=pcvsAdmin.value;
-          if(c){
-            const pz=c.closest('.preview-zone')||c.parentElement;
-            c.width=pz?pz.offsetWidth:800;
-            c.height=pz?pz.offsetHeight:600;
-            spawnParticles(c);
-          }
-        });
-        alertTimer=setTimeout(()=>{preVis.value=false;},(alertCfg.value.duration||7)*1000);
-      },60);
+    const addPanel = (type) => {
+      panels.value.push({
+        id: 'panel_' + Date.now(),
+        type: type,
+        current: 0, max: 10000, width: 350,
+        donorsRaw: ''
+      });
     };
 
-    const doTrigger=async()=>{
-      const name=tName.value.trim()||'Аноним';
-      const amount=tAmount.value.trim()||'0 ₽';
-      try{
-        await db.ref(AP).set({...alertCfg.value});
-        await db.ref(TP).set({name,amount,ts:Date.now(),active:true});
-        showPreview();
-        toast('✓ Alert отправлен в OBS!','ok');
-      }catch(e){toast('Ошибка: '+e.message,'err');}
+    const showToast = (msg) => {
+      toastMsg.value = msg;
+      toastVis.value = true;
+      setTimeout(() => toastVis.value = false, 3000);
     };
 
-    const doTestLocal=()=>{showPreview();};
-
-    // Save all
-    const saveAll=async()=>{
-      try{
-        await db.ref(WP).set({panels:panels.value,globalScale:globalScale.value});
-        await db.ref(AP).set({...alertCfg.value});
-        toast('✓ Сохранено и опубликовано!','ok');
-      }catch(e){toast('Ошибка: '+e.message,'err');}
-    };
-
-    // Copy links
-    const copyLink=(type)=>{
-      const base=window.location.href.split('?')[0];
-      const url=`${base}?mode=${type}`;
-      navigator.clipboard.writeText(url).then(()=>{
-        toast(`✓ Ссылка ${type==='widget'?'виджета':'Alert'} скопирована!`,'ok');
-      }).catch(()=>toast('Не удалось скопировать','err'));
-    };
-
-    // Drag
-    let drag=null;
-    const SNAP=12;
-    const startDrag=(e,p)=>{
-      selId.value=p.id;
-      const cx=e.touches?e.touches[0].clientX:e.clientX;
-      const cy=e.touches?e.touches[0].clientY:e.clientY;
-      drag={p,sx:cx-p.x,sy:cy-p.y};
-
-      const mv=(ev)=>{
-        if(!drag)return;
-        const x=ev.touches?ev.touches[0].clientX:ev.clientX;
-        const y=ev.touches?ev.touches[0].clientY:ev.clientY;
-        let nx=x-drag.sx,ny=y-drag.sy;
-        const snaps=[0,50,100,200,300,400,500,600,700,800,900,960,1920];
-        const sx=snaps.find(s=>Math.abs(nx-s)<SNAP);
-        const sy=snaps.find(s=>Math.abs(ny-s)<SNAP);
-        if(sx!==undefined){nx=sx;if(gv.value){gv.value.style.left=nx+'px';gv.value.classList.add('on');}}
-        else if(gv.value)gv.value.classList.remove('on');
-        if(sy!==undefined){ny=sy;if(gh.value){gh.value.style.top=ny+'px';gh.value.classList.add('on');}}
-        else if(gh.value)gh.value.classList.remove('on');
-        drag.p.x=Math.max(0,nx);drag.p.y=Math.max(0,ny);
-      };
-      const up=()=>{
-        drag=null;
-        if(gv.value)gv.value.classList.remove('on');
-        if(gh.value)gh.value.classList.remove('on');
-        window.removeEventListener('mousemove',mv);
-        window.removeEventListener('mouseup',up);
-        window.removeEventListener('touchmove',mv);
-        window.removeEventListener('touchend',up);
-      };
-      window.addEventListener('mousemove',mv);
-      window.addEventListener('mouseup',up);
-      window.addEventListener('touchmove',mv,{passive:true});
-      window.addEventListener('touchend',up);
-    };
-
-    // Mount
-    onMounted(async()=>{
-      // Load widget data
-      try{
-        const ws=await db.ref(WP).get();
-        if(ws.exists()){const d=ws.val();panels.value=d.panels||[];globalScale.value=d.globalScale||1;}
-      }catch{}
-
-      // Load alert config
-      try{
-        const as=await db.ref(AP).get();
-        if(as.exists())alertCfg.value={...alertCfg.value,...as.val()};
-      }catch{}
-
-      // Alert overlay: listen for triggers
-      if(mode.value==='alert'){
-        db.ref(AP).on('value',s=>{if(s.exists())alertCfg.value={...alertCfg.value,...s.val()};});
-        let lastTs=0;
-        db.ref(TP).on('value',s=>{
-          if(!s.exists())return;
-          const d=s.val();
-          if(d.active&&d.ts>lastTs){
-            lastTs=d.ts;
-            showAlertObs(d.name,d.amount);
-            db.ref(TP).update({active:false});
-          }
-        });
-      }
-
-      // Widget overlay: live updates
-      if(mode.value==='widget'){
-        db.ref(WP).on('value',s=>{
-          if(s.exists()){const d=s.val();panels.value=d.panels||[];globalScale.value=d.globalScale||1;}
-        });
-      }
-    });
-
-    return{
-      mode,panels,globalScale,selId,tab,alertOpen,
-      alertCfg,alertVis,preVis,alertKey,preKey,curDonation,
-      tName,tAmount,imgErr,sndErr,
-      alertCardStyle,sceneStyle,adminSceneStyle,
-      gv,gh,pcvs,pcvsAdmin,
-      toastVis,toastMsg,toastType,
-      addPanel,removePanel,compFor,cardPos,
-      uploadIcon,uploadAImg,uploadASound,
-      doTrigger,doTestLocal,saveAll,copyLink,startDrag,
-    };
+    return {
+      mode, tab, selId, panels, addPanel,
+      quickName, quickAmount, processQuickDonation,
+      alertVis, alertCfg, curDonation,
+      parsedDonors, toastVis, toastMsg
+    }
   }
 }).mount('#app');
 </script>
