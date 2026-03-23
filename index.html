@@ -984,7 +984,7 @@ createApp({
         db.ref('alert').on('value',snap=>{
           const d=snap.val();
           if(!d||!d.ts) return;
-          if(d.ts <= lastTs) return; // защита от повторного срабатывания при загрузке
+          if(d.ts <= lastTs) return;
           lastTs = d.ts;
           if(d.cfg) Object.assign(alertCfg,d.cfg);
           const num = cleanNum(d.amount);
@@ -1003,8 +1003,24 @@ createApp({
           if(d.globalScale) globalScale.value=d.globalScale;
         });
       }
-      // Админ-панель — НЕ подписывается на Firebase автоматически
-      // (это решает проблему сброса при открытии с телефона)
+      
+      // ИСПРАВЛЕНИЕ ДЛЯ АДМИНКИ: Единожды стягиваем данные из Firebase при открытии
+      if(mode.value==='admin' && db){
+        db.ref('config').once('value').then(snap => {
+          const d = snap.val();
+          if(!d) return;
+          
+          if(d.panels){
+            panels.splice(0);
+            d.panels.forEach(p=>panels.push(p));
+          }
+          if(d.alertCfg) Object.assign(alertCfg, d.alertCfg);
+          if(d.globalScale) globalScale.value = d.globalScale;
+          
+          // Сохраняем в локалку устройства, чтобы синхронизировать
+          saveState(buildState());
+        });
+      }
     });
 
     return {
