@@ -1418,7 +1418,8 @@ createApp({
     function triggerAlert(name, amt, pushFB){
       curDonation.name  = name;
       const numAmt = parseFloat(String(amt).replace(/[^\d.]/g, '')) || 0;
-      curDonation.amount= numAmt.toLocaleString('ru');
+      const n = parseFloat(String(amt).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0;
+curDonation.amount = n.toLocaleString('ru');
       alertKey.value++;
       alertVis.value=true;
       clearTimeout(alertTimer);
@@ -1602,11 +1603,11 @@ createApp({
     onMounted(()=>{
       if(mode.value==='alert' && db){
         db.ref('alert').on('value',snap=>{
-          const d=snap.val();
-          if(!d) return;
-          if(d.cfg) Object.assign(alertCfg,d.cfg);
-          triggerAlert(d.name, d.amount, false);
-        });
+  const d=snap.val();
+  if(!d) return;
+  if(d.cfg) Object.assign(alertCfg,d.cfg);
+  triggerAlert(d.name, d.amount, false);
+});
       }
       if(mode.value==='widget' && db){
         db.ref('config').on('value',snap=>{
