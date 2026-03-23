@@ -1373,19 +1373,27 @@ createApp({
     }
 
     function doQuickDonate(){
-      const name = quickName.value.trim();
-      const amt  = parseFloat(quickAmount.value)||0;
-      if(!name){ showToast('Введи имя донатера!','err'); return; }
-      if(!amt)  { showToast('Введи сумму!','err'); return; }
+  const name = quickName.value.trim();
+  const amt  = parseFloat(quickAmount.value)||0;
+  if(!name){ showToast('Введи имя донатера!','err'); return; }
+  if(!amt)  { showToast('Введи сумму!','err'); return; }
 
-      applyDonateToGoals(name, amt);
-      triggerAlert(name, amt, true); // true = push to Firebase
-      showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
+  applyDonateToGoals(name, amt);
+  triggerAlert(name, amt, true);
+  
+  // ↓ ДОБАВЬ ЭТО — автосохранение в Firebase
+  const state={
+    panels: JSON.parse(JSON.stringify(panels)),
+    alertCfg: JSON.parse(JSON.stringify(alertCfg)),
+    globalScale: globalScale.value,
+  };
+  saveState(state);
+  if(db){ try{ db.ref('config').set(state); }catch(e){} }
 
-      // очищаем поля
-      quickName.value='';
-      quickAmount.value='';
-    }
+  showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
+  quickName.value='';
+  quickAmount.value='';
+}
 
     function doQuickTest(){
       const name = quickName.value.trim() || 'Тест Донатов';
@@ -1409,7 +1417,8 @@ createApp({
     /* core alert trigger */
     function triggerAlert(name, amt, pushFB){
       curDonation.name  = name;
-      curDonation.amount= Number(amt).toLocaleString('ru');
+      const numAmt = parseFloat(String(amt).replace(/[^\d.]/g, '')) || 0;
+      curDonation.amount= numAmt.toLocaleString('ru');
       alertKey.value++;
       alertVis.value=true;
       clearTimeout(alertTimer);
