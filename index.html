@@ -931,7 +931,7 @@ createApp({
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
-    function readMessage(msgText){
+   function readMessage(msgText){
       if(!msgText || !alertCfg.ttsEnabled || !window.speechSynthesis) return;
       
       const utterance = new SpeechSynthesisUtterance(msgText);
@@ -940,7 +940,16 @@ createApp({
       utterance.pitch = alertCfg.ttsPitch !== undefined ? alertCfg.ttsPitch : 1;
 
       if(alertCfg.ttsVoiceURI){
-        const targetVoice = voices.value.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
+        // Сначала пытаемся найти точный голос, который выбрали в админке
+        let targetVoice = voices.value.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
+        
+        // ВОТ ТУТ ФИКС ДЛЯ OBS:
+        // Если точного голоса нет (потому что в OBS другой список), 
+        // берем ПЕРВЫЙ доступный РУССКИЙ голос, который есть в OBS
+        if (!targetVoice && voices.value.length > 0) {
+          targetVoice = voices.value[0]; 
+        }
+
         if(targetVoice) utterance.voice = targetVoice;
       }
       
@@ -1004,7 +1013,9 @@ createApp({
 
     const loadVoices = () => {
       if(!window.speechSynthesis) return;
-      voices.value = window.speechSynthesis.getVoices();
+      // Получаем все голоса и жестко фильтруем только те, где язык начинается с 'ru'
+      const allVoices = window.speechSynthesis.getVoices();
+      voices.value = allVoices.filter(v => v.lang.toLowerCase().startsWith('ru'));
     };
 
     onMounted(()=>{
