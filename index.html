@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SUPREME WIDGET V13 PRO</title>
+<title>SUPREME WIDGET V12 PRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -35,11 +35,10 @@
 ::-webkit-scrollbar-thumb:hover{background:#333;}
 body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-bright);overflow:hidden;}
 .admin-shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100vh;background:var(--bg);position:fixed;inset:0;}
-.sidebar{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);height:100vh;min-height:0;overflow:hidden;}
+.sidebar{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);overflow:hidden;}
 .sidebar-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .logo{display:flex;align-items:center;gap:10px;}
-.logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--red),#880022);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;letter-spacing:-1px;animation:logoPulse 3s ease-in-out infinite;}
-@keyframes logoPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,0,68,.4);}50%{box-shadow:0 0 0 6px rgba(255,0,68,.0);}}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--red),#880022);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;letter-spacing:-1px;}
 .logo-name{font-size:13px;font-weight:900;letter-spacing:0.5px;}
 .logo-name span{color:var(--red);}
 .ver-tag{font-size:9px;font-weight:700;color:var(--text-dim);background:#151515;padding:3px 7px;border-radius:20px;border:1px solid var(--border);letter-spacing:0.5px;}
@@ -47,11 +46,8 @@ body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-
 .tab{flex:1;padding:8px 6px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border:none;cursor:pointer;transition:all .2s;color:var(--text-dim);background:transparent;}
 .tab.on{background:var(--red);color:#fff;box-shadow:0 2px 10px rgba(255,0,68,.3);}
 .tab:not(.on):hover{color:var(--text);background:#1a1a1a;}
-.sidebar-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0;}
-
-/* ── DONATE FORM ── */
-.donate-form-card{background:linear-gradient(135deg,#0d0007,#07000d);border:1px solid rgba(255,0,68,.25);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:11px;position:relative;overflow:hidden;animation:cardIn .4s ease both;}
-@keyframes cardIn{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.sidebar-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.donate-form-card{background:linear-gradient(135deg,#0d0007,#07000d);border:1px solid rgba(255,0,68,.25);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
 .donate-form-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(255,0,68,.07),transparent 60%);pointer-events:none;}
 .donate-form-title{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;}
 .donate-form-title .dft-icon{width:22px;height:22px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;}
@@ -61,27 +57,11 @@ body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-
 .tenge-badge{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:900;color:var(--tenge);pointer-events:none;line-height:1;}
 .donate-name-input{width:100%;}
 .donate-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-
-/* ── LIVE PREVIEW STRIP ── */
-.live-preview-strip{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:all .3s;animation:fadeSlide .3s ease;}
-@keyframes fadeSlide{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:translateY(0);}}
+.live-preview-strip{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .lp-label{font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
 .lp-value{font-size:12px;font-weight:900;color:var(--tenge);}
 .lp-name{font-size:10px;font-weight:700;color:var(--text);}
 .lp-sep{width:1px;height:24px;background:var(--border);}
-.lp-msg{font-size:9px;color:#888;font-style:italic;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* ── TTS SECTION ── */
-.tts-block{background:#080808;border:1px solid var(--border);border-radius:var(--radius-md);padding:12px;display:flex;flex-direction:column;gap:9px;}
-.tts-header{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--text-dim);}
-.tts-header .tts-icon{width:18px;height:18px;background:linear-gradient(135deg,#7700ff,#5500cc);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;}
-.voice-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-.tts-sliders{display:flex;flex-direction:column;gap:7px;}
-.tts-test-btn{background:linear-gradient(135deg,#7700ff,#4400aa);color:#fff;padding:9px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:9px;font-weight:700;text-transform:uppercase;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .2s;letter-spacing:.3px;}
-.tts-test-btn:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(119,0,255,.35);}
-.tts-test-btn:active{transform:scale(.97);}
-
-/* ── SECTIONS ── */
 .sec-head{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#151515;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;user-select:none;}
 .sec-head:hover{background:#1a1a1a;border-color:var(--border-hi);}
 .sec-head.on{border-color:var(--red);background:#150007;}
@@ -90,14 +70,10 @@ body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-
 .sec-head.on .sec-dot{background:var(--red);color:#fff;}
 .sec-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text);}
 .sec-head.on .sec-name{color:#fff;}
-.sec-chevron{font-size:9px;color:var(--text-dim);transition:transform .25s ease;}
+.sec-chevron{font-size:9px;color:var(--text-dim);transition:transform .2s;}
 .sec-head.on .sec-chevron{transform:rotate(180deg);}
-.sec-body{padding:13px;background:#0c0c0c;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);display:flex;flex-direction:column;gap:11px;}
-.sec-body-enter-active{animation:secOpen .2s ease;}
-.sec-body-leave-active{animation:secOpen .15s ease reverse;}
-@keyframes secOpen{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── FORM ELEMENTS ── */
+.sec-body{padding:13px;background:#0c0c0c;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);display:flex;flex-direction:column;gap:11px;animation:fadeIn 0.2s ease-out;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 .fg{display:flex;flex-direction:column;gap:5px;}
 .fr{display:flex;gap:9px;}
 .fr > *{flex:1;}
@@ -117,8 +93,6 @@ input[type=color]{width:100%;height:30px;border:1px solid var(--border);border-r
 input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:pointer;}
 .divider{height:1px;background:var(--border);width:100%;margin:3px 0;}
 .sub-lbl{font-size:10px;font-weight:900;color:var(--text-bright);text-transform:uppercase;letter-spacing:.5px;}
-
-/* ── BUTTONS ── */
 .btn{font-family:'Unbounded';text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.3px;}
 .btn-red{background:linear-gradient(135deg,#ff0044,#cc0034);color:#fff;padding:15px;border-radius:var(--radius-md);font-size:12px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(255,0,68,.2);}
 .btn-red:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,0,68,.35);}
@@ -135,40 +109,45 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .btn-flat:hover{background:#1c1c1c;border-color:var(--border-hi);}
 .btn-del{background:rgba(255,0,0,.07);color:#ff4444;padding:5px 8px;border-radius:5px;font-size:8px;border:1px solid rgba(255,0,0,.15);}
 .btn-del:hover{background:#ff4444;color:#fff;}
-.btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition:all .2s;}
-.btn-add-panel:hover{background:#1c1c1c;border-color:var(--red);color:#fff;transform:translateY(-1px);}
-.btn:active{transform:scale(.97) !important;}
-.actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;background:var(--panel);z-index:10;}
-
-/* ── FILES ── */
+.btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition: all 0.2s;}
+.btn-add-panel:hover{background:#1c1c1c; transform: translateY(-1px);}
+.actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
 .file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
 .file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
 .file-btn{background:#080808;border:1px solid var(--border);color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);font-size:10px;width:100%;text-align:center;font-family:'Unbounded';font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:all .2s;cursor:pointer;}
 .file-wrap:hover .file-btn{border-color:var(--red);color:var(--text-bright);}
 .file-ok{font-size:9px;color:#00cc44;margin-top:3px;font-weight:700;}
 .file-err{font-size:9px;color:#ff4444;margin-top:3px;font-weight:700;}
-
-/* ── PREVIEW ZONE ── */
 .preview-zone{position:relative;background:#0a0a0a;background-image:radial-gradient(#1c1c1c 1px,transparent 1px);background-size:22px 22px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .pz-label{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:1.5px;pointer-events:none;z-index:5;white-space:nowrap;}
 .pz-mode{position:absolute;top:14px;right:16px;font-size:8px;font-weight:700;color:#1e1e1e;text-transform:uppercase;letter-spacing:1px;pointer-events:none;z-index:5;}
-
-/* ── WIDGETS ── */
 .widget-scene{position:relative;width:100%;height:100%;transform-origin:center center;}
-/* NO dragging - static positioning */
-.widget-card{position:absolute;z-index:10;user-select:none;}
-.glass{position:relative;width:100%;height:100%;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.05);overflow:hidden;}
+.static-panel{position:absolute;z-index:10;transition: top 0.3s ease, left 0.3s ease;}
+.static-panel.sel .glass{outline:1.5px solid rgba(0,255,180,.7);outline-offset:4px;}
+
+/* Улучшенный Liquid Glass Effect */
+.glass{
+  position:relative;
+  width:100%;
+  height:100%;
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow: inset 0 0 20px rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.6);
+  overflow:hidden;
+  transition: all 0.3s ease;
+}
 .goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
-.prog-track{width:100%;background:rgba(0,0,0,.5);overflow:hidden;border:1px solid rgba(255,255,255,.04);position:relative;}
-.prog-fill{height:100%;transition:width .7s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
-.prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:shimmer 2.5s infinite linear;}
+.prog-track{width:100%;background:rgba(0,0,0,.6);overflow:hidden;border:1px solid rgba(255,255,255,.05);position:relative;box-shadow: inset 0 2px 10px rgba(0,0,0,.5);}
+.prog-fill{height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2.5s infinite linear;}
 @keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
 .ld-section{margin-top:13px;}
-.ld-label{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
+.ld-label{display:inline-flex;align-items:center;gap:5px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
 .donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
-.donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);transition:all .3s;}
-.rk-1{background:linear-gradient(90deg,rgba(255,215,0,.13),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
+.donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04); transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+.rk-1{background:linear-gradient(90deg,rgba(255,215,0,.15),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
 .rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent) !important;border-color:rgba(200,200,200,.2) !important;color:var(--silver) !important;}
 .rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent) !important;border-color:rgba(205,127,50,.2) !important;color:var(--bronze) !important;}
 .chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
@@ -176,7 +155,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .chal-brand{display:flex;align-items:center;}
 .icon-mask{background-color:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;flex-shrink:0;}
 .chal-title{font-weight:800;text-transform:uppercase;letter-spacing:1px;}
-.chal-divider{height:1px;width:100%;margin:7px 0;opacity:.1;}
+.chal-divider{height:1px;width:100%;margin:7px 0;opacity:.15;}
 .chal-label{opacity:.7;font-weight:700;}
 .chal-val,.chal-total{font-weight:900;text-align:right;}
 .ed{cursor:text;border-bottom:1px dashed rgba(255,255,255,.2);transition:all .15s;}
@@ -184,7 +163,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
 .obs-mode .ed{border:none !important;background:transparent !important;pointer-events:none;}
 
-/* ── ALERT ── */
 .alert-scene{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:50px;}
 .particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 .alert-card{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:28px 36px;gap:12px;text-align:center;min-width:380px;max-width:580px;overflow:hidden;}
@@ -194,7 +172,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .a-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:3px;opacity:.75;}
 .a-name{font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1;}
 .a-amount{font-weight:900;line-height:1;}
-.a-msg{font-size:13px;font-weight:600;color:#ddd;opacity:.85;line-height:1.45;max-width:400px;font-style:italic;padding:6px 12px;background:rgba(255,255,255,.04);border-radius:8px;border:1px solid rgba(255,255,255,.07);}
+.a-msg{font-weight:700;line-height:1.3;margin-top:8px;max-width:90%;word-wrap:break-word;}
 .a-bar{width:80%;height:3px;border-radius:2px;opacity:.4;animation:barShrink linear forwards;transform-origin:left center;}
 @keyframes barShrink{0%{transform:scaleX(1);}100%{transform:scaleX(0);}}
 .alert-enter-active{animation:alertIn .65s cubic-bezier(.34,1.56,.64,1) both;}
@@ -209,41 +187,23 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .glow-card{animation:glowPulse 2s ease-in-out infinite;}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}}
 .alert-preview-wrap{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;position:relative;}
-
-/* ── TOAST ── */
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:#151515;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:var(--radius-md);font-size:10px;font-weight:700;transition:all .25s;opacity:0;z-index:99999;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.ok{border-color:#00aa44;color:#00cc44;}
 .toast.err{border-color:#ff4444;color:#ff4444;}
 
-/* ── FB STATUS ── */
 .fb-status{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#0a0a0a;}
-.fb-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;}
-.fb-dot.ok{background:#00cc44;box-shadow:0 0 6px #00cc44;animation:dotPulse 2s ease-in-out infinite;}
-.fb-dot.err{background:#ff4444;}
-@keyframes dotPulse{0%,100%{box-shadow:0 0 6px #00cc44;}50%{box-shadow:0 0 12px #00cc44,0 0 20px rgba(0,204,68,.3);}}
+.fb-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition: background 0.3s;}
+.fb-dot.ok{background:#00cc44;box-shadow:0 0 8px #00cc44; animation: pulseDot 2s infinite;}
+.fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
+@keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
-/* ── TTS SPEAKING INDICATOR ── */
-.tts-speaking{display:inline-flex;align-items:center;gap:4px;font-size:9px;color:#7700ff;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.tts-bar{width:3px;border-radius:2px;background:#7700ff;animation:ttsBar .6s ease-in-out infinite alternate;}
-.tts-bar:nth-child(2){animation-delay:.15s;height:10px;}
-.tts-bar:nth-child(3){animation-delay:.3s;height:14px;}
-.tts-bar:nth-child(4){animation-delay:.15s;height:10px;}
-.tts-bar:nth-child(1),.tts-bar:nth-child(5){height:6px;}
-@keyframes ttsBar{0%{transform:scaleY(.4);}100%{transform:scaleY(1);}}
-
-/* ── POSITION CONTROLS ── */
-.pos-controls{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-.pos-input-wrap{display:flex;flex-direction:column;gap:4px;}
-.pos-label{font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-
-/* ── MEDIA QUERIES ── */
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
   body{overflow:auto;}
   .admin-shell{grid-template-columns:1fr;grid-template-rows:auto;height:auto;min-height:100vh;overflow:auto;position:relative;}
-  .sidebar{border-right:none;border-bottom:1px solid var(--border);order:1;height:auto;max-height:none;overflow:visible;}
-  .sidebar-body{overflow:visible;padding-bottom:20px;flex:none;}
+  .sidebar{border-right:none;border-bottom:1px solid var(--border);order:1;max-height:none;overflow:visible;}
+  .sidebar-body{overflow:visible;padding-bottom:20px;}
   .preview-zone{order:2;height:60vw;min-height:280px;border-top:1px solid var(--border);}
   .donate-input-row{grid-template-columns:1fr;}
   .donate-btn-row{grid-template-columns:1fr;}
@@ -258,7 +218,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   .tab{font-size:8px;padding:7px 4px;}
   .donate-form-card{padding:13px;}
   .color-grid{grid-template-columns:repeat(2,1fr);}
-  .voice-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -266,7 +225,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 <div id="app" :class="{'obs-mode':mode!=='admin'}">
 
-  <!-- ALERT OVERLAY -->
   <div v-if="mode==='alert'" class="alert-scene">
     <canvas ref="pcvs" class="particle-canvas"></canvas>
     <transition name="alert">
@@ -278,22 +236,20 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
           <img :src="alertCfg.imageData" alt="">
         </div>
-        <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa',fontSize:(alertCfg.labelFontSize||10)+'px'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+        <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
         <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
         <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
-        <div v-if="curDonation.message" class="a-msg">{{curDonation.message}}</div>
+        <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
       </div>
     </transition>
   </div>
 
-  <!-- WIDGET OVERLAY -->
   <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
-    <div v-for="p in panels" :key="p.id" class="widget-card" :style="cardPos(p)">
+    <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
-  <!-- ADMIN -->
   <div v-else class="admin-shell">
     <div class="sidebar">
       <div class="sidebar-head">
@@ -301,7 +257,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="logo-mark">W</div>
           <div class="logo-name">WIDGET <span>PRO</span></div>
         </div>
-        <div class="ver-tag">v13 PRO</div>
+        <div class="ver-tag">v12 TENGE</div>
       </div>
 
       <div class="tabs">
@@ -311,23 +267,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
       <div class="sidebar-body">
 
-        <!-- WIDGETS TAB -->
         <template v-if="tab==='widgets'">
-
           <div class="fb-status">
             <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
             <span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span>
           </div>
 
-          <!-- ── БЫСТРЫЙ ДОНАТ ── -->
           <div class="donate-form-card">
             <div class="donate-form-title">
               <div class="dft-icon">₸</div>
               Быстрый донат
             </div>
-
-            <!-- Live preview -->
-            <div class="live-preview-strip" v-if="quickName||quickAmount||quickMessage">
+            <div class="live-preview-strip" v-if="quickName||quickAmount">
               <div>
                 <div class="lp-label">Донатер</div>
                 <div class="lp-name">{{quickName||'—'}}</div>
@@ -337,14 +288,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div class="lp-label">Сумма</div>
                 <div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div>
               </div>
-              <div v-if="quickMessage" class="lp-sep"></div>
-              <div v-if="quickMessage" style="flex:1">
-                <div class="lp-label">Текст</div>
-                <div class="lp-msg">{{quickMessage}}</div>
-              </div>
             </div>
-
-            <!-- Имя + сумма -->
             <div class="donate-input-row">
               <div class="fg">
                 <label>Имя донатера</label>
@@ -358,73 +302,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
             </div>
-
-            <!-- Текст доната -->
             <div class="fg">
-              <label>Текст сообщения (опционально)</label>
-              <textarea v-model="quickMessage" placeholder="Привет! Крутой стрим, продолжай в том же духе!" style="min-height:48px;font-size:10px;"></textarea>
+              <label>Сообщение (будет озвучено)</label>
+              <textarea v-model="quickMessage" placeholder="Крутой стрим, продолжай в том же духе!" style="min-height:40px" @keydown.enter.prevent="doQuickDonate"></textarea>
             </div>
-
-            <!-- TTS блок -->
-            <div class="tts-block">
-              <div class="tts-header">
-                <div class="tts-icon">🔊</div>
-                Озвучка текста (TTS)
-                <div v-if="ttsSpeaking" class="tts-speaking" style="margin-left:auto">
-                  <div class="tts-bar"></div>
-                  <div class="tts-bar"></div>
-                  <div class="tts-bar"></div>
-                  <div class="tts-bar"></div>
-                  <div class="tts-bar"></div>
-                  Говорит...
-                </div>
-              </div>
-              <div class="voice-grid">
-                <div class="fg">
-                  <label>Голос</label>
-                  <select v-model="ttsVoiceIdx">
-                    <option v-for="(v,i) in ttsVoices" :key="i" :value="i">{{v.name.length>22?v.name.slice(0,22)+'…':v.name}}</option>
-                  </select>
-                </div>
-                <div class="fg">
-                  <label>Язык</label>
-                  <select v-model="ttsLang" @change="filterVoices">
-                    <option value="">Все голоса</option>
-                    <option value="ru">🇷🇺 Русский</option>
-                    <option value="en">🇬🇧 Английский</option>
-                    <option value="kk">🇰🇿 Казахский</option>
-                  </select>
-                </div>
-              </div>
-              <div class="tts-sliders">
-                <div class="fg">
-                  <label>Скорость речи</label>
-                  <div class="rr"><input type="range" min=".5" max="2" step=".1" v-model.number="ttsRate"><span class="rv">{{ttsRate}}x</span></div>
-                </div>
-                <div class="fg">
-                  <label>Тон голоса</label>
-                  <div class="rr"><input type="range" min=".5" max="2" step=".1" v-model.number="ttsPitch"><span class="rv">{{ttsPitch}}</span></div>
-                </div>
-                <div class="fg">
-                  <label>Громкость TTS</label>
-                  <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="ttsVolume"><span class="rv">{{Math.round(ttsVolume*100)}}%</span></div>
-                </div>
-              </div>
-              <div class="cb-row">
-                <label>Озвучивать имя</label>
-                <input type="checkbox" v-model="ttsReadName">
-              </div>
-              <div class="cb-row">
-                <label>Озвучивать сумму</label>
-                <input type="checkbox" v-model="ttsReadAmount">
-              </div>
-              <div class="cb-row">
-                <label>Озвучивать текст</label>
-                <input type="checkbox" v-model="ttsReadMessage">
-              </div>
-              <button class="tts-test-btn" @click="ttsPreview">🔊 Тест озвучки</button>
-            </div>
-
             <div class="donate-btn-row">
               <button class="btn btn-tenge" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
               <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
@@ -436,7 +317,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
           </div>
 
-          <!-- PANELS -->
           <div v-for="(p,i) in panels" :key="p.id">
             <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
               <div class="sec-head-l">
@@ -448,106 +328,96 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <span class="sec-chevron">▼</span>
               </div>
             </div>
-            <transition name="sec-body">
-              <div v-if="selId===p.id" class="sec-body">
-                <template v-if="p.type==='goal'">
-                  <div class="fr">
-                    <div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div>
-                    <div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div>
-                  </div>
-                  <div class="fg">
-                    <label>Текст метки «последний донат»</label>
-                    <input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ">
-                  </div>
-                  <div class="fg">
-                    <label>Размер текста метки</label>
-                    <div class="rr"><input type="range" min="6" max="20" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}px</span></div>
-                  </div>
-                  <div class="fg">
-                    <label>Список донатеров</label>
-                    <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
-                  </div>
-                </template>
-                <template v-if="p.type==='challenge'">
-                  <div class="fg">
-                    <label>Логотип</label>
-                    <div class="file-wrap">
-                      <div class="file-btn">📁 Выбрать изображение</div>
-                      <input type="file" accept="image/*" @change="uploadIcon($event,p)">
-                    </div>
-                  </div>
-                  <div class="fr">
-                    <div class="fg"><label>Размер лого</label>
-                      <div class="rr"><input type="range" min="10" max="120" v-model.number="p.iconSize"><span class="rv">{{p.iconSize||35}}</span></div>
-                    </div>
-                    <div class="fg"><label>Отступ лого</label>
-                      <div class="rr"><input type="range" min="0" max="50" v-model.number="p.iconGap"><span class="rv">{{p.iconGap||15}}</span></div>
-                    </div>
-                  </div>
-                  <div class="fr">
-                    <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
-                    <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
-                  </div>
-                </template>
+            <div v-if="selId===p.id" class="sec-body">
+              <div class="fr">
+                <div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div>
+                <div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div>
+              </div>
+              <div class="divider"></div>
 
-                <div class="divider"></div>
-                <div class="sub-lbl">Позиция</div>
-                <div class="pos-controls">
-                  <div class="pos-input-wrap">
-                    <div class="pos-label">X (отступ слева)</div>
-                    <div class="rr"><input type="range" min="0" max="1500" step="5" v-model.number="p.x"><span class="rv">{{p.x||0}}</span></div>
-                  </div>
-                  <div class="pos-input-wrap">
-                    <div class="pos-label">Y (отступ сверху)</div>
-                    <div class="rr"><input type="range" min="0" max="900" step="5" v-model.number="p.y"><span class="rv">{{p.y||0}}</span></div>
+              <template v-if="p.type==='goal'">
+                <div class="fr">
+                  <div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div>
+                  <div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div>
+                </div>
+                <div class="fr">
+                  <div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ"></div>
+                  <div class="fg"><label>Размер текста метки</label>
+                    <div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div>
                   </div>
                 </div>
+                <div class="fg">
+                  <label>Список донатеров</label>
+                  <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
+                </div>
+              </template>
 
-                <div class="divider"></div>
-                <div class="sub-lbl">Шрифты</div>
-                <div class="fr">
-                  <div class="fg"><label>Заголовок</label>
-                    <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+              <template v-if="p.type==='challenge'">
+                <div class="fg">
+                  <label>Логотип</label>
+                  <div class="file-wrap">
+                    <div class="file-btn">📁 Выбрать изображение</div>
+                    <input type="file" accept="image/*" @change="uploadIcon($event,p)">
                   </div>
-                  <div class="fg"><label>Текст</label>
-                    <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
-                  </div>
-                </div>
-                <div class="divider"></div>
-                <div class="sub-lbl">Размеры</div>
-                <div class="fg"><label>Ширина панели</label>
-                  <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
                 </div>
                 <div class="fr">
-                  <div class="fg"><label>Отступы</label>
-                    <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
+                  <div class="fg"><label>Размер лого</label>
+                    <div class="rr"><input type="range" min="10" max="120" v-model.number="p.iconSize"><span class="rv">{{p.iconSize||35}}</span></div>
                   </div>
-                  <div class="fg"><label>Скругление</label>
-                    <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
+                  <div class="fg"><label>Отступ лого</label>
+                    <div class="rr"><input type="range" min="0" max="50" v-model.number="p.iconGap"><span class="rv">{{p.iconGap||15}}</span></div>
                   </div>
                 </div>
-                <div class="divider"></div>
-                <div class="sub-lbl">Цвета</div>
                 <div class="fr">
-                  <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
-                  <div class="fg"><label>Прозрачность</label>
-                    <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
-                  </div>
+                  <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
+                  <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
                 </div>
-                <div class="color-grid">
-                  <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
-                  <template v-if="p.type==='goal'">
-                    <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
-                    <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
-                    <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                  </template>
-                  <template v-if="p.type==='challenge'">
-                    <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
-                    <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                  </template>
+              </template>
+
+              <div class="divider"></div>
+              <div class="sub-lbl">Шрифты</div>
+              <div class="fr">
+                <div class="fg"><label>Заголовок</label>
+                  <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+                </div>
+                <div class="fg"><label>Текст</label>
+                  <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
                 </div>
               </div>
-            </transition>
+              <div class="divider"></div>
+              <div class="sub-lbl">Размеры</div>
+              <div class="fg"><label>Ширина панели</label>
+                <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
+              </div>
+              <div class="fr">
+                <div class="fg"><label>Отступы</label>
+                  <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
+                </div>
+                <div class="fg"><label>Скругление</label>
+                  <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="sub-lbl">Цвета</div>
+              <div class="fr">
+                <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
+                <div class="fg"><label>Прозрачность</label>
+                  <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
+                </div>
+              </div>
+              <div class="color-grid">
+                <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
+                <template v-if="p.type==='goal'">
+                  <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
+                  <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
+                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                </template>
+                <template v-if="p.type==='challenge'">
+                  <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
+                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                </template>
+              </div>
+            </div>
           </div>
 
           <div class="sec-head">
@@ -562,7 +432,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </div>
         </template>
 
-        <!-- ALERT TAB -->
         <template v-if="tab==='alert'">
           <div class="sec-head on">
             <div class="sec-head-l">
@@ -582,8 +451,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               </div>
             </div>
             <div class="fg">
-              <label>Текст сообщения</label>
-              <textarea v-model="tMessage" placeholder="Текст, который появится в алерте и будет озвучен..." style="min-height:54px;font-size:10px;"></textarea>
+              <label>Сообщение донатера</label>
+              <textarea v-model="tMessage" placeholder="Привет, крутой стрим!" style="min-height:40px"></textarea>
             </div>
             <button class="btn btn-green" @click="doTrigger">▶ ПОКАЗАТЬ В OBS</button>
             <button class="btn btn-purple" @click="doTestLocal">🧪 Тест (только здесь)</button>
@@ -593,89 +462,115 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-head-l"><div class="sec-name">🎨 Настройки Alert</div></div>
             <span class="sec-chevron">▼</span>
           </div>
-          <transition name="sec-body">
-            <div v-if="alertOpen" class="sec-body">
-              <div class="fg"><label>Текст метки «новый донат»</label>
-                <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
-              </div>
-              <div class="fg"><label>Размер текста метки</label>
-                <div class="rr"><input type="range" min="7" max="24" v-model.number="alertCfg.labelFontSize"><span class="rv">{{alertCfg.labelFontSize||10}}px</span></div>
-              </div>
-              <div class="fg"><label>Длительность (сек)</label>
-                <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
-              </div>
-              <div class="divider"></div>
-              <div class="sub-lbl">Медиа</div>
-              <div class="fg"><label>Тип медиа</label>
-                <select v-model="alertCfg.mediaType">
-                  <option value="none">Без медиа</option>
-                  <option value="image">Изображение</option>
-                  <option value="video">Видео (URL)</option>
+          <div v-if="alertOpen" class="sec-body">
+            <div class="fg"><label>Текст метки</label>
+              <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
+            </div>
+            <div class="fg"><label>Длительность (сек)</label>
+              <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
+            </div>
+            
+            <div class="divider"></div>
+            <div class="sub-lbl">Озвучка (TTS)</div>
+            <div class="cb-row"><label>Включить озвучку сообщения</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
+            <template v-if="alertCfg.ttsEnabled">
+              <div class="fg">
+                <label>Голос</label>
+                <select v-model="alertCfg.ttsVoiceURI">
+                  <option v-for="v in voices" :key="v.voiceURI" :value="v.voiceURI">{{v.name}} ({{v.lang}})</option>
                 </select>
               </div>
-              <template v-if="alertCfg.mediaType==='image'">
-                <div class="fg">
-                  <label>Изображение (макс. 1 MB)</label>
-                  <div class="file-wrap">
-                    <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
-                    <input type="file" accept="image/*" @change="uploadAImg">
-                  </div>
-                  <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
-                  <div v-if="imgErr" class="file-err">{{imgErr}}</div>
+              <div class="fr">
+                <div class="fg"><label>Скорость</label>
+                  <div class="rr"><input type="range" min="0.1" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{alertCfg.ttsRate||1}}</span></div>
                 </div>
-              </template>
-              <template v-if="alertCfg.mediaType==='video'">
-                <div class="fg"><label>URL видео (mp4 / webm)</label>
-                  <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
+                <div class="fg"><label>Высота</label>
+                  <div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{alertCfg.ttsPitch||1}}</span></div>
                 </div>
-              </template>
-              <div class="divider"></div>
-              <div class="sub-lbl">Звук</div>
+              </div>
+              <div class="fg"><label>Громкость озвучки</label>
+                <div class="rr"><input type="range" min="0" max="1" step="0.05" v-model.number="alertCfg.ttsVolume"><span class="rv">{{Math.round((alertCfg.ttsVolume||1)*100)}}%</span></div>
+              </div>
+            </template>
+
+            <div class="divider"></div>
+            <div class="sub-lbl">Медиа</div>
+            <div class="fg"><label>Тип медиа</label>
+              <select v-model="alertCfg.mediaType">
+                <option value="none">Без медиа</option>
+                <option value="image">Изображение</option>
+                <option value="video">Видео (URL)</option>
+              </select>
+            </div>
+            <template v-if="alertCfg.mediaType==='image'">
               <div class="fg">
-                <label>Звуковой файл (макс. 2 MB)</label>
+                <label>Изображение (макс. 1 MB)</label>
                 <div class="file-wrap">
-                  <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
-                  <input type="file" accept="audio/*" @change="uploadASound">
+                  <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
+                  <input type="file" accept="image/*" @change="uploadAImg">
                 </div>
-                <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
-                <div v-if="sndErr" class="file-err">{{sndErr}}</div>
+                <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
+                <div v-if="imgErr" class="file-err">{{imgErr}}</div>
               </div>
-              <div class="fg"><label>Громкость</label>
-                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
+            </template>
+            <template v-if="alertCfg.mediaType==='video'">
+              <div class="fg"><label>URL видео (mp4 / webm)</label>
+                <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
               </div>
-              <div class="divider"></div>
-              <div class="sub-lbl">Внешний вид</div>
-              <div class="fr">
-                <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
-                <div class="fg"><label>Прозрачность</label>
-                  <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
-                </div>
+            </template>
+
+            <div class="divider"></div>
+            <div class="sub-lbl">Звук (Эффект появления)</div>
+            <div class="fg">
+              <label>Звуковой файл (макс. 2 MB)</label>
+              <div class="file-wrap">
+                <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
+                <input type="file" accept="audio/*" @change="uploadASound">
               </div>
-              <div class="color-grid">
-                <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
-                <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
-                <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
-                <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
-              </div>
-              <div class="fr">
-                <div class="fg"><label>Размер имени</label>
-                  <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
-                </div>
-                <div class="fg"><label>Размер суммы</label>
-                  <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
-                </div>
-              </div>
-              <div class="fg"><label>Скругление карточки</label>
-                <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
-              </div>
-              <div class="divider"></div>
-              <div class="sub-lbl">Частицы</div>
-              <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
-              <div class="fg"><label>Количество частиц</label>
-                <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
+              <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
+              <div v-if="sndErr" class="file-err">{{sndErr}}</div>
+            </div>
+            <div class="fg"><label>Громкость эффекта</label>
+              <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
+            </div>
+            
+            <div class="divider"></div>
+            <div class="sub-lbl">Внешний вид</div>
+            <div class="fr">
+              <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
+              <div class="fg"><label>Прозрачность</label>
+                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
               </div>
             </div>
-          </transition>
+            <div class="color-grid">
+              <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
+              <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
+              <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
+              <div class="ci"><span>Текст</span><input type="color" v-model="alertCfg.msgColor"></div>
+              <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
+            </div>
+            <div class="fr">
+              <div class="fg"><label>Размер имени</label>
+                <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
+              </div>
+              <div class="fg"><label>Размер суммы</label>
+                <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
+              </div>
+            </div>
+            <div class="fg"><label>Размер сообщения</label>
+              <div class="rr"><input type="range" min="12" max="60" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}</span></div>
+            </div>
+            <div class="fg"><label>Скругление карточки</label>
+              <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="sub-lbl">Частицы</div>
+            <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
+            <div class="fg"><label>Количество частиц</label>
+              <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
+            </div>
+          </div>
         </template>
 
       </div>
@@ -690,10 +585,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </div>
     </div>
 
-    <!-- PREVIEW ZONE -->
     <div class="preview-zone" ref="previewZone">
-      <div class="pz-label">PREVIEW · OBS OVERLAY</div>
-      <div class="pz-mode">NO DRAG MODE</div>
+      <div class="pz-label">PREVIEW · NO DRAG · USE COORDINATES X/Y</div>
+      <div class="pz-mode">OBS OVERLAY</div>
 
       <div v-if="tab==='alert'" class="alert-preview-wrap">
         <canvas ref="pcvs" class="particle-canvas"></canvas>
@@ -706,17 +600,17 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
               <img :src="alertCfg.imageData" alt="">
             </div>
-            <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa',fontSize:(alertCfg.labelFontSize||10)+'px'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+            <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
             <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
             <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
-            <div v-if="curDonation.message" class="a-msg">{{curDonation.message}}</div>
+            <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
           </div>
         </transition>
       </div>
 
       <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
         <div v-for="p in panels" :key="p.id"
-             class="widget-card" :class="{sel:selId===p.id}"
+             class="static-panel" :class="{sel:selId===p.id}"
              :style="cardPos(p)"
              @click="selId=p.id">
           <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
@@ -747,7 +641,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       }"></div>
     </div>
     <div class="ld-section" v-if="donors.length">
-      <div class="ld-label" :style="{background:'rgba(255,255,255,.04)',border:'1px solid rgba(255,255,255,.08)',color:p.cText||'#ccc',fontSize:(p.lastDonorLabelSize||8)+'px'}">
+      <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}">
         <span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}
       </div>
       <ul class="donor-list">
@@ -847,7 +741,7 @@ try {
   db = firebase.database();
 } catch(e){ console.warn('Firebase error:', e); }
 
-const STORAGE_KEY = 'wv13_state';
+const STORAGE_KEY = 'wv12_state';
 function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); }catch(e){ return null; } }
 function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
 
@@ -869,24 +763,25 @@ createApp({
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
       id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
-      lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',lastDonorLabelSize:8,donorsRaw:'',
+      lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
       width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
       cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
       titleSize:16,textSize:13,barHeight:14,x:80,y:60
     });
 
     const alertCfg = reactive(Object.assign({
-      labelText:'НОВЫЙ ДОНАТ!',labelFontSize:10,duration:7,mediaType:'none',
+      labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',
       imageData:null,videoUrl:'',soundData:null,volume:1,
       bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',
-      nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',
-      nameFontSize:32,amountFontSize:48,cardRadius:16,
+      nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',
+      nameFontSize:32,amountFontSize:48,msgFontSize:24,cardRadius:16,
       particleColor:'#ffd700',particleCount:80,
+      ttsEnabled:false, ttsRate:1, ttsPitch:1, ttsVolume:1, ttsVoiceURI:''
     }, saved.alertCfg||{}));
 
     const alertVis = ref(false);
     const alertKey = ref(0);
-    const curDonation = reactive({name:'',amount:'',message:''});
+    const curDonation = reactive({name:'',amount:'', msg:''});
     let alertTimer = null;
 
     const quickName = ref('');
@@ -898,63 +793,7 @@ createApp({
     const imgErr = ref('');
     const sndErr = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
-
-    // ── TTS state ──
-    const ttsVoices = ref([]);
-    const ttsVoiceIdx = ref(0);
-    const ttsLang = ref('');
-    const ttsRate = ref(saved.tts?.rate || 1.0);
-    const ttsPitch = ref(saved.tts?.pitch || 1.0);
-    const ttsVolume = ref(saved.tts?.volume || 1.0);
-    const ttsReadName = ref(saved.tts?.readName !== undefined ? saved.tts.readName : true);
-    const ttsReadAmount = ref(saved.tts?.readAmount !== undefined ? saved.tts.readAmount : true);
-    const ttsReadMessage = ref(saved.tts?.readMessage !== undefined ? saved.tts.readMessage : true);
-    const ttsSpeaking = ref(false);
-    let allVoices = [];
-
-    function loadVoices(){
-      allVoices = window.speechSynthesis.getVoices();
-      filterVoices();
-    }
-
-    function filterVoices(){
-      let filtered = allVoices;
-      if(ttsLang.value){
-        filtered = allVoices.filter(v => v.lang.toLowerCase().startsWith(ttsLang.value));
-      }
-      if(!filtered.length) filtered = allVoices;
-      ttsVoices.value = filtered;
-      ttsVoiceIdx.value = 0;
-    }
-
-    function speakText(text){
-      if(!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const utt = new SpeechSynthesisUtterance(text);
-      if(ttsVoices.value[ttsVoiceIdx.value]) utt.voice = ttsVoices.value[ttsVoiceIdx.value];
-      utt.rate = ttsRate.value;
-      utt.pitch = ttsPitch.value;
-      utt.volume = ttsVolume.value;
-      ttsSpeaking.value = true;
-      utt.onend = () => ttsSpeaking.value = false;
-      utt.onerror = () => ttsSpeaking.value = false;
-      window.speechSynthesis.speak(utt);
-    }
-
-    function buildTtsText(name, amount, message){
-      const parts = [];
-      if(ttsReadName.value && name) parts.push(name);
-      if(ttsReadAmount.value && amount) parts.push(`задонатил ${Number(amount).toLocaleString('ru')} тенге`);
-      if(ttsReadMessage.value && message) parts.push(message);
-      return parts.join('. ');
-    }
-
-    function ttsPreview(){
-      const name = quickName.value.trim() || 'Тестовый Донатер';
-      const amt  = quickAmount.value || 500;
-      const msg  = quickMessage.value.trim() || 'Привет! Крутой стрим!';
-      speakText(buildTtsText(name, amt, msg));
-    }
+    const voices = ref([]);
 
     let toastTm;
     function showToast(msg,type='ok'){
@@ -980,7 +819,7 @@ createApp({
     function addPanel(type){
       panels.push({
         id:uid(),type,title:type==='goal'?'Цель стрима':'Новый челлендж',
-        current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',lastDonorLabelSize:8,donorsRaw:'',
+        current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', lastDonorLabelSize:8,
         showDivider:true,showCount:true,iconData:null,iconSize:35,iconGap:15,
         width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
         cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff',
@@ -1000,14 +839,6 @@ createApp({
         panels: JSON.parse(JSON.stringify(panels)),
         alertCfg: JSON.parse(JSON.stringify(alertCfg)),
         globalScale: globalScale.value,
-        tts: {
-          rate: ttsRate.value,
-          pitch: ttsPitch.value,
-          volume: ttsVolume.value,
-          readName: ttsReadName.value,
-          readAmount: ttsReadAmount.value,
-          readMessage: ttsReadMessage.value,
-        }
       };
     }
 
@@ -1042,15 +873,13 @@ createApp({
       triggerAlert(name, amt, msg, true);
       pushState();
       showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
-      quickName.value='';
-      quickAmount.value='';
-      quickMessage.value='';
+      quickName.value=''; quickAmount.value=''; quickMessage.value='';
     }
 
     function doQuickTest(){
       const name = quickName.value.trim() || 'Тест Донатов';
       const amt  = cleanNum(quickAmount.value) || 500;
-      const msg  = quickMessage.value.trim();
+      const msg  = quickMessage.value.trim() || 'Проверка озвучки и текста!';
       triggerAlert(name, amt, msg, false);
     }
 
@@ -1065,34 +894,32 @@ createApp({
     function doTestLocal(){
       const name = tName.value.trim() || 'Тест';
       const amt  = cleanNum(tAmount.value) || 500;
-      const msg  = tMessage.value.trim();
+      const msg  = tMessage.value.trim() || 'Проверка озвучки и текста!';
       triggerAlert(name, amt, msg, false);
     }
 
-    function triggerAlert(name, amt, message, pushFB){
+    function triggerAlert(name, amt, msg, pushFB){
       const num = cleanNum(amt);
       curDonation.name = name;
       curDonation.amount = Number(num).toLocaleString('ru');
-      curDonation.message = message || '';
+      curDonation.msg = msg;
+      
       alertKey.value++;
       alertVis.value = true;
       clearTimeout(alertTimer);
       playSound();
+      readMessage(msg);
       spawnParticles();
-
-      // TTS — запускаем после небольшой задержки чтобы анимация успела начаться
-      const ttsText = buildTtsText(name, num, message);
-      if(ttsText){
-        setTimeout(()=>speakText(ttsText), 300);
-      }
-
       const dur = (alertCfg.duration||7)*1000;
       alertTimer = setTimeout(()=>alertVis.value=false, dur+600);
 
       if(pushFB && db){
         try{
           db.ref('alert').set({
-            name, amount: num, message: message || '', ts: Date.now(),
+            name,
+            amount: num,
+            msg: msg,
+            ts: Date.now(),
             cfg: JSON.parse(JSON.stringify(alertCfg))
           });
         }catch(e){}
@@ -1102,6 +929,22 @@ createApp({
     function playSound(){
       if(!alertCfg.soundData) return;
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
+    }
+
+    function readMessage(msgText){
+      if(!msgText || !alertCfg.ttsEnabled || !window.speechSynthesis) return;
+      
+      const utterance = new SpeechSynthesisUtterance(msgText);
+      utterance.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
+      utterance.rate = alertCfg.ttsRate !== undefined ? alertCfg.ttsRate : 1;
+      utterance.pitch = alertCfg.ttsPitch !== undefined ? alertCfg.ttsPitch : 1;
+
+      if(alertCfg.ttsVoiceURI){
+        const targetVoice = voices.value.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
+        if(targetVoice) utterance.voice = targetVoice;
+      }
+      
+      window.speechSynthesis.speak(utterance);
     }
 
     function spawnParticles(){
@@ -1114,39 +957,16 @@ createApp({
       const color=alertCfg.particleColor||'#ffd700';
       const particles=[];
       for(let i=0;i<count;i++){
-        const type = Math.random() > 0.5 ? 'circle' : 'star';
-        particles.push({
-          x:Math.random()*canvas.width, y:canvas.height+10,
-          vx:(Math.random()-.5)*5, vy:-(Math.random()*7+3),
-          size:Math.random()*5+2, alpha:1,
-          decay:Math.random()*.015+.007, type,
-          rotation: Math.random()*Math.PI*2,
-          rotSpeed: (Math.random()-.5)*.15
-        });
-      }
-      function drawStar(ctx,x,y,r,a){
-        ctx.save(); ctx.translate(x,y); ctx.rotate(a);
-        ctx.beginPath();
-        for(let i=0;i<5;i++){
-          const angle = (i*4*Math.PI/5) - Math.PI/2;
-          const ir = r*.4;
-          if(i===0) ctx.moveTo(Math.cos(angle)*r, Math.sin(angle)*r);
-          else ctx.lineTo(Math.cos(angle)*r, Math.sin(angle)*r);
-          const ia = angle + Math.PI*2/5;
-          ctx.lineTo(Math.cos(ia)*ir, Math.sin(ia)*ir);
-        }
-        ctx.closePath(); ctx.fill(); ctx.restore();
+        particles.push({x:Math.random()*canvas.width,y:canvas.height+10,vx:(Math.random()-.5)*4,vy:-(Math.random()*6+3),size:Math.random()*5+2,alpha:1,decay:Math.random()*.015+.008});
       }
       function frame(){
         ctx.clearRect(0,0,canvas.width,canvas.height);
         let alive=false;
         particles.forEach(p=>{
           if(p.alpha<=0) return; alive=true;
-          p.x+=p.vx; p.y+=p.vy; p.vy+=.1; p.alpha-=p.decay; p.rotation+=p.rotSpeed;
+          p.x+=p.vx; p.y+=p.vy; p.vy+=.12; p.alpha-=p.decay;
           ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha); ctx.fillStyle=color;
-          if(p.type==='star') drawStar(ctx,p.x,p.y,p.size,p.rotation);
-          else{ ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); }
-          ctx.restore();
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.restore();
         });
         if(alive) requestAnimationFrame(frame);
         else ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -1182,10 +1002,14 @@ createApp({
       const r=new FileReader(); r.onload=ev=>{ alertCfg.soundData=ev.target.result; }; r.readAsDataURL(f);
     }
 
+    const loadVoices = () => {
+      if(!window.speechSynthesis) return;
+      voices.value = window.speechSynthesis.getVoices();
+    };
+
     onMounted(()=>{
-      // Load TTS voices
-      if('speechSynthesis' in window){
-        loadVoices();
+      loadVoices();
+      if(window.speechSynthesis){
         window.speechSynthesis.onvoiceschanged = loadVoices;
       }
 
@@ -1198,22 +1022,29 @@ createApp({
           lastTs = d.ts;
           if(d.cfg) Object.assign(alertCfg,d.cfg);
           const num = cleanNum(d.amount);
-          triggerAlert(d.name, num, d.message||'', false);
+          triggerAlert(d.name, num, d.msg, false);
         });
       }
       if(mode.value==='widget' && db){
         db.ref('config').on('value',snap=>{
           const d=snap.val();
           if(!d) return;
-          if(d.panels){ panels.splice(0); d.panels.forEach(p=>panels.push(p)); }
+          if(d.panels){
+            panels.splice(0);
+            d.panels.forEach(p=>panels.push(p));
+          }
           if(d.globalScale) globalScale.value=d.globalScale;
         });
       }
+      
       if(mode.value==='admin' && db){
         db.ref('config').once('value').then(snap => {
           const d = snap.val();
           if(!d) return;
-          if(d.panels){ panels.splice(0); d.panels.forEach(p=>panels.push(p)); }
+          if(d.panels){
+            panels.splice(0);
+            d.panels.forEach(p=>panels.push(p));
+          }
           if(d.alertCfg) Object.assign(alertCfg, d.alertCfg);
           if(d.globalScale) globalScale.value = d.globalScale;
           saveState(buildState());
@@ -1224,11 +1055,8 @@ createApp({
     return {
       mode,tab,selId,alertOpen,globalScale,fbOk,
       panels,alertCfg,alertVis,alertKey,curDonation,
-      quickName,quickAmount,quickMessage,
-      tName,tAmount,tMessage,
-      imgErr,sndErr,toast,
-      ttsVoices,ttsVoiceIdx,ttsLang,ttsRate,ttsPitch,ttsVolume,
-      ttsReadName,ttsReadAmount,ttsReadMessage,ttsSpeaking,
+      quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
+      imgErr,sndErr,toast,voices,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
       cardPos,compFor,
@@ -1236,7 +1064,6 @@ createApp({
       doQuickDonate,doQuickTest,
       doTrigger,doTestLocal,
       saveAll,resetAll,copyObs,
-      filterVoices,ttsPreview,
       uploadIcon,uploadAImg,uploadASound,
     };
   }
