@@ -198,26 +198,61 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+.mobile-kaspi-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  padding: 20px;
+  gap: 15px;
+  overflow-y: auto;
+}
+.mobile-header {
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.mobile-header span { color: var(--red); }
+.kaspi-paste-area {
+  background: #111;
+  border: 2px dashed var(--red);
+  border-radius: var(--radius-lg);
+  padding: 15px;
+  color: #fff;
+  font-size: 12px;
+  min-height: 140px;
+  width: 100%;
+  resize: vertical;
+  font-family: 'Unbounded';
+  transition: all 0.3s;
+}
+.kaspi-paste-area:focus {
+  border-style: solid;
+  box-shadow: 0 0 20px rgba(255,0,68,.2);
+}
+.parsed-card {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
   body{overflow:auto;}
-  .admin-shell{grid-template-columns:1fr;grid-template-rows:auto;height:auto;min-height:100vh;overflow:auto;position:relative;}
-  .sidebar{border-right:none;border-bottom:1px solid var(--border);order:1;max-height:none;overflow:visible;}
-  .sidebar-body{overflow:visible;padding-bottom:20px;}
-  .preview-zone{order:2;height:60vw;min-height:280px;border-top:1px solid var(--border);}
-  .donate-input-row{grid-template-columns:1fr;}
-  .donate-btn-row{grid-template-columns:1fr;}
-  .color-grid{grid-template-columns:repeat(3,1fr);}
-  .fr{flex-wrap:wrap;}
-  .fr > *{flex:1 1 140px;}
+  /* Прячем десктопную версию на мобилках полностью */
+  .desktop-only { display: none !important; }
 }
-@media(max-width:480px){
-  .sidebar-head{padding:12px 14px;}
-  .logo-name{font-size:11px;}
-  .tabs{padding:8px 10px;}
-  .tab{font-size:8px;padding:7px 4px;}
-  .donate-form-card{padding:13px;}
-  .color-grid{grid-template-columns:repeat(2,1fr);}
+@media(min-width:901px){
+  /* Прячем мобильную версию на ПК */
+  .mobile-only { display: none !important; }
 }
 </style>
 </head>
@@ -251,372 +286,393 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-else class="admin-shell">
-    <div class="sidebar">
-      <div class="sidebar-head">
-        <div class="logo">
-          <div class="logo-mark">W</div>
-          <div class="logo-name">WIDGET <span>PRO</span></div>
+    
+    <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
+      <div class="mobile-header">KASPI <span>SMART PASTE</span></div>
+      
+      <div class="fb-status" style="justify-content:center;">
+        <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
+        <span>{{fbOk ? 'Связь с OBS установлена' : 'Firebase не подключён'}}</span>
+      </div>
+
+      <textarea class="kaspi-paste-area" v-model="kaspiPaste" @input="handleKaspiPaste" placeholder="Вставь скопированный текст из Каспи сюда...&#10;Скрипт сам найдет имя, сумму и сообщение."></textarea>
+      
+      <div class="parsed-card" v-if="quickName || quickAmount || quickMessage">
+        <div class="fg">
+          <label>Имя донатера</label>
+          <input type="text" v-model="quickName" placeholder="Имя">
         </div>
-        <div class="ver-tag">v12 TENGE</div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
-        <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🎉 Alert</button>
-      </div>
-
-      <div class="sidebar-body">
-
-        <template v-if="tab==='widgets'">
-          <div class="fb-status">
-            <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
-            <span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span>
+        <div class="fg">
+          <label>Сумма (₸)</label>
+          <div class="donate-amount-wrap">
+            <input type="number" v-model.number="quickAmount" placeholder="0">
+            <span class="tenge-badge">₸</span>
           </div>
+        </div>
+        <div class="fg">
+          <label>Сообщение</label>
+          <textarea v-model="quickMessage" placeholder="Сообщение" style="min-height:50px"></textarea>
+        </div>
+      </div>
 
-          <div class="donate-form-card">
-            <div class="donate-form-title">
-              <div class="dft-icon">₸</div>
-              Быстрый донат
+      <button class="btn btn-red" style="padding: 20px; font-size: 14px; margin-top: 10px;" @click="doQuickDonate" :disabled="!quickName || !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
+    </div>
+
+
+    <template v-else>
+      <div class="sidebar desktop-only">
+        <div class="sidebar-head">
+          <div class="logo">
+            <div class="logo-mark">W</div>
+            <div class="logo-name">WIDGET <span>PRO</span></div>
+          </div>
+          <div class="ver-tag">v12 TENGE</div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
+          <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🎉 Alert</button>
+        </div>
+
+        <div class="sidebar-body">
+
+          <template v-if="tab==='widgets'">
+            <div class="fb-status">
+              <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
+              <span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span>
             </div>
-            <div class="live-preview-strip" v-if="quickName||quickAmount">
-              <div>
-                <div class="lp-label">Донатер</div>
-                <div class="lp-name">{{quickName||'—'}}</div>
+
+            <div class="donate-form-card">
+              <div class="donate-form-title">
+                <div class="dft-icon">₸</div>
+                Быстрый донат
               </div>
-              <div class="lp-sep"></div>
-              <div style="text-align:right">
-                <div class="lp-label">Сумма</div>
-                <div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div>
+              <div class="live-preview-strip" v-if="quickName||quickAmount">
+                <div>
+                  <div class="lp-label">Донатер</div>
+                  <div class="lp-name">{{quickName||'—'}}</div>
+                </div>
+                <div class="lp-sep"></div>
+                <div style="text-align:right">
+                  <div class="lp-label">Сумма</div>
+                  <div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div>
+                </div>
+              </div>
+              <div class="donate-input-row">
+                <div class="fg">
+                  <label>Имя донатера</label>
+                  <input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate">
+                </div>
+                <div class="fg">
+                  <label>Сумма (₸)</label>
+                  <div class="donate-amount-wrap">
+                    <input type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate">
+                    <span class="tenge-badge">₸</span>
+                  </div>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Сообщение (будет озвучено)</label>
+                <textarea v-model="quickMessage" placeholder="Крутой стрим, продолжай в том же духе!" style="min-height:40px" @keydown.enter.prevent="doQuickDonate"></textarea>
+              </div>
+              <div class="donate-btn-row">
+                <button class="btn btn-tenge" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
+                <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
               </div>
             </div>
-            <div class="donate-input-row">
-              <div class="fg">
-                <label>Имя донатера</label>
-                <input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate">
+
+            <div class="fr">
+              <button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
+              <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
+            </div>
+
+            <div v-for="(p,i) in panels" :key="p.id">
+              <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
+                <div class="sec-head-l">
+                  <div class="sec-dot">{{i+1}}</div>
+                  <div class="sec-name">{{p.type==='goal'?'🎯 ЦЕЛЬ':'⚡ ЧЕЛЛЕНДЖ'}}</div>
+                </div>
+                <div style="display:flex;gap:7px;align-items:center">
+                  <button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button>
+                  <span class="sec-chevron">▼</span>
+                </div>
               </div>
-              <div class="fg">
-                <label>Сумма (₸)</label>
-                <div class="donate-amount-wrap">
-                  <input type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate">
-                  <span class="tenge-badge">₸</span>
+              <div v-if="selId===p.id" class="sec-body">
+                <div class="fr">
+                  <div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div>
+                  <div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div>
+                </div>
+                <div class="divider"></div>
+
+                <template v-if="p.type==='goal'">
+                  <div class="fr">
+                    <div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div>
+                    <div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div>
+                  </div>
+                  <div class="fr">
+                    <div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ"></div>
+                    <div class="fg"><label>Размер текста метки</label>
+                      <div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div>
+                    </div>
+                  </div>
+                  <div class="fg">
+                    <label>Список донатеров</label>
+                    <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
+                  </div>
+                </template>
+
+                <template v-if="p.type==='challenge'">
+                  <div class="fg">
+                    <label>Логотип</label>
+                    <div class="file-wrap">
+                      <div class="file-btn">📁 Выбрать изображение</div>
+                      <input type="file" accept="image/*" @change="uploadIcon($event,p)">
+                    </div>
+                  </div>
+                  <div class="fr">
+                    <div class="fg"><label>Размер лого</label>
+                      <div class="rr"><input type="range" min="10" max="120" v-model.number="p.iconSize"><span class="rv">{{p.iconSize||35}}</span></div>
+                    </div>
+                    <div class="fg"><label>Отступ лого</label>
+                      <div class="rr"><input type="range" min="0" max="50" v-model.number="p.iconGap"><span class="rv">{{p.iconGap||15}}</span></div>
+                    </div>
+                  </div>
+                  <div class="fr">
+                    <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
+                    <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
+                  </div>
+                </template>
+
+                <div class="divider"></div>
+                <div class="sub-lbl">Шрифты</div>
+                <div class="fr">
+                  <div class="fg"><label>Заголовок</label>
+                    <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+                  </div>
+                  <div class="fg"><label>Текст</label>
+                    <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="sub-lbl">Размеры</div>
+                <div class="fg"><label>Ширина панели</label>
+                  <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
+                </div>
+                <div class="fr">
+                  <div class="fg"><label>Отступы</label>
+                    <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
+                  </div>
+                  <div class="fg"><label>Скругление</label>
+                    <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
+                  </div>
+                </div>
+                <div class="divider"></div>
+                <div class="sub-lbl">Цвета</div>
+                <div class="fr">
+                  <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
+                  <div class="fg"><label>Прозрачность</label>
+                    <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
+                  </div>
+                </div>
+                <div class="color-grid">
+                  <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
+                  <template v-if="p.type==='goal'">
+                    <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
+                    <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
+                    <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                  </template>
+                  <template v-if="p.type==='challenge'">
+                    <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
+                    <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                  </template>
                 </div>
               </div>
             </div>
-            <div class="fg">
-              <label>Сообщение (будет озвучено)</label>
-              <textarea v-model="quickMessage" placeholder="Крутой стрим, продолжай в том же духе!" style="min-height:40px" @keydown.enter.prevent="doQuickDonate"></textarea>
-            </div>
-            <div class="donate-btn-row">
-              <button class="btn btn-tenge" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
-              <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
-            </div>
-          </div>
 
-          <div class="fr">
-            <button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
-            <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
-          </div>
-
-          <div v-for="(p,i) in panels" :key="p.id">
-            <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
+            <div class="sec-head">
               <div class="sec-head-l">
-                <div class="sec-dot">{{i+1}}</div>
-                <div class="sec-name">{{p.type==='goal'?'🎯 ЦЕЛЬ':'⚡ ЧЕЛЛЕНДЖ'}}</div>
-              </div>
-              <div style="display:flex;gap:7px;align-items:center">
-                <button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button>
-                <span class="sec-chevron">▼</span>
+                <div class="sec-name">⚙ Глобальные настройки OBS</div>
               </div>
             </div>
-            <div v-if="selId===p.id" class="sec-body">
-              <div class="fr">
-                <div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div>
-                <div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div>
+            <div class="sec-body">
+              <div class="fg"><label>Масштаб сцены</label>
+                <div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div>
               </div>
-              <div class="divider"></div>
+            </div>
+          </template>
 
-              <template v-if="p.type==='goal'">
-                <div class="fr">
-                  <div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div>
-                  <div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div>
-                </div>
-                <div class="fr">
-                  <div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel" placeholder="ПОСЛЕДНИЙ ДОНАТ"></div>
-                  <div class="fg"><label>Размер текста метки</label>
-                    <div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div>
+          <template v-if="tab==='alert'">
+            <div class="sec-head on">
+              <div class="sec-head-l">
+                <div class="sec-dot" style="background:var(--red);color:#fff">▶</div>
+                <div class="sec-name">Запустить Alert вручную</div>
+              </div>
+            </div>
+            <div class="sec-body">
+              <div class="fr">
+                <div class="fg"><label>Имя донатера</label><input type="text" v-model="tName" placeholder="Иван Петров"></div>
+                <div class="fg">
+                  <label>Сумма (₸)</label>
+                  <div class="donate-amount-wrap">
+                    <input type="number" v-model.number="tAmount" placeholder="500" min="0">
+                    <span class="tenge-badge">₸</span>
                   </div>
                 </div>
-                <div class="fg">
-                  <label>Список донатеров</label>
-                  <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
+              </div>
+              <div class="fg">
+                <label>Сообщение донатера</label>
+                <textarea v-model="tMessage" placeholder="Привет, крутой стрим!" style="min-height:40px"></textarea>
+              </div>
+              <button class="btn btn-green" @click="doTrigger">▶ ПОКАЗАТЬ В OBS</button>
+              <button class="btn btn-purple" @click="doTestLocal">🧪 Тест (только здесь)</button>
+            </div>
+
+            <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
+              <div class="sec-head-l"><div class="sec-name">🎨 Настройки Alert</div></div>
+              <span class="sec-chevron">▼</span>
+            </div>
+            <div v-if="alertOpen" class="sec-body">
+              <div class="fg"><label>Текст метки</label>
+                <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
+              </div>
+              <div class="fg"><label>Длительность (сек)</label>
+                <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
+              </div>
+              
+              <div class="divider"></div>
+              <div class="sub-lbl">Озвучка (TTS)</div>
+              <div class="cb-row"><label>Включить озвучку сообщения</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
+              <template v-if="alertCfg.ttsEnabled">
+                <div class="fg"><label>Громкость озвучки</label>
+                  <div class="rr"><input type="range" min="0" max="1" step="0.05" v-model.number="alertCfg.ttsVolume"><span class="rv">{{Math.round((alertCfg.ttsVolume||1)*100)}}%</span></div>
                 </div>
               </template>
 
-              <template v-if="p.type==='challenge'">
+              <div class="divider"></div>
+              <div class="sub-lbl">Медиа</div>
+              <div class="fg"><label>Тип медиа</label>
+                <select v-model="alertCfg.mediaType">
+                  <option value="none">Без медиа</option>
+                  <option value="image">Изображение</option>
+                  <option value="video">Видео (URL)</option>
+                </select>
+              </div>
+              <template v-if="alertCfg.mediaType==='image'">
                 <div class="fg">
-                  <label>Логотип</label>
+                  <label>Изображение (макс. 1 MB)</label>
                   <div class="file-wrap">
-                    <div class="file-btn">📁 Выбрать изображение</div>
-                    <input type="file" accept="image/*" @change="uploadIcon($event,p)">
+                    <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
+                    <input type="file" accept="image/*" @change="uploadAImg">
                   </div>
+                  <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
+                  <div v-if="imgErr" class="file-err">{{imgErr}}</div>
                 </div>
-                <div class="fr">
-                  <div class="fg"><label>Размер лого</label>
-                    <div class="rr"><input type="range" min="10" max="120" v-model.number="p.iconSize"><span class="rv">{{p.iconSize||35}}</span></div>
-                  </div>
-                  <div class="fg"><label>Отступ лого</label>
-                    <div class="rr"><input type="range" min="0" max="50" v-model.number="p.iconGap"><span class="rv">{{p.iconGap||15}}</span></div>
-                  </div>
-                </div>
-                <div class="fr">
-                  <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
-                  <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
+              </template>
+              <template v-if="alertCfg.mediaType==='video'">
+                <div class="fg"><label>URL видео (mp4 / webm)</label>
+                  <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
                 </div>
               </template>
 
               <div class="divider"></div>
-              <div class="sub-lbl">Шрифты</div>
-              <div class="fr">
-                <div class="fg"><label>Заголовок</label>
-                  <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+              <div class="sub-lbl">Звук (Эффект появления)</div>
+              <div class="fg">
+                <label>Звуковой файл (макс. 2 MB)</label>
+                <div class="file-wrap">
+                  <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
+                  <input type="file" accept="audio/*" @change="uploadASound">
                 </div>
-                <div class="fg"><label>Текст</label>
-                  <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
-                </div>
+                <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
+                <div v-if="sndErr" class="file-err">{{sndErr}}</div>
               </div>
+              <div class="fg"><label>Громкость эффекта</label>
+                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
+              </div>
+              
               <div class="divider"></div>
-              <div class="sub-lbl">Размеры</div>
-              <div class="fg"><label>Ширина панели</label>
-                <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
-              </div>
+              <div class="sub-lbl">Внешний вид</div>
               <div class="fr">
-                <div class="fg"><label>Отступы</label>
-                  <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
-                </div>
-                <div class="fg"><label>Скругление</label>
-                  <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
-                </div>
-              </div>
-              <div class="divider"></div>
-              <div class="sub-lbl">Цвета</div>
-              <div class="fr">
-                <div class="fg"><label>Цвет фона</label><input type="color" v-model="p.bgColor"></div>
+                <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
                 <div class="fg"><label>Прозрачность</label>
-                  <div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity!==undefined?p.bgOpacity:0.75}}</span></div>
+                  <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
                 </div>
               </div>
               <div class="color-grid">
-                <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
-                <template v-if="p.type==='goal'">
-                  <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
-                  <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
-                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                </template>
-                <template v-if="p.type==='challenge'">
-                  <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
-                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
-                </template>
-              </div>
-            </div>
-          </div>
-
-          <div class="sec-head">
-            <div class="sec-head-l">
-              <div class="sec-name">⚙ Глобальные настройки OBS</div>
-            </div>
-          </div>
-          <div class="sec-body">
-            <div class="fg"><label>Масштаб сцены</label>
-              <div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div>
-            </div>
-          </div>
-        </template>
-
-        <template v-if="tab==='alert'">
-          <div class="sec-head on">
-            <div class="sec-head-l">
-              <div class="sec-dot" style="background:var(--red);color:#fff">▶</div>
-              <div class="sec-name">Запустить Alert вручную</div>
-            </div>
-          </div>
-          <div class="sec-body">
-            <div class="fr">
-              <div class="fg"><label>Имя донатера</label><input type="text" v-model="tName" placeholder="Иван Петров"></div>
-              <div class="fg">
-                <label>Сумма (₸)</label>
-                <div class="donate-amount-wrap">
-                  <input type="number" v-model.number="tAmount" placeholder="500" min="0">
-                  <span class="tenge-badge">₸</span>
-                </div>
-              </div>
-            </div>
-            <div class="fg">
-              <label>Сообщение донатера</label>
-              <textarea v-model="tMessage" placeholder="Привет, крутой стрим!" style="min-height:40px"></textarea>
-            </div>
-            <button class="btn btn-green" @click="doTrigger">▶ ПОКАЗАТЬ В OBS</button>
-            <button class="btn btn-purple" @click="doTestLocal">🧪 Тест (только здесь)</button>
-          </div>
-
-          <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
-            <div class="sec-head-l"><div class="sec-name">🎨 Настройки Alert</div></div>
-            <span class="sec-chevron">▼</span>
-          </div>
-          <div v-if="alertOpen" class="sec-body">
-            <div class="fg"><label>Текст метки</label>
-              <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
-            </div>
-            <div class="fg"><label>Длительность (сек)</label>
-              <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
-            </div>
-            
-            <div class="divider"></div>
-            <div class="sub-lbl">Озвучка (TTS)</div>
-            <div class="cb-row"><label>Включить озвучку сообщения</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
-            <template v-if="alertCfg.ttsEnabled">
-              <div class="fg">
-                <label>Голос</label>
-                <select v-model="alertCfg.ttsVoiceURI">
-                  <option v-for="v in voices" :key="v.voiceURI" :value="v.voiceURI">{{v.name}} ({{v.lang}})</option>
-                </select>
+                <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
+                <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
+                <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
+                <div class="ci"><span>Текст</span><input type="color" v-model="alertCfg.msgColor"></div>
+                <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
               </div>
               <div class="fr">
-                <div class="fg"><label>Скорость</label>
-                  <div class="rr"><input type="range" min="0.1" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{alertCfg.ttsRate||1}}</span></div>
+                <div class="fg"><label>Размер имени</label>
+                  <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
                 </div>
-                <div class="fg"><label>Высота</label>
-                  <div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{alertCfg.ttsPitch||1}}</span></div>
+                <div class="fg"><label>Размер суммы</label>
+                  <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
                 </div>
               </div>
-              <div class="fg"><label>Громкость озвучки</label>
-                <div class="rr"><input type="range" min="0" max="1" step="0.05" v-model.number="alertCfg.ttsVolume"><span class="rv">{{Math.round((alertCfg.ttsVolume||1)*100)}}%</span></div>
+              <div class="fg"><label>Размер сообщения</label>
+                <div class="rr"><input type="range" min="12" max="60" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}</span></div>
               </div>
-            </template>
+              <div class="fg"><label>Скругление карточки</label>
+                <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
+              </div>
 
-            <div class="divider"></div>
-            <div class="sub-lbl">Медиа</div>
-            <div class="fg"><label>Тип медиа</label>
-              <select v-model="alertCfg.mediaType">
-                <option value="none">Без медиа</option>
-                <option value="image">Изображение</option>
-                <option value="video">Видео (URL)</option>
-              </select>
+              <div class="divider"></div>
+              <div class="sub-lbl">Частицы</div>
+              <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
+              <div class="fg"><label>Количество частиц</label>
+                <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
+              </div>
             </div>
-            <template v-if="alertCfg.mediaType==='image'">
-              <div class="fg">
-                <label>Изображение (макс. 1 MB)</label>
-                <div class="file-wrap">
-                  <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
-                  <input type="file" accept="image/*" @change="uploadAImg">
-                </div>
-                <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
-                <div v-if="imgErr" class="file-err">{{imgErr}}</div>
-              </div>
-            </template>
-            <template v-if="alertCfg.mediaType==='video'">
-              <div class="fg"><label>URL видео (mp4 / webm)</label>
-                <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
-              </div>
-            </template>
+          </template>
 
-            <div class="divider"></div>
-            <div class="sub-lbl">Звук (Эффект появления)</div>
-            <div class="fg">
-              <label>Звуковой файл (макс. 2 MB)</label>
-              <div class="file-wrap">
-                <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
-                <input type="file" accept="audio/*" @change="uploadASound">
-              </div>
-              <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
-              <div v-if="sndErr" class="file-err">{{sndErr}}</div>
-            </div>
-            <div class="fg"><label>Громкость эффекта</label>
-              <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
-            </div>
-            
-            <div class="divider"></div>
-            <div class="sub-lbl">Внешний вид</div>
-            <div class="fr">
-              <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
-              <div class="fg"><label>Прозрачность</label>
-                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
-              </div>
-            </div>
-            <div class="color-grid">
-              <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
-              <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
-              <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
-              <div class="ci"><span>Текст</span><input type="color" v-model="alertCfg.msgColor"></div>
-              <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
-            </div>
-            <div class="fr">
-              <div class="fg"><label>Размер имени</label>
-                <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
-              </div>
-              <div class="fg"><label>Размер суммы</label>
-                <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
-              </div>
-            </div>
-            <div class="fg"><label>Размер сообщения</label>
-              <div class="rr"><input type="range" min="12" max="60" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}</span></div>
-            </div>
-            <div class="fg"><label>Скругление карточки</label>
-              <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
-            </div>
-
-            <div class="divider"></div>
-            <div class="sub-lbl">Частицы</div>
-            <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
-            <div class="fg"><label>Количество частиц</label>
-              <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
-            </div>
-          </div>
-        </template>
-
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-flat" style="flex:1" @click="copyObs('widget')">📋 Виджет URL</button>
-          <button class="btn btn-flat" style="flex:1" @click="copyObs('alert')">📋 Alert URL</button>
         </div>
-        <button class="btn btn-ghost" @click="resetAll">↺ Сброс настроек</button>
-      </div>
-    </div>
 
-    <div class="preview-zone" ref="previewZone">
-      <div class="pz-label">PREVIEW · NO DRAG · USE COORDINATES X/Y</div>
-      <div class="pz-mode">OBS OVERLAY</div>
-
-      <div v-if="tab==='alert'" class="alert-preview-wrap">
-        <canvas ref="pcvs" class="particle-canvas"></canvas>
-        <transition name="alert">
-          <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
-            <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
-            <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
-              <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
-            </div>
-            <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
-              <img :src="alertCfg.imageData" alt="">
-            </div>
-            <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
-            <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
-            <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
-            <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+        <div class="actions">
+          <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-flat" style="flex:1" @click="copyObs('widget')">📋 Виджет URL</button>
+            <button class="btn btn-flat" style="flex:1" @click="copyObs('alert')">📋 Alert URL</button>
           </div>
-        </transition>
-      </div>
-
-      <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
-        <div v-for="p in panels" :key="p.id"
-             class="static-panel" :class="{sel:selId===p.id}"
-             :style="cardPos(p)"
-             @click="selId=p.id">
-          <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
+          <button class="btn btn-ghost" @click="resetAll">↺ Сброс настроек</button>
         </div>
       </div>
-    </div>
+
+      <div class="preview-zone desktop-only" ref="previewZone">
+        <div class="pz-label">PREVIEW · NO DRAG · USE COORDINATES X/Y</div>
+        <div class="pz-mode">OBS OVERLAY</div>
+
+        <div v-if="tab==='alert'" class="alert-preview-wrap">
+          <canvas ref="pcvs" class="particle-canvas"></canvas>
+          <transition name="alert">
+            <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
+              <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
+              <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
+                <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
+              </div>
+              <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
+                <img :src="alertCfg.imageData" alt="">
+              </div>
+              <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+              <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
+              <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
+              <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+            </div>
+          </transition>
+        </div>
+
+        <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
+          <div v-for="p in panels" :key="p.id"
+               class="static-panel" :class="{sel:selId===p.id}"
+               :style="cardPos(p)"
+               @click="selId=p.id">
+            <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 
   <div class="toast" :class="{show:toast.show,ok:toast.type==='ok',err:toast.type==='err'}">{{toast.msg}}</div>
@@ -759,6 +815,14 @@ createApp({
     const wscene = ref(null);
     const previewZone = ref(null);
     const fbOk = ref(!!db);
+    
+    // Определение мобильного устройства для Smart View
+    const isMobile = ref(window.innerWidth <= 900);
+    window.addEventListener('resize', () => {
+      isMobile.value = window.innerWidth <= 900;
+    });
+
+    const kaspiPaste = ref('');
 
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
@@ -793,7 +857,6 @@ createApp({
     const imgErr = ref('');
     const sndErr = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
-    const voices = ref([]);
 
     let toastTm;
     function showToast(msg,type='ok'){
@@ -812,6 +875,45 @@ createApp({
         '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)`,
       };
     });
+
+    // --- МАГИЯ SMART PASTE ДЛЯ КАСПИ ---
+    function handleKaspiPaste() {
+      const txt = kaspiPaste.value;
+      if (!txt) return;
+
+      const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
+      let name = '';
+      let amount = '';
+      let msg = '';
+
+      // 1. Ищем строку с Пополнением/Переводом
+      const popIdx = lines.findIndex(l => l.toLowerCase().includes('пополнение') || l.toLowerCase().includes('перевод'));
+      if (popIdx !== -1) {
+        amount = cleanNum(lines[popIdx]);
+        
+        // 2. Имя обычно идет на следующей строке
+        if (popIdx + 1 < lines.length) {
+          const nextLine = lines[popIdx + 1];
+          // Проверяем, что это не "Доступно" (бывает имя скрыто)
+          if (!nextLine.toLowerCase().includes('доступно')) {
+            name = nextLine;
+          }
+        }
+      }
+
+      // 3. Ищем сообщение
+      const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
+      if (msgIdx !== -1) {
+        // Склеиваем всё, что идет после слова "Сообщение"
+        msg = lines.slice(msgIdx + 1).join(' '); 
+      }
+
+      // Обновляем поля, если что-то нашли
+      if (amount) quickAmount.value = amount;
+      if (name) quickName.value = name;
+      if (msg) quickMessage.value = msg;
+    }
+
 
     function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
     function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
@@ -864,16 +966,19 @@ createApp({
     }
 
     function doQuickDonate(){
-      const name = quickName.value.trim();
+      const name = quickName.value.trim() || 'Аноним';
       const amt  = cleanNum(quickAmount.value);
       const msg  = quickMessage.value.trim();
-      if(!name){ showToast('Введи имя донатера!','err'); return; }
-      if(!amt)  { showToast('Введи сумму!','err'); return; }
+      
+      if(!amt) { showToast('Сумма не найдена!','err'); return; }
+      
       applyDonateToGoals(name, amt);
       triggerAlert(name, amt, msg, true);
       pushState();
-      showToast(`✓ ${name} — ${Number(amt).toLocaleString('ru')} ₸ принят!`,'ok');
-      quickName.value=''; quickAmount.value=''; quickMessage.value='';
+      showToast(`✓ Отправлено: ${name} — ${Number(amt).toLocaleString('ru')} ₸`,'ok');
+      
+      // Очищаем всё после отправки
+      quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
     }
 
     function doQuickTest(){
@@ -931,18 +1036,17 @@ createApp({
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
-  function readMessage(msgText){
+    function readMessage(msgText){
       if(!msgText || !alertCfg.ttsEnabled) return;
       
-      // Обрезаем текст до 200 символов (ограничение бесплатного API гугла)
+      // Идеальный женский гугл голос, работает везде
       const safeText = encodeURIComponent(msgText.substring(0, 200));
-      // Используем прямую ссылку на движок Google Переводчика
       const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${safeText}`;
       
       try {
         const audio = new Audio(url);
         audio.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
-        audio.play().catch(e => console.log('Ошибка воспроизведения TTS:', e));
+        audio.play().catch(e => console.log('Ошибка TTS:', e));
       } catch(e){}
     }
 
@@ -1001,19 +1105,7 @@ createApp({
       const r=new FileReader(); r.onload=ev=>{ alertCfg.soundData=ev.target.result; }; r.readAsDataURL(f);
     }
 
-    const loadVoices = () => {
-      if(!window.speechSynthesis) return;
-      // Получаем все голоса и жестко фильтруем только те, где язык начинается с 'ru'
-      const allVoices = window.speechSynthesis.getVoices();
-      voices.value = allVoices.filter(v => v.lang.toLowerCase().startsWith('ru'));
-    };
-
     onMounted(()=>{
-      loadVoices();
-      if(window.speechSynthesis){
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-      }
-
       if(mode.value==='alert' && db){
         let lastTs = 0;
         db.ref('alert').on('value',snap=>{
@@ -1056,8 +1148,9 @@ createApp({
     return {
       mode,tab,selId,alertOpen,globalScale,fbOk,
       panels,alertCfg,alertVis,alertKey,curDonation,
+      isMobile, kaspiPaste, handleKaspiPaste,
       quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
-      imgErr,sndErr,toast,voices,
+      imgErr,sndErr,toast,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
       cardPos,compFor,
