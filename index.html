@@ -125,7 +125,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .static-panel{position:absolute;z-index:10;transition: top 0.3s ease, left 0.3s ease;}
 .static-panel.sel .glass{outline:1.5px solid rgba(0,255,180,.7);outline-offset:4px;}
 
-/* Улучшенный Liquid Glass Effect */
 .glass{
   position:relative;
   width:100%;
@@ -315,7 +314,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
       </div>
 
-      <button class="btn btn-red" style="padding: 20px; font-size: 14px; margin-top: 10px;" @click="doQuickDonate" :disabled="!quickName || !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
+      <div style="display:flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+        <button class="btn btn-red" style="padding: 20px; font-size: 14px;" @click="doQuickDonate" :disabled="!quickName || !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
+        <button class="btn btn-flat" style="padding: 15px; font-size: 12px; color: #ff5555; border-color: rgba(255,0,0,0.2);" @click="clearProgress">🗑️ ОЧИСТИТЬ СБОРЫ</button>
+      </div>
     </div>
 
 
@@ -886,29 +888,20 @@ createApp({
       let amount = '';
       let msg = '';
 
-      // 1. Ищем строку с Пополнением/Переводом
       const popIdx = lines.findIndex(l => l.toLowerCase().includes('пополнение') || l.toLowerCase().includes('перевод'));
       if (popIdx !== -1) {
         amount = cleanNum(lines[popIdx]);
-        
-        // 2. Имя обычно идет на следующей строке
         if (popIdx + 1 < lines.length) {
           const nextLine = lines[popIdx + 1];
-          // Проверяем, что это не "Доступно" (бывает имя скрыто)
-          if (!nextLine.toLowerCase().includes('доступно')) {
-            name = nextLine;
-          }
+          if (!nextLine.toLowerCase().includes('доступно')) name = nextLine;
         }
       }
 
-      // 3. Ищем сообщение
       const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
       if (msgIdx !== -1) {
-        // Склеиваем всё, что идет после слова "Сообщение"
         msg = lines.slice(msgIdx + 1).join(' '); 
       }
 
-      // Обновляем поля, если что-то нашли
       if (amount) quickAmount.value = amount;
       if (name) quickName.value = name;
       if (msg) quickMessage.value = msg;
@@ -957,12 +950,29 @@ createApp({
         if(p.type==='goal'){
           p.current = (p.current||0) + num;
           const existing = (p.donorsRaw||'').trim();
-          p.donorsRaw = existing ? entry+'\n'+existing : entry;
+          // Если стояло "Пусто", заменяем на новый донат, иначе добавляем
+          if (existing.startsWith('Пусто')) {
+             p.donorsRaw = entry;
+          } else {
+             p.donorsRaw = existing ? entry+'\n'+existing : entry;
+          }
         }
         if(p.type==='challenge'){
           p.current = (p.current||0) + num;
         }
       });
+    }
+
+    function clearProgress() {
+      if(!confirm('Очистить собранную сумму и список донатов?')) return;
+      panels.forEach(p => {
+        p.current = 0;
+        if(p.type === 'goal') {
+          p.donorsRaw = 'Пусто — 0 ₸';
+        }
+      });
+      pushState();
+      showToast('✓ Данные очищены', 'ok');
     }
 
     function doQuickDonate(){
@@ -1039,7 +1049,6 @@ createApp({
     function readMessage(msgText){
       if(!msgText || !alertCfg.ttsEnabled) return;
       
-      // Идеальный женский гугл голос, работает везде
       const safeText = encodeURIComponent(msgText.substring(0, 200));
       const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${safeText}`;
       
@@ -1131,15 +1140,35 @@ createApp({
       }
       
       if(mode.value==='admin' && db){
-        db.ref('config').once('value').then(snap => {
+        // Заменил 'once' на 'on' для динамической реалтайм синхронизации панелей
+        db.ref('config').on('value', snap => {
           const d = snap.val();
           if(!d) return;
+          
           if(d.panels){
-            panels.splice(0);
-            d.panels.forEach(p=>panels.push(p));
+            // Обновляем параметры аккуратно, чтобы не сбрасывать фокус с инпутов
+            d.panels.forEach((newP, i) => {
+              if(!panels[i]) {
+                panels.push(newP);
+              } else {
+                Object.keys(newP).forEach(k => {
+                  if(panels[i][k] !== newP[k]) panels[i][k] = newP[k];
+                });
+              }
+            });
+            // Удаляем лишние панели, если они были удалены на другом устройстве
+            if(panels.length > d.panels.length) panels.splice(d.panels.length);
           }
-          if(d.alertCfg) Object.assign(alertCfg, d.alertCfg);
-          if(d.globalScale) globalScale.value = d.globalScale;
+          
+          if(d.alertCfg) {
+            Object.keys(d.alertCfg).forEach(k => {
+              if(alertCfg[k] !== d.alertCfg[k]) alertCfg[k] = d.alertCfg[k];
+            });
+          }
+          if(d.globalScale && globalScale.value !== d.globalScale) {
+            globalScale.value = d.globalScale;
+          }
+          
           saveState(buildState());
         });
       }
@@ -1155,6 +1184,7 @@ createApp({
       sceneStyle,alertCardStyle,
       cardPos,compFor,
       addPanel,removePanel,
+      clearProgress,
       doQuickDonate,doQuickTest,
       doTrigger,doTestLocal,
       saveAll,resetAll,copyObs,
