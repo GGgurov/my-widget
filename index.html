@@ -268,6 +268,31 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 .track-id { font-size: 8px; color: var(--text-dim); }
 
+/* Красивые кнопки управления музыкой */
+.btn-music {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text-bright);
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  font-family: 'Unbounded', sans-serif;
+  backdrop-filter: blur(5px);
+}
+.btn-music:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.3);
+  transform: translateY(-1px);
+}
+.btn-music.skip { border-left: 2px solid var(--gold); }
+.btn-music.skip:hover { background: rgba(255,215,0,0.15); border-color: var(--gold); color: var(--gold); }
+.btn-music.clear { border-left: 2px solid var(--red); }
+.btn-music.clear:hover { background: rgba(255,0,68,0.15); border-color: var(--red); color: var(--red); }
+
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
   body{overflow:auto;}
@@ -342,15 +367,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       <div class="parsed-card" v-if="musicQueue.length > 0">
         <div class="sub-lbl" style="color:var(--tenge); display:flex; justify-content:space-between; align-items:center;">
           <span>🎵 Музыкальная очередь ({{musicQueue.length}})</span>
-          <button class="btn-del" @click="clearQueue" style="font-size:7px;">ОЧИСТИТЬ ВСЕ</button>
+          <button class="btn-music clear" @click="clearQueue" style="font-size:8px;">Очистить все</button>
         </div>
         <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item">
           <div class="track-info">
             {{ idx === 0 ? '▶ Сейчас играет' : '⏳ Трек в очереди' }}
             <span class="track-id">ID: {{track.videoId}}</span>
           </div>
-          <button class="btn-del" @click="skipTrack(idx)" :style="idx===0 ? 'background:rgba(255,255,255,0.1); color:#fff;' : ''">
-            {{ idx === 0 ? '⏭ СКИП' : '✕ УДАЛИТЬ' }}
+          <button class="btn-music" :class="{skip: idx===0, clear: idx!==0}" @click="skipTrack(idx)">
+            {{ idx === 0 ? '⏭ Скип' : '✕ Удалить' }}
           </button>
         </div>
       </div>
@@ -923,7 +948,7 @@ createApp({
       let tracks = [];
       let cleanMsg = msg.replace(ytRegex, (match, vid) => {
           tracks.push(vid);
-          return ''; // Вырезаем ссылку из сообщения полностью
+          return ''; 
       }).trim();
       return { cleanMsg, tracks };
     }
@@ -1020,15 +1045,13 @@ createApp({
       
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
 
-      // Парсим и чистим сообщение от ссылок YouTube
       const extracted = extractAndCleanYT(quickMessage.value);
       const cleanMsg = extracted.cleanMsg;
       
       applyDonateToGoals(name, amt);
-      triggerAlert(name, amt, cleanMsg, true); // Отправляем чистый текст для озвучки!
+      triggerAlert(name, amt, cleanMsg, true);
       pushState();
 
-      // Если нашли треки, кидаем их в очередь
       if (extracted.tracks.length > 0) {
         extracted.tracks.forEach(vid => {
           musicQueue.push({ uid: uid(), videoId: vid });
@@ -1089,14 +1112,22 @@ createApp({
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
+    // НОВАЯ ОЗВУЧКА - ЖИВОЙ ГОЛОС (Maxim от StreamElements)
     function readMessage(msgText){
       if(!msgText || !alertCfg.ttsEnabled) return;
-      const safeText = encodeURIComponent(msgText.substring(0, 200));
-      const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${safeText}`;
+      const safeText = encodeURIComponent(msgText.substring(0, 400));
+      const url = `https://api.streamelements.com/kappa/v2/speech?voice=Maxim&text=${safeText}`;
+      
       try {
         const audio = new Audio(url);
         audio.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
-        audio.play().catch(e => console.log('Ошибка TTS:', e));
+        audio.play().catch(e => {
+          console.log('StreamElements TTS заблокирован, запуск резервного робота:', e);
+          const fallback = new SpeechSynthesisUtterance(msgText);
+          fallback.lang = 'ru-RU';
+          fallback.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
+          window.speechSynthesis.speak(fallback);
+        });
       } catch(e){}
     }
 
@@ -1142,7 +1173,6 @@ createApp({
       const r=new FileReader(); r.onload=ev=>{ alertCfg.soundData=ev.target.result; }; r.readAsDataURL(f);
     }
 
-    // --- ЛОГИКА ОЧЕРЕДИ МУЗЫКИ ---
     function skipTrack(idx) {
       musicQueue.splice(idx, 1);
       pushQueueState();
@@ -1154,7 +1184,6 @@ createApp({
 
     let currentTrackUid = null;
     function checkQueuePlay() {
-      // Плеер работает ТОЛЬКО в OBS (режим widget), чтобы звук не дублировался на телефоне
       if (mode.value !== 'widget' || !window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
 
       if (musicQueue.length === 0) {
@@ -1173,19 +1202,25 @@ createApp({
       if (mode.value !== 'widget') return;
       if (musicQueue.length > 0) {
         musicQueue.shift();
-        pushQueueState(); // Это триггернет обновление у всех, и плеер перейдет к следующему
+        pushQueueState();
       }
     }
 
-    // Внедряем YT Iframe API только если это OBS (чтобы не жрать ресурс на телефоне)
+    // ИСПРАВЛЕННЫЙ ПЛЕЕР (для обхода блокировок OBS)
     window.onYouTubeIframeAPIReady = () => {
       window.ytPlayerObj = new YT.Player('yt-player', {
         height: '1', width: '1',
-        playerVars: { 'autoplay': 1, 'controls': 0 },
+        playerVars: { 
+          'autoplay': 1, 
+          'controls': 0,
+          'disablekb': 1,
+          'fs': 0,
+          'origin': window.location.protocol === 'file:' ? '*' : window.location.origin
+        },
         events: {
           'onReady': () => checkQueuePlay(),
           'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
-          'onError': () => shiftQueueFromPlayer() // Если видео заблочено/недоступно, скипаем
+          'onError': () => shiftQueueFromPlayer()
         }
       });
     };
@@ -1233,7 +1268,6 @@ createApp({
         });
       }
 
-      // Синхронизация очереди музыки
       if(db){
         db.ref('musicQueue').on('value', snap => {
           const q = snap.val() || [];
