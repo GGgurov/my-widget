@@ -111,29 +111,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .btn-del:hover{background:#ff4444;color:#fff;}
 .btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition: all 0.2s;}
 .btn-add-panel:hover{background:#1c1c1c; transform: translateY(-1px);}
-
-/* Новые стили для кнопок очереди музыки */
-.btn-queue-action {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text-bright);
-  padding: 8px 14px;
-  border-radius: var(--radius-sm);
-  font-family: 'Unbounded';
-  font-size: 9px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.btn-queue-action.skip { border-color: rgba(0, 194, 255, 0.4); color: var(--tenge); }
-.btn-queue-action.skip:hover { background: rgba(0, 194, 255, 0.15); box-shadow: 0 0 10px rgba(0,194,255,0.2); }
-.btn-queue-action.del { border-color: rgba(255, 68, 68, 0.4); color: #ff4444; }
-.btn-queue-action.del:hover { background: rgba(255, 68, 68, 0.15); box-shadow: 0 0 10px rgba(255,68,68,0.2); }
-.btn-queue-action.clear-all { border-color: rgba(255, 68, 68, 0.3); color: #ff4444; padding: 6px 10px; font-size: 8px;}
-.btn-queue-action.clear-all:hover { background: #ff4444; color: #fff; box-shadow: 0 0 10px rgba(255,68,68,0.4); }
-
 .actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
 .file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
 .file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
@@ -267,6 +244,57 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 
 /* Стили для музыкальной очереди */
+.music-queue-card {
+  background: linear-gradient(135deg, #000d15, #00060d);
+  border: 1px solid rgba(0, 194, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.music-queue-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.music-queue-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--tenge);
+}
+.music-queue-title .mq-icon {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #0088cc, #004488);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.btn-clear-queue {
+  background: rgba(255, 50, 50, 0.1);
+  border: 1px solid rgba(255, 50, 50, 0.3);
+  color: #ff5555;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-family: 'Unbounded';
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.btn-clear-queue:hover {
+  background: rgba(255, 50, 50, 0.25);
+  border-color: rgba(255, 50, 50, 0.6);
+  transform: translateY(-1px);
+}
 .queue-item {
   display: flex;
   justify-content: space-between;
@@ -275,21 +303,80 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  margin-bottom: 6px;
 }
-.queue-item:first-child {
-  border-color: rgba(0, 194, 255, 0.4);
-  background: rgba(0, 194, 255, 0.05);
+.queue-item.playing {
+  border-color: rgba(0, 194, 255, 0.5);
+  background: rgba(0, 194, 255, 0.06);
 }
 .track-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--text-bright);
+  gap: 3px;
 }
-.track-id { font-size: 8px; color: var(--text-dim); }
+.track-status {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--text-bright);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.track-status.now { color: var(--tenge); }
+.track-id { font-size: 8px; color: var(--text-dim); letter-spacing: 0.3px; }
+.btn-skip {
+  background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15));
+  border: 1px solid rgba(0, 194, 255, 0.4);
+  color: var(--tenge);
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  font-family: 'Unbounded';
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+  white-space: nowrap;
+}
+.btn-skip:hover {
+  background: linear-gradient(135deg, rgba(0,194,255,0.3), rgba(0,100,200,0.3));
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0,194,255,0.2);
+}
+.btn-remove {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-family: 'Unbounded';
+  font-size: 9px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 4px;
+}
+.btn-remove:hover {
+  background: rgba(255,50,50,0.1);
+  border-color: rgba(255,50,50,0.3);
+  color: #ff5555;
+}
+.music-playing-indicator {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 8px; color: var(--tenge); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.bar-anim { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+.bar-anim span {
+  width: 3px; background: var(--tenge); border-radius: 2px;
+  animation: barBounce 0.8s ease-in-out infinite;
+}
+.bar-anim span:nth-child(2) { animation-delay: 0.15s; }
+.bar-anim span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes barBounce {
+  0%,100% { height: 4px; }
+  50% { height: 12px; }
+}
 
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
@@ -302,8 +389,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 </style>
 </head>
 <body>
-
-<div id="yt-player" style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99;"></div>
 
 <div id="app" :class="{'obs-mode':mode!=='admin'}">
 
@@ -327,12 +412,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
+    <!-- Музыка НЕ играет в OBS widget — только на компе в admin -->
     <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
   <div v-else class="admin-shell">
+    <!-- YT плеер на компе (admin) — музыка играет здесь, не в OBS -->
+    <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
     
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
       <div class="mobile-header">KASPI <span>SMART PASTE</span></div>
@@ -362,19 +450,27 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
       </div>
 
-      <div class="parsed-card" v-if="musicQueue.length > 0">
-        <div class="sub-lbl" style="color:var(--tenge); display:flex; justify-content:space-between; align-items:center;">
-          <span>🎵 Музыкальная очередь ({{musicQueue.length}})</span>
-          <button class="btn-queue-action clear-all" @click="clearQueue">ОЧИСТИТЬ ВСЕ</button>
-        </div>
-        <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item">
-          <div class="track-info">
-            {{ idx === 0 ? '▶ Сейчас играет' : '⏳ Трек в очереди' }}
-            <span class="track-id">ID: {{track.videoId}}</span>
+      <div class="music-queue-card" v-if="musicQueue.length > 0">
+        <div class="music-queue-header">
+          <div class="music-queue-title">
+            <div class="mq-icon">🎵</div>
+            Очередь ({{musicQueue.length}})
           </div>
-          <button class="btn-queue-action" :class="idx === 0 ? 'skip' : 'del'" @click="skipTrack(idx)">
-            {{ idx === 0 ? '⏭ СКИП' : '✕ УДАЛИТЬ' }}
-          </button>
+          <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
+        </div>
+        <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
+          <div class="track-info">
+            <div class="track-status" :class="{now: idx===0}">
+              <template v-if="idx===0">
+                <div class="bar-anim"><span></span><span></span><span></span></div>
+                Сейчас играет
+              </template>
+              <template v-else>⏳ #{{idx}} в очереди</template>
+            </div>
+            <span class="track-id">yt: {{track.videoId}}</span>
+          </div>
+          <button v-if="idx===0" class="btn-skip" @click="skipTrack(0)">⏭ Скип</button>
+          <button v-else class="btn-remove" @click="skipTrack(idx)">✕</button>
         </div>
       </div>
 
@@ -450,6 +546,30 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="fr">
               <button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
               <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
+            </div>
+
+            <div class="music-queue-card" v-if="musicQueue.length > 0">
+              <div class="music-queue-header">
+                <div class="music-queue-title">
+                  <div class="mq-icon">🎵</div>
+                  Музыка ({{musicQueue.length}})
+                </div>
+                <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
+              </div>
+              <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
+                <div class="track-info">
+                  <div class="track-status" :class="{now: idx===0}">
+                    <template v-if="idx===0">
+                      <div class="bar-anim"><span></span><span></span><span></span></div>
+                      Сейчас играет
+                    </template>
+                    <template v-else>⏳ #{{idx}} в очереди</template>
+                  </div>
+                  <span class="track-id">yt: {{track.videoId}}</span>
+                </div>
+                <button v-if="idx===0" class="btn-skip" @click="skipTrack(0)">⏭ Скип</button>
+                <button v-else class="btn-remove" @click="skipTrack(idx)">✕</button>
+              </div>
             </div>
 
             <div v-for="(p,i) in panels" :key="p.id">
@@ -609,9 +729,22 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="sub-lbl">Озвучка (TTS)</div>
               <div class="cb-row"><label>Включить озвучку сообщения</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
               <template v-if="alertCfg.ttsEnabled">
+                <div class="fg"><label>Голос TTS</label>
+                  <select v-model="alertCfg.ttsVoiceURI">
+                    <option value="">🤖 Авто (лучший доступный)</option>
+                    <option v-for="v in availableVoices" :key="v.voiceURI" :value="v.voiceURI">{{v.name}} ({{v.lang}})</option>
+                  </select>
+                </div>
                 <div class="fg"><label>Громкость озвучки</label>
                   <div class="rr"><input type="range" min="0" max="1" step="0.05" v-model.number="alertCfg.ttsVolume"><span class="rv">{{Math.round((alertCfg.ttsVolume||1)*100)}}%</span></div>
                 </div>
+                <div class="fg"><label>Скорость речи</label>
+                  <div class="rr"><input type="range" min="0.5" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{(alertCfg.ttsRate||1).toFixed(1)}}x</span></div>
+                </div>
+                <div class="fg"><label>Тон голоса</label>
+                  <div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{(alertCfg.ttsPitch||1).toFixed(1)}}</span></div>
+                </div>
+                <div style="font-size:8px;color:var(--text-dim);padding:4px 0;">⚠ Озвучка работает только в OBS (Alert URL). На компе и телефоне не слышна.</div>
               </template>
 
               <div class="divider"></div>
@@ -804,9 +937,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 </script>
 
 <script>
-// Подгрузка голосов для TTS (иногда нужно пнуть браузер заранее)
-window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
-
 const { createApp, reactive, computed, ref, onMounted, defineComponent } = Vue;
 
 function uid(){ return Math.random().toString(36).slice(2,9); }
@@ -924,6 +1054,17 @@ createApp({
     const imgErr = ref('');
     const sndErr = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
+    const availableVoices = reactive([]);
+    
+    // Загружаем список голосов Web Speech API
+    function loadVoices() {
+      const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
+      availableVoices.splice(0, availableVoices.length, ...voices);
+    }
+    if(window.speechSynthesis) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
 
     let toastTm;
     function showToast(msg,type='ok'){
@@ -1046,13 +1187,15 @@ createApp({
       
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
 
+      // Парсим и чистим сообщение от ссылок YouTube
       const extracted = extractAndCleanYT(quickMessage.value);
       const cleanMsg = extracted.cleanMsg;
       
       applyDonateToGoals(name, amt);
-      triggerAlert(name, amt, cleanMsg, true); 
+      triggerAlert(name, amt, cleanMsg, true); // Отправляем чистый текст для озвучки!
       pushState();
 
+      // Если нашли треки, кидаем их в очередь
       if (extracted.tracks.length > 0) {
         extracted.tracks.forEach(vid => {
           musicQueue.push({ uid: uid(), videoId: vid });
@@ -1109,26 +1252,43 @@ createApp({
     }
 
     function playSound(){
+      // Звук алерта только в OBS (alert mode) — не дублируется на компе/телефоне
       if(!alertCfg.soundData) return;
+      if(mode.value !== 'alert') return;
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
-    // НОВАЯ ЖИВАЯ ОЗВУЧКА НА БАЗЕ СИСТЕМНЫХ ГОЛОСОВ (Web Speech API)
     function readMessage(msgText){
+      // TTS только в OBS (alert mode) — чтобы не дублировалось на компе/телефоне стримера
       if(!msgText || !alertCfg.ttsEnabled) return;
-      
-      const utterance = new SpeechSynthesisUtterance(msgText);
-      utterance.lang = 'ru-RU';
-      utterance.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
-      
-      // Пытаемся найти качественный нейронный голос (если доступен)
-      let voices = window.speechSynthesis.getVoices();
-      let bestVoice = voices.find(v => v.lang.includes('ru') && (v.name.includes('Google') || v.name.includes('Microsoft'))) 
-                      || voices.find(v => v.lang.includes('ru'));
-      
-      if(bestVoice) utterance.voice = bestVoice;
-      
-      window.speechSynthesis.speak(utterance);
+      if(mode.value !== 'alert') return;
+
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(msgText.substring(0, 300));
+        utter.lang = 'ru-RU';
+        utter.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
+        utter.rate = alertCfg.ttsRate || 1;
+        utter.pitch = alertCfg.ttsPitch || 1;
+
+        // Выбираем голос: сначала выбранный пользователем, иначе авто
+        const voices = window.speechSynthesis.getVoices();
+        const pick = (list, fn) => list.find(fn);
+        let chosenVoice = null;
+        if(alertCfg.ttsVoiceURI) {
+          chosenVoice = voices.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
+        }
+        if(!chosenVoice) {
+          chosenVoice =
+            pick(voices, v => /microsoft.*irina|microsoft.*pavel/i.test(v.name)) ||
+            pick(voices, v => /google.*русский|google.*russian/i.test(v.name)) ||
+            pick(voices, v => v.lang === 'ru-RU') ||
+            pick(voices, v => v.lang.startsWith('ru'));
+        }
+        if(chosenVoice) utter.voice = chosenVoice;
+
+        window.speechSynthesis.speak(utter);
+      } catch(e){ console.log('TTS error:', e); }
     }
 
     function spawnParticles(){
@@ -1185,8 +1345,10 @@ createApp({
 
     let currentTrackUid = null;
     function checkQueuePlay() {
-      // Плеер теперь работает ТОЛЬКО в Админке на ПК
-      if (mode.value !== 'admin' || isMobile.value || !window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
+      // Плеер работает ТОЛЬКО на компе (admin mode) — музыка слышна только стримеру через колонки
+      // В OBS (widget/alert) и на телефоне плеер НЕ запускается
+      if (mode.value !== 'admin' || isMobile.value) return;
+      if (!window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
 
       if (musicQueue.length === 0) {
         window.ytPlayerObj.stopVideo();
@@ -1204,24 +1366,26 @@ createApp({
       if (mode.value !== 'admin' || isMobile.value) return;
       if (musicQueue.length > 0) {
         musicQueue.shift();
-        pushQueueState(); // Триггернет Firebase и включит следующий трек
+        pushQueueState();
       }
     }
 
+    // YT API грузим только на компе (admin, не мобильный)
     window.onYouTubeIframeAPIReady = () => {
+      if (mode.value !== 'admin' || isMobile.value) return;
       window.ytPlayerObj = new YT.Player('yt-player', {
         height: '1', width: '1',
         playerVars: { 'autoplay': 1, 'controls': 0 },
         events: {
           'onReady': () => checkQueuePlay(),
           'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
-          'onError': () => shiftQueueFromPlayer() // Скипаем, если видео заблочено
+          'onError': () => shiftQueueFromPlayer()
         }
       });
     };
 
     onMounted(()=>{
-      // Подгружаем YT API только на десктопной админке
+      // YT API грузим только на компе (admin) и только если не мобильный
       if(mode.value === 'admin' && !isMobile.value){
         let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -1264,10 +1428,12 @@ createApp({
         });
       }
 
+      // Синхронизация очереди музыки
       if(db){
         db.ref('musicQueue').on('value', snap => {
           const q = snap.val() || [];
           musicQueue.splice(0, musicQueue.length, ...q);
+          // Играем только на компе (admin), не в OBS и не на телефоне
           if (mode.value === 'admin' && !isMobile.value) checkQueuePlay();
         });
       }
@@ -1279,7 +1445,7 @@ createApp({
       isMobile, kaspiPaste, handleKaspiPaste,
       quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
       musicQueue, skipTrack, clearQueue,
-      imgErr,sndErr,toast,
+      imgErr,sndErr,toast,availableVoices,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
       cardPos,compFor,
