@@ -931,29 +931,19 @@ createApp({
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
-   function readMessage(msgText){
-      if(!msgText || !alertCfg.ttsEnabled || !window.speechSynthesis) return;
+  function readMessage(msgText){
+      if(!msgText || !alertCfg.ttsEnabled) return;
       
-      const utterance = new SpeechSynthesisUtterance(msgText);
-      utterance.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
-      utterance.rate = alertCfg.ttsRate !== undefined ? alertCfg.ttsRate : 1;
-      utterance.pitch = alertCfg.ttsPitch !== undefined ? alertCfg.ttsPitch : 1;
-
-      if(alertCfg.ttsVoiceURI){
-        // Сначала пытаемся найти точный голос, который выбрали в админке
-        let targetVoice = voices.value.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
-        
-        // ВОТ ТУТ ФИКС ДЛЯ OBS:
-        // Если точного голоса нет (потому что в OBS другой список), 
-        // берем ПЕРВЫЙ доступный РУССКИЙ голос, который есть в OBS
-        if (!targetVoice && voices.value.length > 0) {
-          targetVoice = voices.value[0]; 
-        }
-
-        if(targetVoice) utterance.voice = targetVoice;
-      }
+      // Обрезаем текст до 200 символов (ограничение бесплатного API гугла)
+      const safeText = encodeURIComponent(msgText.substring(0, 200));
+      // Используем прямую ссылку на движок Google Переводчика
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${safeText}`;
       
-      window.speechSynthesis.speak(utterance);
+      try {
+        const audio = new Audio(url);
+        audio.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
+        audio.play().catch(e => console.log('Ошибка воспроизведения TTS:', e));
+      } catch(e){}
     }
 
     function spawnParticles(){
