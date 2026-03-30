@@ -111,6 +111,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .btn-del:hover{background:#ff4444;color:#fff;}
 .btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition: all 0.2s;}
 .btn-add-panel:hover{background:#1c1c1c; transform: translateY(-1px);}
+.btn-add-music{background:linear-gradient(135deg,#1a0033,#330066);color:#fff;border-color:rgba(119,0,255,.4);}
+.btn-add-music:hover{background:linear-gradient(135deg,#2a004d,#4d0099); transform: translateY(-1px);}
+
 .actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
 .file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
 .file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
@@ -136,6 +139,17 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   overflow:hidden;
   transition: all 0.3s ease;
 }
+
+/* Стили для музыкального виджета (Liquid Glass + 3D) */
+.yt-iframe-container { width:100%; height:100%; border-radius:inherit; overflow:hidden; }
+.yt-iframe-container iframe { width:100%; height:100%; border:none; border-radius:inherit; }
+.obs-mode .yt-iframe-container iframe { pointer-events:none; } /* В OBS клики не нужны */
+.yt-admin-preview { width:100%; height:100%; background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; border-radius:inherit; }
+.yt-preview-overlay { background:rgba(0,0,0,0.7); padding:10px 20px; border-radius:12px; color:#fff; font-weight:900; font-size:12px; border:1px solid rgba(0, 194, 255, 0.4); text-transform:uppercase; letter-spacing:1px; box-shadow:0 10px 25px rgba(0,0,0,0.5); }
+.music-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; width:100%; height:100%; text-align:center; }
+.placeholder-text { font-weight:900; text-transform:uppercase; letter-spacing:1px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+.placeholder-sub { font-weight:700; text-transform:uppercase; letter-spacing:0.5px; opacity:0.9; }
+
 .goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
 .prog-track{width:100%;background:rgba(0,0,0,.6);overflow:hidden;border:1px solid rgba(255,255,255,.05);position:relative;box-shadow: inset 0 2px 10px rgba(0,0,0,.5);}
@@ -197,432 +211,79 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ — touch-first redesign */
-.mobile-kaspi-view {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-  background: var(--bg);
-  padding: 0;
-  gap: 0;
-  overflow: hidden;
-}
-
-/* Sticky header bar */
-.mob-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px 10px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+.mobile-kaspi-view { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); padding: 0; gap: 0; overflow: hidden; }
+.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .mob-logo { font-size: 13px; font-weight: 900; }
 .mob-logo span { color: var(--red); }
-.mob-fb-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #555; transition: background .3s;
-}
+.mob-fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background .3s; }
 .mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 8px #00cc44; animation: pulseDot 2s infinite; }
 .mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
 
-/* Scrollable main area */
-.mob-scroll {
-  flex: 1;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.mob-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+.kaspi-paste-area { background: #111; border: 2px dashed var(--red); border-radius: var(--radius-lg); padding: 14px; color: #fff; font-size: 13px; min-height: 100px; width: 100%; resize: none; font-family: 'Unbounded'; transition: all 0.25s; line-height: 1.5; }
+.kaspi-paste-area:focus { border-style: solid; border-color: var(--red); box-shadow: 0 0 20px rgba(255,0,68,.15); min-height: 120px; }
 
-/* Paste zone */
-.kaspi-paste-area {
-  background: #111;
-  border: 2px dashed var(--red);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  color: #fff;
-  font-size: 13px;
-  min-height: 100px;
-  width: 100%;
-  resize: none;
-  font-family: 'Unbounded';
-  transition: all 0.25s;
-  line-height: 1.5;
-}
-.kaspi-paste-area:focus {
-  border-style: solid;
-  border-color: var(--red);
-  box-shadow: 0 0 20px rgba(255,0,68,.15);
-  min-height: 120px;
-}
-
-/* Parsed result card */
-.parsed-card {
-  background: #0d0d0d;
-  border: 1px solid rgba(255,0,68,.3);
-  border-radius: var(--radius-md);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  animation: fadeIn .2s ease-out;
-}
-.parsed-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.parsed-row label {
-  font-size: 8px; min-width: 60px; color: var(--text-dim);
-}
-.parsed-row input, .parsed-row textarea {
-  flex: 1;
-  padding: 10px 12px;
-  font-size: 13px;
-}
+.parsed-card { background: #0d0d0d; border: 1px solid rgba(255,0,68,.3); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px; animation: fadeIn .2s ease-out; }
+.parsed-row { display: flex; align-items: center; gap: 10px; }
+.parsed-row label { font-size: 8px; min-width: 60px; color: var(--text-dim); }
+.parsed-row input, .parsed-row textarea { flex: 1; padding: 10px 12px; font-size: 13px; }
 .parsed-row textarea { min-height: 44px; resize: none; }
 
-/* Auto-send banner */
-.auto-send-banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0,170,68,.1);
-  border: 1px solid rgba(0,170,68,.3);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-  font-size: 9px;
-  font-weight: 700;
-  color: #00cc44;
-}
-.auto-send-countdown {
-  font-size: 16px;
-  font-weight: 900;
-  color: #00cc44;
-  min-width: 20px;
-  text-align: right;
-}
+.auto-send-banner { display: flex; align-items: center; justify-content: space-between; background: rgba(0,170,68,.1); border: 1px solid rgba(0,170,68,.3); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 9px; font-weight: 700; color: #00cc44; }
+.auto-send-countdown { font-size: 16px; font-weight: 900; color: #00cc44; min-width: 20px; text-align: right; }
 
-/* BIG action buttons */
-.mob-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px 14px 14px;
-  background: var(--panel);
-  border-top: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.btn-mob-send {
-  font-family: 'Unbounded';
-  font-weight: 900;
-  font-size: 16px;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  padding: 20px;
-  border-radius: var(--radius-md);
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(135deg, #ff0044, #cc0034);
-  color: #fff;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 20px rgba(255,0,68,.3);
-  transition: all .15s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
+.mob-actions { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 14px; background: var(--panel); border-top: 1px solid var(--border); flex-shrink: 0; }
+.btn-mob-send { font-family: 'Unbounded'; font-weight: 900; font-size: 16px; text-transform: uppercase; letter-spacing: .5px; padding: 20px; border-radius: var(--radius-md); border: none; cursor: pointer; background: linear-gradient(135deg, #ff0044, #cc0034); color: #fff; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 20px rgba(255,0,68,.3); transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .btn-mob-send:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(255,0,68,.2); }
 .btn-mob-send:disabled { opacity: .35; transform: none; box-shadow: none; }
-
-.btn-mob-clear {
-  font-family: 'Unbounded';
-  font-weight: 700;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .3px;
-  padding: 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255,0,0,.2);
-  cursor: pointer;
-  background: rgba(255,0,0,.06);
-  color: #ff5555;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all .15s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
+.btn-mob-clear { font-family: 'Unbounded'; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,0,0,.2); cursor: pointer; background: rgba(255,0,0,.06); color: #ff5555; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 .btn-mob-clear:active { background: rgba(255,0,0,.15); }
 
-/* Music queue — mobile */
-.mob-music-card {
-  background: linear-gradient(135deg, #000d15, #00060d);
-  border: 1px solid rgba(0,194,255,.2);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-.mob-music-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  border-bottom: 1px solid rgba(0,194,255,.1);
-}
-.mob-music-title {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 900; color: var(--tenge);
-  text-transform: uppercase; letter-spacing: .5px;
-}
-
-/* Volume row — bigger touch */
-.mob-volume-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: rgba(0,194,255,.04);
-  border-bottom: 1px solid rgba(0,194,255,.08);
-}
-.mob-volume-row input[type=range] {
-  flex: 1;
-  height: 28px;  /* bigger touch target */
-  accent-color: var(--tenge);
-  cursor: pointer;
-  border: none;
-  background: transparent;
-}
-.mob-vol-val {
-  font-size: 11px; font-weight: 900; color: var(--tenge);
-  min-width: 38px; text-align: right;
-}
-
-/* Track items with swipe hint */
-.mob-track-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  gap: 10px;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-  transition: background .15s;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: pan-y;
-}
+.mob-music-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0,194,255,.2); border-radius: var(--radius-lg); overflow: hidden; }
+.mob-music-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid rgba(0,194,255,.1); }
+.mob-music-title { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; color: var(--tenge); text-transform: uppercase; letter-spacing: .5px; }
+.mob-volume-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(0,194,255,.04); border-bottom: 1px solid rgba(0,194,255,.08); }
+.mob-volume-row input[type=range] { flex: 1; height: 28px; accent-color: var(--tenge); cursor: pointer; border: none; background: transparent; }
+.mob-vol-val { font-size: 11px; font-weight: 900; color: var(--tenge); min-width: 38px; text-align: right; }
+.mob-track-item { display: flex; align-items: center; padding: 10px 14px; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.04); transition: background .15s; -webkit-tap-highlight-color: transparent; touch-action: pan-y; }
 .mob-track-item:last-child { border-bottom: none; }
 .mob-track-item.playing { background: rgba(0,194,255,.07); }
 .mob-track-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .mob-track-status { font-size: 10px; font-weight: 900; color: #ccc; display: flex; align-items: center; gap: 5px; }
 .mob-track-status.now { color: var(--tenge); }
 .mob-track-id { font-size: 9px; color: var(--text-dim); }
-.mob-skip-btn {
-  font-family: 'Unbounded';
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(0,194,255,.4);
-  background: rgba(0,194,255,.1);
-  color: var(--tenge);
-  font-size: 11px;
-  font-weight: 900;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: all .15s;
-  white-space: nowrap;
-  min-width: 52px; text-align: center;
-}
+.mob-skip-btn { font-family: 'Unbounded'; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(0,194,255,.4); background: rgba(0,194,255,.1); color: var(--tenge); font-size: 11px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; white-space: nowrap; min-width: 52px; text-align: center; }
 .mob-skip-btn:active { background: rgba(0,194,255,.25); transform: scale(.94); }
-.mob-remove-btn {
-  font-family: 'Unbounded';
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.04);
-  color: var(--text-dim);
-  font-size: 14px;
-  font-weight: 900;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: all .15s;
-}
+.mob-remove-btn { font-family: 'Unbounded'; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-dim); font-size: 14px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; }
 .mob-remove-btn:active { background: rgba(255,50,50,.15); color: #ff5555; }
 
-/* Стили для музыкальной очереди */
-.music-queue-card {
-  background: linear-gradient(135deg, #000d15, #00060d);
-  border: 1px solid rgba(0, 194, 255, 0.2);
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.music-queue-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.music-queue-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 10px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--tenge);
-}
-.music-queue-title .mq-icon {
-  width: 22px; height: 22px;
-  border-radius: 6px;
-  background: linear-gradient(135deg, #0088cc, #004488);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px;
-}
-.btn-clear-queue {
-  background: rgba(255, 50, 50, 0.1);
-  border: 1px solid rgba(255, 50, 50, 0.3);
-  color: #ff5555;
-  padding: 6px 12px;
-  border-radius: var(--radius-sm);
-  font-family: 'Unbounded';
-  font-size: 8px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 5px;
-}
-.btn-clear-queue:hover {
-  background: rgba(255, 50, 50, 0.25);
-  border-color: rgba(255, 50, 50, 0.6);
-  transform: translateY(-1px);
-}
-.queue-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-.queue-item.playing {
-  border-color: rgba(0, 194, 255, 0.5);
-  background: rgba(0, 194, 255, 0.06);
-}
-.track-info {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-.track-status {
-  font-size: 10px;
-  font-weight: 900;
-  color: var(--text-bright);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
+.music-queue-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0, 194, 255, 0.2); border-radius: var(--radius-lg); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.music-queue-header { display: flex; align-items: center; justify-content: space-between; }
+.music-queue-title { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--tenge); }
+.music-queue-title .mq-icon { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #0088cc, #004488); display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.btn-clear-queue { background: rgba(255, 50, 50, 0.1); border: 1px solid rgba(255, 50, 50, 0.3); color: #ff5555; padding: 6px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+.btn-clear-queue:hover { background: rgba(255, 50, 50, 0.25); border-color: rgba(255, 50, 50, 0.6); transform: translateY(-1px); }
+.queue-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.queue-item.playing { border-color: rgba(0, 194, 255, 0.5); background: rgba(0, 194, 255, 0.06); }
+.track-info { display: flex; flex-direction: column; gap: 3px; }
+.track-status { font-size: 10px; font-weight: 900; color: var(--text-bright); display: flex; align-items: center; gap: 5px; }
 .track-status.now { color: var(--tenge); }
 .track-id { font-size: 8px; color: var(--text-dim); letter-spacing: 0.3px; }
-.btn-skip {
-  background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15));
-  border: 1px solid rgba(0, 194, 255, 0.4);
-  color: var(--tenge);
-  padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  font-family: 'Unbounded';
-  font-size: 9px;
-  font-weight: 900;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 5px;
-  white-space: nowrap;
-}
-.btn-skip:hover {
-  background: linear-gradient(135deg, rgba(0,194,255,0.3), rgba(0,100,200,0.3));
-  transform: translateY(-1px);
-  box-shadow: 0 3px 12px rgba(0,194,255,0.2);
-}
-.btn-remove {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  padding: 7px 10px;
-  border-radius: var(--radius-sm);
-  font-family: 'Unbounded';
-  font-size: 9px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 4px;
-}
-.btn-remove:hover {
-  background: rgba(255,50,50,0.1);
-  border-color: rgba(255,50,50,0.3);
-  color: #ff5555;
-}
-.music-playing-indicator {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 8px; color: var(--tenge); font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
+.btn-skip { background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15)); border: 1px solid rgba(0, 194, 255, 0.4); color: var(--tenge); padding: 7px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+.btn-skip:hover { background: linear-gradient(135deg, rgba(0,194,255,0.3), rgba(0,100,200,0.3)); transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,194,255,0.2); }
+.btn-remove { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 10px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+.btn-remove:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff5555; }
 .bar-anim { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
-.bar-anim span {
-  width: 3px; background: var(--tenge); border-radius: 2px;
-  animation: barBounce 0.8s ease-in-out infinite;
-}
+.bar-anim span { width: 3px; background: var(--tenge); border-radius: 2px; animation: barBounce 0.8s ease-in-out infinite; }
 .bar-anim span:nth-child(2) { animation-delay: 0.15s; }
 .bar-anim span:nth-child(3) { animation-delay: 0.3s; }
-@keyframes barBounce {
-  0%,100% { height: 4px; }
-  50% { height: 12px; }
-}
+@keyframes barBounce { 0%,100% { height: 4px; } 50% { height: 12px; } }
 
-/* Стили ползунка громкости */
-.volume-control-wrap {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(0, 194, 255, 0.05);
-  border: 1px solid rgba(0, 194, 255, 0.2);
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  margin-top: 8px;
-}
-.volume-icon {
-  font-size: 16px;
-}
-.volume-slider {
-  flex: 1;
-  accent-color: var(--tenge);
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  outline: none;
-  cursor: pointer;
-}
-.volume-value {
-  font-size: 10px;
-  font-weight: 900;
-  color: var(--tenge);
-  min-width: 40px;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
+.volume-control-wrap { display: flex; align-items: center; gap: 12px; background: rgba(0, 194, 255, 0.05); border: 1px solid rgba(0, 194, 255, 0.2); padding: 12px 16px; border-radius: var(--radius-sm); margin-top: 8px; }
+.volume-icon { font-size: 16px; }
+.volume-slider { flex: 1; accent-color: var(--tenge); height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+.volume-value { font-size: 10px; font-weight: 900; color: var(--tenge); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
@@ -659,7 +320,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
   <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
     <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
-      <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
+      <component :is="compFor(p.type)" :p="p" :is-obs="true" :queue="musicQueue" :volume="musicVolume" @track-ended="shiftQueueFromPlayer(true)"></component>
     </div>
   </div>
 
@@ -667,7 +328,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
     
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
-      <!-- TOP BAR -->
       <div class="mob-topbar">
         <div class="mob-logo">KASPI <span>SMART</span></div>
         <div style="display:flex;align-items:center;gap:8px;">
@@ -676,14 +336,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
       </div>
 
-      <!-- SCROLLABLE CONTENT -->
       <div class="mob-scroll">
-
-        <!-- PASTE ZONE -->
         <textarea class="kaspi-paste-area" v-model="kaspiPaste" @input="handleKaspiPaste"
           placeholder="📋 Вставь текст из Каспи сюда — всё распарсится само..."></textarea>
 
-        <!-- PARSED RESULT -->
         <div class="parsed-card" v-if="quickName || quickAmount || quickMessage">
           <div class="parsed-row">
             <label>Имя</label>
@@ -701,7 +357,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <textarea v-model="quickMessage" placeholder="Сообщение"></textarea>
           </div>
 
-          <!-- Auto-send countdown -->
           <div class="auto-send-banner" v-if="autoSendCountdown > 0">
             <span>⚡ Авто-отправка через</span>
             <span class="auto-send-countdown">{{autoSendCountdown}}</span>
@@ -711,7 +366,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </div>
         </div>
 
-        <!-- MUSIC QUEUE -->
         <div class="mob-music-card" v-if="musicQueue.length > 0">
           <div class="mob-music-head">
             <div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div>
@@ -739,9 +393,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </div>
         </div>
 
-      </div><!-- /mob-scroll -->
+      </div>
 
-      <!-- STICKY BOTTOM ACTIONS -->
       <div class="mob-actions">
         <button class="btn-mob-send" @click="doQuickDonate" :disabled="!quickName && !quickAmount">
           🚀 ОТПРАВИТЬ В OBS
@@ -751,7 +404,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </button>
       </div>
     </div>
-
 
     <template v-else>
       <div class="sidebar desktop-only">
@@ -769,7 +421,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
 
         <div class="sidebar-body">
-
           <template v-if="tab==='widgets'">
             <div class="fb-status">
               <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
@@ -819,6 +470,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button>
               <button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button>
             </div>
+            <button class="btn btn-add-panel btn-add-music" style="width:100%; margin-top:5px;" @click="addPanel('music')" v-if="!hasMusicWidget">✚ МУЗЫКА (КЛИП)</button>
 
             <div class="music-queue-card" v-if="musicQueue.length > 0">
               <div class="music-queue-header">
@@ -834,6 +486,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
                 <span class="volume-value">{{ musicVolume }}%</span>
               </div>
+              <div v-if="hasMusicWidget" style="font-size:8px; color:var(--tenge); font-weight:700; margin-top:-4px;">ⓘ Музыка выводится напрямую в OBS-виджет. Плеер в админке заглушен для избежания эха.</div>
 
               <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
                 <div class="track-info">
@@ -855,7 +508,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
                 <div class="sec-head-l">
                   <div class="sec-dot">{{i+1}}</div>
-                  <div class="sec-name">{{p.type==='goal'?'🎯 ЦЕЛЬ':'⚡ ЧЕЛЛЕНДЖ'}}</div>
+                  <div class="sec-name">
+                    {{p.type==='goal'?'🎯 ЦЕЛЬ': p.type==='challenge'?'⚡ ЧЕЛЛЕНДЖ':'🎵 КЛИП (YOUTUBE)'}}
+                  </div>
                 </div>
                 <div style="display:flex;gap:7px;align-items:center">
                   <button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button>
@@ -868,6 +523,33 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div>
                 </div>
                 <div class="divider"></div>
+
+                <template v-if="p.type==='music'">
+                  <div class="fr">
+                    <div class="fg"><label>Текст (когда нет музыки)</label><input type="text" v-model="p.title" placeholder="Музыки нет"></div>
+                    <div class="fg"><label>Подтекст</label><input type="text" v-model="p.subTitle" placeholder="Ждем твои треки!"></div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="sub-lbl">Размеры (макс 1920x1080)</div>
+                  <div class="fr">
+                    <div class="fg"><label>Ширина</label>
+                      <div class="rr"><input type="range" min="300" max="1920" step="10" v-model.number="p.width"><span class="rv">{{p.width}}</span></div>
+                    </div>
+                    <div class="fg"><label>Высота</label>
+                      <div class="rr"><input type="range" min="150" max="1080" step="10" v-model.number="p.height"><span class="rv">{{p.height}}</span></div>
+                    </div>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="sub-lbl">Текст Заглушки</div>
+                  <div class="fr">
+                    <div class="fg"><label>Заголовок</label>
+                      <div class="rr"><input type="range" min="12" max="120" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||24}}</span></div>
+                    </div>
+                    <div class="fg"><label>Подтекст</label>
+                      <div class="rr"><input type="range" min="10" max="80" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
+                    </div>
+                  </div>
+                </template>
 
                 <template v-if="p.type==='goal'">
                   <div class="fr">
@@ -883,6 +565,19 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="fg">
                     <label>Список донатеров</label>
                     <textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸&#10;Максим — 300 ₸"></textarea>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="sub-lbl">Шрифты</div>
+                  <div class="fr">
+                    <div class="fg"><label>Заголовок</label>
+                      <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+                    </div>
+                    <div class="fg"><label>Текст</label>
+                      <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
+                    </div>
+                  </div>
+                  <div class="fg"><label>Ширина панели</label>
+                    <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
                   </div>
                 </template>
 
@@ -906,28 +601,27 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                     <div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div>
                     <div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div>
                   </div>
+                  <div class="divider"></div>
+                  <div class="sub-lbl">Шрифты</div>
+                  <div class="fr">
+                    <div class="fg"><label>Заголовок</label>
+                      <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
+                    </div>
+                    <div class="fg"><label>Текст</label>
+                      <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
+                    </div>
+                  </div>
+                  <div class="fg"><label>Ширина панели</label>
+                    <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
+                  </div>
                 </template>
 
                 <div class="divider"></div>
-                <div class="sub-lbl">Шрифты</div>
                 <div class="fr">
-                  <div class="fg"><label>Заголовок</label>
-                    <div class="rr"><input type="range" min="10" max="60" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div>
-                  </div>
-                  <div class="fg"><label>Текст</label>
-                    <div class="rr"><input type="range" min="8" max="50" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div>
-                  </div>
-                </div>
-                <div class="divider"></div>
-                <div class="sub-lbl">Размеры</div>
-                <div class="fg"><label>Ширина панели</label>
-                  <div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div>
-                </div>
-                <div class="fr">
-                  <div class="fg"><label>Отступы</label>
+                  <div class="fg"><label>Отступы внутри</label>
                     <div class="rr"><input type="range" min="5" max="50" v-model.number="p.padding"><span class="rv">{{p.padding||20}}</span></div>
                   </div>
-                  <div class="fg"><label>Скругление</label>
+                  <div class="fg"><label>Скругление углов</label>
                     <div class="rr"><input type="range" min="0" max="50" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div>
                   </div>
                 </div>
@@ -948,6 +642,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   </template>
                   <template v-if="p.type==='challenge'">
                     <div class="ci"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
+                    <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                  </template>
+                  <template v-if="p.type==='music'">
                     <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
                   </template>
                 </div>
@@ -997,113 +694,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <span class="sec-chevron">▼</span>
             </div>
             <div v-if="alertOpen" class="sec-body">
-              <div class="fg"><label>Текст метки</label>
-                <input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!">
               </div>
-              <div class="fg"><label>Длительность (сек)</label>
-                <div class="rr"><input type="range" min="2" max="30" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration||7}}s</span></div>
-              </div>
-              
-              <div class="divider"></div>
-              <div class="sub-lbl">Озвучка (TTS)</div>
-              <div class="cb-row"><label>Включить озвучку сообщения</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
-              <template v-if="alertCfg.ttsEnabled">
-                <div class="fg"><label>Голос TTS</label>
-                  <select v-model="alertCfg.ttsVoiceURI">
-                    <option value="">🤖 Авто (лучший доступный)</option>
-                    <option v-for="v in availableVoices" :key="v.voiceURI" :value="v.voiceURI">{{v.name}} ({{v.lang}})</option>
-                  </select>
-                </div>
-                <div class="fg"><label>Громкость озвучки</label>
-                  <div class="rr"><input type="range" min="0" max="1" step="0.05" v-model.number="alertCfg.ttsVolume"><span class="rv">{{Math.round((alertCfg.ttsVolume||1)*100)}}%</span></div>
-                </div>
-                <div class="fg"><label>Скорость речи</label>
-                  <div class="rr"><input type="range" min="0.5" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{(alertCfg.ttsRate||1).toFixed(1)}}x</span></div>
-                </div>
-                <div class="fg"><label>Тон голоса</label>
-                  <div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{(alertCfg.ttsPitch||1).toFixed(1)}}</span></div>
-                </div>
-                <div style="font-size:8px;color:var(--text-dim);padding:4px 0;">⚠ Озвучка работает только в OBS (Alert URL). На компе и телефоне не слышна.</div>
-              </template>
-
-              <div class="divider"></div>
-              <div class="sub-lbl">Медиа</div>
-              <div class="fg"><label>Тип медиа</label>
-                <select v-model="alertCfg.mediaType">
-                  <option value="none">Без медиа</option>
-                  <option value="image">Изображение</option>
-                  <option value="video">Видео (URL)</option>
-                </select>
-              </div>
-              <template v-if="alertCfg.mediaType==='image'">
-                <div class="fg">
-                  <label>Изображение (макс. 1 MB)</label>
-                  <div class="file-wrap">
-                    <div class="file-btn">📁 {{alertCfg.imageData?'✓ Загружено — сменить':'Выбрать изображение'}}</div>
-                    <input type="file" accept="image/*" @change="uploadAImg">
-                  </div>
-                  <div v-if="alertCfg.imageData" class="file-ok">✓ Изображение загружено</div>
-                  <div v-if="imgErr" class="file-err">{{imgErr}}</div>
-                </div>
-              </template>
-              <template v-if="alertCfg.mediaType==='video'">
-                <div class="fg"><label>URL видео (mp4 / webm)</label>
-                  <input type="text" v-model="alertCfg.videoUrl" placeholder="https://...">
-                </div>
-              </template>
-
-              <div class="divider"></div>
-              <div class="sub-lbl">Звук (Эффект появления)</div>
-              <div class="fg">
-                <label>Звуковой файл (макс. 2 MB)</label>
-                <div class="file-wrap">
-                  <div class="file-btn">🔊 {{alertCfg.soundData?'✓ Загружено — сменить':'Выбрать аудио'}}</div>
-                  <input type="file" accept="audio/*" @change="uploadASound">
-                </div>
-                <div v-if="alertCfg.soundData" class="file-ok">✓ Звук загружен</div>
-                <div v-if="sndErr" class="file-err">{{sndErr}}</div>
-              </div>
-              <div class="fg"><label>Громкость эффекта</label>
-                <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.volume"><span class="rv">{{Math.round((alertCfg.volume||1)*100)}}%</span></div>
-              </div>
-              
-              <div class="divider"></div>
-              <div class="sub-lbl">Внешний вид</div>
-              <div class="fr">
-                <div class="fg"><label>Фон карточки</label><input type="color" v-model="alertCfg.bgColor"></div>
-                <div class="fg"><label>Прозрачность</label>
-                  <div class="rr"><input type="range" min="0" max="1" step=".05" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity||.9}}</span></div>
-                </div>
-              </div>
-              <div class="color-grid">
-                <div class="ci"><span>Метка</span><input type="color" v-model="alertCfg.labelColor"></div>
-                <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
-                <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
-                <div class="ci"><span>Текст</span><input type="color" v-model="alertCfg.msgColor"></div>
-                <div class="ci"><span>Обводка</span><input type="color" v-model="alertCfg.borderColor"></div>
-              </div>
-              <div class="fr">
-                <div class="fg"><label>Размер имени</label>
-                  <div class="rr"><input type="range" min="16" max="80" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}</span></div>
-                </div>
-                <div class="fg"><label>Размер суммы</label>
-                  <div class="rr"><input type="range" min="20" max="100" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}</span></div>
-                </div>
-              </div>
-              <div class="fg"><label>Размер сообщения</label>
-                <div class="rr"><input type="range" min="12" max="60" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}</span></div>
-              </div>
-              <div class="fg"><label>Скругление карточки</label>
-                <div class="rr"><input type="range" min="0" max="50" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div>
-              </div>
-
-              <div class="divider"></div>
-              <div class="sub-lbl">Частицы</div>
-              <div class="fg"><label>Цвет частиц</label><input type="color" v-model="alertCfg.particleColor"></div>
-              <div class="fg"><label>Количество частиц</label>
-                <div class="rr"><input type="range" min="0" max="200" step="5" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount!==undefined?alertCfg.particleCount:80}}</span></div>
-              </div>
-            </div>
           </template>
 
         </div>
@@ -1127,12 +718,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <transition name="alert">
             <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
               <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
-              <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
-                <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
-              </div>
-              <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
-                <img :src="alertCfg.imageData" alt="">
-              </div>
               <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
               <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
               <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
@@ -1146,7 +731,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                class="static-panel" :class="{sel:selId===p.id}"
                :style="cardPos(p)"
                @click="selId=p.id">
-            <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
+            <component :is="compFor(p.type)" :p="p" :is-obs="false" :queue="musicQueue" :volume="musicVolume"></component>
           </div>
         </div>
       </div>
@@ -1168,11 +753,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </span>
     </div>
     <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
-      <div class="prog-fill" :style="{
-        width:pct+'%',
-        background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',
-        borderRadius:(p.radius||15)+'px'
-      }"></div>
+      <div class="prog-fill" :style="{ width:pct+'%', background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')', borderRadius:(p.radius||15)+'px' }"></div>
     </div>
     <div class="ld-section" v-if="donors.length">
       <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}">
@@ -1215,8 +796,25 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 </div>
 </script>
 
+<script type="text/x-template" id="tpl-music">
+<div class="glass" :style="glassStyle">
+  <div v-if="queue && queue.length > 0" style="width:100%; height:100%; border-radius:inherit;">
+    <div v-if="isObs" class="yt-iframe-container">
+      <div :id="'yt-player-obs-' + p.id"></div>
+    </div>
+    <div v-else class="yt-admin-preview" :style="{backgroundImage: 'url(https://img.youtube.com/vi/' + queue[0].videoId + '/hqdefault.jpg)'}">
+      <div class="yt-preview-overlay">🎵 ИГРАЕТ В OBS</div>
+    </div>
+  </div>
+  <div v-else class="music-placeholder" :style="{padding:(p.padding||20)+'px'}">
+    <div class="placeholder-text" :style="{fontSize:(p.titleSize||24)+'px',color:p.cText||'#fff'}">{{p.title||'Музыки нет'}}</div>
+    <div class="placeholder-sub" :style="{fontSize:(p.textSize||14)+'px',color:p.cAccent||'#00c2ff'}">{{p.subTitle||'Закажи трек!'}}</div>
+  </div>
+</div>
+</script>
+
 <script>
-const { createApp, reactive, computed, ref, onMounted, defineComponent } = Vue;
+const { createApp, reactive, computed, ref, onMounted, watch, defineComponent } = Vue;
 
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function hexToRgb(h){
@@ -1259,6 +857,65 @@ const ChalComp = defineComponent({
   }
 });
 
+const MusicComp = defineComponent({
+  template:'#tpl-music',
+  props:['p','isObs','queue','volume'],
+  computed:{
+    glassStyle(){
+      const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
+      return {
+        background:`rgba(${hexToRgb(bg)},${op})`,
+        borderRadius:(p.radius||15)+'px',
+        width:(p.width||640)+'px',
+        height:(p.height||360)+'px',
+        boxShadow: 'inset 0 2px 0 rgba(255,255,255,0.15), inset 0 0 30px rgba(0,194,255,0.05), 0 20px 50px rgba(0,0,0,0.8)'
+      };
+    }
+  },
+  mounted() {
+    if(this.isObs) this.initPlayer();
+  },
+  watch: {
+    'queue.0.videoId'(newId) {
+      if(this.isObs && this.player && typeof this.player.loadVideoById === 'function') {
+        if(newId) {
+          this.player.loadVideoById(newId);
+          this.player.setVolume(this.volume);
+        } else {
+          this.player.stopVideo();
+        }
+      }
+    },
+    volume(newVol) {
+      if(this.isObs && this.player && typeof this.player.setVolume === 'function') this.player.setVolume(newVol);
+    }
+  },
+  methods: {
+    initPlayer() {
+      if(!window.YT || !window.YT.Player) {
+        setTimeout(this.initPlayer, 500);
+        return;
+      }
+      this.player = new YT.Player('yt-player-obs-' + this.p.id, {
+        height: '100%', width: '100%',
+        videoId: (this.queue && this.queue[0]) ? this.queue[0].videoId : '',
+        playerVars: { 'autoplay': 1, 'controls': 0, 'rel': 0, 'showinfo': 0 },
+        events: {
+          'onReady': () => {
+             this.player.setVolume(this.volume);
+             if(this.queue && this.queue.length > 0) this.player.playVideo();
+          },
+          'onStateChange': (e) => {
+             if(e.data === YT.PlayerState.ENDED) {
+                this.$emit('track-ended');
+             }
+          }
+        }
+      });
+    }
+  }
+});
+
 const FB_CFG = {
   apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
   authDomain: "tt-widget-88711.firebaseapp.com",
@@ -1266,8 +923,7 @@ const FB_CFG = {
   projectId: "tt-widget-88711",
   storageBucket: "tt-widget-88711.firebasestorage.app",
   messagingSenderId: "997435022478",
-  appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf",
-  measurementId: "G-R136SZ35H3"
+  appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
 };
 let db = null;
 try {
@@ -1280,7 +936,7 @@ function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||
 function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
 
 createApp({
-  components:{ 'goal-widget':GoalComp, 'challenge-widget':ChalComp },
+  components:{ 'goal-widget':GoalComp, 'challenge-widget':ChalComp, 'music-widget':MusicComp },
   setup(){
     const saved = loadState() || {};
     const urlMode = new URLSearchParams(location.search).get('mode');
@@ -1297,10 +953,8 @@ createApp({
     const isMobile = ref(window.innerWidth <= 900);
     window.addEventListener('resize', () => { isMobile.value = window.innerWidth <= 900; });
 
-    // Debounce utility for Firebase writes
     function debounce(fn, delay) {
-      let t;
-      return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+      let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
     }
 
     const kaspiPaste = ref('');
@@ -1311,22 +965,14 @@ createApp({
     let autoSendInterval = null;
 
     const panels = reactive(saved.panels || []);
-    if(!panels.length) panels.push({
-      id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
-      lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
-      width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
-      cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
-      titleSize:16,textSize:13,barHeight:14,x:80,y:60
-    });
+    const hasMusicWidget = computed(() => panels.some(p => p.type === 'music'));
 
     const alertCfg = reactive(Object.assign({
       labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',
-      imageData:null,videoUrl:'',soundData:null,volume:1,
       bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',
       nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',
       nameFontSize:32,amountFontSize:48,msgFontSize:24,cardRadius:16,
-      particleColor:'#ffd700',particleCount:80,
-      ttsEnabled:false, ttsRate:1, ttsPitch:1, ttsVolume:1, ttsVoiceURI:''
+      particleColor:'#ffd700',particleCount:80
     }, saved.alertCfg||{}));
 
     const alertVis = ref(false);
@@ -1334,127 +980,69 @@ createApp({
     const curDonation = reactive({name:'',amount:'', msg:''});
     let alertTimer = null;
 
-    const quickName = ref('');
-    const quickAmount = ref('');
-    const quickMessage = ref('');
-    const tName = ref('');
-    const tAmount = ref(null);
-    const tMessage = ref('');
-    const imgErr = ref('');
-    const sndErr = ref('');
+    const quickName = ref(''); const quickAmount = ref(''); const quickMessage = ref('');
+    const tName = ref(''); const tAmount = ref(null); const tMessage = ref('');
+    const imgErr = ref(''); const sndErr = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
-    const availableVoices = reactive([]);
     
-    // Загружаем список голосов Web Speech API
-    function loadVoices() {
-      const voices = window.speechSynthesis ? window.speechSynthesis.getVoices() : [];
-      availableVoices.splice(0, availableVoices.length, ...voices);
-    }
-    if(window.speechSynthesis) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
     let toastTm;
     function showToast(msg,type='ok'){
       toast.msg=msg; toast.type=type; toast.show=true;
-      clearTimeout(toastTm);
-      toastTm=setTimeout(()=>toast.show=false,2500);
+      clearTimeout(toastTm); toastTm=setTimeout(()=>toast.show=false,2500);
     }
 
     const sceneStyle = computed(()=>({ transform:`scale(${globalScale.value})` }));
     const alertCardStyle = computed(()=>{
       const c=alertCfg, bg=c.bgColor||'#111111', op=c.bgOpacity!==undefined?c.bgOpacity:.9;
-      return {
-        background:`rgba(${hexToRgb(bg)},${op})`,
-        borderRadius:(c.cardRadius||16)+'px',
-        border:`1px solid ${c.borderColor||'rgba(255,215,0,.3)'}`,
-        '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)`,
-      };
+      return { background:`rgba(${hexToRgb(bg)},${op})`, borderRadius:(c.cardRadius||16)+'px', border:`1px solid ${c.borderColor||'rgba(255,215,0,.3)'}`, '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)` };
     });
 
-    // --- ПАРСЕР СООБЩЕНИЙ И ВЫРЕЗАНИЕ YT ССЫЛОК ---
     function extractAndCleanYT(msg) {
       const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})\S*/gi;
       let tracks = [];
-      let cleanMsg = msg.replace(ytRegex, (match, vid) => {
-          tracks.push(vid);
-          return ''; 
-      }).trim();
+      let cleanMsg = msg.replace(ytRegex, (match, vid) => { tracks.push(vid); return ''; }).trim();
       return { cleanMsg, tracks };
     }
 
     function handleKaspiPaste() {
-      const txt = kaspiPaste.value;
-      if (!txt) return;
-
+      const txt = kaspiPaste.value; if (!txt) return;
       const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
-      let name = '';
-      let amount = '';
-      let msg = '';
+      let name = ''; let amount = ''; let msg = '';
 
       const popIdx = lines.findIndex(l => l.toLowerCase().includes('пополнение') || l.toLowerCase().includes('перевод'));
       if (popIdx !== -1) {
         amount = cleanNum(lines[popIdx]);
-        if (popIdx + 1 < lines.length) {
-          const nextLine = lines[popIdx + 1];
-          if (!nextLine.toLowerCase().includes('доступно')) name = nextLine;
-        }
+        if (popIdx + 1 < lines.length && !lines[popIdx + 1].toLowerCase().includes('доступно')) name = lines[popIdx + 1];
       }
-
       const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
-      if (msgIdx !== -1) {
-        msg = lines.slice(msgIdx + 1).join(' '); 
-      }
+      if (msgIdx !== -1) msg = lines.slice(msgIdx + 1).join(' ');
 
       if (amount) quickAmount.value = amount;
       if (name) quickName.value = name;
       if (msg) quickMessage.value = msg;
-
-      // Haptic feedback + auto-send countdown (mobile only)
-      if (isMobile.value && (amount || name)) {
-        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
-        startAutoSend();
-      }
     }
 
-    function startAutoSend() {
-      clearTimeout(autoSendTimer);
-      clearInterval(autoSendInterval);
-      autoSendCountdown.value = 3;
-      autoSendInterval = setInterval(() => {
-        if (autoSendCountdown.value > 1) {
-          autoSendCountdown.value--;
-        } else {
-          clearInterval(autoSendInterval);
-          autoSendCountdown.value = 0;
-        }
-      }, 1000);
-      autoSendTimer = setTimeout(() => {
-        clearInterval(autoSendInterval);
-        autoSendCountdown.value = -1;
-      }, 3500);
+    function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px'}; }
+    function compFor(type){
+      if(type==='goal') return 'goal-widget';
+      if(type==='challenge') return 'challenge-widget';
+      if(type==='music') return 'music-widget';
     }
-
-    function cancelAutoSend() {
-      clearTimeout(autoSendTimer);
-      clearInterval(autoSendInterval);
-      autoSendCountdown.value = -1;
-    }
-
-    function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
-    function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
 
     function addPanel(type){
-      panels.push({
-        id:uid(),type,title:type==='goal'?'Цель стрима':'Новый челлендж',
-        current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', lastDonorLabelSize:8,
-        showDivider:true,showCount:true,iconData:null,iconSize:35,iconGap:15,
-        width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
-        cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff',
-        titleSize:16,textSize:13,barHeight:14,
-        x:80+(panels.length*30),y:60+(panels.length*30),
-      });
+      const p = {
+        id:uid(), type, x: 80+(panels.length*30), y: 60+(panels.length*30),
+        width: 400, padding: 20, radius: 15, bgColor: '#111111', bgOpacity: .8,
+        cText: '#cccccc', cAccent: '#00c2ff'
+      };
+      if(type==='goal'){
+        Object.assign(p, {title:'Цель стрима', current:0, max:'50000', lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8, cBar1:'#ff0044', cBar2:'#ff6600', titleSize:16, textSize:13, barHeight:14});
+      } else if(type==='challenge'){
+        Object.assign(p, {title:'Новый челлендж', current:0, max:'50000', showDivider:true, showCount:true, iconSize:35, iconGap:15, cIcon:'#ffffff', titleSize:16, textSize:13});
+      } else if(type==='music'){
+        Object.assign(p, {title:'Музыки нет', subTitle:'Закажи трек!', width: 640, height: 360, titleSize: 32, textSize: 16});
+      }
+      panels.push(p);
     }
 
     function removePanel(id){
@@ -1463,41 +1051,23 @@ createApp({
       if(selId.value===id) selId.value=null;
     }
 
-    function buildState(){
-      return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), globalScale: globalScale.value };
-    }
-
-    const _doPushFirebase = debounce((state) => {
-      if(db){ try{ db.ref('config').set(state); }catch(e){} }
-    }, 600);
-
-    function pushState(){
-      const state = buildState();
-      saveState(state);
-      _doPushFirebase(state);
-    }
-
-    const _doPushQueue = debounce(() => {
-      if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue)));
-    }, 400);
-
+    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), globalScale: globalScale.value }; }
+    const _doPushFirebase = debounce((state) => { if(db) try{ db.ref('config').set(state); }catch(e){} }, 600);
+    function pushState(){ const state = buildState(); saveState(state); _doPushFirebase(state); }
+    const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
     function pushQueueState() { _doPushQueue(); }
+    const _pushVolume = debounce((vol) => { if (db) db.ref('musicVolume').set(vol); }, 300);
 
-    const _pushVolume = debounce((vol) => {
-      if (db) db.ref('musicVolume').set(vol);
-    }, 300);
-
-    // --- УПРАВЛЕНИЕ ГРОМКОСТЬЮ ---
-    function changeVolume() {
-      _pushVolume(musicVolume.value);
-      applyVolume();
-    }
+    function changeVolume() { _pushVolume(musicVolume.value); applyVolume(); }
 
     function applyVolume() {
       if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') {
-        window.ytPlayerObj.setVolume(musicVolume.value);
+        // Если есть виджет клипа, мы глушим админку, чтобы играло только в OBS
+        if(hasMusicWidget.value) window.ytPlayerObj.setVolume(0);
+        else window.ytPlayerObj.setVolume(musicVolume.value);
       }
     }
+    watch(hasMusicWidget, () => applyVolume());
 
     function applyDonateToGoals(name, amount){
       const num = cleanNum(amount);
@@ -1509,239 +1079,104 @@ createApp({
           if (existing.startsWith('Пусто')) p.donorsRaw = entry;
           else p.donorsRaw = existing ? entry+'\n'+existing : entry;
         }
-        if(p.type==='challenge'){
-          p.current = (p.current||0) + num;
-        }
+        if(p.type==='challenge'){ p.current = (p.current||0) + num; }
       });
     }
 
     function clearProgress() {
       if(!confirm('Очистить собранную сумму и список донатов?')) return;
       panels.forEach(p => { p.current = 0; if(p.type === 'goal') p.donorsRaw = 'Пусто — 0 ₸'; });
-      pushState();
-      showToast('✓ Данные очищены', 'ok');
+      pushState(); showToast('✓ Данные очищены', 'ok');
     }
 
     function doQuickDonate(){
-      cancelAutoSend();
-      const name = quickName.value.trim() || 'Аноним';
-      const amt  = cleanNum(quickAmount.value);
-      
+      const name = quickName.value.trim() || 'Аноним'; const amt = cleanNum(quickAmount.value);
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
-
-      if (isMobile.value && navigator.vibrate) navigator.vibrate([60, 40, 100]);
-
-      // Парсим и чистим сообщение от ссылок YouTube
       const extracted = extractAndCleanYT(quickMessage.value);
-      const cleanMsg = extracted.cleanMsg;
-      
       applyDonateToGoals(name, amt);
-      triggerAlert(name, amt, cleanMsg, true); 
+      triggerAlert(name, amt, extracted.cleanMsg, true); 
       pushState();
-
-      // Если нашли треки, кидаем их в очередь
       if (extracted.tracks.length > 0) {
-        extracted.tracks.forEach(vid => {
-          musicQueue.push({ uid: uid(), videoId: vid });
-        });
+        extracted.tracks.forEach(vid => musicQueue.push({ uid: uid(), videoId: vid }));
         pushQueueState();
       }
-
       showToast(`✓ Отправлено: ${name} — ${Number(amt).toLocaleString('ru')} ₸`,'ok');
       quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
     }
 
-    function doQuickTest(){
-      const name = quickName.value.trim() || 'Тест Донатов';
-      const amt  = cleanNum(quickAmount.value) || 500;
-      const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Проверка текста и ссылок!');
-      triggerAlert(name, amt, extracted.cleanMsg, false);
-    }
-
-    function doTrigger(){
-      const name = tName.value.trim();
-      const amt  = cleanNum(tAmount.value);
-      const extracted = extractAndCleanYT(tMessage.value.trim());
-      if(!name||!amt){ showToast('Заполни имя и сумму!','err'); return; }
-      triggerAlert(name, amt, extracted.cleanMsg, true);
-    }
-
-    function doTestLocal(){
-      const name = tName.value.trim() || 'Тест';
-      const amt  = cleanNum(tAmount.value) || 500;
-      const extracted = extractAndCleanYT(tMessage.value.trim() || 'Проверка озвучки и текста!');
-      triggerAlert(name, amt, extracted.cleanMsg, false);
-    }
+    function doQuickTest(){ triggerAlert('Тест', 500, extractAndCleanYT(quickMessage.value||'Проверка!').cleanMsg, false); }
+    function doTrigger(){ triggerAlert(tName.value||'Тест', cleanNum(tAmount.value)||500, extractAndCleanYT(tMessage.value).cleanMsg, true); }
+    function doTestLocal(){ triggerAlert(tName.value||'Тест', cleanNum(tAmount.value)||500, extractAndCleanYT(tMessage.value).cleanMsg, false); }
 
     function triggerAlert(name, amt, msg, pushFB){
-      const num = cleanNum(amt);
-      curDonation.name = name;
-      curDonation.amount = Number(num).toLocaleString('ru');
-      curDonation.msg = msg;
-      
-      alertKey.value++;
-      alertVis.value = true;
-      clearTimeout(alertTimer);
-      playSound();
-      readMessage(msg);
-      spawnParticles();
-      const dur = (alertCfg.duration||7)*1000;
-      alertTimer = setTimeout(()=>alertVis.value=false, dur+600);
-
-      if(pushFB && db){
-        try{
-          db.ref('alert').set({ name, amount: num, msg: msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) });
-        }catch(e){}
-      }
-    }
-
-    function playSound(){
-      if(!alertCfg.soundData) return;
-      if(mode.value !== 'alert') return;
-      try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
-    }
-
-    function readMessage(msgText){
-      if(!msgText || !alertCfg.ttsEnabled) return;
-      if(mode.value !== 'alert') return;
-
-      try {
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(msgText.substring(0, 300));
-        utter.lang = 'ru-RU';
-        utter.volume = alertCfg.ttsVolume !== undefined ? alertCfg.ttsVolume : 1;
-        utter.rate = alertCfg.ttsRate || 1;
-        utter.pitch = alertCfg.ttsPitch || 1;
-
-        const voices = window.speechSynthesis.getVoices();
-        const pick = (list, fn) => list.find(fn);
-        let chosenVoice = null;
-        if(alertCfg.ttsVoiceURI) {
-          chosenVoice = voices.find(v => v.voiceURI === alertCfg.ttsVoiceURI);
-        }
-        if(!chosenVoice) {
-          chosenVoice =
-            pick(voices, v => /microsoft.*irina|microsoft.*pavel/i.test(v.name)) ||
-            pick(voices, v => /google.*русский|google.*russian/i.test(v.name)) ||
-            pick(voices, v => v.lang === 'ru-RU') ||
-            pick(voices, v => v.lang.startsWith('ru'));
-        }
-        if(chosenVoice) utter.voice = chosenVoice;
-
-        window.speechSynthesis.speak(utter);
-      } catch(e){ console.log('TTS error:', e); }
-    }
-
-    function spawnParticles(){
-      const canvas=pcvs.value; if(!canvas) return;
-      const ctx=canvas.getContext('2d');
-      canvas.width=canvas.offsetWidth||800;
-      canvas.height=canvas.offsetHeight||600;
-      const count=alertCfg.particleCount!==undefined?alertCfg.particleCount:80;
-      if(!count) return;
-      const color=alertCfg.particleColor||'#ffd700';
-      const particles=[];
-      for(let i=0;i<count;i++){ particles.push({x:Math.random()*canvas.width,y:canvas.height+10,vx:(Math.random()-.5)*4,vy:-(Math.random()*6+3),size:Math.random()*5+2,alpha:1,decay:Math.random()*.015+.008}); }
-      function frame(){
-        ctx.clearRect(0,0,canvas.width,canvas.height); let alive=false;
-        particles.forEach(p=>{
-          if(p.alpha<=0) return; alive=true;
-          p.x+=p.vx; p.y+=p.vy; p.vy+=.12; p.alpha-=p.decay;
-          ctx.save(); ctx.globalAlpha=Math.max(0,p.alpha); ctx.fillStyle=color;
-          ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2); ctx.fill(); ctx.restore();
-        });
-        if(alive) requestAnimationFrame(frame); else ctx.clearRect(0,0,canvas.width,canvas.height);
-      }
-      requestAnimationFrame(frame);
+      curDonation.name = name; curDonation.amount = Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg = msg;
+      alertKey.value++; alertVis.value = true;
+      clearTimeout(alertTimer); alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
+      if(pushFB && db) try{ db.ref('alert').set({ name, amount: cleanNum(amt), msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){}
     }
 
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
     function resetAll(){ if(!confirm('Сбросить все настройки?')) return; localStorage.removeItem(STORAGE_KEY); location.reload(); }
     function copyObs(type){
-      const url=`${location.href.split('?')[0]}?mode=${type}`;
-      navigator.clipboard.writeText(url).then(()=>showToast('URL скопирован!','ok'),()=>showToast('Не удалось скопировать','err'));
+      navigator.clipboard.writeText(`${location.href.split('?')[0]}?mode=${type}`)
+        .then(()=>showToast('URL скопирован!','ok'));
     }
 
     function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
-    function uploadAImg(e){
-      imgErr.value=''; const f=e.target.files[0]; if(!f) return;
-      if(f.size>1048576){ imgErr.value='Файл >1 MB'; return; }
-      const r=new FileReader(); r.onload=ev=>{ alertCfg.imageData=ev.target.result; }; r.readAsDataURL(f);
-    }
-    function uploadASound(e){
-      sndErr.value=''; const f=e.target.files[0]; if(!f) return;
-      if(f.size>2097152){ sndErr.value='Файл >2 MB'; return; }
-      const r=new FileReader(); r.onload=ev=>{ alertCfg.soundData=ev.target.result; }; r.readAsDataURL(f);
-    }
 
-    // --- ЛОГИКА ОЧЕРЕДИ МУЗЫКИ ---
-    function skipTrack(idx) {
-      musicQueue.splice(idx, 1);
-      pushQueueState();
-    }
-    function clearQueue() {
-      musicQueue.splice(0, musicQueue.length);
-      pushQueueState();
-    }
+    function skipTrack(idx) { musicQueue.splice(idx, 1); pushQueueState(); }
+    function clearQueue() { musicQueue.splice(0, musicQueue.length); pushQueueState(); }
 
     let currentTrackUid = null;
     function checkQueuePlay() {
       if (mode.value !== 'admin' || isMobile.value) return;
       if (!window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
 
-      if (musicQueue.length === 0) {
-        window.ytPlayerObj.stopVideo();
-        currentTrackUid = null;
-        return;
-      }
+      if (musicQueue.length === 0) { window.ytPlayerObj.stopVideo(); currentTrackUid = null; return; }
+      
+      applyVolume(); // Проверяем, глушить ли админку
+
       const nextTrack = musicQueue[0];
       if (currentTrackUid !== nextTrack.uid) {
         currentTrackUid = nextTrack.uid;
         window.ytPlayerObj.loadVideoById(nextTrack.videoId);
-        applyVolume(); // Применяем громкость для нового трека
       }
     }
 
-    function shiftQueueFromPlayer() {
-      if (mode.value !== 'admin' || isMobile.value) return;
+    function shiftQueueFromPlayer(isFromObs = false) {
+      // Если добавлен виджет Музыки в OBS, то переключение треков делает ИСКЛЮЧИТЕЛЬНО он
+      if (hasMusicWidget.value && !isFromObs) return;
+
       if (musicQueue.length > 0) {
         musicQueue.shift();
-        pushQueueState();
+        _doPushQueue();
       }
     }
 
-    // YT API грузим только на компе
-    window.onYouTubeIframeAPIReady = () => {
-      if (mode.value !== 'admin' || isMobile.value) return;
-      window.ytPlayerObj = new YT.Player('yt-player', {
-        height: '1', width: '1',
-        playerVars: { 'autoplay': 1, 'controls': 0 },
-        events: {
-          'onReady': () => {
-             applyVolume();
-             checkQueuePlay();
-          },
-          'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
-          'onError': () => shiftQueueFromPlayer()
-        }
-      });
-    };
-
     onMounted(()=>{
-      if(mode.value === 'admin' && !isMobile.value){
-        let tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        let firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      }
+      // YouTube загружается в любом случае
+      let tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+      let firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      
+      window.onYouTubeIframeAPIReady = () => {
+        if (mode.value === 'admin' && !isMobile.value) {
+          window.ytPlayerObj = new YT.Player('yt-player', {
+            height: '1', width: '1', playerVars: { 'autoplay': 1, 'controls': 0 },
+            events: {
+              'onReady': () => { applyVolume(); checkQueuePlay(); },
+              'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(false); },
+              'onError': () => shiftQueueFromPlayer(false)
+            }
+          });
+        }
+      };
 
       if(mode.value==='alert' && db){
         let lastTs = 0;
         db.ref('alert').on('value',snap=>{
-          const d=snap.val();
-          if(!d||!d.ts || d.ts <= lastTs) return;
-          lastTs = d.ts;
-          if(d.cfg) Object.assign(alertCfg,d.cfg);
+          const d=snap.val(); if(!d||!d.ts || d.ts <= lastTs) return;
+          lastTs = d.ts; if(d.cfg) Object.assign(alertCfg,d.cfg);
           triggerAlert(d.name, cleanNum(d.amount), d.msg, false);
         });
       }
@@ -1764,9 +1199,7 @@ createApp({
             });
             if(panels.length > d.panels.length) panels.splice(d.panels.length);
           }
-          if(d.alertCfg) Object.keys(d.alertCfg).forEach(k => { if(alertCfg[k] !== d.alertCfg[k]) alertCfg[k] = d.alertCfg[k]; });
           if(d.globalScale && globalScale.value !== d.globalScale) globalScale.value = d.globalScale;
-          saveState(buildState());
         });
       }
 
@@ -1776,14 +1209,9 @@ createApp({
           musicQueue.splice(0, musicQueue.length, ...q);
           if (mode.value === 'admin' && !isMobile.value) checkQueuePlay();
         });
-
-        // Слушаем изменения громкости с других устройств
         db.ref('musicVolume').on('value', snap => {
           const vol = snap.val();
-          if (vol !== null) {
-            musicVolume.value = vol;
-            applyVolume();
-          }
+          if (vol !== null) { musicVolume.value = vol; applyVolume(); }
         });
       }
     });
@@ -1794,18 +1222,14 @@ createApp({
       isMobile, kaspiPaste, handleKaspiPaste,
       quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
       musicQueue, skipTrack, clearQueue,
-      musicVolume, changeVolume,
-      autoSendCountdown, cancelAutoSend,
-      imgErr,sndErr,toast,availableVoices,
+      musicVolume, changeVolume, hasMusicWidget,
+      imgErr,sndErr,toast,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
       cardPos,compFor,
-      addPanel,removePanel,
-      clearProgress,
-      doQuickDonate,doQuickTest,
-      doTrigger,doTestLocal,
-      saveAll,resetAll,copyObs,
-      uploadIcon,uploadAImg,uploadASound,
+      addPanel,removePanel, clearProgress,
+      doQuickDonate,doQuickTest, doTrigger,doTestLocal,
+      saveAll,resetAll,copyObs, uploadIcon, shiftQueueFromPlayer
     };
   }
 }).mount('#app');
