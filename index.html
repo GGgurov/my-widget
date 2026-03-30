@@ -197,51 +197,265 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ */
+/* МОБИЛЬНАЯ ВЕРСИЯ — touch-first redesign */
 .mobile-kaspi-view {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   background: var(--bg);
-  padding: 20px;
-  gap: 15px;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* Sticky header bar */
+.mob-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.mob-logo { font-size: 13px; font-weight: 900; }
+.mob-logo span { color: var(--red); }
+.mob-fb-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #555; transition: background .3s;
+}
+.mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 8px #00cc44; animation: pulseDot 2s infinite; }
+.mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
+
+/* Scrollable main area */
+.mob-scroll {
+  flex: 1;
   overflow-y: auto;
-}
-.mobile-header {
-  font-size: 16px;
-  font-weight: 900;
-  text-align: center;
-  color: #fff;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-.mobile-header span { color: var(--red); }
-.kaspi-paste-area {
-  background: #111;
-  border: 2px dashed var(--red);
-  border-radius: var(--radius-lg);
-  padding: 15px;
-  color: #fff;
-  font-size: 12px;
-  min-height: 140px;
-  width: 100%;
-  resize: vertical;
-  font-family: 'Unbounded';
-  transition: all 0.3s;
-}
-.kaspi-paste-area:focus {
-  border-style: solid;
-  box-shadow: 0 0 20px rgba(255,0,68,.2);
-}
-.parsed-card {
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 15px;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
+
+/* Paste zone */
+.kaspi-paste-area {
+  background: #111;
+  border: 2px dashed var(--red);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  color: #fff;
+  font-size: 13px;
+  min-height: 100px;
+  width: 100%;
+  resize: none;
+  font-family: 'Unbounded';
+  transition: all 0.25s;
+  line-height: 1.5;
+}
+.kaspi-paste-area:focus {
+  border-style: solid;
+  border-color: var(--red);
+  box-shadow: 0 0 20px rgba(255,0,68,.15);
+  min-height: 120px;
+}
+
+/* Parsed result card */
+.parsed-card {
+  background: #0d0d0d;
+  border: 1px solid rgba(255,0,68,.3);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn .2s ease-out;
+}
+.parsed-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.parsed-row label {
+  font-size: 8px; min-width: 60px; color: var(--text-dim);
+}
+.parsed-row input, .parsed-row textarea {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.parsed-row textarea { min-height: 44px; resize: none; }
+
+/* Auto-send banner */
+.auto-send-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,170,68,.1);
+  border: 1px solid rgba(0,170,68,.3);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #00cc44;
+}
+.auto-send-countdown {
+  font-size: 16px;
+  font-weight: 900;
+  color: #00cc44;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* BIG action buttons */
+.mob-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px 14px;
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.btn-mob-send {
+  font-family: 'Unbounded';
+  font-weight: 900;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #ff0044, #cc0034);
+  color: #fff;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(255,0,68,.3);
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.btn-mob-send:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(255,0,68,.2); }
+.btn-mob-send:disabled { opacity: .35; transform: none; box-shadow: none; }
+
+.btn-mob-clear {
+  font-family: 'Unbounded';
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,0,0,.2);
+  cursor: pointer;
+  background: rgba(255,0,0,.06);
+  color: #ff5555;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.btn-mob-clear:active { background: rgba(255,0,0,.15); }
+
+/* Music queue — mobile */
+.mob-music-card {
+  background: linear-gradient(135deg, #000d15, #00060d);
+  border: 1px solid rgba(0,194,255,.2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.mob-music-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,194,255,.1);
+}
+.mob-music-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 900; color: var(--tenge);
+  text-transform: uppercase; letter-spacing: .5px;
+}
+
+/* Volume row — bigger touch */
+.mob-volume-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0,194,255,.04);
+  border-bottom: 1px solid rgba(0,194,255,.08);
+}
+.mob-volume-row input[type=range] {
+  flex: 1;
+  height: 28px;  /* bigger touch target */
+  accent-color: var(--tenge);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+.mob-vol-val {
+  font-size: 11px; font-weight: 900; color: var(--tenge);
+  min-width: 38px; text-align: right;
+}
+
+/* Track items with swipe hint */
+.mob-track-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .15s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
+}
+.mob-track-item:last-child { border-bottom: none; }
+.mob-track-item.playing { background: rgba(0,194,255,.07); }
+.mob-track-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.mob-track-status { font-size: 10px; font-weight: 900; color: #ccc; display: flex; align-items: center; gap: 5px; }
+.mob-track-status.now { color: var(--tenge); }
+.mob-track-id { font-size: 9px; color: var(--text-dim); }
+.mob-skip-btn {
+  font-family: 'Unbounded';
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0,194,255,.4);
+  background: rgba(0,194,255,.1);
+  color: var(--tenge);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: all .15s;
+  white-space: nowrap;
+  min-width: 52px; text-align: center;
+}
+.mob-skip-btn:active { background: rgba(0,194,255,.25); transform: scale(.94); }
+.mob-remove-btn {
+  font-family: 'Unbounded';
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,.04);
+  color: var(--text-dim);
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: all .15s;
+}
+.mob-remove-btn:active { background: rgba(255,50,50,.15); color: #ff5555; }
 
 /* Стили для музыкальной очереди */
 .music-queue-card {
@@ -453,67 +667,88 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
     
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
-      <div class="mobile-header">KASPI <span>SMART PASTE</span></div>
-      
-      <div class="fb-status" style="justify-content:center;">
-        <div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
-        <span>{{fbOk ? 'Связь с OBS установлена' : 'Firebase не подключён'}}</span>
-      </div>
-
-      <textarea class="kaspi-paste-area" v-model="kaspiPaste" @input="handleKaspiPaste" placeholder="Вставь скопированный текст из Каспи сюда...&#10;Скрипт сам найдет имя, сумму, сообщение и ссылки на YouTube."></textarea>
-      
-      <div class="parsed-card" v-if="quickName || quickAmount || quickMessage">
-        <div class="fg">
-          <label>Имя донатера</label>
-          <input type="text" v-model="quickName" placeholder="Имя">
-        </div>
-        <div class="fg">
-          <label>Сумма (₸)</label>
-          <div class="donate-amount-wrap">
-            <input type="number" v-model.number="quickAmount" placeholder="0">
-            <span class="tenge-badge">₸</span>
-          </div>
-        </div>
-        <div class="fg">
-          <label>Сообщение</label>
-          <textarea v-model="quickMessage" placeholder="Сообщение" style="min-height:50px"></textarea>
+      <!-- TOP BAR -->
+      <div class="mob-topbar">
+        <div class="mob-logo">KASPI <span>SMART</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:9px;color:var(--text-dim);font-weight:700;">{{fbOk?'OBS ✓':'NO FB'}}</span>
+          <div class="mob-fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
         </div>
       </div>
 
-      <div class="music-queue-card" v-if="musicQueue.length > 0">
-        <div class="music-queue-header">
-          <div class="music-queue-title">
-            <div class="mq-icon">🎵</div>
-            Очередь ({{musicQueue.length}})
-          </div>
-          <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
-        </div>
-        
-        <div class="volume-control-wrap">
-          <span class="volume-icon">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
-          <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
-          <span class="volume-value">{{ musicVolume }}%</span>
-        </div>
+      <!-- SCROLLABLE CONTENT -->
+      <div class="mob-scroll">
 
-        <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
-          <div class="track-info">
-            <div class="track-status" :class="{now: idx===0}">
-              <template v-if="idx===0">
-                <div class="bar-anim"><span></span><span></span><span></span></div>
-                Сейчас играет
-              </template>
-              <template v-else>⏳ #{{idx}} в очереди</template>
+        <!-- PASTE ZONE -->
+        <textarea class="kaspi-paste-area" v-model="kaspiPaste" @input="handleKaspiPaste"
+          placeholder="📋 Вставь текст из Каспи сюда — всё распарсится само..."></textarea>
+
+        <!-- PARSED RESULT -->
+        <div class="parsed-card" v-if="quickName || quickAmount || quickMessage">
+          <div class="parsed-row">
+            <label>Имя</label>
+            <input type="text" v-model="quickName" placeholder="Имя донатера">
+          </div>
+          <div class="parsed-row">
+            <label>Сумма</label>
+            <div class="donate-amount-wrap" style="flex:1;position:relative;">
+              <input type="number" v-model.number="quickAmount" placeholder="0" style="padding-right:36px">
+              <span class="tenge-badge">₸</span>
             </div>
-            <span class="track-id">yt: {{track.videoId}}</span>
           </div>
-          <button v-if="idx===0" class="btn-skip" @click="skipTrack(0)">⏭ Скип</button>
-          <button v-else class="btn-remove" @click="skipTrack(idx)">✕</button>
-        </div>
-      </div>
+          <div class="parsed-row" style="align-items:flex-start;">
+            <label style="padding-top:8px;">Сообщ.</label>
+            <textarea v-model="quickMessage" placeholder="Сообщение"></textarea>
+          </div>
 
-      <div style="display:flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-        <button class="btn btn-red" style="padding: 20px; font-size: 14px;" @click="doQuickDonate" :disabled="!quickName || !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
-        <button class="btn btn-flat" style="padding: 15px; font-size: 12px; color: #ff5555; border-color: rgba(255,0,0,0.2);" @click="clearProgress">🗑️ ОЧИСТИТЬ СБОРЫ</button>
+          <!-- Auto-send countdown -->
+          <div class="auto-send-banner" v-if="autoSendCountdown > 0">
+            <span>⚡ Авто-отправка через</span>
+            <span class="auto-send-countdown">{{autoSendCountdown}}</span>
+          </div>
+          <div class="auto-send-banner" v-else-if="autoSendCountdown === 0 && (quickName||quickAmount)">
+            <span>✅ Готово к отправке — нажми кнопку</span>
+          </div>
+        </div>
+
+        <!-- MUSIC QUEUE -->
+        <div class="mob-music-card" v-if="musicQueue.length > 0">
+          <div class="mob-music-head">
+            <div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div>
+            <button class="btn-clear-queue" @click="clearQueue">🗑</button>
+          </div>
+          <div class="mob-volume-row">
+            <span style="font-size:18px;">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
+            <input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
+            <span class="mob-vol-val">{{musicVolume}}%</span>
+          </div>
+          <div v-for="(track, idx) in musicQueue" :key="track.uid"
+               class="mob-track-item" :class="{playing: idx===0}">
+            <div class="mob-track-meta">
+              <div class="mob-track-status" :class="{now: idx===0}">
+                <template v-if="idx===0">
+                  <div class="bar-anim"><span></span><span></span><span></span></div>
+                  Сейчас играет
+                </template>
+                <template v-else>⏳ #{{idx}}</template>
+              </div>
+              <span class="mob-track-id">{{track.videoId}}</span>
+            </div>
+            <button v-if="idx===0" class="mob-skip-btn" @click="skipTrack(0)">⏭</button>
+            <button v-else class="mob-remove-btn" @click="skipTrack(idx)">✕</button>
+          </div>
+        </div>
+
+      </div><!-- /mob-scroll -->
+
+      <!-- STICKY BOTTOM ACTIONS -->
+      <div class="mob-actions">
+        <button class="btn-mob-send" @click="doQuickDonate" :disabled="!quickName && !quickAmount">
+          🚀 ОТПРАВИТЬ В OBS
+        </button>
+        <button class="btn-mob-clear" @click="clearProgress">
+          🗑️ ОЧИСТИТЬ СБОРЫ
+        </button>
       </div>
     </div>
 
@@ -1062,9 +1297,18 @@ createApp({
     const isMobile = ref(window.innerWidth <= 900);
     window.addEventListener('resize', () => { isMobile.value = window.innerWidth <= 900; });
 
+    // Debounce utility for Firebase writes
+    function debounce(fn, delay) {
+      let t;
+      return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); };
+    }
+
     const kaspiPaste = ref('');
     const musicQueue = reactive([]);
     const musicVolume = ref(100);
+    const autoSendCountdown = ref(-1);
+    let autoSendTimer = null;
+    let autoSendInterval = null;
 
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
@@ -1166,6 +1410,36 @@ createApp({
       if (amount) quickAmount.value = amount;
       if (name) quickName.value = name;
       if (msg) quickMessage.value = msg;
+
+      // Haptic feedback + auto-send countdown (mobile only)
+      if (isMobile.value && (amount || name)) {
+        if (navigator.vibrate) navigator.vibrate([40, 30, 40]);
+        startAutoSend();
+      }
+    }
+
+    function startAutoSend() {
+      clearTimeout(autoSendTimer);
+      clearInterval(autoSendInterval);
+      autoSendCountdown.value = 3;
+      autoSendInterval = setInterval(() => {
+        if (autoSendCountdown.value > 1) {
+          autoSendCountdown.value--;
+        } else {
+          clearInterval(autoSendInterval);
+          autoSendCountdown.value = 0;
+        }
+      }, 1000);
+      autoSendTimer = setTimeout(() => {
+        clearInterval(autoSendInterval);
+        autoSendCountdown.value = -1;
+      }, 3500);
+    }
+
+    function cancelAutoSend() {
+      clearTimeout(autoSendTimer);
+      clearInterval(autoSendInterval);
+      autoSendCountdown.value = -1;
     }
 
     function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
@@ -1193,20 +1467,29 @@ createApp({
       return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), globalScale: globalScale.value };
     }
 
+    const _doPushFirebase = debounce((state) => {
+      if(db){ try{ db.ref('config').set(state); }catch(e){} }
+    }, 600);
+
     function pushState(){
       const state = buildState();
       saveState(state);
-      if(db){ try{ db.ref('config').set(state); }catch(e){} }
+      _doPushFirebase(state);
     }
 
-    function pushQueueState() {
+    const _doPushQueue = debounce(() => {
       if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue)));
-    }
+    }, 400);
+
+    function pushQueueState() { _doPushQueue(); }
+
+    const _pushVolume = debounce((vol) => {
+      if (db) db.ref('musicVolume').set(vol);
+    }, 300);
 
     // --- УПРАВЛЕНИЕ ГРОМКОСТЬЮ ---
     function changeVolume() {
-      // Сохраняем в Firebase, чтобы оно обновилось на ПК
-      if (db) db.ref('musicVolume').set(musicVolume.value);
+      _pushVolume(musicVolume.value);
       applyVolume();
     }
 
@@ -1240,10 +1523,13 @@ createApp({
     }
 
     function doQuickDonate(){
+      cancelAutoSend();
       const name = quickName.value.trim() || 'Аноним';
       const amt  = cleanNum(quickAmount.value);
       
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
+
+      if (isMobile.value && navigator.vibrate) navigator.vibrate([60, 40, 100]);
 
       // Парсим и чистим сообщение от ссылок YouTube
       const extracted = extractAndCleanYT(quickMessage.value);
@@ -1509,6 +1795,7 @@ createApp({
       quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
       musicQueue, skipTrack, clearQueue,
       musicVolume, changeVolume,
+      autoSendCountdown, cancelAutoSend,
       imgErr,sndErr,toast,availableVoices,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
