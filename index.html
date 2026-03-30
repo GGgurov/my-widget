@@ -378,6 +378,38 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   50% { height: 12px; }
 }
 
+/* Стили ползунка громкости */
+.volume-control-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(0, 194, 255, 0.05);
+  border: 1px solid rgba(0, 194, 255, 0.2);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-top: 8px;
+}
+.volume-icon {
+  font-size: 16px;
+}
+.volume-slider {
+  flex: 1;
+  accent-color: var(--tenge);
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.volume-value {
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--tenge);
+  min-width: 40px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
   body{overflow:auto;}
@@ -412,14 +444,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
-    <!-- Музыка НЕ играет в OBS widget — только на компе в admin -->
     <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
   <div v-else class="admin-shell">
-    <!-- YT плеер на компе (admin) — музыка играет здесь, не в OBS -->
     <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
     
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
@@ -458,6 +488,13 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </div>
           <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
         </div>
+        
+        <div class="volume-control-wrap">
+          <span class="volume-icon">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
+          <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
+          <span class="volume-value">{{ musicVolume }}%</span>
+        </div>
+
         <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
           <div class="track-info">
             <div class="track-status" :class="{now: idx===0}">
@@ -556,6 +593,13 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
                 <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
               </div>
+              
+              <div class="volume-control-wrap">
+                <span class="volume-icon">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
+                <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
+                <span class="volume-value">{{ musicVolume }}%</span>
+              </div>
+
               <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
                 <div class="track-info">
                   <div class="track-status" :class="{now: idx===0}">
@@ -1020,6 +1064,7 @@ createApp({
 
     const kaspiPaste = ref('');
     const musicQueue = reactive([]);
+    const musicVolume = ref(100);
 
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
@@ -1090,7 +1135,7 @@ createApp({
       let tracks = [];
       let cleanMsg = msg.replace(ytRegex, (match, vid) => {
           tracks.push(vid);
-          return ''; // Вырезаем ссылку из сообщения полностью
+          return ''; 
       }).trim();
       return { cleanMsg, tracks };
     }
@@ -1158,6 +1203,19 @@ createApp({
       if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue)));
     }
 
+    // --- УПРАВЛЕНИЕ ГРОМКОСТЬЮ ---
+    function changeVolume() {
+      // Сохраняем в Firebase, чтобы оно обновилось на ПК
+      if (db) db.ref('musicVolume').set(musicVolume.value);
+      applyVolume();
+    }
+
+    function applyVolume() {
+      if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') {
+        window.ytPlayerObj.setVolume(musicVolume.value);
+      }
+    }
+
     function applyDonateToGoals(name, amount){
       const num = cleanNum(amount);
       const entry = `${name} — ${Number(num).toLocaleString('ru')} ₸`;
@@ -1192,7 +1250,7 @@ createApp({
       const cleanMsg = extracted.cleanMsg;
       
       applyDonateToGoals(name, amt);
-      triggerAlert(name, amt, cleanMsg, true); // Отправляем чистый текст для озвучки!
+      triggerAlert(name, amt, cleanMsg, true); 
       pushState();
 
       // Если нашли треки, кидаем их в очередь
@@ -1252,14 +1310,12 @@ createApp({
     }
 
     function playSound(){
-      // Звук алерта только в OBS (alert mode) — не дублируется на компе/телефоне
       if(!alertCfg.soundData) return;
       if(mode.value !== 'alert') return;
       try{ const a=new Audio(alertCfg.soundData); a.volume=alertCfg.volume||1; a.play().catch(()=>{}); }catch(e){}
     }
 
     function readMessage(msgText){
-      // TTS только в OBS (alert mode) — чтобы не дублировалось на компе/телефоне стримера
       if(!msgText || !alertCfg.ttsEnabled) return;
       if(mode.value !== 'alert') return;
 
@@ -1271,7 +1327,6 @@ createApp({
         utter.rate = alertCfg.ttsRate || 1;
         utter.pitch = alertCfg.ttsPitch || 1;
 
-        // Выбираем голос: сначала выбранный пользователем, иначе авто
         const voices = window.speechSynthesis.getVoices();
         const pick = (list, fn) => list.find(fn);
         let chosenVoice = null;
@@ -1345,8 +1400,6 @@ createApp({
 
     let currentTrackUid = null;
     function checkQueuePlay() {
-      // Плеер работает ТОЛЬКО на компе (admin mode) — музыка слышна только стримеру через колонки
-      // В OBS (widget/alert) и на телефоне плеер НЕ запускается
       if (mode.value !== 'admin' || isMobile.value) return;
       if (!window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
 
@@ -1359,6 +1412,7 @@ createApp({
       if (currentTrackUid !== nextTrack.uid) {
         currentTrackUid = nextTrack.uid;
         window.ytPlayerObj.loadVideoById(nextTrack.videoId);
+        applyVolume(); // Применяем громкость для нового трека
       }
     }
 
@@ -1370,14 +1424,17 @@ createApp({
       }
     }
 
-    // YT API грузим только на компе (admin, не мобильный)
+    // YT API грузим только на компе
     window.onYouTubeIframeAPIReady = () => {
       if (mode.value !== 'admin' || isMobile.value) return;
       window.ytPlayerObj = new YT.Player('yt-player', {
         height: '1', width: '1',
         playerVars: { 'autoplay': 1, 'controls': 0 },
         events: {
-          'onReady': () => checkQueuePlay(),
+          'onReady': () => {
+             applyVolume();
+             checkQueuePlay();
+          },
           'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
           'onError': () => shiftQueueFromPlayer()
         }
@@ -1385,7 +1442,6 @@ createApp({
     };
 
     onMounted(()=>{
-      // YT API грузим только на компе (admin) и только если не мобильный
       if(mode.value === 'admin' && !isMobile.value){
         let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
@@ -1428,13 +1484,20 @@ createApp({
         });
       }
 
-      // Синхронизация очереди музыки
       if(db){
         db.ref('musicQueue').on('value', snap => {
           const q = snap.val() || [];
           musicQueue.splice(0, musicQueue.length, ...q);
-          // Играем только на компе (admin), не в OBS и не на телефоне
           if (mode.value === 'admin' && !isMobile.value) checkQueuePlay();
+        });
+
+        // Слушаем изменения громкости с других устройств
+        db.ref('musicVolume').on('value', snap => {
+          const vol = snap.val();
+          if (vol !== null) {
+            musicVolume.value = vol;
+            applyVolume();
+          }
         });
       }
     });
@@ -1445,6 +1508,7 @@ createApp({
       isMobile, kaspiPaste, handleKaspiPaste,
       quickName,quickAmount,quickMessage,tName,tAmount,tMessage,
       musicQueue, skipTrack, clearQueue,
+      musicVolume, changeVolume,
       imgErr,sndErr,toast,availableVoices,
       pcvs,wscene,previewZone,
       sceneStyle,alertCardStyle,
