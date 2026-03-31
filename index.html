@@ -198,8 +198,25 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
 /* МОБИЛЬНАЯ ВЕРСИЯ */
-.mobile-kaspi-view { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); padding: 0; gap: 0; overflow: hidden; }
-.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.mobile-kaspi-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.mob-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 .mob-logo { font-size: 13px; font-weight: 900; }
 .mob-logo span { color: var(--red); }
 .mob-fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background .3s; }
@@ -269,44 +286,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 /* ВИДЖЕТ МУЗЫКИ ДЛЯ OBS */
 .music-scene { width: 100vw; height: 100vh; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-
-/* Новый светящийся текст ожидания */
-.waiting-text-wrapper {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  transition: opacity 0.5s ease;
-}
-.waiting-text-wrapper.is-hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.music-waiting-text {
-  font-family: 'Unbounded', sans-serif;
-  font-weight: 900;
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 2px;
-  animation: waitingGlowPulse 2.5s ease-in-out infinite;
-  white-space: nowrap;
-}
-@keyframes waitingGlowPulse {
-  0%, 100% {
-    text-shadow: 0 0 15px var(--glow-color), 0 0 30px var(--glow-color);
-    transform: scale(0.98);
-    opacity: 0.85;
-  }
-  50% {
-    text-shadow: 0 0 25px var(--glow-color), 0 0 50px var(--glow-color), 0 0 80px var(--glow-color);
-    transform: scale(1.02);
-    opacity: 1;
-  }
-}
-
-/* Контейнер клипа (скрывается, если нет треков, но остается в DOM) */
 .music-clip-container {
   position: relative;
   border-radius: 24px;
@@ -324,16 +303,31 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     0 15px 35px rgba(0,0,0,0.8), 
     0 0 40px var(--ac-glow, rgba(0, 194, 255, 0.2));
   transform: perspective(1200px) rotateX(2deg);
-  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease;
-}
-.music-clip-container.is-hidden {
-  opacity: 0;
-  pointer-events: none;
-  transform: perspective(1200px) rotateX(2deg) scale(0.9);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .music-clip-container::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
   background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%); pointer-events: none; z-index: 5;
+}
+/* НОВЫЙ ТЕКСТ (когда нет музыки) */
+.music-empty-text {
+  position: absolute;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  white-space: nowrap;
+  z-index: 2;
+  background: linear-gradient(90deg, #fff, var(--ac-glow-color, #00c2ff), #ffffff, var(--ac-glow-color, #00c2ff));
+  background-size: 300% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shineText 4s linear infinite;
+  filter: drop-shadow(0 0 15px var(--ac-glow-color, rgba(0,194,255,0.6)));
+}
+@keyframes shineText {
+  to { background-position: 300% center; }
 }
 
 .yt-wrapper { position: absolute; inset: 0; z-index: 1; background: #000; border-radius: 24px; overflow: hidden; }
@@ -374,13 +368,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-else-if="mode==='music'" class="music-scene">
-    <div class="waiting-text-wrapper" :class="{ 'is-hidden': musicQueue.length > 0 }">
-      <div class="music-waiting-text" :style="waitingTextStyle">
-        {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ₸' }}
-      </div>
+    <div v-if="musicQueue.length === 0" class="music-empty-text" :style="emptyTextStyle">
+      {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ТЕНГЕ' }}
     </div>
-    
-    <div class="music-clip-container" :class="{ 'is-hidden': musicQueue.length === 0 }" :style="musicWidgetStyle">
+    <div v-show="musicQueue.length > 0" class="music-clip-container" :style="musicWidgetStyle">
       <div class="yt-wrapper">
         <div id="yt-music-widget"></div>
       </div>
@@ -534,18 +525,27 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
 
-              <div class="fg"><label>Текст (когда нет музыки)</label><input type="text" v-model="musicCfg.emptyText" placeholder="ЗАКАЗ МУЗЫКИ 250 ₸"></div>
-              <div class="fg"><label>Размер текста (px)</label><div class="rr"><input type="range" min="20" max="150" step="1" v-model.number="musicCfg.emptyTextSize"><span class="rv">{{musicCfg.emptyTextSize}}</span></div></div>
-              
-              <div class="fr" style="margin-top:5px;">
-                <div class="fg"><label>Ширина окна (px)</label><input type="number" v-model.number="musicCfg.width"></div>
-                <div class="fg"><label>Высота окна (px)</label><input type="number" v-model.number="musicCfg.height"></div>
+              <div class="fg"><label>Текст (когда музыки нет)</label><input type="text" v-model="musicCfg.emptyText" placeholder="ЗАКАЗ МУЗЫКИ 250 ТЕНГЕ"></div>
+              <div class="fr">
+                <div class="fg"><label>Размер текста</label><div class="rr"><input type="range" min="16" max="150" step="1" v-model.number="musicCfg.emptySize"><span class="rv">{{musicCfg.emptySize||42}}px</span></div></div>
               </div>
-              <div class="fg"><label>Масштаб в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
+              <div class="fr">
+                <div class="fg"><label>Позиция X (%)</label><div class="rr"><input type="range" min="0" max="100" step="1" v-model.number="musicCfg.emptyX"><span class="rv">{{musicCfg.emptyX||50}}%</span></div></div>
+                <div class="fg"><label>Позиция Y (%)</label><div class="rr"><input type="range" min="0" max="100" step="1" v-model.number="musicCfg.emptyY"><span class="rv">{{musicCfg.emptyY||50}}%</span></div></div>
+              </div>
+              
               <div class="divider"></div>
+
+              <div class="fr">
+                <div class="fg"><label>Ширина окна видео (px)</label><input type="number" v-model.number="musicCfg.width"></div>
+                <div class="fg"><label>Высота окна видео (px)</label><input type="number" v-model.number="musicCfg.height"></div>
+              </div>
+              <div class="fg"><label>Масштаб видео в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
+              
+              <div class="divider"></div>
+              
               <div class="color-grid">
-                <div class="ci"><span>Цвет текста</span><input type="color" v-model="musicCfg.textColor"></div>
-                <div class="ci"><span>Свечение (Glow)</span><input type="color" v-model="musicCfg.cAccent"></div>
+                <div class="ci"><span>Акцент (Glow)</span><input type="color" v-model="musicCfg.cAccent"></div>
               </div>
             </div>
           </template>
@@ -597,15 +597,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
 
         <div v-if="tab==='music'" class="preview-music-wrap">
-          <div class="waiting-text-wrapper" :class="{ 'is-hidden': musicQueue.length > 0 }">
-             <div class="music-waiting-text" :style="waitingTextStyle">
-               {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ₸' }}
-             </div>
+          <div v-if="musicQueue.length === 0" class="music-empty-text" :style="emptyTextStyle">
+            {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ТЕНГЕ' }}
           </div>
-          <div class="music-clip-container" :class="{ 'is-hidden': musicQueue.length === 0 }" :style="musicWidgetStyle">
-            <div class="yt-wrapper" style="background:#111;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:900;">
-              ПРЕВЬЮ КЛИПА (КОГДА ЕСТЬ ТРЕК)
-            </div>
+          <div v-show="musicQueue.length > 0" class="music-clip-container" :style="musicWidgetStyle">
+             <div class="music-empty-text" style="position:relative; transform:none; left:auto; top:auto; font-size: 24px;">ОКНО ПЛЕЕРА</div>
           </div>
         </div>
       </div>
@@ -720,6 +716,7 @@ createApp({
     const musicQueue = reactive([]);
     const musicVolume = ref(100);
     const autoSendCountdown = ref(-1);
+    let autoSendTimer = null, autoSendInterval = null;
 
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
@@ -730,11 +727,12 @@ createApp({
       titleSize:16,textSize:13,barHeight:14,x:80,y:60
     });
 
-    const alertCfg = reactive(Object.assign({ labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',nameFontSize:32,amountFontSize:48,msgFontSize:24,cardRadius:16}, saved.alertCfg||{}));
+    const alertCfg = reactive(Object.assign({ labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',nameFontSize:32,amountFontSize:48,msgFontSize:24,cardRadius:16,particleColor:'#ffd700',particleCount:80,ttsEnabled:false,ttsRate:1,ttsPitch:1,ttsVolume:1}, saved.alertCfg||{}));
     
-    // Новые настройки для виджета Клипа с дефолтными значениями для текста ожидания
+    // Обновленные настройки музыки
     const musicCfg = reactive(Object.assign({
-      emptyText: 'ЗАКАЗ МУЗЫКИ 250 ₸', emptyTextSize: 50, width: 800, height: 450, scale: 1, 
+      emptyText: 'ЗАКАЗ МУЗЫКИ 250 ТЕНГЕ', emptySize: 42, emptyX: 50, emptyY: 50,
+      width: 800, height: 450, scale: 1, 
       textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: false
     }, saved.musicCfg||{}));
 
@@ -758,12 +756,14 @@ createApp({
        };
     });
 
-    // Динамический стиль для светящегося текста
-    const waitingTextStyle = computed(() => {
+    // Стили для светящегося текста
+    const emptyTextStyle = computed(() => {
       return {
-        fontSize: `${musicCfg.emptyTextSize || 50}px`,
-        color: musicCfg.textColor || '#ffffff',
-        '--glow-color': musicCfg.cAccent || '#00c2ff'
+        fontSize: `${musicCfg.emptySize || 42}px`,
+        left: `${musicCfg.emptyX ?? 50}%`,
+        top: `${musicCfg.emptyY ?? 50}%`,
+        transform: `translate(-50%, -50%)`,
+        '--ac-glow-color': musicCfg.cAccent || '#00c2ff'
       };
     });
 
@@ -903,7 +903,7 @@ createApp({
       }
     });
 
-    return { mode,tab,selId,alertOpen,globalScale,fbOk,panels,alertCfg,musicCfg,alertVis,alertKey,curDonation,isMobile,kaspiPaste,handleKaspiPaste,quickName,quickAmount,quickMessage,tName,tAmount,tMessage,musicQueue,skipTrack,clearQueue,musicVolume,changeVolume,toast,sceneStyle,alertCardStyle,musicWidgetStyle,waitingTextStyle,cardPos,compFor,addPanel,removePanel,clearProgress,doQuickDonate,doQuickTest,doTrigger,saveAll,copyObs,toggleAdminPlayer };
+    return { mode,tab,selId,alertOpen,globalScale,fbOk,panels,alertCfg,musicCfg,alertVis,alertKey,curDonation,isMobile,kaspiPaste,handleKaspiPaste,quickName,quickAmount,quickMessage,tName,tAmount,tMessage,musicQueue,skipTrack,clearQueue,musicVolume,changeVolume,toast,sceneStyle,alertCardStyle,musicWidgetStyle,emptyTextStyle,cardPos,compFor,addPanel,removePanel,clearProgress,doQuickDonate,doQuickTest,doTrigger,saveAll,copyObs,toggleAdminPlayer };
   }
 }).mount('#app');
 </script>
