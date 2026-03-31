@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SUPREME WIDGET V12 PRO</title>
+<title>SUPREME WIDGET V13 PRO</title>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -86,6 +86,7 @@ select option{background:#111;}
 input[type=range]{flex:1;accent-color:var(--red);cursor:pointer;height:3px;background:var(--border);border-radius:2px;border:none;padding:0;}
 .rv{font-size:10px;color:var(--text-bright);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;background:#080808;padding:3px 6px;border-radius:4px;border:1px solid var(--border);}
 .color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.color-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .ci{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;}
 input[type=color]{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:#000;padding:2px;}
 .cb-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;}
@@ -112,21 +113,19 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition: all 0.2s;}
 .btn-add-panel:hover{background:#1c1c1c; transform: translateY(-1px);}
 .actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
-
+.file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
+.file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
+.file-btn{background:#080808;border:1px solid var(--border);color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);font-size:10px;width:100%;text-align:center;font-family:'Unbounded';font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:all .2s;cursor:pointer;}
+.file-wrap:hover .file-btn{border-color:var(--red);color:var(--text-bright);}
+.file-ok{font-size:9px;color:#00cc44;margin-top:3px;font-weight:700;}
+.file-err{font-size:9px;color:#ff4444;margin-top:3px;font-weight:700;}
 .preview-zone{position:relative;background:#0a0a0a;background-image:radial-gradient(#1c1c1c 1px,transparent 1px);background-size:22px 22px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
 .pz-label{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:1.5px;pointer-events:none;z-index:5;white-space:nowrap;}
 .pz-mode{position:absolute;top:14px;right:16px;font-size:8px;font-weight:700;color:#1e1e1e;text-transform:uppercase;letter-spacing:1px;pointer-events:none;z-index:5;}
 .widget-scene{position:relative;width:100%;height:100%;transform-origin:center center;}
 .static-panel{position:absolute;z-index:10;transition: top 0.3s ease, left 0.3s ease;}
 .static-panel.sel .glass{outline:1.5px solid rgba(0,255,180,.7);outline-offset:4px;}
-
-.glass{
-  position:relative;width:100%;height:100%;
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  border:1px solid rgba(255,255,255,.07);
-  box-shadow: inset 0 0 20px rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.6);
-  overflow:hidden;transition: all 0.3s ease;
-}
+.glass{position:relative;width:100%;height:100%;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);box-shadow: inset 0 0 20px rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.6);overflow:hidden;transition: all 0.3s ease;}
 .goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
 .goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
 .prog-track{width:100%;background:rgba(0,0,0,.6);overflow:hidden;border:1px solid rgba(255,255,255,.05);position:relative;box-shadow: inset 0 2px 10px rgba(0,0,0,.5);}
@@ -140,7 +139,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .rk-1{background:linear-gradient(90deg,rgba(255,215,0,.15),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
 .rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent) !important;border-color:rgba(200,200,200,.2) !important;color:var(--silver) !important;}
 .rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent) !important;border-color:rgba(205,127,50,.2) !important;color:var(--bronze) !important;}
-
 .chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
 .chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
 .chal-brand{display:flex;align-items:center;}
@@ -158,6 +156,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 .alert-card{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:28px 36px;gap:12px;text-align:center;min-width:380px;max-width:580px;overflow:hidden;}
 .alert-card::before{content:'';position:absolute;inset:0;background:inherit;filter:blur(0);z-index:-1;}
+.alert-media{width:100%;max-height:180px;overflow:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.alert-media img,.alert-media video{width:100%;height:100%;object-fit:cover;border-radius:10px;max-height:180px;}
 .a-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:3px;opacity:.75;}
 .a-name{font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1;}
 .a-amount{font-weight:900;line-height:1;}
@@ -176,12 +176,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .glow-card{animation:glowPulse 2s ease-in-out infinite;}
 @keyframes glowPulse{0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}}
 .alert-preview-wrap{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;position:relative;}
-
 .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:#151515;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:var(--radius-md);font-size:10px;font-weight:700;transition:all .25s;opacity:0;z-index:99999;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 .toast.ok{border-color:#00aa44;color:#00cc44;}
 .toast.err{border-color:#ff4444;color:#ff4444;}
-
 .fb-status{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#0a0a0a;}
 .fb-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition: background 0.3s;}
 .fb-dot.ok{background:#00cc44;box-shadow:0 0 8px #00cc44; animation: pulseDot 2s infinite;}
@@ -189,14 +187,29 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
 /* МОБИЛЬНАЯ ВЕРСИЯ */
-.mobile-kaspi-view { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); padding: 0; gap: 0; overflow: hidden; }
-.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.mobile-kaspi-view {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bg);
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+.mob-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
 .mob-logo { font-size: 13px; font-weight: 900; }
 .mob-logo span { color: var(--red); }
 .mob-fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background .3s; }
 .mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 8px #00cc44; animation: pulseDot 2s infinite; }
 .mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
-
 .mob-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
 .kaspi-paste-area { background: #111; border: 2px dashed var(--red); border-radius: var(--radius-lg); padding: 14px; color: #fff; font-size: 13px; min-height: 100px; width: 100%; resize: none; font-family: 'Unbounded'; transition: all 0.25s; line-height: 1.5; }
 .kaspi-paste-area:focus { border-style: solid; border-color: var(--red); box-shadow: 0 0 20px rgba(255,0,68,.15); min-height: 120px; }
@@ -205,84 +218,111 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .parsed-row label { font-size: 8px; min-width: 60px; color: var(--text-dim); }
 .parsed-row input, .parsed-row textarea { flex: 1; padding: 10px 12px; font-size: 13px; }
 .parsed-row textarea { min-height: 44px; resize: none; }
+.auto-send-banner { display: flex; align-items: center; justify-content: space-between; background: rgba(0,170,68,.1); border: 1px solid rgba(0,170,68,.3); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 9px; font-weight: 700; color: #00cc44; }
+.auto-send-countdown { font-size: 16px; font-weight: 900; color: #00cc44; min-width: 20px; text-align: right; }
 .mob-actions { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 14px; background: var(--panel); border-top: 1px solid var(--border); flex-shrink: 0; }
-.btn-mob-send { font-family: 'Unbounded'; font-weight: 900; font-size: 16px; padding: 20px; border-radius: var(--radius-md); border: none; cursor: pointer; background: linear-gradient(135deg, #ff0044, #cc0034); color: #fff; width: 100%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(255,0,68,.3); }
-.btn-mob-clear { font-family: 'Unbounded'; font-weight: 700; font-size: 12px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,0,0,.2); cursor: pointer; background: rgba(255,0,0,.06); color: #ff5555; width: 100%; display: flex; align-items: center; justify-content: center;}
-
+.btn-mob-send { font-family: 'Unbounded'; font-weight: 900; font-size: 16px; text-transform: uppercase; letter-spacing: .5px; padding: 20px; border-radius: var(--radius-md); border: none; cursor: pointer; background: linear-gradient(135deg, #ff0044, #cc0034); color: #fff; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 20px rgba(255,0,68,.3); transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn-mob-send:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(255,0,68,.2); }
+.btn-mob-send:disabled { opacity: .35; transform: none; box-shadow: none; }
+.btn-mob-clear { font-family: 'Unbounded'; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,0,0,.2); cursor: pointer; background: rgba(255,0,0,.06); color: #ff5555; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn-mob-clear:active { background: rgba(255,0,0,.15); }
 .mob-music-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0,194,255,.2); border-radius: var(--radius-lg); overflow: hidden; }
 .mob-music-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid rgba(0,194,255,.1); }
-.mob-music-title { font-size: 11px; font-weight: 900; color: var(--tenge); text-transform: uppercase; }
+.mob-music-title { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; color: var(--tenge); text-transform: uppercase; letter-spacing: .5px; }
 .mob-volume-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(0,194,255,.04); border-bottom: 1px solid rgba(0,194,255,.08); }
-.mob-volume-row input[type=range] { flex: 1; height: 28px; accent-color: var(--tenge); }
-.mob-track-item { display: flex; align-items: center; padding: 10px 14px; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.04); }
+.mob-volume-row input[type=range] { flex: 1; height: 28px; accent-color: var(--tenge); cursor: pointer; border: none; background: transparent; }
+.mob-vol-val { font-size: 11px; font-weight: 900; color: var(--tenge); min-width: 38px; text-align: right; }
+.mob-track-item { display: flex; align-items: center; padding: 10px 14px; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.04); transition: background .15s; -webkit-tap-highlight-color: transparent; touch-action: pan-y; }
+.mob-track-item:last-child { border-bottom: none; }
 .mob-track-item.playing { background: rgba(0,194,255,.07); }
 .mob-track-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .mob-track-status { font-size: 10px; font-weight: 900; color: #ccc; display: flex; align-items: center; gap: 5px; }
 .mob-track-status.now { color: var(--tenge); }
-.mob-skip-btn { font-family: 'Unbounded'; padding: 10px 14px; border-radius: var(--radius-sm); background: rgba(0,194,255,.1); color: var(--tenge); border:1px solid rgba(0,194,255,.4); font-weight: 900; }
-.mob-remove-btn { font-family: 'Unbounded'; padding: 10px 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,.04); color: var(--text-dim); border:1px solid var(--border); font-weight: 900; }
-
+.mob-track-id { font-size: 9px; color: var(--text-dim); }
+.mob-skip-btn { font-family: 'Unbounded'; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(0,194,255,.4); background: rgba(0,194,255,.1); color: var(--tenge); font-size: 11px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; white-space: nowrap; min-width: 52px; text-align: center; }
+.mob-skip-btn:active { background: rgba(0,194,255,.25); transform: scale(.94); }
+.mob-remove-btn { font-family: 'Unbounded'; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-dim); font-size: 14px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; }
+.mob-remove-btn:active { background: rgba(255,50,50,.15); color: #ff5555; }
 .music-queue-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0, 194, 255, 0.2); border-radius: var(--radius-lg); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .music-queue-header { display: flex; align-items: center; justify-content: space-between; }
-.music-queue-title { font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--tenge); display:flex; align-items:center; gap:8px;}
-.btn-clear-queue { background: rgba(255, 50, 50, 0.1); border: 1px solid rgba(255, 50, 50, 0.3); color: #ff5555; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 8px; font-weight: 900; cursor: pointer; }
+.music-queue-title { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--tenge); }
+.music-queue-title .mq-icon { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #0088cc, #004488); display: flex; align-items: center; justify-content: center; font-size: 11px; }
+.btn-clear-queue { background: rgba(255, 50, 50, 0.1); border: 1px solid rgba(255, 50, 50, 0.3); color: #ff5555; padding: 6px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
+.btn-clear-queue:hover { background: rgba(255, 50, 50, 0.25); border-color: rgba(255, 50, 50, 0.6); transform: translateY(-1px); }
 .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .queue-item.playing { border-color: rgba(0, 194, 255, 0.5); background: rgba(0, 194, 255, 0.06); }
 .track-info { display: flex; flex-direction: column; gap: 3px; }
 .track-status { font-size: 10px; font-weight: 900; color: var(--text-bright); display: flex; align-items: center; gap: 5px; }
 .track-status.now { color: var(--tenge); }
-.btn-skip { background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15)); border: 1px solid rgba(0, 194, 255, 0.4); color: var(--tenge); padding: 7px 12px; border-radius: var(--radius-sm); font-size: 9px; font-weight: 900; cursor: pointer; }
-.btn-remove { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 10px; border-radius: var(--radius-sm); font-size: 9px; font-weight: 900; cursor: pointer; }
+.track-id { font-size: 8px; color: var(--text-dim); letter-spacing: 0.3px; }
+.btn-skip { background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15)); border: 1px solid rgba(0, 194, 255, 0.4); color: var(--tenge); padding: 7px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+.btn-skip:hover { background: linear-gradient(135deg, rgba(0,194,255,0.3), rgba(0,100,200,0.3)); transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,194,255,0.2); }
+.btn-remove { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 10px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
+.btn-remove:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff5555; }
 .bar-anim { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
 .bar-anim span { width: 3px; background: var(--tenge); border-radius: 2px; animation: barBounce 0.8s ease-in-out infinite; }
 .bar-anim span:nth-child(2) { animation-delay: 0.15s; }
 .bar-anim span:nth-child(3) { animation-delay: 0.3s; }
 @keyframes barBounce { 0%,100% { height: 4px; } 50% { height: 12px; } }
 .volume-control-wrap { display: flex; align-items: center; gap: 12px; background: rgba(0, 194, 255, 0.05); border: 1px solid rgba(0, 194, 255, 0.2); padding: 12px 16px; border-radius: var(--radius-sm); margin-top: 8px; }
+.volume-icon { font-size: 16px; }
+.volume-slider { flex: 1; accent-color: var(--tenge); height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+.volume-value { font-size: 10px; font-weight: 900; color: var(--tenge); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 
-/* ВИДЖЕТ МУЗЫКИ ДЛЯ OBS */
-.music-scene { width: 100vw; height: 100vh; background: transparent; position: relative; overflow: hidden; }
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ВИДЖЕТ МУЗЫКИ ДЛЯ OBS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.music-scene { width: 100vw; height: 100vh; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 
-/* ТЕКСТ В СОСТОЯНИИ ПОКОЯ (IDLE) */
-.music-idle-text {
+/* IDLE ANIMATED TEXT */
+.idle-music-text {
   position: absolute;
+  top: var(--idle-top, 50%);
+  left: var(--idle-left, 50%);
+  transform: translate(-50%, -50%);
+  font-size: var(--idle-size, 32px);
+  font-family: 'Unbounded', sans-serif;
   font-weight: 900;
   text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
   white-space: nowrap;
-  background-size: 200% auto;
-  color: transparent;
+  background: linear-gradient(
+    90deg,
+    var(--idle-c1, #ff0088) 0%,
+    var(--idle-c2, #00c2ff) 33%,
+    var(--idle-c3, #ffd700) 66%,
+    var(--idle-c1, #ff0088) 100%
+  );
+  background-size: 300% 100%;
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShine 3s linear infinite;
+  animation: idleShimmer var(--idle-speed, 3s) linear infinite;
+  filter: drop-shadow(0 0 var(--idle-glow-px, 20px) var(--idle-glow-color, #00c2ff));
   z-index: 10;
   pointer-events: none;
-  text-align: center;
+  transition: opacity 0.4s ease;
 }
-@keyframes gradientShine {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+@keyframes idleShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
 }
-
-.fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
 
 .music-clip-container {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) perspective(1200px) rotateX(2deg);
+  position: relative;
   border-radius: 24px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, rgba(20,20,20,0.6), rgba(5,5,5,0.8));
-  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid rgba(255,255,255,0.1);
   box-shadow: inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 5px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.8), 0 0 40px var(--ac-glow, rgba(0, 194, 255, 0.2));
-  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
-  z-index: 5;
-}
-.music-clip-container.is-hidden {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transform: translate(-50%, -50%) perspective(1200px) rotateX(2deg) scale(0.85) !important;
+  transform: perspective(1200px) rotateX(2deg);
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .music-clip-container::before {
   content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
@@ -290,7 +330,129 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 .yt-wrapper { position: absolute; inset: 0; z-index: 1; background: #000; border-radius: 24px; overflow: hidden; }
 .yt-wrapper iframe { width: 100%; height: 100%; border: none; }
-.preview-music-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
+.preview-music-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: scale(0.6); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   OBS URL CARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.obs-url-card {
+  background: #0a0a0a;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.obs-url-title {
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.obs-url-display {
+  background: #080808;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 9px;
+  color: var(--text-dim);
+  font-family: monospace;
+  word-break: break-all;
+  line-height: 1.5;
+  min-height: 28px;
+  letter-spacing: .2px;
+}
+.obs-btn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+.btn-obs {
+  background: #151515;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  padding: 10px 6px 8px;
+  border-radius: var(--radius-sm);
+  font-family: 'Unbounded';
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.btn-obs:hover { background: #1c1c1c; border-color: var(--border-hi); color: var(--text); }
+.btn-obs.active { border-color: var(--red); background: rgba(255,0,68,.07); color: #fff; }
+.btn-obs.copied { border-color: #00cc44 !important; color: #00cc44 !important; background: rgba(0,204,68,.07) !important; }
+.btn-obs-icon { font-size: 16px; line-height: 1; }
+.btn-obs-sub { font-size: 7px; color: var(--text-dim); font-weight: 400; text-transform: none; }
+.btn-obs.copied .btn-obs-sub { color: #00cc44; }
+.btn-copy-url {
+  background: linear-gradient(135deg, #1a1a1a, #111);
+  border: 1px solid var(--border-hi);
+  color: var(--text);
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  font-family: 'Unbounded';
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.btn-copy-url:hover { background: #1c1c1c; border-color: #444; }
+.btn-copy-url.copied { border-color: #00cc44; color: #00cc44; background: rgba(0,204,68,.07); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PREVIEW IDLE TEXT (admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.idle-preview-box {
+  background: #050505;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70px;
+  overflow: hidden;
+  position: relative;
+}
+.idle-preview-text {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+  background: linear-gradient(
+    90deg,
+    var(--p-idle-c1, #ff0088) 0%,
+    var(--p-idle-c2, #00c2ff) 33%,
+    var(--p-idle-c3, #ffd700) 66%,
+    var(--p-idle-c1, #ff0088) 100%
+  );
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: idleShimmer var(--p-idle-speed, 3s) linear infinite;
+  filter: drop-shadow(0 0 var(--p-idle-glow-px, 12px) var(--p-idle-glow-color, #00c2ff));
+}
 
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
@@ -311,6 +473,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <transition name="alert">
       <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
         <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
+        <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
+          <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
+        </div>
+        <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
+          <img :src="alertCfg.imageData" alt="">
+        </div>
         <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
         <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
         <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
@@ -319,14 +487,17 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </transition>
   </div>
 
+  <!-- ═══════════════ MUSIC WIDGET MODE ═══════════════ -->
   <div v-else-if="mode==='music'" class="music-scene">
-    <transition name="fade">
-      <div v-if="musicQueue.length === 0" class="music-idle-text" :style="idleTextStyle">
-        {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ₸' }}
-      </div>
-    </transition>
+    <!-- Idle text — показывается ТОЛЬКО когда очередь пуста -->
+    <div
+      class="idle-music-text"
+      v-show="musicQueue.length === 0"
+      :style="idleTextStyle"
+    >{{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}</div>
 
-    <div class="music-clip-container" :class="{'is-hidden': musicQueue.length === 0}" :style="musicWidgetStyle">
+    <!-- Плеер — показывается ТОЛЬКО когда есть треки -->
+    <div class="music-clip-container" v-show="musicQueue.length > 0" :style="musicWidgetStyle">
       <div class="yt-wrapper">
         <div id="yt-music-widget"></div>
       </div>
@@ -362,15 +533,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </div>
           <div class="parsed-row" style="align-items:flex-start;"><label style="padding-top:8px;">Сообщ.</label><textarea v-model="quickMessage" placeholder="Сообщение"></textarea></div>
+          <div class="auto-send-banner" v-if="autoSendCountdown > 0"><span>⚡ Авто-отправка через</span><span class="auto-send-countdown">{{autoSendCountdown}}</span></div>
+          <div class="auto-send-banner" v-else-if="autoSendCountdown === 0 && (quickName||quickAmount)"><span>✅ Готово к отправке — нажми кнопку</span></div>
         </div>
         <div class="mob-music-card" v-if="musicQueue.length > 0">
           <div class="mob-music-head"><div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div><button class="btn-clear-queue" @click="clearQueue">🗑</button></div>
-          <div class="mob-volume-row"><span style="font-size:18px;">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span><input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume"></div>
+          <div class="mob-volume-row"><span style="font-size:18px;">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span><input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume"><span class="mob-vol-val">{{musicVolume}}%</span></div>
           <div v-for="(track, idx) in musicQueue" :key="track.uid" class="mob-track-item" :class="{playing: idx===0}">
             <div class="mob-track-meta">
               <div class="mob-track-status" :class="{now: idx===0}">
-                <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет</template><template v-else>⏳ #{{idx}}</template>
+                <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Сейчас играет</template><template v-else>⏳ #{{idx}}</template>
               </div>
+              <span class="mob-track-id">{{track.videoId}}</span>
             </div>
             <button v-if="idx===0" class="mob-skip-btn" @click="skipTrack(0)">⏭</button>
             <button v-else class="mob-remove-btn" @click="skipTrack(idx)">✕</button>
@@ -387,6 +561,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       <div class="sidebar desktop-only">
         <div class="sidebar-head">
           <div class="logo"><div class="logo-mark">W</div><div class="logo-name">WIDGET <span>PRO</span></div></div>
+          <div class="ver-tag">v13 TENGE</div>
         </div>
         <div class="tabs">
           <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
@@ -395,10 +570,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="sidebar-body">
 
+          <!-- ═══ WIDGETS TAB ═══ -->
           <template v-if="tab==='widgets'">
             <div class="fb-status"><div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div><span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span></div>
             <div class="donate-form-card">
               <div class="donate-form-title"><div class="dft-icon">₸</div>Быстрый донат</div>
+              <div class="live-preview-strip" v-if="quickName||quickAmount">
+                <div><div class="lp-label">Донатер</div><div class="lp-name">{{quickName||'—'}}</div></div><div class="lp-sep"></div>
+                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div></div>
+              </div>
               <div class="donate-input-row">
                 <div class="fg"><label>Имя донатера</label><input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate"></div>
                 <div class="fg"><label>Сумма (₸)</label><div class="donate-amount-wrap"><input type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate"><span class="tenge-badge">₸</span></div></div>
@@ -419,16 +599,32 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               </div>
               <div v-if="selId===p.id" class="sec-body">
                 <div class="fr"><div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div><div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div></div>
+                <div class="divider"></div>
                 <template v-if="p.type==='goal'">
-                  <div class="fr"><div class="fg"><label>Текущая сумма</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель</label><input type="text" v-model="p.max"></div></div>
+                  <div class="fr"><div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div></div>
+                  <div class="fr"><div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel"></div><div class="fg"><label>Размер метки</label><div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div></div></div>
                   <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸"></textarea></div>
                 </template>
+                <template v-if="p.type==='challenge'">
+                  <div class="fg"><label>Логотип</label><div class="file-wrap"><div class="file-btn">📁 Выбрать изображение</div><input type="file" accept="image/*" @change="uploadIcon($event,p)"></div></div>
+                  <div class="fr"><div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div><div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div></div>
+                </template>
+                <div class="divider"></div>
+                <div class="sub-lbl">Цвета и Размеры</div>
+                <div class="fg"><label>Ширина панели</label><div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div></div>
+                <div class="fr"><div class="fg"><label>Фон</label><input type="color" v-model="p.bgColor"></div><div class="fg"><label>Прозрачность фона</label><div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity}}</span></div></div></div>
               </div>
+            </div>
+            
+            <div class="sec-head"><div class="sec-head-l"><div class="sec-name">⚙ Глобальные настройки OBS</div></div></div>
+            <div class="sec-body">
+              <div class="fg"><label>Масштаб сцены</label><div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div></div>
             </div>
           </template>
 
+          <!-- ═══ MUSIC TAB ═══ -->
           <template v-if="tab==='music'">
-            <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка Музыки / Клипов</div></div></div>
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка OBS Клипа</div></div></div>
             <div class="sec-body">
               <div class="cb-row" style="margin-bottom:10px;">
                 <label>Слушать музыку в этой админке<br><span style="color:var(--text-dim);font-weight:400;font-size:8px;">(Выключите, если используете виджет в OBS, чтобы не было двойного звука)</span></label>
@@ -443,6 +639,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div class="volume-control-wrap">
                   <span class="volume-icon">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
                   <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
+                  <span class="volume-value">{{ musicVolume }}%</span>
                 </div>
                 <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
                   <div class="track-info">
@@ -456,35 +653,76 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
 
-              <div class="divider"></div>
-              <div class="sub-lbl">Текст ожидания (когда нет треков)</div>
-              <div class="fg"><label>Текст</label><input type="text" v-model="musicCfg.emptyText" placeholder="ЗАКАЗ МУЗЫКИ 250 ₸"></div>
-              
               <div class="fr">
-                <div class="fg"><label>Позиция X (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleX"><span class="rv">{{musicCfg.idleX}}%</span></div></div>
-                <div class="fg"><label>Позиция Y (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleY"><span class="rv">{{musicCfg.idleY}}%</span></div></div>
+                <div class="fg"><label>Ширина окна (px)</label><input type="number" v-model.number="musicCfg.width"></div>
+                <div class="fg"><label>Высота окна (px)</label><input type="number" v-model.number="musicCfg.height"></div>
               </div>
-              <div class="fg"><label>Размер шрифта (px)</label><div class="rr"><input type="range" min="16" max="150" v-model.number="musicCfg.idleFontSize"><span class="rv">{{musicCfg.idleFontSize}}</span></div></div>
+              <div class="fg"><label>Масштаб в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
+              <div class="divider"></div>
+
+              <!-- IDLE TEXT SETTINGS -->
+              <div class="sub-lbl">✨ Текст в состоянии покоя</div>
+              <div class="fg"><label>Текст заглушки</label><input type="text" v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге"></div>
               
-              <div class="color-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 5px;">
+              <!-- Live preview -->
+              <div class="idle-preview-box" :style="idlePreviewStyle">
+                <span class="idle-preview-text" :style="{fontSize: Math.min(musicCfg.idleSize||32, 28)+'px'}">
+                  {{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}
+                </span>
+              </div>
+
+              <div class="fg">
+                <label>Позиция X — горизонталь (%)</label>
+                <div class="rr">
+                  <input type="range" min="0" max="100" v-model.number="musicCfg.idleLeft">
+                  <span class="rv">{{musicCfg.idleLeft}}%</span>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Позиция Y — вертикаль (%)</label>
+                <div class="rr">
+                  <input type="range" min="0" max="100" v-model.number="musicCfg.idleTop">
+                  <span class="rv">{{musicCfg.idleTop}}%</span>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Размер шрифта (px)</label>
+                <div class="rr">
+                  <input type="range" min="12" max="120" v-model.number="musicCfg.idleSize">
+                  <span class="rv">{{musicCfg.idleSize}}px</span>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Размер свечения (glow)</label>
+                <div class="rr">
+                  <input type="range" min="0" max="80" v-model.number="musicCfg.idleGlowSize">
+                  <span class="rv">{{musicCfg.idleGlowSize}}px</span>
+                </div>
+              </div>
+              <div class="fg">
+                <label>Скорость переливания (сек)</label>
+                <div class="rr">
+                  <input type="range" min="0.5" max="15" step="0.5" v-model.number="musicCfg.idleSpeed">
+                  <span class="rv">{{musicCfg.idleSpeed}}s</span>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="sub-lbl" style="margin-bottom:2px">🎨 Цвета градиента</div>
+              <div class="color-grid">
                 <div class="ci"><span>Цвет 1</span><input type="color" v-model="musicCfg.idleColor1"></div>
                 <div class="ci"><span>Цвет 2</span><input type="color" v-model="musicCfg.idleColor2"></div>
                 <div class="ci"><span>Цвет 3</span><input type="color" v-model="musicCfg.idleColor3"></div>
-                <div class="ci"><span>Glow</span><input type="color" v-model="musicCfg.idleGlow"></div>
+                <div class="ci"><span>Свечение</span><input type="color" v-model="musicCfg.idleGlowColor"></div>
               </div>
 
               <div class="divider"></div>
-              <div class="sub-lbl">Контейнер Видео-плеера</div>
-              <div class="fr">
-                <div class="fg"><label>Ширина (px)</label><input type="number" v-model.number="musicCfg.width"></div>
-                <div class="fg"><label>Высота (px)</label><input type="number" v-model.number="musicCfg.height"></div>
+              <div class="color-grid" style="grid-template-columns:1fr 1fr">
+                <div class="ci"><span>Акцент (Glow плеера)</span><input type="color" v-model="musicCfg.cAccent"></div>
               </div>
-              <div class="fg"><label>Масштаб в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
-              
-              <button class="btn btn-tenge" style="margin-top:10px;" @click="copyObs('music')">📋 КОПИРОВАТЬ ССЫЛКУ КЛИПА</button>
             </div>
           </template>
 
+          <!-- ═══ ALERT TAB ═══ -->
           <template v-if="tab==='alert'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">Запустить Alert вручную</div></div></div>
             <div class="sec-body">
@@ -492,20 +730,74 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="fg"><label>Сообщение</label><textarea v-model="tMessage" placeholder="Текст"></textarea></div>
               <button class="btn btn-green" @click="doTrigger">▶ В OBS</button>
             </div>
+
+            <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
+              <div class="sec-head-l"><div class="sec-name">🔔 Звук при донате</div></div>
+              <span class="sec-chevron">▼</span>
+            </div>
+            <div v-if="alertOpen" class="sec-body">
+              <div class="cb-row">
+                <label>Включить звук при донате</label>
+                <input type="checkbox" v-model="alertCfg.soundEnabled">
+              </div>
+              <template v-if="alertCfg.soundEnabled">
+                <div class="fg">
+                  <label>Тип звука</label>
+                  <select v-model="alertCfg.soundType">
+                    <option value="chime">🎵 Chime — колокольчики</option>
+                    <option value="ding">🔔 Ding — один звук</option>
+                    <option value="fanfare">🎺 Fanfare — фанфара</option>
+                    <option value="cash">💰 Cash — кассовый</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Громкость звука</label>
+                  <div class="rr">
+                    <input type="range" min="0" max="100" v-model.number="alertCfg.soundVolume">
+                    <span class="rv">{{alertCfg.soundVolume}}%</span>
+                  </div>
+                </div>
+                <button class="btn btn-flat" @click="playDonationSound">🔊 Тест звука</button>
+              </template>
+            </div>
           </template>
+
         </div>
 
         <div class="actions">
           <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-flat" style="flex:1" @click="copyObs('widget')">📋 Виджет URL</button>
-            <button class="btn btn-flat" style="flex:1" @click="copyObs('alert')">📋 Alert URL</button>
+          
+          <!-- OBS URL CARD -->
+          <div class="obs-url-card">
+            <div class="obs-url-title">📡 OBS Browser Source URL</div>
+            <div class="obs-btn-grid">
+              <button class="btn-obs" :class="{active: obsSelected==='widget', copied: copiedObs.widget}" @click="selectObs('widget')">
+                <span class="btn-obs-icon">🎯</span>
+                <span>Виджет</span>
+                <span class="btn-obs-sub">{{copiedObs.widget ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+              <button class="btn-obs" :class="{active: obsSelected==='music', copied: copiedObs.music}" @click="selectObs('music')">
+                <span class="btn-obs-icon">🎵</span>
+                <span>Клип</span>
+                <span class="btn-obs-sub">{{copiedObs.music ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+              <button class="btn-obs" :class="{active: obsSelected==='alert', copied: copiedObs.alert}" @click="selectObs('alert')">
+                <span class="btn-obs-icon">🎉</span>
+                <span>Alert</span>
+                <span class="btn-obs-sub">{{copiedObs.alert ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+            </div>
+            <div v-if="obsSelected" class="obs-url-display">{{ currentObsUrl }}</div>
+            <button v-if="obsSelected" class="btn-copy-url" :class="{copied: copiedObs[obsSelected]}" @click="copyObs(obsSelected)">
+              {{ copiedObs[obsSelected] ? '✓ URL скопирован!' : '📋 Копировать URL' }}
+            </button>
           </div>
         </div>
       </div>
 
       <div class="preview-zone desktop-only" ref="previewZone">
         <div class="pz-label">PREVIEW · NO DRAG · USE X/Y</div>
+        <div class="pz-mode">OBS OVERLAY</div>
 
         <div v-if="tab==='alert'" class="alert-preview-wrap">
           <canvas ref="pcvs" class="particle-canvas"></canvas>
@@ -527,14 +819,14 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
 
         <div v-if="tab==='music'" class="preview-music-wrap">
-          <transition name="fade">
-            <div v-if="musicQueue.length === 0" class="music-idle-text" :style="idleTextStyle">
-              {{ musicCfg.emptyText || 'ЗАКАЗ МУЗЫКИ 250 ₸' }}
-            </div>
-          </transition>
-
-          <div class="music-clip-container" :class="{'is-hidden': musicQueue.length === 0}" :style="musicWidgetStyle">
-            <div style="width:100%;height:100%;background:#000;display:flex;align-items:center;justify-content:center;color:#444;font-size:12px;font-weight:900;">[ YT PLAYER PREVIEW ]</div>
+          <!-- Preview idle text -->
+          <div v-if="musicQueue.length === 0" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;">
+            <span class="idle-preview-text" :style="{...idlePreviewStyle, fontSize: Math.min(musicCfg.idleSize||32, 22)+'px', position:'static', transform:'none'}">
+              {{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}
+            </span>
+          </div>
+          <div class="music-clip-container" v-show="musicQueue.length > 0" :style="musicWidgetStyle">
+            <div class="music-empty-text" :style="{color: musicCfg.textColor}">{{ musicCfg.emptyText || 'МУЗЫКИ НЕТ' }}</div>
           </div>
         </div>
       </div>
@@ -548,7 +840,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 <div class="glass" :style="glassStyle">
   <div class="goal-wrap" :style="{padding:(p.padding||20)+'px'}">
     <div class="goal-top">
-      <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
+      <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
       <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} / {{p.max||'50 000'}} ₸</span>
     </div>
     <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
@@ -569,9 +861,14 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   <div class="chal-wrap" :style="{padding:(p.padding||20)+'px'}">
     <div class="chal-row">
       <div class="chal-brand">
+        <div v-if="p.iconData" class="icon-mask" :style="{width:(p.iconSize||35)+'px',height:(p.iconSize||35)+'px',backgroundColor:p.cIcon||'#fff',maskImage:'url('+p.iconData+')',WebkitMaskImage:'url('+p.iconData+')',marginRight:(p.iconGap||15)+'px'}"></div>
         <span :contenteditable="!isObs" class="ed chal-title" :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}" @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
       </div>
-      <div><div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div></div>
+      <div v-if="p.showCount"><div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div><div class="chal-total" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}} ₸</div></div>
+    </div>
+    <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
+    <div v-if="p.showCount" style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="chal-label" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#aaa'}">Прогресс</span><span :style="{fontSize:(p.textSize||12)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
     </div>
   </div>
 </div>
@@ -608,6 +905,7 @@ const GoalComp = defineComponent({
 const ChalComp = defineComponent({
   template:'#tpl-challenge', props:['p','isObs'],
   computed:{
+    pct(){ const c=this.p.current||0,m=parseFloat(this.p.max)||1; return Math.min(100,Math.round(c/m*100)); },
     glassStyle(){
       const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
       return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'60px'};
@@ -631,6 +929,7 @@ createApp({
     const mode = ref(urlMode||'admin');
     const tab  = ref('widgets');
     const selId= ref(null);
+    const alertOpen = ref(false);
     const globalScale = ref(saved.globalScale||1);
     const fbOk = ref(!!db);
     const isMobile = ref(window.innerWidth <= 900);
@@ -641,16 +940,48 @@ createApp({
     const kaspiPaste = ref('');
     const musicQueue = reactive([]);
     const musicVolume = ref(100);
+    const autoSendCountdown = ref(-1);
+    let autoSendTimer = null, autoSendInterval = null;
 
     const panels = reactive(saved.panels || []);
-    const alertCfg = reactive(Object.assign({ labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',nameFontSize:32,amountFontSize:48,msgFontSize:24,cardRadius:16}, saved.alertCfg||{}));
+    if(!panels.length) panels.push({
+      id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
+      lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
+      width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
+      cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
+      titleSize:16,textSize:13,barHeight:14,x:80,y:60
+    });
+
+    const alertCfg = reactive(Object.assign({
+      labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',
+      bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',nameColor:'#ffffff',
+      amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',
+      nameFontSize:32,amountFontSize:48,msgFontSize:24,
+      cardRadius:16,particleColor:'#ffd700',particleCount:80,
+      ttsEnabled:false,ttsRate:1,ttsPitch:1,ttsVolume:1,
+      // ЗВУК
+      soundEnabled: true,
+      soundVolume: 70,
+      soundType: 'chime'
+    }, saved.alertCfg||{}));
     
-    // Новые настройки для музыки с позицией и цветами Idle-текста
+    // Настройки виджета Клипа + Idle текст
     const musicCfg = reactive(Object.assign({
-      emptyText: 'ЗАКАЗ МУЗЫКИ 250 ₸', width: 800, height: 450, scale: 1, 
-      cAccent: '#00c2ff', adminEnablePlayer: false,
-      idleFontSize: 48, idleX: 50, idleY: 50,
-      idleColor1: '#ff0044', idleColor2: '#ffd700', idleColor3: '#00c2ff', idleGlow: '#ff0044'
+      emptyText: 'Музыки нет',
+      width: 800, height: 450, scale: 1,
+      textColor: '#ffffff', cAccent: '#00c2ff',
+      adminEnablePlayer: false,
+      // IDLE TEXT
+      idleText: 'Заказ музыки 250 тенге',
+      idleLeft: 50,
+      idleTop: 50,
+      idleSize: 36,
+      idleGlowSize: 22,
+      idleSpeed: 3,
+      idleColor1: '#ff0088',
+      idleColor2: '#00c2ff',
+      idleColor3: '#ffd700',
+      idleGlowColor: '#00c2ff'
     }, saved.musicCfg||{}));
 
     const alertVis = ref(false), alertKey = ref(0), curDonation = reactive({name:'',amount:'', msg:''});
@@ -659,30 +990,115 @@ createApp({
     const tName = ref(''), tAmount = ref(null), tMessage = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
 
-    function showToast(msg,type='ok'){ toast.msg=msg; toast.type=type; toast.show=true; setTimeout(()=>toast.show=false,2500); }
+    // OBS URL state
+    const obsSelected = ref('');
+    const copiedObs = reactive({widget:false, music:false, alert:false});
+    const currentObsUrl = computed(() => obsSelected.value ? `${location.href.split('?')[0]}?mode=${obsSelected.value}` : '');
+
+    function selectObs(type) {
+      obsSelected.value = type;
+    }
+
+    let toastTm;
+    function showToast(msg,type='ok'){ toast.msg=msg; toast.type=type; toast.show=true; clearTimeout(toastTm); toastTm=setTimeout(()=>toast.show=false,2500); }
 
     const sceneStyle = computed(()=>({ transform:`scale(${globalScale.value})` }));
     const alertCardStyle = computed(()=>{ const c=alertCfg, bg=c.bgColor||'#111111', op=c.bgOpacity!==undefined?c.bgOpacity:.9; return { background:`rgba(${hexToRgb(bg)},${op})`, borderRadius:(c.cardRadius||16)+'px', border:`1px solid ${c.borderColor||'rgba(255,215,0,.3)'}`, '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)` }; });
     
-    const musicWidgetStyle = computed(() => {
-       return {
-         width: `${musicCfg.width}px`, height: `${musicCfg.height}px`,
-         transform: `translate(-50%, -50%) scale(${musicCfg.scale})`,
-         '--ac-glow': `rgba(${hexToRgb(musicCfg.cAccent)}, 0.3)`
-       };
-    });
+    const musicWidgetStyle = computed(() => ({
+      width: `${musicCfg.width}px`, height: `${musicCfg.height}px`,
+      transform: `scale(${musicCfg.scale})`,
+      '--ac-glow': `rgba(${hexToRgb(musicCfg.cAccent)}, 0.3)`
+    }));
 
-    // Стили для анимированного текста
-    const idleTextStyle = computed(() => {
-      return {
-        top: `${musicCfg.idleY}%`,
-        left: `${musicCfg.idleX}%`,
-        transform: 'translate(-50%, -50%)',
-        fontSize: `${musicCfg.idleFontSize}px`,
-        backgroundImage: `linear-gradient(90deg, ${musicCfg.idleColor1}, ${musicCfg.idleColor2}, ${musicCfg.idleColor3}, ${musicCfg.idleColor1})`,
-        filter: `drop-shadow(0 0 15px ${musicCfg.idleGlow}) drop-shadow(0 0 30px ${musicCfg.idleGlow})`
-      };
-    });
+    // Idle text CSS vars — для OBS виджета
+    const idleTextStyle = computed(() => ({
+      '--idle-top': (musicCfg.idleTop || 50) + '%',
+      '--idle-left': (musicCfg.idleLeft || 50) + '%',
+      '--idle-size': (musicCfg.idleSize || 36) + 'px',
+      '--idle-c1': musicCfg.idleColor1 || '#ff0088',
+      '--idle-c2': musicCfg.idleColor2 || '#00c2ff',
+      '--idle-c3': musicCfg.idleColor3 || '#ffd700',
+      '--idle-glow-color': musicCfg.idleGlowColor || '#00c2ff',
+      '--idle-glow-px': (musicCfg.idleGlowSize || 22) + 'px',
+      '--idle-speed': (musicCfg.idleSpeed || 3) + 's',
+    }));
+
+    // Для превью в панели настроек
+    const idlePreviewStyle = computed(() => ({
+      '--p-idle-c1': musicCfg.idleColor1 || '#ff0088',
+      '--p-idle-c2': musicCfg.idleColor2 || '#00c2ff',
+      '--p-idle-c3': musicCfg.idleColor3 || '#ffd700',
+      '--p-idle-glow-color': musicCfg.idleGlowColor || '#00c2ff',
+      '--p-idle-glow-px': Math.min(musicCfg.idleGlowSize || 22, 18) + 'px',
+      '--p-idle-speed': (musicCfg.idleSpeed || 3) + 's',
+    }));
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ЗВУК ДОНАТА
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    function playDonationSound() {
+      if (!alertCfg.soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const vol = (alertCfg.soundVolume || 70) / 100;
+        const type = alertCfg.soundType || 'chime';
+
+        if (type === 'chime') {
+          // Восходящие колокольчики C maj7
+          [[523.25, 0], [659.25, 0.13], [783.99, 0.26], [1046.5, 0.39]].forEach(([freq, delay]) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'sine'; osc.frequency.value = freq;
+            const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.linearRampToValueAtTime(vol * 0.45, t + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+            osc.start(t); osc.stop(t + 0.8);
+          });
+
+        } else if (type === 'ding') {
+          // Один чистый звон
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.type = 'sine'; osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+          osc.start(); osc.stop(ctx.currentTime + 1.6);
+
+        } else if (type === 'fanfare') {
+          // Мажорная фанфара
+          [[392, 0], [523, 0.14], [659, 0.28], [784, 0.42], [1047, 0.56]].forEach(([freq, delay]) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'triangle'; osc.frequency.value = freq;
+            const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.linearRampToValueAtTime(vol * 0.3, t + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+            osc.start(t); osc.stop(t + 0.5);
+          });
+
+        } else if (type === 'cash') {
+          // Кассовый звук
+          [[1200, 0, 0.08], [900, 0.09, 0.06], [1500, 0.18, 0.05]].forEach(([freq, delay, dur]) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'square'; osc.frequency.value = freq;
+            const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.linearRampToValueAtTime(vol * 0.2, t + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+            osc.start(t); osc.stop(t + dur + 0.02);
+          });
+        }
+      } catch(e) { console.warn('Sound error:', e); }
+    }
 
     function extractAndCleanYT(msg) {
       const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})\S*/gi;
@@ -712,13 +1128,14 @@ createApp({
 
     function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700', x:80+(panels.length*30),y:60+(panels.length*30) }); }
     function removePanel(id){ const i=panels.findIndex(p=>p.id===id); if(i>=0) panels.splice(i,1); }
+    function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
 
     function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value }; }
     const _doPushFirebase = debounce((state) => { if(db){ try{ db.ref('config').set(state); }catch(e){} } }, 600);
     function pushState(){ const state = buildState(); saveState(state); _doPushFirebase(state); }
     const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
     function pushQueueState() { _doPushQueue(); }
-    const _pushVolume = debounce((vol) => { if (db) db.ref('musicVolume').set(vol); }, 300);
+    const _pushVolume = debounce((v) => { if(db) db.ref('musicVolume').set(v); }, 300);
 
     function changeVolume() { _pushVolume(musicVolume.value); applyVolume(); }
     function applyVolume() { if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') { window.ytPlayerObj.setVolume(musicVolume.value); } }
@@ -738,15 +1155,26 @@ createApp({
 
     function doQuickTest(){ const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); triggerAlert(quickName.value.trim()||'Тест', cleanNum(quickAmount.value)||500, extracted.cleanMsg, false); }
     function doTrigger(){ const extracted = extractAndCleanYT(tMessage.value.trim()); triggerAlert(tName.value.trim(), cleanNum(tAmount.value), extracted.cleanMsg, true); }
+    
     function triggerAlert(name, amt, msg, pushFB){
       curDonation.name=name; curDonation.amount=Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg=msg;
       alertKey.value++; alertVis.value=true; clearTimeout(alertTimer); alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
+      // 🔔 ЗВУК ДОНАТА
+      playDonationSound();
       if(pushFB && db){ try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){} }
     }
     
     function clearProgress() { if(confirm('Очистить сборы?')){ panels.forEach(p => { p.current = 0; if(p.type === 'goal') p.donorsRaw = 'Пусто — 0 ₸'; }); pushState(); } }
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
-    function copyObs(type){ navigator.clipboard.writeText(`${location.href.split('?')[0]}?mode=${type}`).then(()=>showToast('URL скопирован!','ok')); }
+    
+    function copyObs(type){
+      const url = `${location.href.split('?')[0]}?mode=${type}`;
+      navigator.clipboard.writeText(url).then(()=>{
+        showToast('✓ URL скопирован!','ok');
+        copiedObs[type] = true;
+        setTimeout(() => { copiedObs[type] = false; }, 2500);
+      });
+    }
 
     function skipTrack(idx) { musicQueue.splice(idx, 1); pushQueueState(); }
     function clearQueue() { musicQueue.splice(0, musicQueue.length); pushQueueState(); }
@@ -805,7 +1233,17 @@ createApp({
         let fst = document.getElementsByTagName('script')[0]; fst.parentNode.insertBefore(tag, fst);
       }
       if(db) {
-        if(mode.value==='alert'){ let lts=0; db.ref('alert').on('value',s=>{ const d=s.val(); if(d&&d.ts>lts){ lts=d.ts; if(d.cfg) Object.assign(alertCfg,d.cfg); triggerAlert(d.name, cleanNum(d.amount), d.msg, false); }}); }
+        if(mode.value==='alert'){ 
+          let lts=0; 
+          db.ref('alert').on('value',s=>{ 
+            const d=s.val(); 
+            if(d&&d.ts>lts){ 
+              lts=d.ts; 
+              if(d.cfg) Object.assign(alertCfg,d.cfg); 
+              triggerAlert(d.name, cleanNum(d.amount), d.msg, false); 
+            }
+          }); 
+        }
         if(mode.value!=='alert') db.ref('config').on('value', s=>{ const d=s.val(); if(d){
           if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
           if(d.globalScale) globalScale.value=d.globalScale;
@@ -819,7 +1257,25 @@ createApp({
       }
     });
 
-    return { mode,tab,selId,globalScale,fbOk,panels,alertCfg,musicCfg,alertVis,alertKey,curDonation,isMobile,kaspiPaste,handleKaspiPaste,quickName,quickAmount,quickMessage,tName,tAmount,tMessage,musicQueue,skipTrack,clearQueue,musicVolume,changeVolume,toast,sceneStyle,alertCardStyle,musicWidgetStyle,idleTextStyle,cardPos,compFor,addPanel,removePanel,clearProgress,doQuickDonate,doQuickTest,doTrigger,saveAll,copyObs,toggleAdminPlayer };
+    return { 
+      mode,tab,selId,alertOpen,globalScale,fbOk,panels,alertCfg,musicCfg,
+      alertVis,alertKey,curDonation,isMobile,kaspiPaste,
+      handleKaspiPaste,uploadIcon,
+      quickName,quickAmount,quickMessage,
+      tName,tAmount,tMessage,
+      musicQueue,skipTrack,clearQueue,
+      musicVolume,changeVolume,
+      toast,sceneStyle,alertCardStyle,musicWidgetStyle,
+      idleTextStyle, idlePreviewStyle,
+      cardPos,compFor,
+      addPanel,removePanel,clearProgress,
+      doQuickDonate,doQuickTest,doTrigger,
+      saveAll,copyObs,
+      playDonationSound,
+      toggleAdminPlayer,
+      // OBS URL
+      obsSelected, copiedObs, currentObsUrl, selectObs,
+    };
   }
 }).mount('#app');
 </script>
