@@ -487,16 +487,13 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </transition>
   </div>
 
-  <!-- ═══════════════ MUSIC WIDGET MODE ═══════════════ -->
   <div v-else-if="mode==='music'" class="music-scene">
-    <!-- Idle text — показывается ТОЛЬКО когда очередь пуста -->
     <div
       class="idle-music-text"
       v-show="musicQueue.length === 0"
       :style="idleTextStyle"
     >{{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}</div>
 
-    <!-- Плеер — показывается ТОЛЬКО когда есть треки -->
     <div class="music-clip-container" v-show="musicQueue.length > 0" :style="musicWidgetStyle">
       <div class="yt-wrapper">
         <div id="yt-music-widget"></div>
@@ -570,7 +567,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="sidebar-body">
 
-          <!-- ═══ WIDGETS TAB ═══ -->
           <template v-if="tab==='widgets'">
             <div class="fb-status"><div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div><span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span></div>
             <div class="donate-form-card">
@@ -622,7 +618,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ MUSIC TAB ═══ -->
           <template v-if="tab==='music'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка OBS Клипа</div></div></div>
             <div class="sec-body">
@@ -660,11 +655,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="fg"><label>Масштаб в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
               <div class="divider"></div>
 
-              <!-- IDLE TEXT SETTINGS -->
               <div class="sub-lbl">✨ Текст в состоянии покоя</div>
               <div class="fg"><label>Текст заглушки</label><input type="text" v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге"></div>
               
-              <!-- Live preview -->
               <div class="idle-preview-box" :style="idlePreviewStyle">
                 <span class="idle-preview-text" :style="{fontSize: Math.min(musicCfg.idleSize||32, 28)+'px'}">
                   {{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}
@@ -722,7 +715,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ ALERT TAB ═══ -->
           <template v-if="tab==='alert'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">Запустить Alert вручную</div></div></div>
             <div class="sec-body">
@@ -767,7 +759,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="actions">
           <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
           
-          <!-- OBS URL CARD -->
           <div class="obs-url-card">
             <div class="obs-url-title">📡 OBS Browser Source URL</div>
             <div class="obs-btn-grid">
@@ -819,7 +810,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
 
         <div v-if="tab==='music'" class="preview-music-wrap">
-          <!-- Preview idle text -->
           <div v-if="musicQueue.length === 0" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;">
             <span class="idle-preview-text" :style="{...idlePreviewStyle, fontSize: Math.min(musicCfg.idleSize||32, 22)+'px', position:'static', transform:'none'}">
               {{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}
@@ -1144,10 +1134,50 @@ createApp({
       const name = quickName.value.trim() || 'Аноним'; const amt = cleanNum(quickAmount.value);
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
       const extracted = extractAndCleanYT(quickMessage.value);
-      panels.forEach(p=>{
-        if(p.type==='goal'){ p.current = (p.current||0) + amt; p.donorsRaw = `${name} — ${Number(amt).toLocaleString('ru')} ₸\n${(p.donorsRaw||'').replace('Пусто — 0 ₸','')}`; }
-        if(p.type==='challenge'){ p.current = (p.current||0) + amt; }
+      
+      panels.forEach(p => {
+        if (p.type === 'goal') {
+          p.current = (p.current || 0) + amt;
+          
+          let raw = (p.donorsRaw || '').replace('Пусто — 0 ₸', '').trim();
+          let lines = raw.split(/[\n]+/).map(s => s.trim()).filter(Boolean);
+          let parsedDonors = [];
+          
+          // Парсим текущий список
+          lines.forEach(line => {
+            let parts = line.split(/[—\-–]/);
+            if (parts.length >= 2) {
+              let n = parts[0].trim();
+              let a = cleanNum(parts.slice(1).join('-'));
+              parsedDonors.push({ name: n, amount: a });
+            } else {
+              parsedDonors.push({ name: line, amount: 0, original: line });
+            }
+          });
+
+          // Ищем донатера в списке и суммируем или добавляем нового
+          let existing = parsedDonors.find(d => d.name.toLowerCase() === name.toLowerCase());
+          if (existing && existing.original === undefined) {
+            existing.amount += amt;
+          } else {
+            parsedDonors.push({ name: name, amount: amt });
+          }
+
+          // Сортируем топ от большего к меньшему
+          parsedDonors.sort((a, b) => b.amount - a.amount);
+
+          // Обновляем список в поле
+          p.donorsRaw = parsedDonors.map(d => {
+            if (d.original !== undefined) return d.original;
+            return `${d.name} — ${Number(d.amount).toLocaleString('ru')} ₸`;
+          }).join('\n');
+        }
+        
+        if (p.type === 'challenge') { 
+          p.current = (p.current || 0) + amt; 
+        }
       });
+      
       triggerAlert(name, amt, extracted.cleanMsg, true); pushState();
       if (extracted.tracks.length > 0) { extracted.tracks.forEach(vid => { musicQueue.push({ uid: uid(), videoId: vid }); }); pushQueueState(); }
       showToast(`✓ Отправлено: ${name}`,'ok'); quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
