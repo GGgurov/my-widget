@@ -550,7 +550,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </div>
       <div class="mob-actions">
         <button class="btn-mob-send" @click="doQuickDonate" :disabled="!quickName && !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
-        <button class="btn-mob-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СБОРЫ</button>
+        <button class="btn-mob-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СУММУ СБОРОВ</button>
+        <button class="btn-mob-clear" @click="clearDonors">🗑️ ОЧИСТИТЬ СПИСОК ДОНАТЕРОВ</button>
       </div>
     </div>
 
@@ -1194,7 +1195,9 @@ createApp({
       if(pushFB && db){ try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){} }
     }
     
-    function clearProgress() { if(confirm('Очистить сборы?')){ panels.forEach(p => { p.current = 0; if(p.type === 'goal') p.donorsRaw = 'Пусто — 0 ₸'; }); pushState(); } }
+    function clearProgress() { if(confirm('Очистить сумму сборов?')){ panels.forEach(p => { p.current = 0; }); pushState(); } }
+    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') p.donorsRaw = 'Пусто — 0 ₸'; }); pushState(); } }
+    
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
     
     function copyObs(type){
@@ -1298,7 +1301,7 @@ createApp({
       toast,sceneStyle,alertCardStyle,musicWidgetStyle,
       idleTextStyle, idlePreviewStyle,
       cardPos,compFor,
-      addPanel,removePanel,clearProgress,
+      addPanel,removePanel,clearProgress,clearDonors,
       doQuickDonate,doQuickTest,doTrigger,
       saveAll,copyObs,
       playDonationSound,
