@@ -785,8 +785,6 @@ createApp({
     const globalScale = ref(saved.globalScale||1);
     const fbOk = ref(!!db);
 
-    // ФИКС: Мобильный режим включается ТОЛЬКО для панели администратора. 
-    // OBS всегда десктоп, даже если размер окна маленький.
     const isMobile = ref(mode.value === 'admin' && window.innerWidth <= 900);
     window.addEventListener('resize', () => { 
       if(mode.value === 'admin') isMobile.value = window.innerWidth <= 900; 
@@ -856,10 +854,14 @@ createApp({
     }
 
     function playTTSVoice(text) {
+      if (isMobile.value) return; // ГЛУШИМ ЗВУК НА ТЕЛЕФОНЕ
       if (!alertCfg.ttsEnabled || !text || !('speechSynthesis' in window)) return;
-      // Фильтруем ссылки URL (YouTube ссылки уже удалены до этого шага, тут удаляем все остальное)
+      
       let cleanText = text.replace(/https?:\/\/\S+/gi, '').replace(/www\.\S+/gi, '').trim();
-      if (!cleanText) return; // Если текст состоял только из ссылки - не озвучиваем
+      if (!cleanText) return;
+
+      // Сбрасываем очередь TTS (помогает от зависаний движка Chromium в OBS)
+      window.speechSynthesis.cancel();
 
       let u = new SpeechSynthesisUtterance(cleanText);
       u.volume = (alertCfg.ttsVolume || 100) / 100;
@@ -873,6 +875,7 @@ createApp({
 
     // --- ЗВУК ДОНАТА ---
     function playDonationSound() {
+      if (isMobile.value) return; // ГЛУШИМ ЗВУК НА ТЕЛЕФОНЕ
       if (!alertCfg.soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -987,7 +990,7 @@ createApp({
       curDonation.name=name; curDonation.amount=Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg=msg;
       alertKey.value++; alertVis.value=true; clearTimeout(alertTimer); alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
       playDonationSound();
-      playTTSVoice(msg); // Озвучиваем текст (с отфильтрованными ссылками)
+      playTTSVoice(msg); 
       if(pushFB && db){ try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){} }
     }
     
@@ -1010,7 +1013,7 @@ createApp({
 
     let currentTrackUid = null;
     function checkQueuePlay() {
-      if (mode.value === 'alert' || mode.value === 'widget') return;
+      if (mode.value === 'alert' || mode.value === 'widget' || isMobile.value) return; // Не проигрывать приглушенно
       if (mode.value === 'admin' && !musicCfg.adminEnablePlayer) {
         if (window.ytPlayerObj && typeof window.ytPlayerObj.stopVideo === 'function') window.ytPlayerObj.stopVideo();
         return;
@@ -1035,13 +1038,22 @@ createApp({
     }
 
     window.onYouTubeIframeAPIReady = () => {
-      // Инициализируем плеер только для музыки и админки (если включено)
       if (mode.value === 'alert' || mode.value === 'widget') return;
+      if (isMobile.value) return; // На мобильном телефоне вообще не инициализируем YouTube плеер (глушим звук)
+
       const containerId = mode.value === 'music' ? 'yt-music-widget' : 'yt-player';
       
       window.ytPlayerObj = new YT.Player(containerId, {
-        height: mode.value === 'music' ? '100%' : '1', width: mode.value === 'music' ? '100%' : '1',
-        playerVars: { 'autoplay': 1, 'controls': 0 },
+        height: mode.value === 'music' ? '100%' : '1', 
+        width: mode.value === 'music' ? '100%' : '1',
+        host: 'https://www.youtube-nocookie.com', // Используем домен без куки для снижения количества рекламы
+        playerVars: { 
+          'autoplay': 1, 
+          'controls': 0,
+          'rel': 0, // Отключаем показ похожих видео чужих каналов
+          'modestbranding': 1, // Убираем логотип YouTube
+          'iv_load_policy': 3 // Выключаем аннотации видео
+        },
         events: {
           'onReady': () => { applyVolume(); checkQueuePlay(); },
           'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
@@ -1051,7 +1063,6 @@ createApp({
     };
 
     onMounted(()=>{
-      // Убрана зависимость загрузки API от isMobile (только от режима)
       if(mode.value === 'admin' || mode.value === 'music'){
         let tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         let fst = document.getElementsByTagName('script')[0]; fst.parentNode.insertBefore(tag, fst);
