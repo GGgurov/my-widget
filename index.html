@@ -272,21 +272,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 @keyframes idleShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
 
-.music-clip-container {
-  position: relative; border-radius: 24px; overflow: hidden; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, rgba(20,20,20,0.6), rgba(5,5,5,0.8)); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 2px 2px rgba(255,255,255,0.2), inset 0 -2px 5px rgba(0,0,0,0.5), 0 15px 35px rgba(0,0,0,0.8), 0 0 40px var(--ac-glow, rgba(0, 194, 255, 0.2));
-  transform: perspective(1200px) rotateX(2deg); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-.music-clip-container::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%); pointer-events: none; z-index: 5;
-}
-.yt-wrapper { position: absolute; inset: 0; z-index: 1; background: #000; border-radius: 24px; overflow: hidden; }
-.yt-wrapper iframe { width: 100%; height: 100%; border: none; }
-.preview-music-wrap { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: scale(0.6); }
-
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    OBS URL CARD
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
@@ -345,9 +330,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-else-if="mode==='music'" class="music-scene">
-    <div class="idle-music-text" v-show="musicQueue.length === 0" :style="idleTextStyle">{{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}</div>
-    <div class="music-clip-container" v-show="musicQueue.length > 0" :style="musicWidgetStyle">
-      <div class="yt-wrapper"><div id="yt-music-widget"></div></div>
+    <div class="idle-music-text" :style="idleTextStyle">{{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}</div>
+    
+    <div style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99;">
+      <div id="yt-music-widget"></div>
     </div>
   </div>
 
@@ -470,7 +456,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           </template>
 
           <template v-if="tab==='music'">
-            <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка OBS Клипа</div></div></div>
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка Музыки</div></div></div>
             <div class="sec-body">
               <div class="cb-row" style="margin-bottom:10px;">
                 <label>Слушать музыку в этой админке<br><span style="color:var(--text-dim);font-weight:400;font-size:8px;">(Выключите, если используете виджет в OBS, чтобы не было двойного звука)</span></label>
@@ -499,15 +485,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
 
-              <div class="fr">
-                <div class="fg"><label>Ширина окна (px)</label><input type="number" v-model.number="musicCfg.width"></div>
-                <div class="fg"><label>Высота окна (px)</label><input type="number" v-model.number="musicCfg.height"></div>
-              </div>
-              <div class="fg"><label>Масштаб в OBS</label><div class="rr"><input type="range" min="0.5" max="2" step="0.05" v-model.number="musicCfg.scale"><span class="rv">{{musicCfg.scale}}x</span></div></div>
               <div class="divider"></div>
 
-              <div class="sub-lbl">✨ Текст в состоянии покоя</div>
-              <div class="fg"><label>Текст заглушки</label><input type="text" v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге"></div>
+              <div class="sub-lbl">✨ Текст заказа музыки</div>
+              <div class="fg"><label>Текст надписи</label><input type="text" v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге"></div>
               
               <div class="idle-preview-box" :style="idlePreviewStyle">
                 <span class="idle-preview-text" :style="{fontSize: Math.min(musicCfg.idleSize||32, 28)+'px'}">
@@ -542,11 +523,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div class="ci"><span>Цвет 2</span><input type="color" v-model="musicCfg.idleColor2"></div>
                 <div class="ci"><span>Цвет 3</span><input type="color" v-model="musicCfg.idleColor3"></div>
                 <div class="ci"><span>Свечение</span><input type="color" v-model="musicCfg.idleGlowColor"></div>
-              </div>
-
-              <div class="divider"></div>
-              <div class="color-grid" style="grid-template-columns:1fr 1fr">
-                <div class="ci"><span>Акцент (Glow плеера)</span><input type="color" v-model="musicCfg.cAccent"></div>
               </div>
             </div>
           </template>
@@ -600,13 +576,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               </div>
               <template v-if="alertCfg.ttsEnabled">
                 <div class="fg">
-                  <label>Выбор голоса</label>
-                  <select v-model="alertCfg.ttsVoice">
-                    <option value="">Автоматически (По умолчанию)</option>
-                    <option v-for="v in availableVoices" :key="v.voiceURI" :value="v.voiceURI">{{v.name}} ({{v.lang}})</option>
-                  </select>
-                </div>
-                <div class="fg">
                   <label>Громкость голоса</label>
                   <div class="rr">
                     <input type="range" min="0" max="100" v-model.number="alertCfg.ttsVolume">
@@ -631,7 +600,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <span class="btn-obs-sub">{{copiedObs.widget ? '✓ скопирован' : 'нажми'}}</span>
               </button>
               <button class="btn-obs" :class="{active: obsSelected==='music', copied: copiedObs.music}" @click="selectObs('music')">
-                <span class="btn-obs-icon">🎵</span><span>Клип</span>
+                <span class="btn-obs-icon">🎵</span><span>Музыка</span>
                 <span class="btn-obs-sub">{{copiedObs.music ? '✓ скопирован' : 'нажми'}}</span>
               </button>
               <button class="btn-obs" :class="{active: obsSelected==='alert', copied: copiedObs.alert}" @click="selectObs('alert')">
@@ -671,13 +640,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
 
         <div v-if="tab==='music'" class="preview-music-wrap">
-          <div v-if="musicQueue.length === 0" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;">
             <span class="idle-preview-text" :style="{...idlePreviewStyle, fontSize: Math.min(musicCfg.idleSize||32, 22)+'px', position:'static', transform:'none'}">
               {{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}
             </span>
-          </div>
-          <div class="music-clip-container" v-show="musicQueue.length > 0" :style="musicWidgetStyle">
-            <div class="music-empty-text" :style="{color: musicCfg.textColor}">{{ musicCfg.emptyText || 'МУЗЫКИ НЕТ' }}</div>
           </div>
         </div>
       </div>
@@ -817,7 +783,7 @@ createApp({
     }, saved.alertCfg||{}));
     
     const musicCfg = reactive(Object.assign({
-      emptyText: 'Музыки нет', width: 800, height: 450, scale: 1, textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: false,
+      emptyText: 'Музыки нет', scale: 1, textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: false,
       idleText: 'Заказ музыки 250 тенге', idleLeft: 50, idleTop: 50, idleSize: 36, idleGlowSize: 22, idleSpeed: 3,
       idleColor1: '#ff0088', idleColor2: '#00c2ff', idleColor3: '#ffd700', idleGlowColor: '#00c2ff'
     }, saved.musicCfg||{}));
@@ -837,41 +803,25 @@ createApp({
 
     const sceneStyle = computed(()=>({ transform:`scale(${globalScale.value})` }));
     const alertCardStyle = computed(()=>{ const c=alertCfg, bg=c.bgColor||'#111111', op=c.bgOpacity!==undefined?c.bgOpacity:.9; return { background:`rgba(${hexToRgb(bg)},${op})`, borderRadius:(c.cardRadius||16)+'px', border:`1px solid ${c.borderColor||'rgba(255,215,0,.3)'}`, '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)` }; });
-    const musicWidgetStyle = computed(() => ({ width: `${musicCfg.width}px`, height: `${musicCfg.height}px`, transform: `scale(${musicCfg.scale})`, '--ac-glow': `rgba(${hexToRgb(musicCfg.cAccent)}, 0.3)` }));
     const idleTextStyle = computed(() => ({ '--idle-top': (musicCfg.idleTop || 50) + '%', '--idle-left': (musicCfg.idleLeft || 50) + '%', '--idle-size': (musicCfg.idleSize || 36) + 'px', '--idle-c1': musicCfg.idleColor1 || '#ff0088', '--idle-c2': musicCfg.idleColor2 || '#00c2ff', '--idle-c3': musicCfg.idleColor3 || '#ffd700', '--idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--idle-glow-px': (musicCfg.idleGlowSize || 22) + 'px', '--idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
     const idlePreviewStyle = computed(() => ({ '--p-idle-c1': musicCfg.idleColor1 || '#ff0088', '--p-idle-c2': musicCfg.idleColor2 || '#00c2ff', '--p-idle-c3': musicCfg.idleColor3 || '#ffd700', '--p-idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--p-idle-glow-px': Math.min(musicCfg.idleGlowSize || 22, 18) + 'px', '--p-idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
 
     // --- ОЗВУЧКА СООБЩЕНИЙ (TTS) ---
-    const availableVoices = ref([]);
-    function loadVoices() {
-      if (!('speechSynthesis' in window)) return;
-      let voices = window.speechSynthesis.getVoices();
-      availableVoices.value = voices.filter(v => v.lang.startsWith('ru') || v.lang.startsWith('en'));
-    }
-    if ('speechSynthesis' in window) {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
     function playTTSVoice(text) {
       if (isMobile.value) return; // ГЛУШИМ ЗВУК НА ТЕЛЕФОНЕ
-      if (!alertCfg.ttsEnabled || !text || !('speechSynthesis' in window)) return;
+      if (!alertCfg.ttsEnabled || !text) return;
       
       let cleanText = text.replace(/https?:\/\/\S+/gi, '').replace(/www\.\S+/gi, '').trim();
       if (!cleanText) return;
 
-      // Сбрасываем очередь TTS (помогает от зависаний движка Chromium в OBS)
-      window.speechSynthesis.cancel();
-
-      let u = new SpeechSynthesisUtterance(cleanText);
-      u.volume = (alertCfg.ttsVolume || 100) / 100;
-      if (alertCfg.ttsVoice) {
-        let voice = availableVoices.value.find(v => v.voiceURI === alertCfg.ttsVoice);
-        if (voice) u.voice = voice;
-      }
-      window.speechSynthesis.speak(u);
+      // Используем безотказный Google Translate API (в OBS работает как часы, так как это просто MP3 аудио)
+      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ru&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
+      const audio = new Audio(ttsUrl);
+      audio.volume = (alertCfg.ttsVolume || 100) / 100;
+      audio.play().catch(e => console.warn('TTS Audio error:', e));
     }
-    function testTTSVoice() { playTTSVoice("Проверка озвучки! Спасибо за крутой стрим."); }
+    
+    function testTTSVoice() { playTTSVoice("Проверка озвучки! Теперь голос 100 процентов будет звучать в обс."); }
 
     // --- ЗВУК ДОНАТА ---
     function playDonationSound() {
@@ -1044,8 +994,8 @@ createApp({
       const containerId = mode.value === 'music' ? 'yt-music-widget' : 'yt-player';
       
       window.ytPlayerObj = new YT.Player(containerId, {
-        height: mode.value === 'music' ? '100%' : '1', 
-        width: mode.value === 'music' ? '100%' : '1',
+        height: '100%', 
+        width: '100%',
         host: 'https://www.youtube-nocookie.com', // Используем домен без куки для снижения количества рекламы
         playerVars: { 
           'autoplay': 1, 
@@ -1100,7 +1050,7 @@ createApp({
       tName,tAmount,tMessage,
       musicQueue,skipTrack,clearQueue,
       musicVolume,changeVolume,
-      toast,sceneStyle,alertCardStyle,musicWidgetStyle,
+      toast,sceneStyle,alertCardStyle,
       idleTextStyle, idlePreviewStyle,
       cardPos,compFor,
       addPanel,removePanel,clearProgress,clearDonors,
@@ -1108,7 +1058,7 @@ createApp({
       saveAll,copyObs,
       playDonationSound,
       toggleAdminPlayer,
-      availableVoices, testTTSVoice,
+      testTTSVoice,
       obsSelected, copiedObs, currentObsUrl, selectObs,
     };
   }
