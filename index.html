@@ -331,7 +331,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
   <div v-else-if="mode==='music'" class="music-scene">
     <div class="idle-music-text" :style="idleTextStyle">{{ musicCfg.idleText || 'Заказ музыки 250 тенге' }}</div>
-    
     <div style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99;">
       <div id="yt-music-widget"></div>
     </div>
@@ -346,6 +345,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   <div v-else class="admin-shell">
     <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
     
+    <div class="admin-alert-overlay" style="position:fixed; bottom: 30px; right: 30px; z-index: 99999; pointer-events:none; display:flex; align-items:flex-end; justify-content:flex-end;">
+      <transition name="alert">
+        <div v-if="alertVis && !isMobile" class="alert-card glow-card" :style="alertCardStyle" style="transform: scale(0.6); transform-origin: bottom right; min-width: 320px;">
+          <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
+          <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+          <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
+          <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
+          <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+        </div>
+      </transition>
+    </div>
+
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
       <div class="mob-topbar">
         <div class="mob-logo">KASPI <span>SMART</span></div>
@@ -459,7 +470,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--tenge);color:#fff">▶</div><div class="sec-name">Настройка Музыки</div></div></div>
             <div class="sec-body">
               <div class="cb-row" style="margin-bottom:10px;">
-                <label>Слушать музыку в этой админке<br><span style="color:var(--text-dim);font-weight:400;font-size:8px;">(Выключите, если используете виджет в OBS, чтобы не было двойного звука)</span></label>
+                <label>Слушать музыку в этой админке на ПК<br><span style="color:var(--text-dim);font-weight:400;font-size:8px;">(Музыка играет ТУТ, чтобы её было слышно на стриме)</span></label>
                 <input type="checkbox" v-model="musicCfg.adminEnablePlayer" @change="toggleAdminPlayer">
               </div>
 
@@ -539,7 +550,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
 
             <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
-              <div class="sec-head-l"><div class="sec-name">🔔 Звук при донате</div></div>
+              <div class="sec-head-l"><div class="sec-name">🔔 Звук при донате (играет на ПК)</div></div>
               <span class="sec-chevron">▼</span>
             </div>
             <div v-if="alertOpen" class="sec-body">
@@ -569,7 +580,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
 
             <div class="sec-head" :class="{on:ttsOpen}" @click="ttsOpen=!ttsOpen">
-              <div class="sec-head-l"><div class="sec-name">🗣 Озвучка сообщений (TTS)</div></div>
+              <div class="sec-head-l"><div class="sec-name">🗣 Озвучка сообщений (TTS играет на ПК)</div></div>
               <span class="sec-chevron">▼</span>
             </div>
             <div v-if="ttsOpen" class="sec-body">
@@ -624,17 +635,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="pz-mode">OBS OVERLAY</div>
 
         <div v-if="tab==='alert'" class="alert-preview-wrap">
-          <canvas ref="pcvs" class="particle-canvas"></canvas>
-          <transition name="alert">
-            <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
-              <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
-              <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
-              <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
-              <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
-              <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
-            </div>
-          </transition>
-        </div>
+          </div>
 
         <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
           <div v-for="p in panels" :key="p.id" class="static-panel" :class="{sel:selId===p.id}" :style="cardPos(p)" @click="selId=p.id">
@@ -782,11 +783,12 @@ createApp({
       nameFontSize:32,amountFontSize:48,msgFontSize:24,
       cardRadius:16,particleColor:'#ffd700',particleCount:80,
       soundEnabled: true, soundVolume: 70, soundType: 'chime',
-      ttsEnabled: false, ttsVoice: '', ttsVolume: 100
+      ttsEnabled: true, ttsVoice: '', ttsVolume: 100
     }, saved.alertCfg||{}));
     
+    // Ставим принудительно проигрывание в админке, чтобы сразу было
     const musicCfg = reactive(Object.assign({
-      emptyText: 'Музыки нет', scale: 1, textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: false,
+      emptyText: 'Музыки нет', scale: 1, textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: true,
       idleText: 'Заказ музыки 250 тенге', idleLeft: 50, idleTop: 50, idleSize: 36, idleGlowSize: 22, idleSpeed: 3,
       idleColor1: '#ff0088', idleColor2: '#00c2ff', idleColor3: '#ffd700', idleGlowColor: '#00c2ff'
     }, saved.musicCfg||{}));
@@ -809,23 +811,22 @@ createApp({
     const idleTextStyle = computed(() => ({ '--idle-top': (musicCfg.idleTop || 50) + '%', '--idle-left': (musicCfg.idleLeft || 50) + '%', '--idle-size': (musicCfg.idleSize || 36) + 'px', '--idle-c1': musicCfg.idleColor1 || '#ff0088', '--idle-c2': musicCfg.idleColor2 || '#00c2ff', '--idle-c3': musicCfg.idleColor3 || '#ffd700', '--idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--idle-glow-px': (musicCfg.idleGlowSize || 22) + 'px', '--idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
     const idlePreviewStyle = computed(() => ({ '--p-idle-c1': musicCfg.idleColor1 || '#ff0088', '--p-idle-c2': musicCfg.idleColor2 || '#00c2ff', '--p-idle-c3': musicCfg.idleColor3 || '#ffd700', '--p-idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--p-idle-glow-px': Math.min(musicCfg.idleGlowSize || 22, 18) + 'px', '--p-idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
 
-    // --- ОЗВУЧКА СООБЩЕНИЙ (TTS) ---
+    // --- ОЗВУЧКА СООБЩЕНИЙ (TTS) - ТОЛЬКО В АДМИНКЕ НА ПК ---
     function playTTSVoice(text, isTest = false) {
-      // Игнорим в админке, если это не ручной тест. Звучит только в OBS!
-      if (mode.value === 'admin' && isTest !== true) return; 
+      if (mode.value !== 'admin' && !isTest) return; // В OBS никогда не озвучивать
+      if (isMobile.value && !isTest) return; // На телефоне звук глушим
       if (!alertCfg.ttsEnabled || !text) return;
       
       let cleanText = text.replace(/https?:\/\/\S+/gi, '').replace(/www\.\S+/gi, '').trim();
       if (!cleanText) return;
 
-      // Используем надежный встроенный Web Speech API (не блокируется в OBS)
       const utterance = new SpeechSynthesisUtterance(cleanText);
       utterance.lang = 'ru-RU';
       utterance.volume = (alertCfg.ttsVolume || 100) / 100;
 
-      // Ищем голос от Microsoft (он качественнее), иначе берем любой русский
       let voices = window.speechSynthesis.getVoices();
       let ruVoices = voices.filter(v => v.lang.includes('ru'));
+      // Ищем голос от Microsoft, он самый качественный системный
       let msVoice = ruVoices.find(v => v.name.includes('Microsoft'));
       
       if (msVoice) utterance.voice = msVoice;
@@ -834,15 +835,14 @@ createApp({
       window.speechSynthesis.speak(utterance);
     }
     
-    function testTTSVoice() { 
-      playTTSVoice("Проверка озвучки! Теперь голос 100 процентов будет звучать в OBS.", true); 
-    }
+    function testTTSVoice() { playTTSVoice("Проверка озвучки! Теперь голос 100 процентов звучит тут, в админ-панели.", true); }
 
-    // --- ЗВУК ДОНАТА ---
+    // --- ЗВУК ДОНАТА (ДЗЫНЬ) - ТОЛЬКО В АДМИНКЕ НА ПК ---
     function playDonationSound(isTest = false) {
-      // Игнорим в админке, если это не ручной тест.
-      if (mode.value === 'admin' && isTest !== true) return; 
+      if (mode.value !== 'admin' && !isTest) return; // В OBS звука доната нет
+      if (isMobile.value && !isTest) return; // На мобилке не звеним
       if (!alertCfg.soundEnabled) return;
+      
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const vol = (alertCfg.soundVolume || 70) / 100;
@@ -944,20 +944,36 @@ createApp({
         if (p.type === 'challenge') { p.current = (p.current || 0) + amt; }
       });
       
-      triggerAlert(name, amt, extracted.cleanMsg, true); pushState();
+      // Отправляем сигнал в Firebase - именно он заставит админку на ПК и OBS проиграть алерт!
+      triggerAlert(name, amt, extracted.cleanMsg, true); 
+      pushState();
+      
       if (extracted.tracks.length > 0) { extracted.tracks.forEach(vid => { musicQueue.push({ uid: uid(), videoId: vid }); }); pushQueueState(); }
       showToast(`✓ Отправлено: ${name}`,'ok'); quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
     }
 
-    function doQuickTest(){ const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); triggerAlert(quickName.value.trim()||'Тест', cleanNum(quickAmount.value)||500, extracted.cleanMsg, false); }
+    function doQuickTest(){ const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); triggerAlert(quickName.value.trim()||'Тест', cleanNum(quickAmount.value)||500, extracted.cleanMsg, false, true); }
     function doTrigger(){ const extracted = extractAndCleanYT(tMessage.value.trim()); triggerAlert(tName.value.trim(), cleanNum(tAmount.value), extracted.cleanMsg, true); }
     
-    function triggerAlert(name, amt, msg, pushFB){
+    // Функция запуска алерта. 
+    function triggerAlert(name, amt, msg, pushToFB, isTest = false){
+      // Если это реальный донат с кнопки "Отправить", мы пишем его в базу данных.
+      // Firebase отправит этот донат всем (в том числе админке на ПК и OBS), и они его проиграют.
+      if(pushToFB && db){
+        try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){}
+        return; // Возвращаемся! Сам клиент получит его обратно через on('value') ниже
+      }
+      
+      // Эта логика срабатывает, когда клиент получает команду от базы (или если это локальный Тест)
       curDonation.name=name; curDonation.amount=Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg=msg;
-      alertKey.value++; alertVis.value=true; clearTimeout(alertTimer); alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
-      playDonationSound();
-      playTTSVoice(msg); 
-      if(pushFB && db){ try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){} }
+      alertKey.value++; 
+      alertVis.value=true; 
+      clearTimeout(alertTimer); 
+      alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
+      
+      // Звуки включаются строго по условиям внутри этих функций (только для Админки ПК)
+      playDonationSound(isTest);
+      playTTSVoice(msg, isTest);
     }
     
     function clearProgress() { if(confirm('Очистить сумму сборов?')){ panels.forEach(p => { p.current = 0; }); pushState(); } }
@@ -979,7 +995,7 @@ createApp({
 
     let currentTrackUid = null;
     function checkQueuePlay() {
-      if (mode.value === 'alert' || mode.value === 'widget' || isMobile.value) return; // Не проигрывать приглушенно
+      if (mode.value === 'alert' || mode.value === 'widget' || isMobile.value) return; 
       if (mode.value === 'admin' && !musicCfg.adminEnablePlayer) {
         if (window.ytPlayerObj && typeof window.ytPlayerObj.stopVideo === 'function') window.ytPlayerObj.stopVideo();
         return;
@@ -1005,20 +1021,20 @@ createApp({
 
     window.onYouTubeIframeAPIReady = () => {
       if (mode.value === 'alert' || mode.value === 'widget') return;
-      if (isMobile.value) return; // На мобильном телефоне вообще не инициализируем YouTube плеер (глушим звук)
+      if (isMobile.value) return; 
 
       const containerId = mode.value === 'music' ? 'yt-music-widget' : 'yt-player';
       
       window.ytPlayerObj = new YT.Player(containerId, {
         height: '100%', 
         width: '100%',
-        host: 'https://www.youtube-nocookie.com', // Используем домен без куки для снижения количества рекламы
+        host: 'https://www.youtube-nocookie.com', 
         playerVars: { 
           'autoplay': 1, 
           'controls': 0,
-          'rel': 0, // Отключаем показ похожих видео чужих каналов
-          'modestbranding': 1, // Убираем логотип YouTube
-          'iv_load_policy': 3 // Выключаем аннотации видео
+          'rel': 0,
+          'modestbranding': 1,
+          'iv_load_policy': 3 
         },
         events: {
           'onReady': () => { applyVolume(); checkQueuePlay(); },
@@ -1029,7 +1045,6 @@ createApp({
     };
 
     onMounted(()=>{
-      // Прогреваем движок TTS, чтобы голоса гарантированно загрузились до первого вызова
       if (window.speechSynthesis) {
         window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
         window.speechSynthesis.getVoices();
@@ -1039,27 +1054,37 @@ createApp({
         let tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         let fst = document.getElementsByTagName('script')[0]; fst.parentNode.insertBefore(tag, fst);
       }
+      
       if(db) {
-        if(mode.value==='alert'){ 
-          let lts=0; 
-          db.ref('alert').on('value',s=>{ 
-            const d=s.val(); 
-            if(d&&d.ts>lts){ 
-              lts=d.ts; 
-              if(d.cfg) Object.assign(alertCfg,d.cfg); 
-              triggerAlert(d.name, cleanNum(d.amount), d.msg, false); 
+        // Мы слушаем Firebase Алерты И в режиме OBS, И в режиме админки (для предпросмотра и звуков на ПК!)
+        if (mode.value === 'alert' || mode.value === 'admin') {
+          let isFirstAlertLoad = true;
+          db.ref('alert').on('value', s => {
+            const d = s.val();
+            if (d) {
+              if (isFirstAlertLoad) {
+                isFirstAlertLoad = false; // При первой загрузке страницы не триггерим старый донат
+              } else {
+                if (d.cfg) Object.assign(alertCfg, d.cfg);
+                triggerAlert(d.name, cleanNum(d.amount), d.msg, false);
+              }
+            } else {
+              isFirstAlertLoad = false;
             }
-          }); 
+          });
         }
+        
         if(mode.value!=='alert') db.ref('config').on('value', s=>{ const d=s.val(); if(d){
           if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
           if(d.globalScale) globalScale.value=d.globalScale;
           if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
         }});
+        
         db.ref('musicQueue').on('value', snap => {
           const q = snap.val() || []; musicQueue.splice(0, musicQueue.length, ...q);
           checkQueuePlay();
         });
+        
         db.ref('musicVolume').on('value', snap => { const vol = snap.val(); if (vol !== null) { musicVolume.value = vol; applyVolume(); } });
       }
     });
