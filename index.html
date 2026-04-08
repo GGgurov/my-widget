@@ -263,7 +263,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   position: absolute; top: var(--idle-top, 50%); left: var(--idle-left, 50%);
   transform: translate(-50%, -50%); font-size: var(--idle-size, 32px);
   font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase;
-  letter-spacing: 3px; text-align: center; white-space: pre-wrap; line-height: 1.2;
+  letter-spacing: 3px; text-align: center; white-space: pre-wrap; line-height: 1.3;
   background: linear-gradient(90deg, var(--idle-c1, #ff0088) 0%, var(--idle-c2, #00c2ff) 33%, var(--idle-c3, #ffd700) 66%, var(--idle-c1, #ff0088) 100%);
   background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   animation: idleShimmer var(--idle-speed, 3s) linear infinite;
@@ -294,7 +294,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
    PREVIEW IDLE TEXT (admin)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .idle-preview-box { background: #050505; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 70px; overflow: hidden; position: relative; }
-.idle-preview-text { font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-align: center; white-space: pre-wrap; line-height: 1.2; background: linear-gradient(90deg, var(--p-idle-c1, #ff0088) 0%, var(--p-idle-c2, #00c2ff) 33%, var(--p-idle-c3, #ffd700) 66%, var(--p-idle-c1, #ff0088) 100%); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: idleShimmer var(--p-idle-speed, 3s) linear infinite; filter: drop-shadow(0 0 var(--p-idle-glow-px, 12px) var(--p-idle-glow-color, #00c2ff)); }
+.idle-preview-text { font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-align: center; white-space: pre-wrap; line-height: 1.3; display: block; background: linear-gradient(90deg, var(--p-idle-c1, #ff0088) 0%, var(--p-idle-c2, #00c2ff) 33%, var(--p-idle-c3, #ffd700) 66%, var(--p-idle-c1, #ff0088) 100%); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: idleShimmer var(--p-idle-speed, 3s) linear infinite; filter: drop-shadow(0 0 var(--p-idle-glow-px, 12px) var(--p-idle-glow-color, #00c2ff)); }
 
 @media(max-width:900px){
   :root{--sidebar-w:100%;}
@@ -488,7 +488,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="divider"></div>
 
               <div class="sub-lbl">✨ Текст заказа музыки</div>
-              <div class="fg"><label>Текст надписи</label><textarea v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге" style="min-height:60px;"></textarea></div>
+              <div class="fg">
+                <label>Текст надписи</label>
+                <textarea v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге" style="min-height:60px;"></textarea>
+              </div>
               
               <div class="idle-preview-box" :style="idlePreviewStyle">
                 <span class="idle-preview-text" :style="{fontSize: Math.min(musicCfg.idleSize||32, 28)+'px'}">
@@ -561,7 +564,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                     <span class="rv">{{alertCfg.soundVolume}}%</span>
                   </div>
                 </div>
-                <button class="btn btn-flat" @click="playDonationSound">🔊 Тест звука</button>
+                <button class="btn btn-flat" @click="() => playDonationSound(true)">🔊 Тест звука</button>
               </template>
             </div>
 
@@ -807,34 +810,38 @@ createApp({
     const idlePreviewStyle = computed(() => ({ '--p-idle-c1': musicCfg.idleColor1 || '#ff0088', '--p-idle-c2': musicCfg.idleColor2 || '#00c2ff', '--p-idle-c3': musicCfg.idleColor3 || '#ffd700', '--p-idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--p-idle-glow-px': Math.min(musicCfg.idleGlowSize || 22, 18) + 'px', '--p-idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
 
     // --- ОЗВУЧКА СООБЩЕНИЙ (TTS) ---
-    function playTTSVoice(text) {
-      if (isMobile.value) return; // ГЛУШИМ ЗВУК НА ТЕЛЕФОНЕ
+    function playTTSVoice(text, isTest = false) {
+      // Игнорим в админке, если это не ручной тест. Звучит только в OBS!
+      if (mode.value === 'admin' && isTest !== true) return; 
       if (!alertCfg.ttsEnabled || !text) return;
       
       let cleanText = text.replace(/https?:\/\/\S+/gi, '').replace(/www\.\S+/gi, '').trim();
       if (!cleanText) return;
 
-      // В OBS лучше всего работает встроенный SpeechSynthesis (не блокируется политиками CORS браузера)
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel(); // Очищаем очередь
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = 'ru-RU';
-        utterance.volume = (alertCfg.ttsVolume || 100) / 100;
-        window.speechSynthesis.speak(utterance);
-      } else {
-        // Запасной вариант через Google Translate
-        const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ru&q=${encodeURIComponent(cleanText.substring(0, 200))}`;
-        const audio = new Audio(ttsUrl);
-        audio.volume = (alertCfg.ttsVolume || 100) / 100;
-        audio.play().catch(e => console.warn('TTS Audio error:', e));
-      }
+      // Используем надежный встроенный Web Speech API (не блокируется в OBS)
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'ru-RU';
+      utterance.volume = (alertCfg.ttsVolume || 100) / 100;
+
+      // Ищем голос от Microsoft (он качественнее), иначе берем любой русский
+      let voices = window.speechSynthesis.getVoices();
+      let ruVoices = voices.filter(v => v.lang.includes('ru'));
+      let msVoice = ruVoices.find(v => v.name.includes('Microsoft'));
+      
+      if (msVoice) utterance.voice = msVoice;
+      else if (ruVoices.length > 0) utterance.voice = ruVoices[0];
+
+      window.speechSynthesis.speak(utterance);
     }
     
-    function testTTSVoice() { playTTSVoice("Проверка озвучки! Теперь голос 100 процентов будет звучать в обс."); }
+    function testTTSVoice() { 
+      playTTSVoice("Проверка озвучки! Теперь голос 100 процентов будет звучать в OBS.", true); 
+    }
 
     // --- ЗВУК ДОНАТА ---
-    function playDonationSound() {
-      if (isMobile.value) return; // ГЛУШИМ ЗВУК НА ТЕЛЕФОНЕ
+    function playDonationSound(isTest = false) {
+      // Игнорим в админке, если это не ручной тест.
+      if (mode.value === 'admin' && isTest !== true) return; 
       if (!alertCfg.soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1022,6 +1029,12 @@ createApp({
     };
 
     onMounted(()=>{
+      // Прогреваем движок TTS, чтобы голоса гарантированно загрузились до первого вызова
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+        window.speechSynthesis.getVoices();
+      }
+
       if(mode.value === 'admin' || mode.value === 'music'){
         let tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
         let fst = document.getElementsByTagName('script')[0]; fst.parentNode.insertBefore(tag, fst);
