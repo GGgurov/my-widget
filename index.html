@@ -135,9 +135,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .ld-label{display:inline-flex;align-items:center;gap:5px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
 .donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
 .donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04); transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
-.rk-1{background:linear-gradient(90deg,rgba(255,215,0,.15),transparent) !important;border-color:rgba(255,215,0,.3) !important;color:var(--gold) !important;font-weight:900;}
-.rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent) !important;border-color:rgba(200,200,200,.2) !important;color:var(--silver) !important;}
-.rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent) !important;border-color:rgba(205,127,50,.2) !important;color:var(--bronze) !important;}
 .chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
 .chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
 .chal-brand{display:flex;align-items:center;}
@@ -150,16 +147,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .ed:hover{background:rgba(255,255,255,.05);}
 .ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
 .obs-mode .ed{border:none !important;background:transparent !important;pointer-events:none;}
-
-/* ROLL ANIMATION STYLES */
-.roll-overlay { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); border-radius: inherit; overflow: hidden; }
-.roll-text { font-weight: 900; text-transform: uppercase; text-align: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-.roll-text.is-rolling { font-size: 20px; opacity: 0.9; animation: pulseText 0.1s infinite alternate; color: #fff !important; }
-.roll-text.is-winner { font-size: 32px; text-shadow: 0 0 20px var(--ac), 0 0 40px var(--ac); animation: popIn 0.5s forwards; }
-.fade-enter-active, .fade-leave-active { transition: opacity 0.5s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-@keyframes pulseText { from { transform: scale(0.98); } to { transform: scale(1.02); } }
-@keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
 
 .alert-scene{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:50px;}
 .particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
@@ -388,6 +375,24 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="auto-send-banner" v-if="autoSendCountdown > 0"><span>⚡ Авто-отправка через</span><span class="auto-send-countdown">{{autoSendCountdown}}</span></div>
           <div class="auto-send-banner" v-else-if="autoSendCountdown === 0 && (quickName||quickAmount)"><span>✅ Готово к отправке — нажми кнопку</span></div>
         </div>
+
+        <div class="parsed-card" style="margin-top:10px;">
+          <div style="font-size:10px; font-weight:900; color:#fff; text-transform:uppercase; margin-bottom:5px;">Быстро добавить рубли (без алерта)</div>
+          <div class="parsed-row">
+            <label style="color:var(--text-dim); font-size:9px;">Курс RUB</label>
+            <input type="number" v-model.number="rubRate" placeholder="5">
+          </div>
+          <div class="parsed-row">
+            <label style="color:var(--text-dim); font-size:9px;">Сумма ₽</label>
+            <div class="donate-amount-wrap" style="flex:1;position:relative;">
+              <input type="number" v-model.number="quickRub" placeholder="100">
+            </div>
+          </div>
+          <button class="btn-mob-send" style="margin-top:8px; background: linear-gradient(135deg, #00aa44, #007730);" @click="addRubSilently" :disabled="!quickRub">
+            ➕ ДОБАВИТЬ {{ (quickRub * rubRate) || 0 }} ₸
+          </button>
+        </div>
+
         <div class="mob-music-card" v-if="musicQueue.length > 0">
           <div class="mob-music-head"><div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div><button class="btn-clear-queue" @click="clearQueue">🗑</button></div>
           <div class="mob-volume-row"><span style="font-size:18px;">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span><input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume"><span class="mob-vol-val">{{musicVolume}}%</span></div>
@@ -455,10 +460,24 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <template v-if="p.type==='goal'">
                   <div class="fr"><div class="fg"><label>Текущая сумма</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель</label><input type="text" v-model="p.max"></div></div>
                   
-                  <div class="fg"><label>Варианты розыгрыша (каждый с новой строки)</label><textarea v-model="p.rollOptions" placeholder="Отжимания&#10;Приседания&#10;Прыжки" style="min-height:70px"></textarea></div>
-                  
                   <div class="fr"><div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel"></div><div class="fg"><label>Размер метки</label><div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div></div></div>
-                  <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500"></textarea></div>
+                  
+                  <div class="fg">
+                    <label>Отображение донатов</label>
+                    <select v-model="p.donorDisplayMode">
+                      <option value="list">Список донатеров</option>
+                      <option value="last">Только последний донат</option>
+                    </select>
+                  </div>
+                  
+                  <div class="fg" v-if="p.donorDisplayMode === 'last'">
+                    <label>Последний донат (ручной ввод)</label>
+                    <input type="text" v-model="p.lastDonorStr" placeholder="Имя — 500">
+                  </div>
+                  <div class="fg" v-else>
+                    <label>Список донатеров</label>
+                    <textarea v-model="p.donorsRaw" placeholder="Иван — 500"></textarea>
+                  </div>
                 </template>
                 <template v-if="p.type==='challenge'">
                   <div class="fg"><label>Логотип</label><div class="file-wrap"><div class="file-btn">📁 Выбрать изображение</div><input type="file" accept="image/*" @change="uploadIcon($event,p)"></div></div>
@@ -671,28 +690,25 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 <script type="text/x-template" id="tpl-goal">
 <div class="glass" :style="glassStyle">
   <div class="goal-wrap" :style="{padding:(p.padding||20)+'px', position:'relative'}">
-    
-    <transition name="fade">
-      <div v-if="isRolling" class="roll-overlay">
-        <div class="roll-text" :class="{'is-winner': showWinner, 'is-rolling': !showWinner}" :style="{'--ac': rollAccent, color: rollAccent}">
-          <span v-if="!showWinner" style="opacity:0.5; margin-right: 10px;">▶</span>
-          {{ currentFlash }}
-          <span v-if="!showWinner" style="opacity:0.5; margin-left: 10px;">◀</span>
-        </div>
-      </div>
-    </transition>
-
-    <div class="goal-top" :style="{opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
+    <div class="goal-top">
       <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
       <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} / {{p.max||'50 000'}}</span>
     </div>
-    <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px', opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
+    <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
       <div class="prog-fill" :style="{width:pct+'%',background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',borderRadius:(p.radius||15)+'px'}"></div>
     </div>
-    <div class="ld-section" v-if="donors.length" :style="{opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
+    <div class="ld-section" v-if="p.donorDisplayMode === 'last' ? p.lastDonorStr : donors.length">
       <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
       <ul class="donor-list">
-        <li v-for="(d,i) in donors" :key="i" class="donor-item" :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{d.amount}}</span></li>
+        <li v-if="p.donorDisplayMode === 'last'" class="donor-item" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
+          <span>{{ p.lastDonorStr?.split('—')[0]?.trim() || '—' }}</span>
+          <span>{{ p.lastDonorStr?.split('—')[1]?.trim() || '' }}</span>
+        </li>
+        <template v-else>
+          <li v-for="(d,i) in donors" :key="i" class="donor-item" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
+            <span>{{d.name}}</span><span>{{d.amount}}</span>
+          </li>
+        </template>
       </ul>
     </div>
   </div>
@@ -729,10 +745,6 @@ function cleanNum(v){ return Math.round(parseFloat(String(v).replace(/\s/g,'').r
 
 const GoalComp = defineComponent({
   template:'#tpl-goal', props:['p','isObs'],
-  data() { return { isRolling: false, showWinner: false, currentFlash: '', flashInterval: null }; },
-  watch: {
-    'p.rollTrigger'(newVal) { if (newVal) this.startRoll(); }
-  },
   computed:{
     pct(){ const c=this.p.current||0,m=parseFloat(String(this.p.max).replace(/\s/g,''))||1; return Math.min(100,Math.round(c/m*100)); },
     donors(){
@@ -744,34 +756,10 @@ const GoalComp = defineComponent({
     glassStyle(){
       const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
       return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'80px'};
-    },
-    rollAccent() { return this.p.cAccent || '#ffd700'; }
+    }
   },
   methods:{ 
-    formatNum(n){ return Number(n).toLocaleString('ru'); },
-    startRoll() {
-      this.isRolling = true; this.showWinner = false;
-      let opts = (this.p.rollOptions || "Вариант 1\nВариант 2").split('\n').map(s=>s.trim()).filter(Boolean);
-      if(!opts.length) opts = ['Пусто'];
-      let ticks = 0;
-      clearInterval(this.flashInterval);
-      this.flashInterval = setInterval(() => {
-        this.currentFlash = opts[Math.floor(Math.random() * opts.length)];
-        ticks++;
-        if (ticks > 30) {
-          clearInterval(this.flashInterval);
-          this.currentFlash = this.p.rollWinner || opts[0];
-          this.showWinner = true;
-          setTimeout(() => { this.isRolling = false; this.showWinner = false; }, 6000);
-        }
-      }, 80);
-    }
-  },
-  mounted() {
-    if (this.p.rollTrigger && Date.now() - this.p.rollTrigger < 6000) {
-       this.isRolling = true; this.showWinner = true; this.currentFlash = this.p.rollWinner;
-       setTimeout(() => { this.isRolling = false; this.showWinner = false; }, 6000 - (Date.now() - this.p.rollTrigger));
-    }
+    formatNum(n){ return Number(n).toLocaleString('ru'); }
   }
 });
 
@@ -807,6 +795,9 @@ createApp({
     const globalScale = ref(saved.globalScale||1);
     const fbOk = ref(!!db);
 
+    const rubRate = ref(saved.rubRate || 5);
+    const quickRub = ref('');
+
     const isMobile = ref(mode.value === 'admin' && window.innerWidth <= 900);
     window.addEventListener('resize', () => { 
       if(mode.value === 'admin') isMobile.value = window.innerWidth <= 900; 
@@ -823,7 +814,7 @@ createApp({
     if(!panels.length) panels.push({
       id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
       lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
-      rollOptions: 'Задание 1\nЗадание 2\nЗадание 3',
+      donorDisplayMode: 'list', lastDonorStr: '',
       width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
       cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
       titleSize:16,textSize:13,barHeight:14,x:80,y:60
@@ -951,11 +942,11 @@ createApp({
 
     function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
     function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
-    function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', rollOptions: 'Вариант 1\nВариант 2\nВариант 3', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700', x:80+(panels.length*30),y:60+(panels.length*30) }); }
+    function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', donorDisplayMode: 'list', lastDonorStr: '', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700', x:80+(panels.length*30),y:60+(panels.length*30) }); }
     function removePanel(id){ const i=panels.findIndex(p=>p.id===id); if(i>=0) panels.splice(i,1); }
     function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
 
-    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value }; }
+    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value, rubRate: rubRate.value }; }
     const _doPushFirebase = debounce((state) => { if(db){ try{ db.ref('config').set(state); }catch(e){} } }, 600);
     function pushState(){ const state = buildState(); saveState(state); _doPushFirebase(state); }
     const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
@@ -964,6 +955,26 @@ createApp({
 
     function changeVolume() { _pushVolume(musicVolume.value); applyVolume(); }
     function applyVolume() { if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') { window.ytPlayerObj.setVolume(musicVolume.value); } }
+
+    function addRubSilently() {
+      const amtKzt = cleanNum(quickRub.value) * (rubRate.value || 5);
+      if (!amtKzt) return;
+      
+      panels.forEach(p => {
+        if (p.type === 'goal') {
+          p.current = (p.current || 0) + amtKzt;
+          let maxVal = parseFloat(String(p.max).replace(/\s/g, '')) || 1;
+          if (p.current >= maxVal) { p.current = 0; }
+        }
+        if (p.type === 'challenge') {
+          p.current = (p.current || 0) + amtKzt;
+        }
+      });
+      
+      pushState();
+      showToast(`✓ Добавлено ${amtKzt} ₸ (без алерта)`, 'ok');
+      quickRub.value = '';
+    }
 
     function doQuickDonate(){
       const name = quickName.value.trim() || 'Аноним'; const amt = cleanNum(quickAmount.value);
@@ -988,17 +999,13 @@ createApp({
           let existing = parsedDonors.find(d => d.name.toLowerCase() === name.toLowerCase());
           if (existing && existing.original === undefined) { existing.amount += amt; } else { parsedDonors.push({ name: name, amount: amt }); }
           parsedDonors.sort((a, b) => b.amount - a.amount);
-          p.donorsRaw = parsedDonors.map(d => { if (d.original !== undefined) return d.original; return `${d.name} — ${Number(d.amount).toLocaleString('ru')}`; }).join('\n');
           
-          // Логика автоматического сброса и рулетки
+          p.donorsRaw = parsedDonors.map(d => { if (d.original !== undefined) return d.original; return `${d.name} — ${Number(d.amount).toLocaleString('ru')}`; }).join('\n');
+          p.lastDonorStr = `${name} — ${Number(amt).toLocaleString('ru')}`;
+          
           let maxVal = parseFloat(String(p.max).replace(/\s/g, '')) || 1;
           if (p.current >= maxVal) {
             p.current = 0;
-            let opts = (p.rollOptions || "Вариант 1\nВариант 2").split('\n').map(s=>s.trim()).filter(Boolean);
-            if (opts.length > 0) {
-              p.rollWinner = opts[Math.floor(Math.random() * opts.length)];
-              p.rollTrigger = Date.now();
-            }
           }
         }
         if (p.type === 'challenge') { p.current = (p.current || 0) + amt; }
@@ -1031,7 +1038,7 @@ createApp({
     }
     
     function clearProgress() { if(confirm('Очистить сумму сборов?')){ panels.forEach(p => { p.current = 0; }); pushState(); } }
-    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') p.donorsRaw = 'Пусто — 0'; }); pushState(); } }
+    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') { p.donorsRaw = ''; p.lastDonorStr = ''; } }); pushState(); } }
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
     
     function copyObs(type){
@@ -1131,6 +1138,7 @@ createApp({
           if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
           if(d.globalScale) globalScale.value=d.globalScale;
           if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
+          if(d.rubRate) rubRate.value = d.rubRate;
         }});
         
         db.ref('musicQueue').on('value', snap => {
@@ -1150,6 +1158,7 @@ createApp({
       tName,tAmount,tMessage,
       musicQueue,skipTrack,clearQueue,
       musicVolume,changeVolume,
+      rubRate, quickRub, addRubSilently,
       toast,sceneStyle,alertCardStyle,
       idleTextStyle, idlePreviewStyle,
       cardPos,compFor,
