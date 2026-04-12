@@ -425,35 +425,16 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
           <template v-if="tab==='widgets'">
             <div class="fb-status"><div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div><span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span></div>
-            
             <div class="donate-form-card">
-              <div class="donate-form-title"><div class="dft-icon">⭐</div>Быстрый донат (ПК)</div>
-              
-              <textarea class="kaspi-paste-area" style="margin-bottom:8px" v-model="desktopPaste" @input="handleDesktopPaste" placeholder="📋 Вставь донат с DonationAlerts (или Kaspi) сюда..."></textarea>
-
+              <div class="donate-form-title"><div class="dft-icon">⭐</div>Быстрый донат</div>
               <div class="live-preview-strip" v-if="quickName||quickAmount">
                 <div><div class="lp-label">Донатер</div><div class="lp-name">{{quickName||'—'}}</div></div><div class="lp-sep"></div>
-                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') : '—'}} {{quickCurrency}}</div></div>
+                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') : '—'}}</div></div>
               </div>
               <div class="donate-input-row">
                 <div class="fg"><label>Имя донатера</label><input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate"></div>
-                <div class="fg">
-                  <label>Сумма</label>
-                  <div class="donate-amount-wrap" style="display:flex; gap:5px;">
-                    <input style="flex:1;" type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate">
-                    <select v-model="quickCurrency" style="width:50px; padding:9px 5px; cursor:pointer;">
-                      <option value="Т">Т</option>
-                      <option value="Р">Р</option>
-                    </select>
-                  </div>
-                </div>
+                <div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate"></div></div>
               </div>
-
-              <div class="fg" v-if="quickCurrency === 'Р'">
-                <label style="color:#ff0044;">Курс: 1 Р = {{exchangeRate}} Т (Сначала -30% от рублей, затем по курсу в цель)</label>
-                <input type="number" step="0.1" v-model.number="exchangeRate" placeholder="5.0">
-              </div>
-
               <div class="fg"><label>Сообщение</label><textarea v-model="quickMessage" placeholder="Крутой стрим, продолжай в том же духе!" style="min-height:40px" @keydown.enter.prevent="doQuickDonate"></textarea></div>
               <div class="donate-btn-row">
                 <button class="btn btn-blue" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
@@ -477,7 +458,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="fg"><label>Варианты розыгрыша (каждый с новой строки)</label><textarea v-model="p.rollOptions" placeholder="Отжимания&#10;Приседания&#10;Прыжки" style="min-height:70px"></textarea></div>
                   
                   <div class="fr"><div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel"></div><div class="fg"><label>Размер метки</label><div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div></div></div>
-                  <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500 Т"></textarea></div>
+                  <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500"></textarea></div>
                 </template>
                 <template v-if="p.type==='challenge'">
                   <div class="fg"><label>Логотип</label><div class="file-wrap"><div class="file-btn">📁 Выбрать изображение</div><input type="file" accept="image/*" @change="uploadIcon($event,p)"></div></div>
@@ -703,7 +684,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
     <div class="goal-top" :style="{opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
       <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
-      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} Т / {{p.max||'50 000'}}</span>
+      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} / {{p.max||'50 000'}}</span>
     </div>
     <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px', opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
       <div class="prog-fill" :style="{width:pct+'%',background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',borderRadius:(p.radius||15)+'px'}"></div>
@@ -711,7 +692,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div class="ld-section" v-if="donors.length" :style="{opacity: isRolling ? 0.2 : 1, transition: 'opacity 0.3s'}">
       <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
       <ul class="donor-list">
-        <li v-for="(d,i) in donors" :key="i" class="donor-item" :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{formatNum(d.amount)}} Т</span></li>
+        <li v-for="(d,i) in donors" :key="i" class="donor-item" :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{d.amount}}</span></li>
       </ul>
     </div>
   </div>
@@ -757,7 +738,7 @@ const GoalComp = defineComponent({
     donors(){
       const raw=this.p.donorsRaw||'';
       return raw.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean).map(s=>{
-        const m=s.match(/^(.+?)[—\-–]\s*(.+)$/); return m?{name:m[1].trim(),amount:cleanNum(m[2])}:{name:s,amount:''};
+        const m=s.match(/^(.+?)[—\-–]\s*(.+)$/); return m?{name:m[1].trim(),amount:m[2].trim()}:{name:s,amount:''};
       });
     },
     glassStyle(){
@@ -767,7 +748,7 @@ const GoalComp = defineComponent({
     rollAccent() { return this.p.cAccent || '#ffd700'; }
   },
   methods:{ 
-    formatNum(n){ return n !== '' ? Number(n).toLocaleString('ru') : ''; },
+    formatNum(n){ return Number(n).toLocaleString('ru'); },
     startRoll() {
       this.isRolling = true; this.showWinner = false;
       let opts = (this.p.rollOptions || "Вариант 1\nВариант 2").split('\n').map(s=>s.trim()).filter(Boolean);
@@ -824,7 +805,6 @@ createApp({
     const alertOpen = ref(false);
     const ttsOpen = ref(false);
     const globalScale = ref(saved.globalScale||1);
-    const exchangeRate = ref(saved.exchangeRate || 5.0);
     const fbOk = ref(!!db);
 
     const isMobile = ref(mode.value === 'admin' && window.innerWidth <= 900);
@@ -834,7 +814,6 @@ createApp({
 
     function debounce(fn, delay) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); }; }
 
-    const desktopPaste = ref('');
     const kaspiPaste = ref('');
     const musicQueue = reactive([]);
     const musicVolume = ref(100);
@@ -869,7 +848,6 @@ createApp({
     const alertVis = ref(false), alertKey = ref(0), curDonation = reactive({name:'',amount:'', msg:''});
     let alertTimer = null;
     const quickName = ref(''), quickAmount = ref(''), quickMessage = ref('');
-    const quickCurrency = ref('Т');
     const tName = ref(''), tAmount = ref(null), tMessage = ref('');
     const toast = reactive({show:false,msg:'',type:'ok'});
     const obsSelected = ref('');
@@ -955,37 +933,6 @@ createApp({
       return { cleanMsg, tracks };
     }
 
-    function handleDesktopPaste() {
-      const txt = desktopPaste.value; if (!txt) return;
-      const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
-      if (lines.length === 0) return;
-
-      // Сначала пробуем парсить DonationAlerts: Name отправил 45 RUB
-      const matchDA = lines[0].match(/^(.*?)\s+отправил[а-яА-Я()]*\s+(\d+(?:\.\d+)?)\s*(RUB|KZT|Р|Т|тнг|руб)?/i);
-      if (matchDA) {
-        quickName.value = matchDA[1].trim();
-        quickAmount.value = parseFloat(matchDA[2]);
-        const cur = (matchDA[3] || '').toUpperCase();
-        if (cur.includes('RUB') || cur.includes('Р') || cur.includes('РУБ')) {
-          quickCurrency.value = 'Р';
-        } else {
-          quickCurrency.value = 'Т';
-        }
-        quickMessage.value = lines.slice(1).join('\n');
-        return;
-      }
-
-      // Если не DA, пробуем парсить как Каспи:
-      const popIdx = lines.findIndex(l => l.toLowerCase().includes('пополнение') || l.toLowerCase().includes('перевод'));
-      if (popIdx !== -1) {
-        quickAmount.value = cleanNum(lines[popIdx]);
-        if (popIdx + 1 < lines.length && !lines[popIdx + 1].toLowerCase().includes('доступно')) quickName.value = lines[popIdx + 1];
-        const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
-        if (msgIdx !== -1) quickMessage.value = lines.slice(msgIdx + 1).join(' '); 
-        quickCurrency.value = 'Т';
-      }
-    }
-
     function handleKaspiPaste() {
       const txt = kaspiPaste.value; if (!txt) return;
       const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
@@ -997,11 +944,9 @@ createApp({
       }
       const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
       if (msgIdx !== -1) msg = lines.slice(msgIdx + 1).join(' '); 
-      
       if (amount) quickAmount.value = amount;
       if (name) quickName.value = name;
       if (msg) quickMessage.value = msg;
-      quickCurrency.value = 'Т'; // Каспи всегда в Т
     }
 
     function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
@@ -1010,7 +955,7 @@ createApp({
     function removePanel(id){ const i=panels.findIndex(p=>p.id===id); if(i>=0) panels.splice(i,1); }
     function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
 
-    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value, exchangeRate: exchangeRate.value }; }
+    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value }; }
     const _doPushFirebase = debounce((state) => { if(db){ try{ db.ref('config').set(state); }catch(e){} } }, 600);
     function pushState(){ const state = buildState(); saveState(state); _doPushFirebase(state); }
     const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
@@ -1021,19 +966,13 @@ createApp({
     function applyVolume() { if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') { window.ytPlayerObj.setVolume(musicVolume.value); } }
 
     function doQuickDonate(){
-      const name = quickName.value.trim() || 'Аноним'; 
-      const amtRaw = cleanNum(quickAmount.value);
-      if(!amtRaw) { showToast('Сумма не найдена!','err'); return; }
+      const name = quickName.value.trim() || 'Аноним'; const amt = cleanNum(quickAmount.value);
+      if(!amt) { showToast('Сумма не найдена!','err'); return; }
       const extracted = extractAndCleanYT(quickMessage.value);
       
-      let convertedAmt = amtRaw;
-      if (quickCurrency.value === 'Р') {
-        convertedAmt = Math.round(amtRaw * 0.7 * exchangeRate.value);
-      }
-
       panels.forEach(p => {
         if (p.type === 'goal') {
-          p.current = (p.current || 0) + convertedAmt;
+          p.current = (p.current || 0) + amt;
           let raw = (p.donorsRaw || '').replace('Пусто — 0', '').trim();
           let lines = raw.split(/[\n]+/).map(s => s.trim()).filter(Boolean);
           let parsedDonors = [];
@@ -1047,17 +986,11 @@ createApp({
           });
 
           let existing = parsedDonors.find(d => d.name.toLowerCase() === name.toLowerCase());
-          if (existing && existing.original === undefined) { 
-              existing.amount += convertedAmt; 
-          } else { 
-              parsedDonors.push({ name: name, amount: convertedAmt }); 
-          }
+          if (existing && existing.original === undefined) { existing.amount += amt; } else { parsedDonors.push({ name: name, amount: amt }); }
           parsedDonors.sort((a, b) => b.amount - a.amount);
-          p.donorsRaw = parsedDonors.map(d => { 
-              if (d.original !== undefined) return d.original; 
-              return `${d.name} — ${Number(d.amount).toLocaleString('ru')} Т`; 
-          }).join('\n');
+          p.donorsRaw = parsedDonors.map(d => { if (d.original !== undefined) return d.original; return `${d.name} — ${Number(d.amount).toLocaleString('ru')}`; }).join('\n');
           
+          // Логика автоматического сброса и рулетки
           let maxVal = parseFloat(String(p.max).replace(/\s/g, '')) || 1;
           if (p.current >= maxVal) {
             p.current = 0;
@@ -1068,37 +1001,26 @@ createApp({
             }
           }
         }
-        if (p.type === 'challenge') { p.current = (p.current || 0) + convertedAmt; }
+        if (p.type === 'challenge') { p.current = (p.current || 0) + amt; }
       });
       
-      const displayAmount = `${Number(amtRaw).toLocaleString('ru')} ${quickCurrency.value}`;
-      triggerAlert(name, displayAmount, extracted.cleanMsg, true); 
+      triggerAlert(name, amt, extracted.cleanMsg, true); 
       pushState();
       
       if (extracted.tracks.length > 0) { extracted.tracks.forEach(vid => { musicQueue.push({ uid: uid(), videoId: vid }); }); pushQueueState(); }
-      showToast(`✓ Отправлено: ${name}`,'ok'); 
-      quickName.value=''; quickAmount.value=''; quickMessage.value=''; quickCurrency.value='Т'; 
-      kaspiPaste.value=''; desktopPaste.value='';
+      showToast(`✓ Отправлено: ${name}`,'ok'); quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
     }
 
-    function doQuickTest(){ 
-      const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); 
-      const amtRaw = cleanNum(quickAmount.value) || 500;
-      triggerAlert(quickName.value.trim()||'Тест', `${Number(amtRaw).toLocaleString('ru')} ${quickCurrency.value}`, extracted.cleanMsg, false, true); 
-    }
+    function doQuickTest(){ const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); triggerAlert(quickName.value.trim()||'Тест', cleanNum(quickAmount.value)||500, extracted.cleanMsg, false, true); }
+    function doTrigger(){ const extracted = extractAndCleanYT(tMessage.value.trim()); triggerAlert(tName.value.trim(), cleanNum(tAmount.value), extracted.cleanMsg, true); }
     
-    function doTrigger(){ 
-      const extracted = extractAndCleanYT(tMessage.value.trim()); 
-      triggerAlert(tName.value.trim(), `${Number(cleanNum(tAmount.value)).toLocaleString('ru')} Т`, extracted.cleanMsg, true); 
-    }
-    
-    function triggerAlert(name, amtFormatted, msg, pushToFB, isTest = false){
+    function triggerAlert(name, amt, msg, pushToFB, isTest = false){
       if(pushToFB && db){
-        try{ db.ref('alert').set({ name, amount: amtFormatted, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){}
+        try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){}
         return; 
       }
       
-      curDonation.name=name; curDonation.amount=amtFormatted; curDonation.msg=msg;
+      curDonation.name=name; curDonation.amount=Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg=msg;
       alertKey.value++; 
       alertVis.value=true; 
       clearTimeout(alertTimer); 
@@ -1109,7 +1031,7 @@ createApp({
     }
     
     function clearProgress() { if(confirm('Очистить сумму сборов?')){ panels.forEach(p => { p.current = 0; }); pushState(); } }
-    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') p.donorsRaw = 'Пусто — 0 Т'; }); pushState(); } }
+    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') p.donorsRaw = 'Пусто — 0'; }); pushState(); } }
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
     
     function copyObs(type){
@@ -1197,7 +1119,7 @@ createApp({
                 isFirstAlertLoad = false;
               } else {
                 if (d.cfg) Object.assign(alertCfg, d.cfg);
-                triggerAlert(d.name, d.amount, d.msg, false); // d.amount тут уже готовая строка с "Р" или "Т"
+                triggerAlert(d.name, cleanNum(d.amount), d.msg, false);
               }
             } else {
               isFirstAlertLoad = false;
@@ -1208,7 +1130,6 @@ createApp({
         if(mode.value!=='alert') db.ref('config').on('value', s=>{ const d=s.val(); if(d){
           if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
           if(d.globalScale) globalScale.value=d.globalScale;
-          if(d.exchangeRate) exchangeRate.value=d.exchangeRate;
           if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
         }});
         
@@ -1223,9 +1144,9 @@ createApp({
 
     return { 
       mode,tab,selId,alertOpen,ttsOpen,globalScale,fbOk,panels,alertCfg,musicCfg,
-      alertVis,alertKey,curDonation,isMobile,kaspiPaste, desktopPaste, exchangeRate,
-      handleKaspiPaste, handleDesktopPaste, uploadIcon,
-      quickName,quickAmount,quickMessage, quickCurrency,
+      alertVis,alertKey,curDonation,isMobile,kaspiPaste,
+      handleKaspiPaste,uploadIcon,
+      quickName,quickAmount,quickMessage,
       tName,tAmount,tMessage,
       musicQueue,skipTrack,clearQueue,
       musicVolume,changeVolume,
