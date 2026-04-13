@@ -1055,24 +1055,39 @@ createApp({
     }
 
     let currentTrackUid = null;
+    let trackTimer = null; // ТАЙМЕР ДЛЯ ЛИМИТА В 5 МИНУТ
+
     function checkQueuePlay() {
       if (mode.value === 'alert' || mode.value === 'widget' || isMobile.value) return; 
       if (mode.value === 'admin' && !musicCfg.adminEnablePlayer) {
         if (window.ytPlayerObj && typeof window.ytPlayerObj.stopVideo === 'function') window.ytPlayerObj.stopVideo();
+        if (trackTimer) clearTimeout(trackTimer);
         return;
       }
       if (!window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
 
-      if (musicQueue.length === 0) { window.ytPlayerObj.stopVideo(); currentTrackUid = null; return; }
+      if (musicQueue.length === 0) { 
+        window.ytPlayerObj.stopVideo(); 
+        currentTrackUid = null; 
+        if (trackTimer) clearTimeout(trackTimer);
+        return; 
+      }
       const nextTrack = musicQueue[0];
       if (currentTrackUid !== nextTrack.uid) {
         currentTrackUid = nextTrack.uid;
         window.ytPlayerObj.loadVideoById(nextTrack.videoId);
         applyVolume();
+
+        // УСТАНОВКА ЛИМИТА НА 5 МИНУТ (300000 мс)
+        if (trackTimer) clearTimeout(trackTimer);
+        trackTimer = setTimeout(() => {
+          shiftQueueFromPlayer();
+        }, 300000);
       }
     }
 
     function shiftQueueFromPlayer() {
+      if (trackTimer) clearTimeout(trackTimer); // Сбросить таймер при скипе
       if (mode.value === 'music' && musicQueue.length > 0) {
         musicQueue.shift(); pushQueueState();
       } else if (mode.value === 'admin' && musicCfg.adminEnablePlayer && musicQueue.length > 0) {
