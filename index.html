@@ -250,6 +250,27 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .volume-value { font-size: 10px; font-weight: 900; color: var(--ac-blue); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   КРАСИВЫЙ ПЕРЕЛИВАЮЩИЙСЯ ДОНАТЕР
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.shimmer-donor-bg {
+  background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,255,255,0.2), rgba(255,215,0,0.1));
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  border: 1px solid rgba(255,215,0,0.5) !important;
+  box-shadow: 0 0 15px rgba(255,215,0,0.2) !important;
+}
+.shimmer-donor-bg span {
+  background: linear-gradient(90deg, #ffd700 0%, #fff 50%, #ffd700 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
+  font-weight: 900;
+}
+@keyframes shine { to { background-position: 200% center; } }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    ВИДЖЕТ МУЗЫКИ ДЛЯ OBS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .music-scene { width: 100vw; height: 100vh; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
@@ -319,7 +340,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
         <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
-        <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}}</div>
+        <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
         <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
       </div>
     </transition>
@@ -347,7 +368,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
           <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
           <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
-          <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}}</div>
+          <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
           <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
         </div>
       </transition>
@@ -434,7 +455,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="donate-form-title"><div class="dft-icon">⭐</div>Быстрый донат</div>
               <div class="live-preview-strip" v-if="quickName||quickAmount">
                 <div><div class="lp-label">Донатер</div><div class="lp-name">{{quickName||'—'}}</div></div><div class="lp-sep"></div>
-                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') : '—'}}</div></div>
+                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div></div>
               </div>
               <div class="donate-input-row">
                 <div class="fg"><label>Имя донатера</label><input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate"></div>
@@ -466,7 +487,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                     <label>Отображение донатов</label>
                     <select v-model="p.donorDisplayMode">
                       <option value="list">Список донатеров</option>
-                      <option value="last">Только последний донат</option>
+                      <option value="last">Только последний донат (Без сбора)</option>
                     </select>
                   </div>
                   
@@ -708,23 +729,23 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 <script type="text/x-template" id="tpl-goal">
 <div class="glass" :style="glassStyle">
   <div class="goal-wrap" :style="{padding:(p.padding||20)+'px', position:'relative'}">
-    <div class="goal-top">
+    <div class="goal-top" v-if="p.donorDisplayMode !== 'last'">
       <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
-      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} / {{p.max||'50 000'}}</span>
+      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} ₸ / {{p.max||'50 000'}} ₸</span>
     </div>
-    <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
+    <div class="prog-track" v-if="p.donorDisplayMode !== 'last'" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
       <div class="prog-fill" :style="{width:pct+'%',background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',borderRadius:(p.radius||15)+'px'}"></div>
     </div>
-    <div class="ld-section" v-if="p.donorDisplayMode === 'last' ? p.lastDonorStr : donors.length">
+    <div class="ld-section" v-if="p.donorDisplayMode === 'last' ? p.lastDonorStr : donors.length" :style="{marginTop: p.donorDisplayMode === 'last' ? '0' : '13px'}">
       <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
       <ul class="donor-list">
-        <li v-if="p.donorDisplayMode === 'last'" class="donor-item" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
+        <li v-if="p.donorDisplayMode === 'last'" class="donor-item shimmer-donor-bg" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px'}">
           <span>{{ p.lastDonorStr?.split('—')[0]?.trim() || '—' }}</span>
-          <span>{{ p.lastDonorStr?.split('—')[1]?.trim() || '' }}</span>
+          <span>{{ p.lastDonorStr?.split('—')[1]?.trim() ? p.lastDonorStr.split('—')[1].trim() + ' ₸' : '' }}</span>
         </li>
         <template v-else>
           <li v-for="(d,i) in donors" :key="i" class="donor-item" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
-            <span>{{d.name}}</span><span>{{d.amount}}</span>
+            <span>{{d.name}}</span><span>{{d.amount ? d.amount + ' ₸' : ''}}</span>
           </li>
         </template>
       </ul>
@@ -742,8 +763,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <span :contenteditable="!isObs" class="ed chal-title" :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}" @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
       </div>
       <div v-if="p.showCount">
-        <div class="chal-val" :style="{fontSize:(p.textSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}}</div>
-        <div class="chal-total" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}}</div>
+        <div class="chal-val" :style="{fontSize:(p.textSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div>
+        <div class="chal-total" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}} ₸</div>
       </div>
     </div>
     <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
