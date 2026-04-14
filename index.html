@@ -483,8 +483,26 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                   <div class="fg"><label>Логотип</label><div class="file-wrap"><div class="file-btn">📁 Выбрать изображение</div><input type="file" accept="image/*" @change="uploadIcon($event,p)"></div></div>
                   <div class="fr"><div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div><div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div></div>
                 </template>
+                
                 <div class="divider"></div>
-                <div class="sub-lbl">Цвета и Размеры</div>
+                <div class="sub-lbl">Шрифты и Текст</div>
+                <div class="fr">
+                  <div class="fg"><label>Размер заголовка</label><div class="rr"><input type="range" min="10" max="72" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div></div>
+                  <div class="fg"><label>Размер цифр</label><div class="rr"><input type="range" min="10" max="72" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div></div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="sub-lbl">Цвета элементов</div>
+                <div class="color-grid">
+                  <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
+                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                  <div class="ci" v-if="p.type==='goal'"><span>Полоса 1</span><input type="color" v-model="p.cBar1"></div>
+                  <div class="ci" v-if="p.type==='goal'"><span>Полоса 2</span><input type="color" v-model="p.cBar2"></div>
+                  <div class="ci" v-if="p.type==='challenge'"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
+                </div>
+
+                <div class="divider"></div>
+                <div class="sub-lbl">Настройки панели</div>
                 <div class="fg"><label>Ширина панели</label><div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div></div>
                 <div class="fr"><div class="fg"><label>Фон</label><input type="color" v-model="p.bgColor"></div><div class="fg"><label>Прозрачность фона</label><div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity}}</span></div></div></div>
               </div>
@@ -723,11 +741,15 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div v-if="p.iconData" class="icon-mask" :style="{width:(p.iconSize||35)+'px',height:(p.iconSize||35)+'px',backgroundColor:p.cIcon||'#fff',maskImage:'url('+p.iconData+')',WebkitMaskImage:'url('+p.iconData+')',marginRight:(p.iconGap||15)+'px'}"></div>
         <span :contenteditable="!isObs" class="ed chal-title" :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}" @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
       </div>
-      <div v-if="p.showCount"><div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}}</div><div class="chal-total" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}}</div></div>
+      <div v-if="p.showCount">
+        <div class="chal-val" :style="{fontSize:(p.textSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}}</div>
+        <div class="chal-total" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}}</div>
+      </div>
     </div>
     <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
     <div v-if="p.showCount" style="display:flex;justify-content:space-between;align-items:center;">
-      <span class="chal-label" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#aaa'}">Прогресс</span><span :style="{fontSize:(p.textSize||12)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
+      <span class="chal-label" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#aaa'}">Прогресс</span>
+      <span :style="{fontSize:(p.textSize||14)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
     </div>
   </div>
 </div>
@@ -816,8 +838,8 @@ createApp({
       lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
       donorDisplayMode: 'list', lastDonorStr: '',
       width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
-      cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',
-      titleSize:16,textSize:13,barHeight:14,x:80,y:60
+      cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff',
+      titleSize:16,textSize:14,barHeight:14,x:80,y:60
     });
 
     const alertCfg = reactive(Object.assign({
@@ -942,7 +964,7 @@ createApp({
 
     function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
     function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
-    function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', donorDisplayMode: 'list', lastDonorStr: '', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700', x:80+(panels.length*30),y:60+(panels.length*30) }); }
+    function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', donorDisplayMode: 'list', lastDonorStr: '', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff', titleSize:16,textSize:14, x:80+(panels.length*30),y:60+(panels.length*30) }); }
     function removePanel(id){ const i=panels.findIndex(p=>p.id===id); if(i>=0) panels.splice(i,1); }
     function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
 
