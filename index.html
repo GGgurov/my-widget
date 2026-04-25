@@ -3,163 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Widgets</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Stream Widgets Pro</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
+
     <style>
         :root {
-            --brand-purple: #8a2be2;
-            --brand-purple-dark: #4b0082;
-            --glass-bg: rgba(20, 20, 20, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-color: transparent;
+            --main-font: 'Arial', sans-serif;
+            --top-font: 'Impact', sans-serif;
+            --text-color: #ffffff;
         }
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            font-family: 'Unbounded', sans-serif;
-            background: transparent; color: white; overflow: hidden;
-        }
+        body { margin: 0; padding: 0; font-family: var(--main-font); background: var(--bg-color); color: var(--text-color); overflow: hidden; }
         * { box-sizing: border-box; }
-        
-        /* ADMIN & MOBILE UI */
-        .admin-bg { background: #121212; overflow-y: auto; padding: 20px; }
-        .panel-container { max-width: 600px; margin: 0 auto; background: var(--glass-bg); padding: 20px; border-radius: 16px; border: 1px solid var(--glass-border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-size: 12px; color: #aaa; }
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #333; background: rgba(0,0,0,0.5); color: white; font-family: 'Unbounded'; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: var(--brand-purple); }
-        button { background: linear-gradient(135deg, var(--brand-purple), var(--brand-purple-dark)); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-family: 'Unbounded'; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
-        button:active { transform: scale(0.98); }
-        
-        /* WIDGET: TOP DONATORS */
-        .top-widget { padding: 10px; width: 350px; }
-        .top-header { text-align: center; font-size: 24px; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; text-shadow: 2px 2px 0px #000; }
-        .top-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; margin-bottom: 5px; font-weight: 700; font-size: 18px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; }
-        .top-item::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-20deg); animation: shine 4s infinite; }
-        .top-1 { background: linear-gradient(to bottom, #d4af37, #aa8000); color: #fff; border-color: #ffe066; }
-        .top-2 { background: linear-gradient(to bottom, #9e9e9e, #616161); color: #fff; border-color: #e0e0e0; }
-        .top-3 { background: linear-gradient(to bottom, #cd7f32, #8b4513); color: #fff; border-color: #ffa07a; }
-        .top-rest { background: rgba(30, 30, 30, 0.8); color: #ccc; border-color: #444; }
-        
-        /* WIDGET: ALERT */
-        .alert-widget { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100vh; padding-bottom: 50px; }
-        .alert-box { background: rgba(20,20,20,0.85); border: 2px solid var(--brand-purple); padding: 20px 40px; border-radius: 20px; text-align: center; box-shadow: 0 0 30px var(--brand-purple); backdrop-filter: blur(8px); min-width: 400px; }
-        .alert-name { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 5px; }
-        .alert-amount { font-size: 36px; font-weight: 900; color: #00ffcc; text-shadow: 0 0 10px rgba(0,255,204,0.5); margin-bottom: 10px; }
-        .alert-message { font-size: 20px; color: #ddd; word-wrap: break-word; }
-        
-        /* WIDGET: GOAL */
-        .goal-widget { width: 400px; padding: 20px; background: rgba(0,0,0,0.6); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); }
-        .goal-title { text-align: center; font-weight: 700; margin-bottom: 10px; text-shadow: 1px 1px 2px #000; }
-        .goal-bar-bg { width: 100%; height: 25px; background: #222; border-radius: 12px; overflow: hidden; position: relative; border: 1px solid #444; }
-        .goal-bar-fill { height: 100%; background: linear-gradient(90deg, var(--brand-purple), #d000ff); transition: width 1s ease-in-out; position: relative; overflow: hidden; }
-        .goal-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: progress-shine 2s infinite linear; }
-        .goal-text { position: absolute; width: 100%; text-align: center; top: 2px; font-size: 14px; font-weight: 900; z-index: 2; text-shadow: 1px 1px 0 #000; }
 
-        /* WIDGET: TEXT */
-        .text-widget { display: inline-block; padding: 20px; }
-        .animated-text { font-size: 48px; font-weight: 900; text-transform: uppercase; background-clip: text; -webkit-background-clip: text; color: transparent; animation: bg-shift 3s infinite linear; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
-
-        /* ANIMATIONS */
-        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
-        @keyframes progress-shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        @keyframes bg-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        /* --- ADMIN PANEL --- */
+        #admin-panel { display: none; background: #121212; min-height: 100vh; overflow-y: auto; padding: 20px; color: white; font-family: 'Arial', sans-serif; }
+        .admin-container { max-width: 600px; margin: 0 auto; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; background: #2a2a2a; border: none; color: white; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .tab-btn.active { background: #ff0050; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         
-        .list-move, .list-enter-active, .list-leave-active { transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        .list-enter-from, .list-leave-to { opacity: 0; transform: translateY(30px) scale(0.9); }
-        .fade-enter-active, .fade-leave-active { transition: opacity 0.5s, transform 0.5s; }
-        .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(50px); }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h2 { margin-top: 0; border-bottom: 2px solid #333; padding-bottom: 10px; font-size: 20px;}
+        textarea { width: 100%; height: 200px; background: #2a2a2a; color: white; border: 1px solid #444; border-radius: 8px; padding: 15px; font-size: 16px; margin-bottom: 10px; resize: vertical; }
+        button.action-btn { background: #00e676; color: black; border: none; padding: 20px; width: 100%; border-radius: 8px; font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; text-transform: uppercase;}
+        button.action-btn:hover { background: #00c853; }
+        button.secondary-btn { background: #333; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; margin-top: 5px;}
+        input[type="text"], input[type="number"], input[type="color"] { width: 100%; padding: 12px; margin-bottom: 15px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px;}
+        .form-row { display: flex; gap: 10px; align-items: center; }
+        .links-list { background: #000; padding: 15px; border-radius: 6px; font-family: monospace; font-size: 14px; word-break: break-all; line-height: 1.8; }
+        
+        /* --- WIDGET: ALERT --- */
+        #widget-alert { display: none; width: 100vw; height: 100vh; position: relative; }
+        .alert-box { position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 600px; background: rgba(15, 15, 15, 0.95); border-radius: 15px; padding: 30px; text-align: center; border: 2px solid #00f2fe; box-shadow: 0 0 30px rgba(0, 242, 254, 0.4); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); opacity: 0; }
+        .alert-box.show { bottom: 100px; opacity: 1; }
+        .alert-name { font-size: 38px; font-weight: bold; color: #fff; margin-bottom: 5px; }
+        .alert-amount { font-size: 54px; font-weight: 900; color: #00ff88; margin: 10px 0; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+        .alert-msg { font-size: 28px; color: #ddd; word-wrap: break-word; margin-top: 15px; font-style: italic; }
+
+        /* --- WIDGET: TOP DONORS --- */
+        #widget-top { display: none; width: 100vw; height: 100vh; padding: 10px; }
+        .top-container { width: 320px; font-family: var(--top-font); background: #1a1a1a; border: 2px solid #333; border-radius: 4px; overflow: hidden;}
+        .top-header { text-align: center; font-size: 34px; letter-spacing: 1px; padding: 10px; background: #111; color: white; text-transform: uppercase; border-bottom: 3px solid #000; }
+        .top-header .highlight { color: #ffff00; }
+        .top-list-wrapper { position: relative; width: 100%; height: 300px; /* Высота под 5 элементов (60px каждый) */ }
+        
+        .top-item { position: absolute; left: 0; width: 100%; height: 60px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; font-size: 26px; text-transform: uppercase; transition: top 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); box-sizing: border-box; }
+        
+        .top-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; text-shadow: 2px 2px 0px #000; }
+        .top-sum { color: #ffff00; text-shadow: 2px 2px 0px #000; margin-left: 10px; }
+        
+        /* Градиенты по скриншоту */
+        .rank-0 { background: linear-gradient(180deg, #e6c552 0%, #a87b1e 100%); border-bottom: 1px solid #7a5812; z-index: 5;}
+        .rank-1 { background: linear-gradient(180deg, #d4d4d4 0%, #8a8a8a 100%); border-bottom: 1px solid #555; z-index: 4;}
+        .rank-2 { background: linear-gradient(180deg, #c47c47 0%, #8a481e 100%); border-bottom: 1px solid #5c2f12; z-index: 3;}
+        .rank-other { background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%); border-bottom: 1px solid #000; z-index: 2;}
+
+        /* --- WIDGET: MUSIC --- */
+        #widget-music { display: none; width: 100vw; height: 100vh; pointer-events: none; }
+        #yt-player { position: absolute; top: -9999px; left: -9999px; }
+        .music-overlay { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.85); padding: 15px 25px; border-radius: 12px; display: flex; align-items: center; gap: 15px; border-left: 5px solid #00f2fe; opacity: 0; transition: opacity 0.5s; font-family: 'Arial', sans-serif;}
+        .music-overlay.active { opacity: 1; }
+        .music-icon { font-size: 30px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* --- WIDGET: GOAL --- */
+        #widget-goal { display: none; width: 100vw; height: 100vh; padding: 20px; font-family: var(--top-font); letter-spacing: 1px;}
+        .goal-container { width: 450px; background: rgba(15,15,15,0.9); padding: 20px; border-radius: 12px; border: 2px solid #333; }
+        .goal-title { text-align: center; font-size: 28px; color: white; margin-bottom: 15px; text-transform: uppercase; }
+        .goal-bar-bg { width: 100%; height: 40px; background: #222; border-radius: 8px; overflow: hidden; position: relative; border: 2px solid #000;}
+        .goal-bar-fill { height: 100%; background: linear-gradient(90deg, #ff0050, #00f2fe); width: 0%; transition: width 1s ease-out; }
+        .goal-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; color: white; text-shadow: 2px 2px 0px #000; white-space: nowrap; }
+
+        /* --- WIDGET: TEXT --- */
+        #widget-text { display: none; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; font-family: var(--top-font); }
+        .custom-text-anim { font-size: 80px; text-transform: uppercase; text-align: center; background-clip: text; -webkit-background-clip: text; color: transparent; animation: textBreathe 3s ease-in-out infinite alternate; }
+        @keyframes textBreathe { 0% { transform: scale(1) translateY(0px); filter: drop-shadow(0 5px 15px rgba(255,255,255,0.3)); } 100% { transform: scale(1.05) translateY(-10px); filter: drop-shadow(0 15px 30px rgba(255,255,255,0.6)); } }
     </style>
 </head>
 <body>
-<div id="app">
-    <div v-if="widget === 'mobile'" class="admin-bg" style="height:100vh;">
-        <div class="panel-container">
-            <h2 style="margin-top:0; text-align:center;">Быстрый Донат</h2>
-            <div class="form-group">
-                <label>Вставьте текст с Kaspi Bank:</label>
-                <textarea v-model="kaspiText" rows="10" placeholder="Пополнение: 222 ₸&#10;Имя...&#10;Сообщение..."></textarea>
+
+    <div id="admin-panel">
+        <div class="admin-container">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('fast-send')">📱 Отправка (Каспи)</button>
+                <button class="tab-btn" onclick="switchTab('settings-pc')">💻 Настройки (ПК)</button>
+                <button class="tab-btn" onclick="switchTab('links-obs')">🔗 Ссылки (OBS)</button>
             </div>
-            <button @click="processKaspi">Отправить на стрим 🚀</button>
-            <div v-if="statusMsg" style="margin-top:15px; text-align:center; color:#00ffcc;">{{ statusMsg }}</div>
+
+            <div id="fast-send" class="tab-content active">
+                <div class="card" style="border: 2px solid #00e676;">
+                    <h2>Быстрый запуск доната</h2>
+                    <p style="color: #aaa; font-size: 14px; margin-top:-5px;">Вставь скопированный текст из приложения Kaspi. Эта кнопка не сбросит твои настройки дизайна.</p>
+                    <textarea id="kaspi-input" placeholder="Пополнение: 100 ₸&#10;Диас А.&#10;Доступно: 28 724,70 ₸&#10;Сообщение&#10;Калайсын?) macan на твой выбор ?"></textarea>
+                    <button class="action-btn" onclick="processKaspi()">🚀 ОТПРАВИТЬ НА СТРИМ</button>
+                </div>
+            </div>
+
+            <div id="settings-pc" class="tab-content">
+                <div class="card">
+                    <h2>Управление музыкой</h2>
+                    <div style="display:flex; gap:10px;">
+                        <button class="secondary-btn" onclick="skipTrack()">⏭ Скипнуть трек</button>
+                        <button class="secondary-btn" onclick="clearQueue()">🗑 Очистить очередь</button>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <label>Громкость музыки на стриме:</label>
+                        <input type="range" id="vol-slider" min="0" max="100" value="50" style="width:100%; margin-top:10px;" onchange="changeVolume(this.value)">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Настройки ТОПа</h2>
+                    <label>Заголовок (первое слово будет желтым):</label>
+                    <input type="text" id="set-top-title" value="ТОП ДНЯ">
+                    <button class="secondary-btn" style="background:#ff0050;" onclick="resetTop()">Сбросить список ТОПа</button>
+                </div>
+
+                <div class="card">
+                    <h2>Настройки Цели (Сбор)</h2>
+                    <label>Название цели:</label>
+                    <input type="text" id="set-goal-title" value="НА НОВУЮ КАМЕРУ">
+                    <label>Сумма цели (₸):</label>
+                    <input type="number" id="set-goal-target" value="100000">
+                    <label>Текущий сбор (₸):</label>
+                    <input type="number" id="set-goal-current" value="0">
+                </div>
+
+                <div class="card">
+                    <h2>Настройки красивого текста</h2>
+                    <label>Сам текст:</label>
+                    <input type="text" id="set-text-content" value="ПОДПИШИСЬ!">
+                    <div class="form-row">
+                        <div style="flex:1;">
+                            <label>Цвет градиента 1:</label>
+                            <input type="color" id="set-text-color1" value="#ff0050">
+                        </div>
+                        <div style="flex:1;">
+                            <label>Цвет градиента 2:</label>
+                            <input type="color" id="set-text-color2" value="#00f2fe">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="action-btn" style="background:#00f2fe; color:black;" onclick="saveDesignSettings()">💾 СОХРАНИТЬ ВСЕ НАСТРОЙКИ</button>
+            </div>
+
+            <div id="links-obs" class="tab-content">
+                <div class="card">
+                    <h2>Ссылки для OBS / TikTok Studio</h2>
+                    <p style="color:#aaa;">Добавь эти ссылки как источник "Браузер" / "Webcast". Установи ширину и высоту в зависимости от виджета.</p>
+                    <div class="links-list" id="links-container"></div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div v-else-if="widget === 'admin'" class="admin-bg" style="height:100vh;">
-        <div class="panel-container">
-            <h2 style="margin-top:0;">Настройки виджетов</h2>
-            
-            <div style="border-bottom:1px solid #333; padding-bottom:15px; margin-bottom:15px;">
-                <h3>Цель сбора</h3>
-                <div class="form-group"><label>Название цели</label><input v-model="settings.goal.title"></div>
-                <div class="form-group"><label>Собрано (₸)</label><input type="number" v-model.number="settings.goal.current"></div>
-                <div class="form-group"><label>Нужно (₸)</label><input type="number" v-model.number="settings.goal.target"></div>
-            </div>
-
-            <div style="border-bottom:1px solid #333; padding-bottom:15px; margin-bottom:15px;">
-                <h3>Анимированный текст</h3>
-                <div class="form-group"><label>Текст</label><input v-model="settings.text.content"></div>
-                <div class="form-group"><label>Цвета градиента (через запятую)</label><input v-model="settings.text.gradient"></div>
-            </div>
-
-            <div style="border-bottom:1px solid #333; padding-bottom:15px; margin-bottom:15px;">
-                <h3>Уведомления</h3>
-                <div class="form-group"><label>Ссылка на звук (.mp3)</label><input v-model="settings.alert.soundUrl"></div>
-            </div>
-
-            <button @click="saveSettings">Сохранить настройки</button>
-            <div v-if="statusMsg" style="margin-top:15px; text-align:center; color:#00ffcc;">{{ statusMsg }}</div>
+    <div id="widget-alert">
+        <audio id="alert-sound" src="https://actions.google.com/sounds/v1/alarms/bell_ring.ogg" preload="auto"></audio>
+        <div class="alert-box" id="alert-box">
+            <div class="alert-name" id="alert-name">Имя</div>
+            <div class="alert-amount" id="alert-amount">100 ₸</div>
+            <div class="alert-msg" id="alert-msg">Сообщение</div>
         </div>
     </div>
 
-    <div v-else-if="widget === 'top'" class="top-widget">
-        <div class="top-header">Топ дня</div>
-        <transition-group name="list" tag="div">
-            <div v-for="(user, index) in sortedTop" :key="user.name" 
-                 class="top-item" 
-                 :class="{'top-1': index === 0, 'top-2': index === 1, 'top-3': index === 2, 'top-rest': index > 2}">
-                <span>{{ user.name.substring(0, 15) }}</span>
-                <span>{{ formatMoney(user.amount) }} ₸</span>
-            </div>
-        </transition-group>
-    </div>
-
-    <div v-else-if="widget === 'alert'" class="alert-widget">
-        <transition name="fade">
-            <div v-if="currentAlert" class="alert-box">
-                <div class="alert-name">{{ currentAlert.name }}</div>
-                <div class="alert-amount">{{ formatMoney(currentAlert.amount) }} ₸</div>
-                <div class="alert-message">{{ currentAlert.message }}</div>
-            </div>
-        </transition>
-    </div>
-
-    <div v-else-if="widget === 'player'">
-        <div id="ytplayer" style="position:absolute; top:-9999px; left:-9999px;"></div>
-        <div style="padding: 10px; background: rgba(0,0,0,0.5); border-radius: 8px; font-size: 12px; display: inline-block;">
-            Сейчас играет: {{ currentMusicTitle || 'Нет треков' }}
+    <div id="widget-top">
+        <div class="top-container">
+            <div class="top-header" id="top-title"><span class="highlight">ТОП</span> ДНЯ</div>
+            <div class="top-list-wrapper" id="top-list">
+                </div>
         </div>
     </div>
 
-    <div v-else-if="widget === 'goal'" class="goal-widget">
-        <div class="goal-title">{{ settings.goal.title }}</div>
-        <div class="goal-bar-bg">
-            <div class="goal-text">{{ formatMoney(settings.goal.current) }} / {{ formatMoney(settings.goal.target) }} ₸</div>
-            <div class="goal-bar-fill" :style="{ width: goalPercentage + '%' }"></div>
+    <div id="widget-music">
+        <div id="yt-player"></div>
+        <div class="music-overlay" id="music-overlay">
+            <div class="music-icon">🎵</div>
+            <div style="color:white;">
+                <div style="font-weight:bold; font-size: 18px;">Музыка из заказа</div>
+                <div style="font-size: 14px; color:#aaa;" id="music-requester">Заказал: Аноним</div>
+            </div>
         </div>
     </div>
 
-    <div v-else-if="widget === 'text'" class="text-widget">
-        <div class="animated-text" :style="textStyle">{{ settings.text.content }}</div>
+    <div id="widget-goal">
+        <div class="goal-container">
+            <div class="goal-title" id="goal-title-disp">ЦЕЛЬ</div>
+            <div class="goal-bar-bg">
+                <div class="goal-bar-fill" id="goal-fill"></div>
+                <div class="goal-text" id="goal-text-disp">0 / 0 ₸</div>
+            </div>
+        </div>
     </div>
-</div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, onValue, set, get, update, push, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    <div id="widget-text">
+        <div class="custom-text-anim" id="custom-text-disp">ТЕКСТ</div>
+    </div>
 
+<script>
+    // --- ИНИЦИАЛИЗАЦИЯ FIREBASE (Оставил твои ключи) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
         authDomain: "tt-widget-88711.firebaseapp.com",
@@ -169,204 +216,376 @@
         messagingSenderId: "997435022478",
         appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
     };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    // --- РОУТЕР ВИДЖЕТОВ ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const view = urlParams.get('w');
+    
+    document.getElementById('admin-panel').style.display = (!view) ? 'block' : 'none';
+    if(view === 'alert') document.getElementById('widget-alert').style.display = 'block';
+    if(view === 'top') document.getElementById('widget-top').style.display = 'block';
+    if(view === 'music') document.getElementById('widget-music').style.display = 'block';
+    if(view === 'goal') document.getElementById('widget-goal').style.display = 'block';
+    if(view === 'text') document.getElementById('widget-text').style.display = 'flex';
 
-    const { createApp } = Vue;
+    // --- ЛОГИКА АДМИН ПАНЕЛИ ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
 
-    createApp({
-        data() {
-            const urlParams = new URLSearchParams(window.location.search);
-            return {
-                widget: urlParams.get('widget') || 'admin',
-                kaspiText: '',
-                statusMsg: '',
-                settings: {
-                    goal: { title: 'Сбор на стул', current: 0, target: 100000 },
-                    text: { content: 'ПОДПИШИСЬ', gradient: '#ff00ff, #00ffff' },
-                    alert: { soundUrl: 'https://actions.google.com/sounds/v1/alarms/bugle_tune.ogg' }
-                },
-                topDonators: {},
-                alertsQueue: [],
-                musicQueue: [],
-                currentAlert: null,
-                isAlertPlaying: false,
-                currentMusicTitle: '',
-                ytPlayer: null,
-                isMusicPlaying: false
+    if (!view) {
+        const baseUrl = window.location.origin + window.location.pathname;
+        document.getElementById('links-container').innerHTML = `
+            <b>Алерт доната:</b><br><a href="${baseUrl}?w=alert" target="_blank" style="color:#00f2fe">${baseUrl}?w=alert</a><br><br>
+            <b>Топ донатеров:</b><br><a href="${baseUrl}?w=top" target="_blank" style="color:#00f2fe">${baseUrl}?w=top</a><br><br>
+            <b>Музыкальный плеер:</b><br><a href="${baseUrl}?w=music" target="_blank" style="color:#00f2fe">${baseUrl}?w=music</a><br><br>
+            <b>Полоска цели:</b><br><a href="${baseUrl}?w=goal" target="_blank" style="color:#00f2fe">${baseUrl}?w=goal</a><br><br>
+            <b>Красивый текст:</b><br><a href="${baseUrl}?w=text" target="_blank" style="color:#00f2fe">${baseUrl}?w=text</a>
+        `;
+
+        // Загрузка настроек в админку с ПК
+        db.ref('settings').on('value', snap => {
+            const data = snap.val();
+            if(data) {
+                if(data.topTitle) document.getElementById('set-top-title').value = data.topTitle;
+                if(data.goalTitle) document.getElementById('set-goal-title').value = data.goalTitle;
+                if(data.goalTarget !== undefined) document.getElementById('set-goal-target').value = data.goalTarget;
+                if(data.currentGoal !== undefined) document.getElementById('set-goal-current').value = data.currentGoal;
+                if(data.volume !== undefined) document.getElementById('vol-slider').value = data.volume;
+                if(data.textContent) document.getElementById('set-text-content').value = data.textContent;
+                if(data.textColor1) document.getElementById('set-text-color1').value = data.textColor1;
+                if(data.textColor2) document.getElementById('set-text-color2').value = data.textColor2;
             }
-        },
-        computed: {
-            sortedTop() {
-                return Object.entries(this.topDonators)
-                    .map(([name, amount]) => ({ name, amount }))
-                    .sort((a, b) => b.amount - a.amount)
-                    .slice(0, 10);
-            },
-            goalPercentage() {
-                let p = (this.settings.goal.current / this.settings.goal.target) * 100;
-                return p > 100 ? 100 : (p < 0 ? 0 : p);
-            },
-            textStyle() {
-                return {
-                    backgroundImage: `linear-gradient(90deg, ${this.settings.text.gradient})`,
-                    backgroundSize: '200% auto'
-                }
-            }
-        },
-        mounted() {
-            // Загрузка настроек
-            onValue(ref(db, 'settings'), (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    this.settings = { ...this.settings, ...data };
-                }
-            });
+        });
+    }
 
-            if (this.widget === 'top') {
-                onValue(ref(db, 'top'), (snapshot) => {
-                    this.topDonators = snapshot.exists() ? snapshot.val() : {};
-                });
-            }
+    function saveDesignSettings() {
+        db.ref('settings').update({
+            topTitle: document.getElementById('set-top-title').value,
+            goalTitle: document.getElementById('set-goal-title').value,
+            goalTarget: parseInt(document.getElementById('set-goal-target').value) || 100000,
+            currentGoal: parseInt(document.getElementById('set-goal-current').value) || 0,
+            textContent: document.getElementById('set-text-content').value,
+            textColor1: document.getElementById('set-text-color1').value,
+            textColor2: document.getElementById('set-text-color2').value
+        }).then(() => {
+            alert('Настройки дизайна сохранены!');
+        });
+    }
 
-            if (this.widget === 'alert') {
-                onValue(ref(db, 'alerts'), (snapshot) => {
-                    if (snapshot.exists()) {
-                        const newAlerts = snapshot.val();
-                        for (const key in newAlerts) {
-                            this.alertsQueue.push({ id: key, ...newAlerts[key] });
-                        }
-                        set(ref(db, 'alerts'), null); // Очищаем базу после взятия в очередь
-                        this.processAlertQueue();
-                    }
-                });
-            }
+    function changeVolume(val) { db.ref('settings/volume').set(parseInt(val)); }
+    function skipTrack() { db.ref('control/skip').set(Date.now()); }
+    function clearQueue() { db.ref('musicQueue').remove(); alert('Очередь очищена'); }
+    function resetTop() { if(confirm("Точно сбросить топ? Все донатеры удалятся из списка.")) db.ref('topDonors').remove(); }
 
-            if (this.widget === 'player') {
-                window.onYouTubeIframeAPIReady = () => {
-                    this.ytPlayer = new YT.Player('ytplayer', {
-                        height: '10', width: '10',
-                        playerVars: { 'autoplay': 1, 'controls': 0 },
-                        events: { 'onStateChange': this.onPlayerStateChange }
-                    });
-                };
-                
-                onValue(ref(db, 'music'), (snapshot) => {
-                    if (snapshot.exists()) {
-                        const tracks = snapshot.val();
-                        for (const key in tracks) {
-                            this.musicQueue.push({ id: key, ytId: tracks[key].ytId });
-                        }
-                        set(ref(db, 'music'), null);
-                        this.playNextMusic();
-                    }
-                });
-            }
-        },
-        methods: {
-            formatMoney(val) {
-                return Number(val).toLocaleString('ru-RU');
-            },
-            saveSettings() {
-                set(ref(db, 'settings'), this.settings).then(() => {
-                    this.statusMsg = 'Настройки сохранены!';
-                    setTimeout(() => this.statusMsg = '', 2000);
-                });
-            },
-            processKaspi() {
-                if(!this.kaspiText.trim()) return;
-                
-                let amountMatch = this.kaspiText.match(/Пополнение:\s*([\d\s]+)\s*₸/i);
-                let amount = amountMatch ? parseInt(amountMatch[1].replace(/\s/g, '')) : 0;
-                
-                let lines = this.kaspiText.split('\n').map(l => l.trim()).filter(l => l);
-                let nameIndex = lines.findIndex(l => l.includes('Пополнение:')) + 1;
-                let name = lines[nameIndex] || 'Аноним';
-                
-                let msgIndex = lines.findIndex(l => l.includes('Сообщение'));
-                let message = '';
-                if(msgIndex !== -1) { message = lines.slice(msgIndex + 1).join(' '); }
-                
-                let ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-                let ytMatch = message.match(ytRegex);
-                let ytId = ytMatch ? ytMatch[1] : null;
-                
-                if(ytMatch) { message = message.replace(ytMatch[0], '').trim(); }
-                
-                // 1. Отправляем алерт
-                push(ref(db, 'alerts'), { name, amount, message });
-                
-                // 2. Обновляем топ
-                get(child(ref(db), `top/${name}`)).then((snapshot) => {
-                    let currentTop = snapshot.exists() ? snapshot.val() : 0;
-                    set(ref(db, `top/${name}`), currentTop + amount);
-                });
-                
-                // 3. Обновляем цель
-                get(child(ref(db), `settings/goal/current`)).then((snapshot) => {
-                    let currentGoal = snapshot.exists() ? snapshot.val() : 0;
-                    set(ref(db, `settings/goal/current`), currentGoal + amount);
-                });
-
-                // 4. Музыка
-                if(ytId) { push(ref(db, 'music'), { ytId }); }
-                
-                this.kaspiText = '';
-                this.statusMsg = 'Донат успешно отправлен!';
-                setTimeout(() => this.statusMsg = '', 2000);
-            },
-            async processAlertQueue() {
-                if (this.isAlertPlaying || this.alertsQueue.length === 0) return;
-                this.isAlertPlaying = true;
-                
-                const alert = this.alertsQueue.shift();
-                this.currentAlert = alert;
-                
-                // Звук уведомления
-                const audio = new Audio(this.settings.alert.soundUrl);
-                audio.volume = 0.5;
-                audio.play();
-                
-                // Озвучка текста (TTS)
-                if (alert.message) {
-                    setTimeout(() => {
-                        const utterance = new SpeechSynthesisUtterance(`${alert.name} задонатил ${alert.amount}. ${alert.message}`);
-                        utterance.lang = 'ru-RU';
-                        utterance.rate = 1.1;
-                        window.speechSynthesis.speak(utterance);
-                        
-                        utterance.onend = () => {
-                            setTimeout(this.finishAlert, 2000);
-                        };
-                    }, 1000);
-                } else {
-                    setTimeout(this.finishAlert, 4000);
-                }
-            },
-            finishAlert() {
-                this.currentAlert = null;
-                setTimeout(() => {
-                    this.isAlertPlaying = false;
-                    this.processAlertQueue();
-                }, 1000);
-            },
-            onPlayerStateChange(event) {
-                if (event.data === YT.PlayerState.ENDED) {
-                    this.isMusicPlaying = false;
-                    this.playNextMusic();
-                } else if (event.data === YT.PlayerState.PLAYING) {
-                     this.currentMusicTitle = `Трек из доната (${this.ytPlayer.getVideoData().video_id})`;
-                }
-            },
-            playNextMusic() {
-                if (this.isMusicPlaying || this.musicQueue.length === 0 || !this.ytPlayer) return;
-                this.isMusicPlaying = true;
-                const track = this.musicQueue.shift();
-                this.ytPlayer.loadVideoById(track.ytId);
+    // --- ИДЕАЛЬНЫЙ ПАРСЕР KASPI ---
+    function parseKaspiText(text) {
+        const amountMatch = text.match(/Пополнение:\s*([\d\s]+)\s*₸/);
+        if (!amountMatch) return null;
+        
+        const amount = parseInt(amountMatch[1].replace(/\s/g, ''), 10);
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l !== '');
+        
+        let nameIndex = lines.findIndex(l => l.includes('Пополнение:')) + 1;
+        let name = lines[nameIndex] || "Аноним";
+        
+        let message = "";
+        let ytLink = null;
+        
+        const msgIndex = lines.findIndex(l => l === "Сообщение");
+        if (msgIndex !== -1 && msgIndex + 1 < lines.length) {
+            // Собираем весь текст сообщения
+            const rawMsg = lines.slice(msgIndex + 1).join(' ');
+            
+            // Ищем ссылку на ютуб
+            const ytRegex = /(https?:\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?)/ig;
+            const links = rawMsg.match(ytRegex);
+            
+            if (links && links.length > 0) {
+                ytLink = links[0];
+                // Вырезаем ссылку из сообщения, чтобы робот ее не читал
+                message = rawMsg.replace(ytRegex, '').trim(); 
+            } else {
+                message = rawMsg;
             }
         }
-    }).mount('#app');
+        return { amount, name, message, ytLink, id: Date.now() };
+    }
+
+    function processKaspi() {
+        const input = document.getElementById('kaspi-input').value;
+        const data = parseKaspiText(input);
+        
+        if (!data) {
+            alert("Ошибка! Не удалось распознать текст. Проверь, правильно ли скопировано из Kaspi (должно быть слово 'Пополнение:').");
+            return;
+        }
+
+        // 1. Отправляем алерт на стрим
+        db.ref('alerts').push(data);
+
+        // 2. Добавляем в Топ (ключ без точек)
+        const safeName = data.name.replace(/[.#$[\]]/g, '_'); 
+        db.ref('topDonors/' + safeName).once('value', snap => {
+            const currentAmount = snap.val() ? snap.val().amount : 0;
+            db.ref('topDonors/' + safeName).set({ name: data.name, amount: currentAmount + data.amount });
+        });
+
+        // 3. Плюсуем в Цель (Сбор)
+        db.ref('settings/currentGoal').once('value', snap => {
+            const currentGoal = snap.val() || 0;
+            db.ref('settings/currentGoal').set(currentGoal + data.amount);
+        });
+
+        // 4. Если есть ютуб ссылка, кидаем в очередь музыки
+        if (data.ytLink) {
+            const vidId = extractVideoID(data.ytLink);
+            if(vidId) {
+                db.ref('musicQueue').push({ videoId: vidId, requestedBy: data.name });
+            }
+        }
+
+        document.getElementById('kaspi-input').value = '';
+        
+        // Визуальная подсказка на кнопке
+        const btn = document.querySelector('.action-btn');
+        const oldText = btn.innerText;
+        btn.innerText = "✅ УЛЕТЕЛО НА СТРИМ!";
+        btn.style.background = "#fff";
+        setTimeout(() => { btn.innerText = oldText; btn.style.background = "#00e676"; }, 1500);
+    }
+
+    function extractVideoID(url) {
+        var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+        var match = url.match(regExp);
+        return (match&&match[7].length==11)? match[7] : false;
+    }
+
+    // --- ЛОГИКА ВИДЖЕТОВ ДЛЯ СТРИМА ---
+
+    // 1. ВИДЖЕТ: ALERT (ОЗВУЧКА)
+    if (view === 'alert') {
+        let isPlaying = false;
+        db.ref('alerts').on('child_added', snap => {
+            const data = snap.val();
+            playAlert(data, snap.key);
+        });
+
+        function playAlert(data, key) {
+            if (isPlaying) {
+                setTimeout(() => playAlert(data, key), 1000);
+                return;
+            }
+            isPlaying = true;
+            
+            const box = document.getElementById('alert-box');
+            document.getElementById('alert-name').innerText = data.name;
+            document.getElementById('alert-amount').innerText = data.amount.toLocaleString('ru-RU') + ' ₸';
+            
+            // Если сообщение пустое, пишем дефолтное или скрываем
+            if(data.message.trim() === "") {
+                document.getElementById('alert-msg').innerText = "Поддержал стримера!";
+            } else {
+                document.getElementById('alert-msg').innerText = data.message;
+            }
+            
+            document.getElementById('alert-sound').play().catch(e => console.log("Браузер блокирует автоплей звука, нужен клик"));
+            box.classList.add('show');
+
+            // Озвучка текста (Speech Synthesis)
+            let textToSpeak = `${data.name} отправляет ${data.amount} тенге. `;
+            if (data.message && data.message.trim() !== "") {
+                textToSpeak += data.message;
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            utterance.lang = 'ru-RU';
+            utterance.rate = 1.1; // Чуть быстрее обычного
+            
+            utterance.onend = () => {
+                setTimeout(() => { finishAlert(key, box); }, 1500); // Держим на экране 1.5 сек после прочтения
+            };
+            
+            // Если озвучка не сработает, закроем через 5 секунд
+            let fallbackTimer = setTimeout(() => { finishAlert(key, box); }, 7000);
+            utterance.onstart = () => clearTimeout(fallbackTimer);
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function finishAlert(key, box) {
+            box.classList.remove('show');
+            db.ref('alerts/' + key).remove();
+            setTimeout(() => { isPlaying = false; }, 800);
+        }
+    }
+
+    // 2. ВИДЖЕТ: TOP DONORS (С АНИМАЦИЕЙ СМЕНЫ МЕСТ)
+    if (view === 'top') {
+        db.ref('settings/topTitle').on('value', snap => {
+            const title = snap.val() || "ТОП ДНЯ";
+            const parts = title.split(' ');
+            if(parts.length > 1) {
+                document.getElementById('top-title').innerHTML = `<span class="highlight">${parts[0]}</span> ${parts.slice(1).join(' ')}`;
+            } else {
+                document.getElementById('top-title').innerHTML = `<span class="highlight">${title}</span>`;
+            }
+        });
+
+        // Сохраняем ссылки на DOM элементы, чтобы не пересоздавать их и красиво анимировать
+        let currentElements = {};
+
+        db.ref('topDonors').on('value', snap => {
+            const data = snap.val();
+            const wrapper = document.getElementById('top-list');
+            
+            if(!data) {
+                wrapper.innerHTML = '';
+                currentElements = {};
+                return;
+            }
+
+            const sorted = Object.values(data).sort((a, b) => b.amount - a.amount).slice(0, 5); // Показываем 5 мест
+            const itemHeight = 60; // Высота одной плашки (согласовано с CSS)
+
+            sorted.forEach((donor, index) => {
+                let safeId = "donor_" + donor.name.replace(/[^a-zA-Z0-9]/g, ''); // Генерируем ID для DOM
+                let el = currentElements[safeId];
+
+                // Назначаем класс градиента в зависимости от места
+                let rankClass = index === 0 ? 'rank-0' : index === 1 ? 'rank-1' : index === 2 ? 'rank-2' : 'rank-other';
+
+                if (!el) {
+                    // Если такого донатера еще нет на экране - создаем
+                    el = document.createElement('div');
+                    el.id = safeId;
+                    el.className = `top-item ${rankClass}`;
+                    el.innerHTML = `
+                        <div class="top-name">${donor.name}</div>
+                        <div class="top-sum">${donor.amount.toLocaleString('ru-RU')} ₸</div>
+                    `;
+                    wrapper.appendChild(el);
+                    currentElements[safeId] = el;
+                } else {
+                    // Если донатер уже есть, обновляем сумму и цвет места (если он вырвался вперед)
+                    el.querySelector('.top-sum').innerText = `${donor.amount.toLocaleString('ru-RU')} ₸`;
+                    el.className = `top-item ${rankClass}`;
+                }
+
+                // МАГИЯ АНИМАЦИИ: Двигаем элемент на его место по индексу
+                setTimeout(() => {
+                    el.style.top = `${index * itemHeight}px`;
+                }, 50);
+            });
+        });
+    }
+
+    // 3. ВИДЖЕТ: MUSIC (Плеер)
+    let player;
+    let currentMusicRef = null;
+    if (view === 'music') {
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '10', width: '10',
+                playerVars: { 'playsinline': 1 },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            db.ref('settings/volume').on('value', snap => {
+                const vol = snap.val() !== null ? snap.val() : 50;
+                player.setVolume(vol);
+            });
+
+            db.ref('control/skip').on('value', snap => {
+                if(snap.val()) finishCurrentTrack();
+            });
+
+            checkMusicQueue();
+        }
+
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                finishCurrentTrack();
+            }
+        }
+        
+        function onPlayerError(event) {
+            // Если видео недоступно в регионе или удалено - скипаем
+            console.log("Ошибка YouTube:", event.data);
+            finishCurrentTrack();
+        }
+
+        function finishCurrentTrack() {
+            if(currentMusicRef) db.ref('musicQueue/' + currentMusicRef).remove();
+            document.getElementById('music-overlay').classList.remove('active');
+            currentMusicRef = null;
+            player.stopVideo();
+            setTimeout(checkMusicQueue, 1500); // Ждем полторы секунды перед следующим
+        }
+
+        function checkMusicQueue() {
+            if (currentMusicRef) return; 
+            
+            db.ref('musicQueue').orderByKey().limitToFirst(1).once('value', snap => {
+                const val = snap.val();
+                if(val) {
+                    const key = Object.keys(val)[0];
+                    const data = val[key];
+                    currentMusicRef = key;
+                    document.getElementById('music-requester').innerText = "Заказал(а): " + (data.requestedBy || "Аноним");
+                    player.loadVideoById(data.videoId);
+                    document.getElementById('music-overlay').classList.add('active');
+                } else {
+                    db.ref('musicQueue').limitToFirst(1).once('child_added', checkMusicQueue);
+                }
+            });
+        }
+    }
+
+    // 4. ВИДЖЕТ: GOAL (ЦЕЛЬ)
+    if (view === 'goal') {
+        db.ref('settings').on('value', snap => {
+            const data = snap.val() || {};
+            const title = data.goalTitle || "ЦЕЛЬ";
+            const target = data.goalTarget || 100000;
+            const current = data.currentGoal || 0;
+            
+            let percent = (current / target) * 100;
+            if(percent > 100) percent = 100;
+
+            document.getElementById('goal-title-disp').innerText = title;
+            document.getElementById('goal-fill').style.width = percent + '%';
+            document.getElementById('goal-text-disp').innerText = `${current.toLocaleString('ru-RU')} / ${target.toLocaleString('ru-RU')} ₸`;
+        });
+    }
+
+    // 5. ВИДЖЕТ: TEXT (КАСТОМНЫЙ ТЕКСТ)
+    if (view === 'text') {
+        db.ref('settings').on('value', snap => {
+            const data = snap.val() || {};
+            const textEl = document.getElementById('custom-text-disp');
+            
+            textEl.innerText = data.textContent || "ПОДПИШИСЬ!";
+            const color1 = data.textColor1 || "#ff0050";
+            const color2 = data.textColor2 || "#00f2fe";
+            
+            textEl.style.backgroundImage = `linear-gradient(45deg, ${color1}, ${color2})`;
+        });
+    }
+
 </script>
 </body>
 </html>
