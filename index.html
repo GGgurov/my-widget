@@ -255,7 +255,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 /* ══════════════════════════════════════════════════════
    ТОП ДОНАТОВ - БАЗОВЫЕ СТИЛИ И ТЕМЫ
 ══════════════════════════════════════════════════════ */
-.top-scene{width:100vw;height:100vh;background:transparent;display:flex;align-items:center;justify-content:flex-start;padding:var(--top-pad,20px);position:relative;overflow:hidden;}
+.top-scene{
+  width:100vw; height:100vh; background:transparent;
+  display:flex; align-items:flex-start; /* ПРИКЛЕИВАЕМ К ВЕРХУ */
+  justify-content:flex-start; position:relative;
+  overflow:hidden; box-sizing:border-box;
+}
 .top-widget{display:flex;flex-direction:column;gap:var(--top-gap,6px);width:var(--top-w,400px);}
 .top-title-row{
   display:flex;align-items:center;justify-content:center;
@@ -281,27 +286,28 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.12);
   margin-bottom:2px;
 }
+/* СДЕЛАЛ НЕПРОЗРАЧНЕЕ ДЛЯ ЧИТАЕМОСТИ В ИГРЕ */
 .top-theme-universal .top-entry.rank-1{
-  background:linear-gradient(90deg,rgba(255,215,0,.35) 0%,rgba(255,180,0,.15) 55%,rgba(20,15,5,.98) 100%);
-  border:1.5px solid rgba(255,215,0,.55);animation:univGold 2.5s ease-in-out infinite;
+  background:linear-gradient(90deg,rgba(255,215,0,.85) 0%,rgba(255,180,0,.65) 55%,rgba(20,15,5,1) 100%);
+  border:1.5px solid rgba(255,215,0,.8);animation:univGold 2.5s ease-in-out infinite;
 }
 .top-theme-universal .top-entry.rank-2{
-  background:linear-gradient(90deg,rgba(200,200,200,.25) 0%,rgba(20,15,5,.98) 100%);
-  border:1px solid rgba(200,200,200,.35);
+  background:linear-gradient(90deg,rgba(200,200,200,.75) 0%,rgba(20,15,5,1) 100%);
+  border:1px solid rgba(200,200,200,.6);
 }
 .top-theme-universal .top-entry.rank-3{
-  background:linear-gradient(90deg,rgba(205,127,50,.25) 0%,rgba(20,15,5,.98) 100%);
-  border:1px solid rgba(205,127,50,.3);
+  background:linear-gradient(90deg,rgba(205,127,50,.75) 0%,rgba(20,15,5,1) 100%);
+  border:1px solid rgba(205,127,50,.6);
 }
 .top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){
   background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.06);
 }
 @keyframes univGold{0%,100%{box-shadow:0 0 10px rgba(255,215,0,.2);}50%{box-shadow:0 0 28px rgba(255,215,0,.45),0 0 55px rgba(255,215,0,.12);}}
-.top-theme-universal .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.4);}
+.top-theme-universal .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.6);}
 .top-theme-universal .rank-1 .top-rank-badge{font-size:18px;color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,.8);}
-.top-theme-universal .rank-2 .top-rank-badge{font-size:15px;color:#c8c8c8;text-shadow:0 0 8px rgba(200,200,200,.6);}
-.top-theme-universal .rank-3 .top-rank-badge{font-size:13px;color:#cd7f32;text-shadow:0 0 6px rgba(205,127,50,.5);}
-.top-theme-universal .top-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;}
+.top-theme-universal .rank-2 .top-rank-badge{font-size:15px;color:#ffffff;text-shadow:0 0 8px rgba(200,200,200,.6);}
+.top-theme-universal .rank-3 .top-rank-badge{font-size:13px;color:#ffcca1;text-shadow:0 0 6px rgba(205,127,50,.5);}
+.top-theme-universal .top-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#ddd;text-transform:uppercase;letter-spacing:.5px;}
 .top-theme-universal .rank-1 .top-name{
   font-size:15px;font-weight:900;
   background:linear-gradient(90deg,#fff,#ffd700,#fff,#ffd700);background-size:300% 100%;
@@ -309,9 +315,9 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   animation:univNameShimmer 4s linear infinite;
 }
 @keyframes univNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-.top-theme-universal .rank-2 .top-name{color:#d0d0d0;font-size:14px;}
-.top-theme-universal .rank-3 .top-name{color:#b87333;font-size:13px;}
-.top-theme-universal .top-amount{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:rgba(255,215,0,.5);}
+.top-theme-universal .rank-2 .top-name{color:#ffffff;font-size:14px;}
+.top-theme-universal .rank-3 .top-name{color:#ffe4c4;font-size:13px;}
+.top-theme-universal .top-amount{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:rgba(255,215,0,.9);}
 .top-theme-universal .rank-1 .top-amount{
   font-size:17px;
   background:linear-gradient(90deg,#ffd700,#fff5aa,#ffaa00,#ffd700);background-size:300% 100%;
@@ -319,10 +325,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   animation:univAmtShimmer 2.5s linear infinite;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));
 }
 @keyframes univAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-.top-theme-universal .rank-2 .top-amount{color:#c8c8c8;font-size:15px;}
-.top-theme-universal .rank-3 .top-amount{color:#cd7f32;font-size:13px;}
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#666;font-size:11px;}
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#555;font-size:11px;}
+.top-theme-universal .rank-2 .top-amount{color:#ffffff;font-size:15px;}
+.top-theme-universal .rank-3 .top-amount{color:#ffcca1;font-size:13px;}
+.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#ccc;font-size:11px;}
+.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#bbb;font-size:11px;}
 
 /* ═══ ТЕМА 2: HUDPRO (teal — синяя) ═══ */
 .top-theme-hudpro .top-title-row{
@@ -335,20 +341,20 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 .top-theme-hudpro .top-entry{
   border-radius:6px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,rgba(0,40,55,.98),rgba(0,25,35,.98));
-  border:1px solid rgba(0,150,180,.18);
+  background:linear-gradient(90deg,rgba(0,50,70,1),rgba(0,30,45,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
+  border:1px solid rgba(0,150,180,.5);
   margin-bottom:2px;
 }
 .top-theme-hudpro .top-entry::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
-  background:rgba(0,160,190,.35);
+  background:rgba(0,160,190,.8);
 }
 .top-theme-hudpro .top-entry.rank-1 .top-amount{
   font-size:16px;color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);
 }
-.top-theme-hudpro .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.85;}
-.top-theme-hudpro .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.75;}
-.top-theme-hudpro .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.6;}
+.top-theme-hudpro .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.95;}
+.top-theme-hudpro .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.85;}
+.top-theme-hudpro .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.7;}
 .top-theme-hudpro .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
 .top-theme-hudpro .top-name{
   font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;
@@ -367,22 +373,22 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 }
 .top-theme-hpp .top-entry{
   border-radius:6px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,rgba(60,5,25,.98),rgba(40,0,15,.98));
-  border:1px solid rgba(180,20,60,.25);
+  background:linear-gradient(90deg,rgba(80,10,30,1),rgba(50,0,15,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
+  border:1px solid rgba(180,20,60,.5);
   margin-bottom:2px;
 }
 .top-theme-hpp .top-entry::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
-  background:rgba(200,30,70,.4);
+  background:rgba(200,30,70,.8);
 }
 .top-theme-hpp .top-entry.rank-1{
-  background:linear-gradient(90deg,rgba(90,5,30,.98),rgba(60,0,25,.98));
-  border-color:rgba(220,40,80,.4);
+  background:linear-gradient(90deg,rgba(120,10,40,1),rgba(80,0,30,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
+  border-color:rgba(220,40,80,.8);
 }
 .top-theme-hpp .top-entry.rank-1 .top-amount{font-size:16px;color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);}
-.top-theme-hpp .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.85;}
-.top-theme-hpp .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.75;}
-.top-theme-hpp .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.6;}
+.top-theme-hpp .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.95;}
+.top-theme-hpp .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.85;}
+.top-theme-hpp .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.7;}
 .top-theme-hpp .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
 .top-theme-hpp .top-name{
   font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;
@@ -635,8 +641,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div class="ld-section" v-if="donors.length">
       <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc',fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
       <ul class="donor-list">
-        <li v-for="(d,i) in donors" :key="i" class="donor-item" 
- :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{d.amount}}</span></li>
+        <li v-for="(d,i) in donors" :key="i" class="donor-item" :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{d.amount}}</span></li>
       </ul>
     </div>
   </div>
@@ -655,8 +660,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </div>
     <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
     <div v-if="p.showCount" style="display:flex;justify-content:space-between;align-items:center;">
-      
- <span class="chal-label" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#aaa'}">Прогресс</span><span :style="{fontSize:(p.textSize||12)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
+      <span class="chal-label" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#aaa'}">Прогресс</span><span :style="{fontSize:(p.textSize||12)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
     </div>
   </div>
 </div>
@@ -665,8 +669,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 <body>
 <div id="app">
 
-  <div v-if="mode==='alert'" class="alert-scene" :class="alertCfg.animStyle ?
- 'alert-anim-'+alertCfg.animStyle+(alertVis?'':'-leave') : ''">
+  <div v-if="mode==='alert'" class="alert-scene" :class="alertCfg.animStyle ? 'alert-anim-'+alertCfg.animStyle+(alertVis?'':'-leave') : ''">
     <canvas class="particle-canvas" ref="pCanvas"></canvas>
     <transition :name="'alert-transition-'+alertCfg.animStyle" @enter="onAlertEnter" @leave="onAlertLeave">
       <div v-if="alertVis" :key="alertKey" class="alert-card glow-card" :style="alertCardStyle">
@@ -676,8 +679,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa',fontSize:(alertCfg.labelFontSize||10)+'px'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
         <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
         <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
-        <div v-if="curDonation.msg" 
- class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+        <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
         <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}"></div>
       </div>
     </transition>
@@ -691,7 +693,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <div v-if="mode==='widget'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
- 
     <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
@@ -706,16 +707,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+topCfg.theme" :style="topSceneStyle">
     <div class="top-widget">
       <div v-if="topCfg.showTitle" class="top-title-row">
-        <span 
- class="top-title" :style="topTitleStyle">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span>
+        <span class="top-title" :style="topTitleStyle">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span>
       </div>
       <transition-group name="top-move" tag="div" style="display:flex;flex-direction:column;gap:var(--top-gap,6px)">
         <div v-for="(donor,idx) in topDonors.slice(0,topCfg.maxRows||10)" :key="donor.uid"
-          class="top-entry"
-          :class="['rank-'+(idx+1), {newTop1: donor._new}]"
-          :style="topEntryStyle(idx)">
-          <span class="top-rank-badge">{{topCfg.rankEmoji ?
- rankEmoji(idx) : '#'+(idx+1)}}</span>
+          class="top-entry" :class="['rank-'+(idx+1), {newTop1: donor._new}]" :style="topEntryStyle(idx)">
+          <span class="top-rank-badge">{{topCfg.rankEmoji ? rankEmoji(idx) : '#'+(idx+1)}}</span>
           <span class="top-name" :style="topNameStyle(idx)">{{donor.name}}</span>
           <span class="top-amount" :style="topAmountStyle(idx)">{{fmtNum(donor.amount)}} ₸</span>
         </div>
@@ -729,8 +726,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       <div style="display:flex;align-items:center;gap:10px;">
         <span style="font-size:8px;color:var(--text-dim);font-weight:700;">ТЕЛЕФОН</span>
         <div class="mob-fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
-   
-    </div>
+      </div>
     </div>
     <div class="mob-scroll">
       <div class="mob-info-note">📱 Только отправка доната — настройки не затрагиваются</div>
@@ -739,16 +735,14 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="parsed-row"><label>СУММА</label><div class="donate-amount-wrap" style="flex:1;"><input type="number" v-model.number="quickAmount" placeholder="0"><span class="tenge-badge">₸</span></div></div>
         <div class="parsed-row"><label>ИМЯ</label><input type="text" v-model="quickName" placeholder="Аноним"></div>
         <div class="parsed-row"><label>СООБЩ.</label><textarea v-model="quickMessage" placeholder="Сообщение (ссылка на YouTube — заказ музыки)"></textarea></div>
-     
-  </div>
+      </div>
       <div v-if="musicQueue.length>0" class="mob-music-card">
         <div class="mob-music-head">
           <div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div>
           <button class="btn-clear-queue" @click="clearQueue">🗑</button>
         </div>
         <div class="mob-volume-row">
-          <span style="font-size:14px;">{{ musicVolume > 0 ?
- '🔊' : '🔇' }}</span>
+          <span style="font-size:14px;">{{ musicVolume > 0 ? '🔊' : '🔇' }}</span>
           <input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
           <span class="mob-vol-val">{{musicVolume}}%</span>
         </div>
@@ -756,8 +750,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="mob-track-meta">
             <div class="mob-track-status" :class="{now:idx===0}">
               <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет</template>
-        
-               <template v-else>⏳ #{{idx}}</template>
+              <template v-else>⏳ #{{idx}}</template>
             </div>
           </div>
           <button v-if="idx===0" class="mob-skip-btn" @click="skipTrack(0)">⏭</button>
@@ -766,10 +759,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </div>
     </div>
     <div class="mob-actions">
-      <button class="btn-mob-send" @click="doMobileDonate" :disabled="!quickAmount">
-        <span>💸</span> ОТПРАВИТЬ ДОНАТ
-  
-     </button>
+      <button class="btn-mob-send" @click="doMobileDonate" :disabled="!quickAmount"><span>💸</span> ОТПРАВИТЬ ДОНАТ</button>
       <button class="btn-mob-clear" @click="clearTopDonors">🗑 Очистить топ донатов</button>
     </div>
   </div>
@@ -781,8 +771,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="logo">
             <div class="logo-mark">SQ</div>
             <div class="logo-name">SUPREME <span>WIDGET</span></div>
-         
-  </div>
+          </div>
           <div style="display:flex;align-items:center;gap:8px;">
             <div class="fb-status"><div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div><span style="color:var(--text-dim)">{{fbOk?'Firebase OK':'Нет связи'}}</span></div>
             <span class="ver-tag">V14</span>
@@ -791,8 +780,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="tabs">
           <button class="tab" :class="{on:tab==='donate'}" @click="tab='donate'">💸 Донат</button>
           <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
-  
-         <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🔔 Алерт</button>
+          <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🔔 Алерт</button>
           <button class="tab" :class="{on:tab==='top'}" @click="tab='top'">🏆 Топ</button>
           <button class="tab" :class="{on:tab==='music'}" @click="tab='music'">🎵 Музыка</button>
         </div>
@@ -800,21 +788,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
           <template v-if="tab==='donate'">
             <div class="donate-form-card">
-    
-           <div class="donate-form-title"><div class="dft-icon">💸</div>ОТПРАВИТЬ ДОНАТ</div>
+              <div class="donate-form-title"><div class="dft-icon">💸</div>ОТПРАВИТЬ ДОНАТ</div>
               <div class="donate-input-row">
                 <div class="fg"><label>Имя</label><input type="text" v-model="quickName" placeholder="Иван"></div>
                 <div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="quickAmount" placeholder="500"><span class="tenge-badge">₸</span></div></div>
               </div>
-              <div class="fg"><label>Сообщение 
- (можно YouTube ссылку)</label><textarea v-model="quickMessage" placeholder="Привет стриму! https://youtu.be/..."></textarea></div>
+              <div class="fg"><label>Сообщение (можно YouTube ссылку)</label><textarea v-model="quickMessage" placeholder="Привет стриму!&#10;https://youtu.be/..."></textarea></div>
               <div class="donate-btn-row">
                 <button class="btn btn-red" @click="doQuickDonate">💸 В OBS</button>
                 <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
               </div>
             </div>
-           
-  <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">📋 Сброс и статистика</div></div></div>
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">📋 Сброс и статистика</div></div></div>
             <div class="sec-body">
               <div class="fr"><button class="btn btn-flat" @click="clearProgress">🔄 Сбросить суммы</button><button class="btn btn-flat" @click="clearDonors">🗑 Очистить донатеров</button></div>
               <div class="fr"><button class="btn btn-flat" @click="clearTopDonors">🏆 Сбросить топ</button></div>
@@ -826,51 +811,43 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-body">
               <div class="fr"><div class="fg"><label>Имя</label><input type="text" v-model="tName" placeholder="Иван"></div><div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="tAmount" placeholder="500"><span class="tenge-badge">₸</span></div></div></div>
               <div class="fg"><label>Сообщение</label><textarea v-model="tMessage" placeholder="Текст"></textarea></div>
-             
-  <button class="btn btn-green" @click="doTrigger">▶ В OBS</button>
+              <button class="btn btn-green" @click="doTrigger">▶ В OBS</button>
             </div>
             <div class="fr"><button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button></div>
             <div v-for="(p,i) in panels" :key="p.id">
               <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
                 <div class="sec-head-l"><div class="sec-dot">{{i+1}}</div><div class="sec-name">🎯 ЦЕЛЬ</div></div>
-            
-     <div style="display:flex;gap:7px;align-items:center"><button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button><span class="sec-chevron">▼</span></div>
+                <div style="display:flex;gap:7px;align-items:center"><button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button><span class="sec-chevron">▼</span></div>
               </div>
               <div v-if="selId===p.id" class="sec-body">
                 <div class="fr"><div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div><div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div></div>
                 <template v-if="p.type==='goal'">
-                  <div 
- class="fr"><div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div></div>
+                  <div class="fr"><div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div></div>
                   <div class="fg"><label>Метка последнего доната</label><input type="text" v-model="p.lastDonorLabel"></div>
                   <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸"></textarea></div>
                 </template>
                 <div class="divider"></div>
-          
-       <div class="sub-lbl">Размеры</div>
+                <div class="sub-lbl">Размеры</div>
                 <div class="fg"><label>Ширина панели</label><div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div></div>
                 <div class="fg"><label>Скругление</label><div class="rr"><input type="range" min="0" max="30" v-model.number="p.radius"><span class="rv">{{p.radius||15}}</span></div></div>
                 <div class="fg"><label>Высота бара (px)</label><div class="rr"><input type="range" min="4" max="40" v-model.number="p.barHeight"><span class="rv">{{p.barHeight||14}}px</span></div></div>
-                <div class="fg"><label>Внутренние отступы</label><div class="rr"><input 
- type="range" min="8" max="40" v-model.number="p.padding"><span class="rv">{{p.padding||20}}px</span></div></div>
+                <div class="fg"><label>Внутренние отступы</label><div class="rr"><input type="range" min="8" max="40" v-model.number="p.padding"><span class="rv">{{p.padding||20}}px</span></div></div>
                 <div class="fg"><label>Размер заголовка</label><div class="rr"><input type="range" min="10" max="36" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}px</span></div></div>
                 <div class="fg"><label>Размер текста</label><div class="rr"><input type="range" min="8" max="30" v-model.number="p.textSize"><span class="rv">{{p.textSize||13}}px</span></div></div>
                 <div class="divider"></div>
                 <div class="sub-lbl">Цвета</div>
-              
-   <div class="color-grid">
+                <div class="color-grid">
                   <div class="ci"><span>Фон</span><input type="color" v-model="p.bgColor"></div>
                   <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
                   <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
                   <div class="ci"><span>Бар 1</span><input type="color" v-model="p.cBar1"></div>
-            
-     </div>
+                </div>
                 <div class="color-grid-3">
                   <div class="ci"><span>Бар 2</span><input type="color" v-model="p.cBar2"></div>
                 </div>
                 <div class="fg"><label>Прозрачность фона</label><div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity}}</span></div></div>
               </div>
-  
-           </div>
+            </div>
             <div class="sec-head"><div class="sec-head-l"><div class="sec-name">⚙ Масштаб сцены</div></div></div>
             <div class="sec-body">
               <div class="fg"><label>Масштаб</label><div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div></div>
@@ -882,69 +859,58 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-body">
               <div class="fr"><div class="fg"><label>Имя</label><input type="text" v-model="tName" placeholder="Иван"></div><div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="tAmount" placeholder="500"><span class="tenge-badge">₸</span></div></div></div>
               <div class="fg"><label>Сообщение</label><textarea v-model="tMessage" placeholder="Текст"></textarea></div>
-              <button class="btn 
- btn-green" @click="doTrigger">▶ Запустить в OBS</button>
+              <button class="btn btn-green" @click="doTrigger">▶ Запустить в OBS</button>
             </div>
-
             <div class="sec-head" :class="{on:sections.alertStyle}" @click="sections.alertStyle=!sections.alertStyle">
               <div class="sec-head-l"><div class="sec-name">🎨 Внешний вид</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.alertStyle" class="sec-body">
               <div class="fg"><label>Лейбл</label><input type="text" v-model="alertCfg.labelText" placeholder="НОВЫЙ ДОНАТ!"></div>
-     
-          <div class="fg"><label>Анимация появления</label>
+              <div class="fg"><label>Анимация появления</label>
                 <select v-model="alertCfg.animStyle">
                   <option value="bounce">🏀 Bounce — прыжок</option>
                   <option value="slide">⬅ Slide — вылет сбоку</option>
                   <option value="zoom">🔍 Zoom — масштаб</option>
-     
-              <option value="glitch">⚡ Glitch — глитч</option>
+                  <option value="glitch">⚡ Glitch — глитч</option>
                   <option value="cinema">🎬 Cinema — кинематограф</option>
                 </select>
               </div>
               <div class="fg"><label>Длительность (сек)</label><div class="rr"><input type="range" min="3" max="20" v-model.number="alertCfg.duration"><span class="rv">{{alertCfg.duration}}s</span></div></div>
-         
-      <div class="divider"></div>
+              <div class="divider"></div>
               <div class="sub-lbl">Размеры текста</div>
               <div class="fg"><label>Лейбл (px)</label><div class="rr"><input type="range" min="8" max="24" v-model.number="alertCfg.labelFontSize"><span class="rv">{{alertCfg.labelFontSize||10}}px</span></div></div>
               <div class="fg"><label>Имя донатера (px)</label><div class="rr"><input type="range" min="16" max="72" v-model.number="alertCfg.nameFontSize"><span class="rv">{{alertCfg.nameFontSize||32}}px</span></div></div>
               <div class="fg"><label>Сумма (px)</label><div class="rr"><input type="range" min="20" max="96" v-model.number="alertCfg.amountFontSize"><span class="rv">{{alertCfg.amountFontSize||48}}px</span></div></div>
-           
-    <div class="fg"><label>Сообщение (px)</label><div class="rr"><input type="range" min="12" max="40" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}px</span></div></div>
+              <div class="fg"><label>Сообщение (px)</label><div class="rr"><input type="range" min="12" max="40" v-model.number="alertCfg.msgFontSize"><span class="rv">{{alertCfg.msgFontSize||24}}px</span></div></div>
               <div class="fg"><label>Скругление карточки</label><div class="rr"><input type="range" min="0" max="40" v-model.number="alertCfg.cardRadius"><span class="rv">{{alertCfg.cardRadius||16}}px</span></div></div>
               <div class="divider"></div>
               <div class="sub-lbl">Цвета</div>
               <div class="color-grid">
                 <div class="ci"><span>Лейбл</span><input type="color" v-model="alertCfg.labelColor"></div>
-   
-              <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
+                <div class="ci"><span>Имя</span><input type="color" v-model="alertCfg.nameColor"></div>
                 <div class="ci"><span>Сумма</span><input type="color" v-model="alertCfg.amountColor"></div>
                 <div class="ci"><span>Граница</span><input type="color" v-model="alertCfg.borderColor"></div>
               </div>
               <div class="color-grid-3">
-                <div 
- class="ci"><span>Сообщение</span><input type="color" v-model="alertCfg.msgColor"></div>
+                <div class="ci"><span>Сообщение</span><input type="color" v-model="alertCfg.msgColor"></div>
                 <div class="ci"><span>Фон</span><input type="color" v-model="alertCfg.bgColor"></div>
               </div>
               <div class="fg"><label>Прозрачность фона</label><div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="alertCfg.bgOpacity"><span class="rv">{{alertCfg.bgOpacity}}</span></div></div>
             </div>
 
             <div class="sec-head" :class="{on:sections.alertMedia}" @click="sections.alertMedia=!sections.alertMedia">
-              <div 
- class="sec-head-l"><div class="sec-name">🖼 GIF / Картинка при донате</div></div><span class="sec-chevron">▼</span>
+              <div class="sec-head-l"><div class="sec-name">🖼 GIF / Картинка при донате</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.alertMedia" class="sec-body">
               <div class="cb-row"><label>Показывать изображение</label><input type="checkbox" v-model="alertCfg.showMedia"></div>
               <template v-if="alertCfg.showMedia">
                 <div class="fg">
-                 
-  <label>Загрузить GIF или фото</label>
+                  <label>Загрузить GIF или фото</label>
                   <div class="file-wrap"><div class="file-btn">📁 Выбрать GIF/PNG/JPG</div><input type="file" accept="image/*,.gif" @change="uploadAlertMedia"></div>
                   <span v-if="alertCfg.mediaUrl" class="file-ok">✓ Изображение загружено</span>
                 </div>
                 <div v-if="alertCfg.mediaUrl" class="media-preview"><img :src="alertCfg.mediaUrl" alt="preview"></div>
-             
-    <button v-if="alertCfg.mediaUrl" class="btn btn-del" @click="alertCfg.mediaUrl=''">✕ Удалить изображение</button>
+                <button v-if="alertCfg.mediaUrl" class="btn btn-del" @click="alertCfg.mediaUrl=''">✕ Удалить изображение</button>
               </template>
             </div>
 
@@ -952,58 +918,44 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="sec-head-l"><div class="sec-name">🔊 Звук при донате</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.alertSound" class="sec-body">
-    
-           <div class="cb-row"><label>Включить звук</label><input type="checkbox" v-model="alertCfg.soundEnabled"></div>
+              <div class="cb-row"><label>Включить звук</label><input type="checkbox" v-model="alertCfg.soundEnabled"></div>
               <template v-if="alertCfg.soundEnabled">
                 <div class="fg">
                   <label>Тип звука</label>
                   <select v-model="alertCfg.soundType">
-                
-     <option value="chime">🎵 Chime</option>
+                    <option value="chime">🎵 Chime</option>
                     <option value="ding">🔔 Ding</option>
                     <option value="fanfare">🎺 Fanfare</option>
                     <option value="cash">💰 Cash</option>
                     <option value="custom">📁 Свой звук</option>
-     
-              </select>
+                  </select>
                 </div>
                 <template v-if="alertCfg.soundType==='custom'">
                   <div class="fg">
                     <label>Загрузить свой звук (MP3/WAV/OGG)</label>
-            
-         <div class="file-wrap"><div class="file-btn">📁 Выбрать аудио файл</div><input type="file" accept="audio/*" @change="uploadAlertSound"></div>
+                    <div class="file-wrap"><div class="file-btn">📁 Выбрать аудио файл</div><input type="file" accept="audio/*" @change="uploadAlertSound"></div>
                     <span v-if="alertCfg.customSoundData" class="file-ok">✓ Звук загружен</span>
                     <span v-if="!alertCfg.customSoundData" class="file-err">Звук не загружен</span>
                   </div>
                 </template>
-  
-               <div class="fg"><label>Громкость звука</label><div class="rr"><input type="range" min="0" max="100" v-model.number="alertCfg.soundVolume"><span class="rv">{{alertCfg.soundVolume}}%</span></div></div>
+                <div class="fg"><label>Громкость звука</label><div class="rr"><input type="range" min="0" max="100" v-model.number="alertCfg.soundVolume"><span class="rv">{{alertCfg.soundVolume}}%</span></div></div>
                 <button class="btn btn-flat" @click="() => playDonationSound(true)">🔊 Тест звука</button>
               </template>
             </div>
 
             <div class="sec-head" :class="{on:sections.alertTTS}" @click="sections.alertTTS=!sections.alertTTS">
-              
- <div class="sec-head-l"><div class="sec-name">🗣 Озвучка TTS</div></div><span class="sec-chevron">▼</span>
+              <div class="sec-head-l"><div class="sec-name">🗣 Озвучка TTS</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.alertTTS" class="sec-body">
               <div class="cb-row"><label>Включить озвучку</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
               <template v-if="alertCfg.ttsEnabled">
-                <div class="fg">
-                  <label>Голос</label>
- 
-                  <select v-model="alertCfg.ttsVoiceIdx">
-                    <option v-for="(v,i) in ttsVoices" :key="i" :value="i">{{v.name}} ({{v.lang}})</option>
-                  </select>
-                </div>
-                <div class="fg"><label>Скорость речи</label><div class="rr"><input type="range" min="0.5" 
- max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{alertCfg.ttsRate||1}}x</span></div></div>
+                <div style="font-size:9px;color:#00cc44;padding:4px 0 6px;">💡 Голос будет выбран автоматически вашим OBS / TikTok Live Studio</div>
+                <div class="fg"><label>Скорость речи</label><div class="rr"><input type="range" min="0.5" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{alertCfg.ttsRate||1}}x</span></div></div>
                 <div class="fg"><label>Тон голоса</label><div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{alertCfg.ttsPitch||1}}</span></div></div>
                 <div class="fg"><label>Громкость</label><div class="rr"><input type="range" min="0" max="100" v-model.number="alertCfg.ttsVolume"><span class="rv">{{alertCfg.ttsVolume}}%</span></div></div>
                 <div class="cb-row"><label>Озвучивать сумму</label><input type="checkbox" v-model="alertCfg.ttsReadAmount"></div>
                 <div class="cb-row"><label>Озвучивать имя</label><input type="checkbox" v-model="alertCfg.ttsReadName"></div>
-         
-        <button class="btn btn-flat" @click="testTTSVoice">🗣 Тест голоса</button>
+                <button class="btn btn-flat" @click="testTTSVoice">🗣 Тест голоса</button>
               </template>
             </div>
 
@@ -1011,28 +963,24 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="sec-head-l"><div class="sec-name">✨ Частицы</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.alertParticles" class="sec-body">
-   
-            <div class="fg"><label>Кол-во частиц</label><div class="rr"><input type="range" min="0" max="200" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount}}</span></div></div>
+              <div class="fg"><label>Кол-во частиц</label><div class="rr"><input type="range" min="0" max="200" v-model.number="alertCfg.particleCount"><span class="rv">{{alertCfg.particleCount}}</span></div></div>
               <div class="ci" style="align-items:flex-start"><span>Цвет частиц</span><input type="color" v-model="alertCfg.particleColor" style="width:60px;"></div>
             </div>
           </template>
 
           <template v-if="tab==='top'">
-            <div 
- class="sec-head on"><div class="sec-head-l"><div class="sec-name">🏆 Список топ донатеров</div></div></div>
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🏆 Список топ донатеров</div></div></div>
             <div class="sec-body">
               <div v-if="topDonors.length>0" class="top-donors-list">
                 <div v-for="(d,i) in topDonors" :key="d.uid" class="tdl-item">
                   <span class="tdl-rank" :class="i===0?'r1':i===1?'r2':i===2?'r3':''">{{i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}}</span>
                   <span class="tdl-name">{{d.name}}</span>
-     
-              <span class="tdl-amt">{{fmtNum(d.amount)}} ₸</span>
+                  <span class="tdl-amt">{{fmtNum(d.amount)}} ₸</span>
                   <button class="btn-tdl-del" @click="removeTopDonor(i)">✕</button>
                 </div>
               </div>
               <div v-else style="font-size:10px;color:var(--text-dim);text-align:center;padding:10px;">Топ пустой — донаты заполнят его автоматически</div>
-             
-  <button class="btn btn-flat" @click="clearTopDonors">🗑 Очистить топ</button>
+              <button class="btn btn-flat" @click="clearTopDonors">🗑 Очистить топ</button>
             </div>
 
             <div class="sec-head" :class="{on:sections.topStyle}" @click="sections.topStyle=!sections.topStyle">
@@ -1040,13 +988,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
             <div v-if="sections.topStyle" class="sec-body">
               <div class="theme-grid">
-       
-          <div v-for="t in topThemes" :key="t.id" class="theme-card" :class="{active:topCfg.theme===t.id}" @click="topCfg.theme=t.id; saveAll()">
+                <div v-for="t in topThemes" :key="t.id" class="theme-card" :class="{active:topCfg.theme===t.id}" @click="topCfg.theme=t.id; saveAll()">
                   <div class="tc-preview" :style="t.preview.bg">
                     <div v-for="r in t.preview.rows" :key="r.c" class="tc-row" :style="{width:r.w,background:r.c,height:r.h||'8px'}"></div>
                   </div>
-                  <div class="tc-name" 
- :style="{color:t.preview.title}">{{t.name}}</div>
+                  <div class="tc-name" :style="{color:t.preview.title}">{{t.name}}</div>
                 </div>
               </div>
             </div>
@@ -1054,58 +1000,48 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-head" :class="{on:sections.topSettings}" @click="sections.topSettings=!sections.topSettings">
               <div class="sec-head-l"><div class="sec-name">⚙ Настройки виджета</div></div><span class="sec-chevron">▼</span>
             </div>
-            
- <div v-if="sections.topSettings" class="sec-body">
+            <div v-if="sections.topSettings" class="sec-body">
               <div class="fg"><label>Заголовок</label><input type="text" v-model="topCfg.title" placeholder="ТОП ДОНАТЕРОВ"></div>
               <div class="cb-row"><label>Показывать заголовок</label><input type="checkbox" v-model="topCfg.showTitle"></div>
               <div class="cb-row"><label>Emoji вместо #1 #2 #3</label><input type="checkbox" v-model="topCfg.rankEmoji"></div>
               <div class="fg"><label>Кол-во строк в топе</label><div class="rr"><input type="range" min="3" max="20" v-model.number="topCfg.maxRows"><span class="rv">{{topCfg.maxRows||10}}</span></div></div>
-              <div class="fg"><label>Ширина 
- виджета (px)</label><div class="rr"><input type="range" min="200" max="800" step="10" v-model.number="topCfg.width"><span class="rv">{{topCfg.width||400}}px</span></div></div>
-              <div class="fg"><label>Позиция X (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="topCfg.posX"><span class="rv">{{topCfg.posX||2}}%</span></div></div>
-              <div class="fg"><label>Позиция Y (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="topCfg.posY"><span class="rv">{{topCfg.posY||10}}%</span></div></div>
+              <div class="fg"><label>Ширина виджета (px)</label><div class="rr"><input type="range" min="200" max="800" step="10" v-model.number="topCfg.width"><span class="rv">{{topCfg.width||400}}px</span></div></div>
+              <div class="fg"><label>Отступ слева (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="topCfg.posX"><span class="rv">{{topCfg.posX||2}}%</span></div></div>
+              <div class="fg"><label>Отступ сверху (vh)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="topCfg.posY"><span class="rv">{{topCfg.posY||10}}vh</span></div></div>
               <div class="fg"><label>Отступ между строками (px)</label><div class="rr"><input type="range" min="2" max="20" v-model.number="topCfg.gap"><span class="rv">{{topCfg.gap||6}}px</span></div></div>
-              <div class="fg"><label>Внутренний отступ строк</label><div class="rr"><input type="range" min="4" max="24" 
- v-model.number="topCfg.rowPad"><span class="rv">{{topCfg.rowPad||10}}px</span></div></div>
-              <div class="fg"><label>Размер шрифта (rem для теш)</label><div class="rr"><input type="range" min="10" max="22" v-model.number="topCfg.fontSize"><span class="rv">{{topCfg.fontSize||14}}px</span></div></div>
+              <div class="fg"><label>Внутренний отступ строк</label><div class="rr"><input type="range" min="4" max="24" v-model.number="topCfg.rowPad"><span class="rv">{{topCfg.rowPad||10}}px</span></div></div>
+              <div class="fg"><label>Размер шрифта (px)</label><div class="rr"><input type="range" min="10" max="22" v-model.number="topCfg.fontSize"><span class="rv">{{topCfg.fontSize||14}}px</span></div></div>
             </div>
           </template>
 
           <template v-if="tab==='music'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🔊 Всё аудио идёт через OBS Alert</div></div></div>
-    
-         <div class="sec-body">
+            <div class="sec-body">
               <div style="font-size:10px;color:#00c2ff;background:rgba(0,194,255,.07);border:1px solid rgba(0,194,255,.2);border-radius:8px;padding:10px 12px;line-height:1.6;font-weight:700;">
-                🎵 Музыка, 🔔 уведомления и 🗣 TTS — всё воспроизводится через Browser Source <b>Alert</b> в OBS.
- Включи "Use custom audio device" в настройках Browser Source.
+                🎵 Музыка, 🔔 уведомления и 🗣 TTS — всё воспроизводится через Browser Source <b>Alert</b> в OBS. Включи "Use custom audio device" в настройках Browser Source.
               </div>
               <div class="music-queue-card" v-if="musicQueue.length>0">
                 <div class="music-queue-header">
                   <div class="music-queue-title"><div class="mq-icon">🎵</div>В очереди ({{musicQueue.length}})</div>
                   <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
-               
-  </div>
+                </div>
                 <div class="volume-control-wrap">
-                  <span style="font-size:16px;">{{ musicVolume > 0 ?
- '🔊' : '🔇' }}</span>
+                  <span style="font-size:16px;">{{ musicVolume > 0 ? '🔊' : '🔇' }}</span>
                   <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
                   <span class="volume-value">{{musicVolume}}%</span>
                 </div>
                 <div v-for="(track,idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing:idx===0}">
-                
-   <div class="track-info">
+                  <div class="track-info">
                     <div class="track-status" :class="{now:idx===0}">
                       <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет</template>
                       <template v-else>⏳ #{{idx}}</template>
                     </div>
-       
-              <div class="track-id">{{track.videoId}}</div>
+                    <div class="track-id">{{track.videoId}}</div>
                   </div>
                   <button v-if="idx===0" class="btn-skip" @click="skipTrack(0)">⏭ Скип</button>
                   <button v-else class="btn-remove" @click="skipTrack(idx)">✕</button>
                 </div>
-         
-       </div>
+              </div>
               <div v-else style="font-size:10px;color:var(--text-dim);text-align:center;padding:10px;">Очередь пуста</div>
               <div id="yt-player" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
             </div>
@@ -1113,88 +1049,75 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div class="sec-head" :class="{on:sections.musicText}" @click="sections.musicText=!sections.musicText">
               <div class="sec-head-l"><div class="sec-name">✏ Текст заказа музыки</div></div><span class="sec-chevron">▼</span>
             </div>
-   
-         <div v-if="sections.musicText" class="sec-body">
+            <div v-if="sections.musicText" class="sec-body">
               <div class="fg">
                 <label>Текст надписи</label>
                 <textarea v-model="musicCfg.idleText" placeholder="Заказ музыки 250 тенге" style="min-height:60px;"></textarea>
               </div>
               <div class="fg">
-      
                 <label>Текст "Сейчас играет"</label>
                 <input type="text" v-model="musicCfg.nowPlayingText" placeholder="СЕЙЧАС ИГРАЕТ">
               </div>
               <div class="fg">
                 <label>Анимация</label>
                 <select v-model="musicCfg.animStyle">
-      
-             <option value="shimmer">✨ Shimmer — переливание</option>
+                  <option value="shimmer">✨ Shimmer — переливание</option>
                   <option value="bounce">🏀 Bounce — прыжок</option>
                   <option value="wave">🌊 Wave — волна</option>
                   <option value="neon">💡 Neon — неон</option>
-                  
- <option value="glitch">⚡ Glitch — глитч</option>
+                  <option value="glitch">⚡ Glitch — глитч</option>
                   <option value="typing">⌨ Typing — курсор</option>
                 </select>
               </div>
               <div class="fg"><label>Скорость анимации (сек)</label><div class="rr"><input type="range" min="0.5" max="15" step="0.5" v-model.number="musicCfg.idleSpeed"><span class="rv">{{musicCfg.idleSpeed}}s</span></div></div>
             </div>
 
-        
-     <div class="sec-head" :class="{on:sections.musicFont}" @click="sections.musicFont=!sections.musicFont">
+            <div class="sec-head" :class="{on:sections.musicFont}" @click="sections.musicFont=!sections.musicFont">
               <div class="sec-head-l"><div class="sec-name">🔤 Шрифт и размер</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.musicFont" class="sec-body">
               <div class="fg">
                 <label>Шрифт</label>
-                
- <select v-model="musicCfg.fontFamily">
+                <select v-model="musicCfg.fontFamily">
                   <option value="Unbounded">Unbounded (по умолчанию)</option>
                   <option value="Orbitron">Orbitron (sci-fi)</option>
                   <option value="Russo One">Russo One (широкий)</option>
                   <option value="Exo 2">Exo 2 (современный)</option>
-              
-     <option value="Arial">Arial</option>
+                  <option value="Arial">Arial</option>
                   <option value="Georgia">Georgia (serif)</option>
                   <option value="Courier New">Courier New (моноширинный)</option>
                   <option value="Impact">Impact (жирный)</option>
                 </select>
               </div>
-   
-             <div class="fg"><label>Размер (px)</label><div class="rr"><input type="range" min="12" max="120" v-model.number="musicCfg.idleSize"><span class="rv">{{musicCfg.idleSize}}px</span></div></div>
+              <div class="fg"><label>Размер (px)</label><div class="rr"><input type="range" min="12" max="120" v-model.number="musicCfg.idleSize"><span class="rv">{{musicCfg.idleSize}}px</span></div></div>
               <div class="fg">
                 <label>Жирность</label>
                 <select v-model="musicCfg.fontWeight">
                   <option value="400">400 — обычный</option>
-            
-       <option value="700">700 — жирный</option>
+                  <option value="700">700 — жирный</option>
                   <option value="900">900 — очень жирный</option>
                 </select>
               </div>
               <div class="cb-row"><label>Курсив</label><input type="checkbox" v-model="musicCfg.fontItalic"></div>
-              <div class="fg"><label>Расстояние между буквами (px)</label><div class="rr"><input type="range" min="0" 
- max="20" step="0.5" v-model.number="musicCfg.letterSpacing"><span class="rv">{{musicCfg.letterSpacing||3}}px</span></div></div>
+              <div class="fg"><label>Расстояние между буквами (px)</label><div class="rr"><input type="range" min="0" max="20" step="0.5" v-model.number="musicCfg.letterSpacing"><span class="rv">{{musicCfg.letterSpacing||3}}px</span></div></div>
               <div class="idle-preview-box" :style="idlePreviewStyle">
                 <span class="idle-preview-text music-anim-shimmer" :style="{fontSize:Math.min(musicCfg.idleSize||32,20)+'px'}">{{musicCfg.idleText||'Заказ музыки'}}</span>
               </div>
             </div>
 
             <div class="sec-head" :class="{on:sections.musicColors}" @click="sections.musicColors=!sections.musicColors">
-              <div class="sec-head-l"><div class="sec-name">🎨 Цвета и свечение</div></div><span 
- class="sec-chevron">▼</span>
+              <div class="sec-head-l"><div class="sec-name">🎨 Цвета и свечение</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.musicColors" class="sec-body">
               <div class="fg"><label>Позиция X (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleLeft"><span class="rv">{{musicCfg.idleLeft}}%</span></div></div>
               <div class="fg"><label>Позиция Y (%)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleTop"><span class="rv">{{musicCfg.idleTop}}%</span></div></div>
               <div class="fg"><label>Свечение (px)</label><div class="rr"><input type="range" min="0" max="80" v-model.number="musicCfg.idleGlowSize"><span class="rv">{{musicCfg.idleGlowSize}}px</span></div></div>
-      
-         <div class="color-grid">
+              <div class="color-grid">
                 <div class="ci"><span>Цвет 1</span><input type="color" v-model="musicCfg.idleColor1"></div>
                 <div class="ci"><span>Цвет 2</span><input type="color" v-model="musicCfg.idleColor2"></div>
                 <div class="ci"><span>Цвет 3</span><input type="color" v-model="musicCfg.idleColor3"></div>
                 <div class="ci"><span>Свечение</span><input type="color" v-model="musicCfg.idleGlowColor"></div>
-            
-   </div>
+              </div>
               <div class="ci"><span>Цвет "Сейчас играет"</span><input type="color" v-model="musicCfg.nowPlayingColor" style="width:60px;"></div>
             </div>
 
@@ -1202,8 +1125,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="sec-head-l"><div class="sec-name">⏱ Ограничение длины трека</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.musicMax" class="sec-body">
-     
-          <div class="fg"><label>Максимальная длина трека (сек)</label><div class="rr"><input type="range" min="30" max="600" step="30" v-model.number="musicCfg.maxTrackDuration"><span class="rv">{{musicCfg.maxTrackDuration||300}}s</span></div></div>
+              <div class="fg"><label>Максимальная длина трека (сек)</label><div class="rr"><input type="range" min="30" max="600" step="30" v-model.number="musicCfg.maxTrackDuration"><span class="rv">{{musicCfg.maxTrackDuration||300}}s</span></div></div>
               <div style="font-size:9px;color:var(--text-dim);">{{Math.floor((musicCfg.maxTrackDuration||300)/60)}} мин {{(musicCfg.maxTrackDuration||300)%60}} сек — треки длиннее будут автоматически скипнуты</div>
             </div>
           </template>
@@ -1211,21 +1133,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="actions">
           <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
-  
-            <div class="obs-url-card">
+          <div class="obs-url-card">
             <div class="obs-url-title">📡 OBS Browser Source — выбери и скопируй URL</div>
             <div style="font-size:8px;color:#00c2ff;padding:4px 0 6px;font-weight:700;letter-spacing:.3px;">💡 Alert = уведомления + музыка + TTS — всё звучит через него!</div>
             <div class="obs-btn-grid">
               <button class="btn-obs" :class="{active:obsSelected==='alert',copied:copiedObs.alert}" @click="selectObs('alert')"><span class="btn-obs-icon">🔔🎵</span><span>Alert + Музыка</span><span class="btn-obs-sub">{{copiedObs.alert?'✓ скопирован':'нажми'}}</span></button>
-      
-         <button class="btn-obs" :class="{active:obsSelected==='widget',copied:copiedObs.widget}" @click="selectObs('widget')"><span class="btn-obs-icon">🎯</span><span>Виджет</span><span class="btn-obs-sub">{{copiedObs.widget?'✓':'нажми'}}</span></button>
+              <button class="btn-obs" :class="{active:obsSelected==='widget',copied:copiedObs.widget}" @click="selectObs('widget')"><span class="btn-obs-icon">🎯</span><span>Виджет</span><span class="btn-obs-sub">{{copiedObs.widget?'✓':'нажми'}}</span></button>
               <button class="btn-obs" :class="{active:obsSelected==='music',copied:copiedObs.music}" @click="selectObs('music')"><span class="btn-obs-icon">🎵</span><span>Музыка (текст)</span><span class="btn-obs-sub">{{copiedObs.music?'✓':'нажми'}}</span></button>
             </div>
             <div class="obs-btn-grid-2">
               <button class="btn-obs" :class="{active:obsSelected==='top',copied:copiedObs.top}" @click="selectObs('top')"><span class="btn-obs-icon">🏆</span><span>Топ донатов</span><span class="btn-obs-sub">{{copiedObs.top?'✓':'нажми'}}</span></button>
               <button class="btn-obs" :class="{active:obsSelected==='goal',copied:copiedObs.goal}" @click="selectObs('goal')"><span class="btn-obs-icon">🎯</span><span>Цель</span><span class="btn-obs-sub">{{copiedObs.goal?'✓':'нажми'}}</span></button>
-   
-         </div>
+            </div>
             <div v-if="obsSelected" class="obs-url-display">{{ currentObsUrl }}</div>
             <button v-if="obsSelected" class="btn-copy-url" :class="{copied:copiedObs[obsSelected]}" @click="copyObs(obsSelected)">{{ copiedObs[obsSelected]?'✓ URL скопирован!':'📋 Копировать URL' }}</button>
           </div>
@@ -1233,32 +1152,28 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
       </div>
       <div class="preview-zone desktop-only" ref="previewZone">
         <div class="pz-label">PREVIEW · NO DRAG · USE X/Y</div>
-     
-   <div class="pz-mode">OBS OVERLAY</div>
+        <div class="pz-mode">OBS OVERLAY</div>
         <div v-if="tab==='alert'" class="alert-preview-wrap"></div>
         <div v-if="tab==='widgets'||tab==='donate'" class="widget-scene" :style="sceneStyle" ref="wscene">
           <div v-for="p in panels" :key="p.id" class="static-panel" :class="{sel:selId===p.id}" :style="cardPos(p)" @click="selId=p.id">
             <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
           </div>
         </div>
-        <div v-if="tab==='top'" style="width:100%;height:100%;position:relative;overflow:hidden;"
- :class="'top-theme-'+topCfg.theme">
+        <div v-if="tab==='top'" style="width:100%;height:100%;position:relative;overflow:hidden;" class="top-scene" :class="'top-theme-'+topCfg.theme">
           <div class="top-widget" :style="{...topSceneStyle,position:'absolute',padding:'20px',display:'flex',flexDirection:'column',gap:(topCfg.gap||6)+'px'}">
             <div v-if="topCfg.showTitle" class="top-title-row"><span class="top-title">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span></div>
             <div v-for="(d,i) in topDonors.slice(0,Math.min(topCfg.maxRows||10,5))" :key="d.uid" class="top-entry" :class="'rank-'+(i+1)" :style="topEntryStyle(i)">
               <span class="top-rank-badge">{{topCfg.rankEmoji?rankEmoji(i):'#'+(i+1)}}</span>
               <span class="top-name">{{d.name}}</span>
               <span class="top-amount">{{fmtNum(d.amount)}} ₸</span>
-       
-     </div>
+            </div>
             <div v-if="!topDonors.length" v-for="i in 3" :key="i" class="top-entry" :class="'rank-'+i" :style="topEntryStyle(i-1)">
               <span class="top-rank-badge">{{topCfg.rankEmoji?rankEmoji(i-1):'#'+i}}</span>
               <span class="top-name">Аноним</span>
               <span class="top-amount">0 ₸</span>
             </div>
           </div>
-       
- </div>
+        </div>
         <div v-if="tab==='music'" style="width:100%;height:100%;background:rgba(0,0,30,.5);display:flex;align-items:center;justify-content:center;">
           <span class="idle-preview-text music-anim-shimmer" :style="idlePreviewStyle">{{musicCfg.idleText||'Заказ музыки 250 тенге'}}</span>
         </div>
@@ -1271,16 +1186,16 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 <script>
 const { createApp, reactive, computed, ref, onMounted, defineComponent, watch } = Vue;
- function uid(){ return Math.random().toString(36).slice(2,9); }
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
 function hexToRgb(h){ h=h||'#000000'; let r=parseInt(h.slice(1,3),16)||0,g=parseInt(h.slice(3,5),16)||0,b=parseInt(h.slice(5,7),16)||0; return `${r},${g},${b}`; }
 function cleanNum(v){ return Math.round(parseFloat(String(v||'0').replace(/\s/g,'').replace(/[^\d.]/g,''))||0); }
-function fmtNum(n){ return Number(n||0).toLocaleString('ru');
- }
+function fmtNum(n){ return Number(n||0).toLocaleString('ru'); }
 function extractYT(msg){
   const ytRx=/(?:https?:\/\/)?(?:www\.)?(?:(?:youtube\.com\/(?:(?:[^\/\n\s]+\/\S+\/)|(?:(?:v|e(?:mbed)?)\/)|(?:\S*?[?&]v=))|youtu\.be\/|youtube\.com\/shorts\/))([a-zA-Z0-9_-]{11})\S*/gi;
   let tracks=[]; let cleanMsg=msg.replace(ytRx,(m,vid)=>{tracks.push(vid);return'';}).trim();
   return {cleanMsg,tracks};
- }
+}
 
 const GoalComp = defineComponent({
   template:'#tpl-goal', props:['p','isObs'],
@@ -1296,19 +1211,21 @@ const GoalComp = defineComponent({
   },
   methods:{formatNum(n){return Number(n).toLocaleString('ru');}}
 });
- const ChalComp = defineComponent({
+
+const ChalComp = defineComponent({
   template:'#tpl-challenge', props:['p','isObs'],
   computed:{
     pct(){const c=this.p.current||0,m=parseFloat(this.p.max)||1;return Math.min(100,Math.round(c/m*100));},
     glassStyle(){const p=this.p,bg=p.bgColor||'#111111',op=p.bgOpacity!==undefined?p.bgOpacity:0.75;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'60px'};}
   }
 });
- const FB_CFG = { apiKey:"AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",authDomain:"tt-widget-88711.firebaseapp.com",databaseURL:"https://tt-widget-88711-default-rtdb.firebaseio.com",projectId:"tt-widget-88711",storageBucket:"tt-widget-88711.firebasestorage.app",messagingSenderId:"997435022478",appId:"1:997435022478:web:a0ad462f2a7dd074d27ddf" };
+
+const FB_CFG = { apiKey:"AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",authDomain:"tt-widget-88711.firebaseapp.com",databaseURL:"https://tt-widget-88711-default-rtdb.firebaseio.com",projectId:"tt-widget-88711",storageBucket:"tt-widget-88711.firebasestorage.app",messagingSenderId:"997435022478",appId:"1:997435022478:web:a0ad462f2a7dd074d27ddf" };
 let db=null;
 try{firebase.initializeApp(FB_CFG);db=firebase.database();}catch(e){console.warn('Firebase:',e);}
 
 const STORAGE_KEY='wv14_state';
- function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');}catch(e){return null;}}
+function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');}catch(e){return null;}}
 function saveState(s){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}catch(e){}}
 
 createApp({
@@ -1330,12 +1247,14 @@ createApp({
     const musicQueue=reactive([]);
     const musicVolume=ref(100);
     const topDonors=reactive(saved.topDonors||[]);
- // Sections accordion state
+
+    // Sections accordion state
     const sections=reactive({alertStyle:false,alertMedia:false,alertSound:true,alertTTS:false,alertParticles:false,musicText:true,musicFont:false,musicColors:false,musicMax:false,topStyle:true,topSettings:false});
 
     const panels=reactive(saved.panels||[]);
     if(!panels.length)panels.push({id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',lastDonorLabelSize:8,width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',titleSize:16,textSize:13,barHeight:14,x:80,y:60});
- const alertCfg=reactive(Object.assign({
+
+    const alertCfg=reactive(Object.assign({
       labelText:'НОВЫЙ ДОНАТ!',duration:7,animStyle:'bounce',
       bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',labelFontSize:10,
       nameColor:'#ffffff',amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',
@@ -1345,7 +1264,8 @@ createApp({
       showMedia:false,mediaUrl:'',
       ttsEnabled:true,ttsVoice:'',ttsVoiceIdx:0,ttsVolume:100,ttsRate:1,ttsPitch:1,ttsReadAmount:true,ttsReadName:true
     },saved.alertCfg||{}));
- const musicCfg=reactive(Object.assign({
+
+    const musicCfg=reactive(Object.assign({
       emptyText:'Музыки нет',adminEnablePlayer:true,
       idleText:'Заказ музыки 250 тенге',idleLeft:50,idleTop:50,idleSize:36,
       idleGlowSize:22,idleSpeed:3,animStyle:'shimmer',
@@ -1354,22 +1274,25 @@ createApp({
       nowPlayingText:'СЕЙЧАС ИГРАЕТ',nowPlayingColor:'#00c2ff',
       maxTrackDuration:300
     },saved.musicCfg||{}));
- const topCfg=reactive(Object.assign({
+
+    const topCfg=reactive(Object.assign({
       theme:'universal',title:'ТОП ДНЯ',showTitle:true,rankEmoji:true,
       maxRows:10,width:400,posX:2,posY:10,gap:6,rowPad:10,fontSize:14
     },saved.topCfg||{}));
- const topThemes=[
+
+    const topThemes=[
       {id:'universal',name:'⭐ UNIVERSAL',preview:{bg:'background:linear-gradient(135deg,#0a0800,#060400)',title:'#ffd700',rows:[{w:'100%',c:'rgba(255,215,0,.6)',h:'11px'},{w:'80%',c:'rgba(200,200,200,.4)',h:'9px'},{w:'65%',c:'rgba(205,127,50,.35)',h:'8px'},{w:'50%',c:'rgba(255,215,0,.15)',h:'7px'}]}},
-       {id:'hudpro',name:'🔷 HUDPRO',preview:{bg:'background:linear-gradient(135deg,#00151e,#000d15)',title:'#b3ff00',rows:[{w:'100%',c:'rgba(0,180,210,.5)',h:'10px'},{w:'80%',c:'rgba(0,160,190,.4)',h:'9px'},{w:'65%',c:'rgba(0,140,170,.3)',h:'8px'},{w:'50%',c:'rgba(0,120,150,.2)',h:'7px'}]}},
-       {id:'hpp',name:'🟥 HPP',preview:{bg:'background:linear-gradient(135deg,#200008,#150005)',title:'#ffd700',rows:[{w:'100%',c:'rgba(200,20,60,.55)',h:'10px'},{w:'80%',c:'rgba(180,15,50,.45)',h:'9px'},{w:'65%',c:'rgba(160,10,40,.35)',h:'8px'},{w:'50%',c:'rgba(140,5,30,.25)',h:'7px'}]}}
-      ];
- // TTS voices
+      {id:'hudpro',name:'🔷 HUDPRO',preview:{bg:'background:linear-gradient(135deg,#00151e,#000d15)',title:'#b3ff00',rows:[{w:'100%',c:'rgba(0,180,210,.5)',h:'10px'},{w:'80%',c:'rgba(0,160,190,.4)',h:'9px'},{w:'65%',c:'rgba(0,140,170,.3)',h:'8px'},{w:'50%',c:'rgba(0,120,150,.2)',h:'7px'}]}},
+      {id:'hpp',name:'🟥 HPP',preview:{bg:'background:linear-gradient(135deg,#200008,#150005)',title:'#ffd700',rows:[{w:'100%',c:'rgba(200,20,60,.55)',h:'10px'},{w:'80%',c:'rgba(180,15,50,.45)',h:'9px'},{w:'65%',c:'rgba(160,10,40,.35)',h:'8px'},{w:'50%',c:'rgba(140,5,30,.25)',h:'7px'}]}}
+    ];
+
+    // TTS voices
     const ttsVoices=ref([]);
     function loadTTSVoices(){
       if(!window.speechSynthesis)return;
       const update=()=>{const v=window.speechSynthesis.getVoices();if(v.length){ttsVoices.value=v;}};
       window.speechSynthesis.onvoiceschanged=update;update();
- }
+    }
 
     const alertVis=ref(false),alertKey=ref(0),curDonation=reactive({name:'',amount:'',msg:''});
     let alertTimer=null;
@@ -1379,12 +1302,14 @@ createApp({
     const obsSelected=ref('');
     const copiedObs=reactive({alert:false,widget:false,music:false,top:false,goal:false,challenge:false});
     const currentObsUrl=computed(()=>obsSelected.value?`${location.href.split('?')[0]}?mode=${obsSelected.value}`:'');
- function selectObs(t){obsSelected.value=t;}
+
+    function selectObs(t){obsSelected.value=t;}
     let toastTm;
     function showToast(msg,type='ok'){toast.msg=msg;toast.type=type;toast.show=true;clearTimeout(toastTm);toastTm=setTimeout(()=>toast.show=false,2800);}
     const sceneStyle=computed(()=>({transform:`scale(${globalScale.value})`}));
-    const alertCardStyle=computed(()=>{const c=alertCfg,bg=c.bgColor||'#111111',op=c.bgOpacity!==undefined?c.bgOpacity:.9;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(c.cardRadius||16)+'px',border:`2px solid ${c.borderColor||'rgba(255,215,0,.3)'}]`,'--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)`};});
- const idleTextStyle=computed(()=>({
+    const alertCardStyle=computed(()=>{const c=alertCfg,bg=c.bgColor||'#111111',op=c.bgOpacity!==undefined?c.bgOpacity:.9;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(c.cardRadius||16)+'px',border:`2px solid ${c.borderColor||'rgba(255,215,0,.3)'}`,'--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)`};});
+
+    const idleTextStyle=computed(()=>({
       '--idle-top':(musicCfg.idleTop||50)+'%','--idle-left':(musicCfg.idleLeft||50)+'%',
       '--idle-size':(musicCfg.idleSize||36)+'px','--idle-c1':musicCfg.idleColor1||'#ff0088',
       '--idle-c2':musicCfg.idleColor2||'#00c2ff','--idle-c3':musicCfg.idleColor3||'#ffd700',
@@ -1393,7 +1318,8 @@ createApp({
       '--idle-fw':musicCfg.fontWeight||'900','--idle-fs':musicCfg.fontItalic?'italic':'normal',
       '--idle-ls':(musicCfg.letterSpacing||3)+'px'
     }));
- const idlePreviewStyle=computed(()=>({
+
+    const idlePreviewStyle=computed(()=>({
       '--p-idle-c1':musicCfg.idleColor1||'#ff0088','--p-idle-c2':musicCfg.idleColor2||'#00c2ff',
       '--p-idle-c3':musicCfg.idleColor3||'#ffd700','--p-idle-glow-color':musicCfg.idleGlowColor||'#00c2ff',
       '--p-idle-glow-px':Math.min(musicCfg.idleGlowSize||22,18)+'px','--p-idle-speed':(musicCfg.idleSpeed||3)+'s',
@@ -1407,10 +1333,15 @@ createApp({
       animation:`idleShimmer ${musicCfg.idleSpeed||3}s linear infinite`,
       filter:`drop-shadow(0 0 ${Math.min(musicCfg.idleGlowSize||22,18)}px ${musicCfg.idleGlowColor||'#00c2ff'})`
     }));
- const topSceneStyle=computed(()=>({
-      '--top-w':(topCfg.width||400)+'px','--top-gap':(topCfg.gap||6)+'px','--top-pad':(topCfg.rowPad||10)+'px'
+
+    const topSceneStyle=computed(()=>({
+      '--top-w':(topCfg.width||400)+'px',
+      '--top-gap':(topCfg.gap||6)+'px',
+      'padding-top': (topCfg.posY||10)+'vh',
+      'padding-left': (topCfg.posX||2)+'vw'
     }));
- function topEntryStyle(i){return{padding:(topCfg.rowPad||10)+'px 14px',fontSize:(topCfg.fontSize||14)+'px'};}
+
+    function topEntryStyle(i){return{padding:(topCfg.rowPad||10)+'px 14px',fontSize:(topCfg.fontSize||14)+'px'};}
     function topNameStyle(i){return{};}
     function topAmountStyle(i){return{};}
     function rankEmoji(i){return['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'][i]||'#'+(i+1);}
@@ -1419,7 +1350,7 @@ createApp({
     // ═══ TTS / ЗВУК ═══
     function playTTSVoice(text,isTest=false){
       if(isTest&&mode.value!=='admin')return;
- if(!isTest&&mode.value!=='alert')return;
+      if(!isTest&&mode.value!=='alert')return;
       if(isMobile.value)return;
       if(!alertCfg.ttsEnabled||!text)return;
       let t=text.replace(/https?:\/\/\S+/gi,'').replace(/www\.\S+/gi,'').trim();
@@ -1430,91 +1361,90 @@ createApp({
       if(!full)full=text;
       if(!full)return;
       const u=new SpeechSynthesisUtterance(full);
+      
+      // Позволяем системе самой выбрать стандартный голос
       u.lang='ru-RU';
- u.volume=(alertCfg.ttsVolume||100)/100;
+      u.volume=(alertCfg.ttsVolume||100)/100;
       u.rate=alertCfg.ttsRate||1;
       u.pitch=alertCfg.ttsPitch||1;
-      const voices=window.speechSynthesis.getVoices();
-      const idx=alertCfg.ttsVoiceIdx||0;
-      if(voices[idx])u.voice=voices[idx];
-      else{const ru=voices.find(v=>v.lang.includes('ru'));if(ru)u.voice=ru;}
+      
       window.speechSynthesis.speak(u);
- }
+    }
     function testTTSVoice(){curDonation.name='Тестер';curDonation.amount='1000';playTTSVoice('Проверка голоса! Этот голос будет озвучивать донаты.',true);}
 
     function playDonationSound(isTest=false){
       if(isTest&&mode.value!=='admin')return;
- if(!isTest&&mode.value!=='alert')return;
+      if(!isTest&&mode.value!=='alert')return;
       if(isMobile.value)return;
       if(!alertCfg.soundEnabled)return;
       try{
         if(alertCfg.soundType==='custom'&&alertCfg.customSoundData){
           const audio=new Audio(alertCfg.customSoundData);
- audio.volume=(alertCfg.soundVolume||70)/100;
+          audio.volume=(alertCfg.soundVolume||70)/100;
           audio.play().catch(()=>{});
           return;
         }
         const ctx=new(window.AudioContext||window.webkitAudioContext)();
         const vol=(alertCfg.soundVolume||70)/100;
         const type=alertCfg.soundType||'chime';
- if(type==='chime'){
+        if(type==='chime'){
           [[523.25,0],[659.25,.13],[783.99,.26],[1046.5,.39]].forEach(([freq,delay])=>{
             const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);
             osc.type='sine';osc.frequency.value=freq;const t=ctx.currentTime+delay;
             gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(vol*.45,t+.04);gain.gain.exponentialRampToValueAtTime(.001,t+.75);
             osc.start(t);osc.stop(t+.8);
           });
- }else if(type==='ding'){
+        }else if(type==='ding'){
           const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);
           osc.type='sine';osc.frequency.value=880;gain.gain.setValueAtTime(0,ctx.currentTime);
           gain.gain.linearRampToValueAtTime(vol,ctx.currentTime+.02);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+1.5);
           osc.start();osc.stop(ctx.currentTime+1.6);
- }else if(type==='fanfare'){
+        }else if(type==='fanfare'){
           [[392,0],[523,.14],[659,.28],[784,.42],[1047,.56]].forEach(([freq,delay])=>{
             const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);
             osc.type='triangle';osc.frequency.value=freq;const t=ctx.currentTime+delay;
             gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(vol*.3,t+.05);gain.gain.exponentialRampToValueAtTime(.001,t+.45);
             osc.start(t);osc.stop(t+.5);
           });
- }else if(type==='cash'){
+        }else if(type==='cash'){
           [[1200,0,.08],[900,.09,.06],[1500,.18,.05]].forEach(([freq,delay,dur])=>{
             const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);
             osc.type='square';osc.frequency.value=freq;const t=ctx.currentTime+delay;
             gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(vol*.2,t+.01);gain.gain.exponentialRampToValueAtTime(.001,t+dur);
             osc.start(t);osc.stop(t+dur+.02);
           });
- }
+        }
       }catch(e){console.warn('Sound:',e);}
     }
 
     // Частицы
     let particleTimer=null;
- function launchParticles(canvas){
+    function launchParticles(canvas){
       if(!canvas)return;
       const ctx2=canvas.getContext('2d');
       canvas.width=window.innerWidth;canvas.height=window.innerHeight;
       const count=alertCfg.particleCount||80;
       let pts=Array.from({length:count},()=>({x:Math.random()*canvas.width,y:canvas.height*.7+Math.random()*100,vx:(Math.random()-.5)*4,vy:-(Math.random()*8+2),life:1,size:Math.random()*6+2}));
       clearInterval(particleTimer);
- particleTimer=setInterval(()=>{
+      particleTimer=setInterval(()=>{
         ctx2.clearRect(0,0,canvas.width,canvas.height);
         pts=pts.filter(p=>p.life>0);
         pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.life-=.015;ctx2.globalAlpha=p.life;ctx2.fillStyle=alertCfg.particleColor||'#ffd700';ctx2.beginPath();ctx2.arc(p.x,p.y,p.size,0,Math.PI*2);ctx2.fill();});
         ctx2.globalAlpha=1;
         if(!pts.length)clearInterval(particleTimer);
       },16);
- }
+    }
 
     // Загрузка файлов
     function uploadAlertMedia(e){
       const f=e.target.files[0];if(!f)return;
- const r=new FileReader();r.onload=ev=>{alertCfg.mediaUrl=ev.target.result;};r.readAsDataURL(f);
+      const r=new FileReader();r.onload=ev=>{alertCfg.mediaUrl=ev.target.result;};r.readAsDataURL(f);
     }
     function uploadAlertSound(e){
       const f=e.target.files[0];if(!f)return;
- if(f.size>5*1024*1024){showToast('Файл слишком большой (макс 5МБ)','err');return;}
+      if(f.size>5*1024*1024){showToast('Файл слишком большой (макс 5МБ)','err');return;}
       const r=new FileReader();r.onload=ev=>{alertCfg.customSoundData=ev.target.result;};r.readAsDataURL(f);
- }
+    }
     function uploadIcon(e,p){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{p.iconData=ev.target.result;};r.readAsDataURL(f);}
 
     // Позиционирование виджетов
@@ -1526,10 +1456,9 @@ createApp({
     // ═══ ОБНОВЛЕНИЕ ТОПА ═══
     function updateTopDonors(name,amount){
       const existing=topDonors.find(d=>d.name.toLowerCase()===name.toLowerCase());
- if(existing){existing.amount+=amount;}
+      if(existing){existing.amount+=amount;}
       else{topDonors.push({name,amount,uid:uid()});}
       topDonors.sort((a,b)=>b.amount-a.amount);
- // Mark new top1 briefly for animation
       if(topDonors[0]){topDonors[0]._new=true;setTimeout(()=>{if(topDonors[0])topDonors[0]._new=false;},2000);}
       if(db){try{db.ref('topDonors').set(JSON.parse(JSON.stringify(topDonors)));}catch(e){}}
     }
@@ -1539,11 +1468,11 @@ createApp({
     // ═══ СОХРАНЕНИЕ STATE (только для PC admin!) ═══
     function buildState(){return{panels:JSON.parse(JSON.stringify(panels)),alertCfg:JSON.parse(JSON.stringify(alertCfg)),musicCfg:JSON.parse(JSON.stringify(musicCfg)),topCfg:JSON.parse(JSON.stringify(topCfg)),globalScale:globalScale.value};}
     const _doPushFirebase=debounce((state)=>{if(db){try{db.ref('config').set(state);}catch(e){}}},600);
- function pushState(){const state=buildState();saveState(state);_doPushFirebase(state);}
+    function pushState(){const state=buildState();saveState(state);_doPushFirebase(state);}
     const _doPushQueue=debounce(()=>{if(db)db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue)));},400);
     function pushQueueState(){_doPushQueue();}
     const _pushVolume=debounce((v)=>{if(db)db.ref('musicVolume').set(v);},300);
- function changeVolume(){_pushVolume(musicVolume.value);applyVolume();}
+    function changeVolume(){_pushVolume(musicVolume.value);applyVolume();}
     function applyVolume(){if(window.ytPlayerObj&&typeof window.ytPlayerObj.setVolume==='function')window.ytPlayerObj.setVolume(musicVolume.value);}
 
     // ═══ ОБНОВЛЕНИЕ ПАНЕЛЕЙ ПРИ ДОНАТЕ ═══
@@ -1555,27 +1484,26 @@ createApp({
           let lines=raw.split(/[\n]+/).map(s=>s.trim()).filter(Boolean);
           let parsed=[];
           lines.forEach(line=>{
-        
-     let parts=line.split(/[—\-–]/);
+            let parts=line.split(/[—\-–]/);
             if(parts.length>=2){let n=parts[0].trim();let a=cleanNum(parts.slice(1).join('-'));parsed.push({name:n,amount:a});}
             else{parsed.push({name:line,amount:0,original:line});}
           });
           let ex=parsed.find(d=>d.name.toLowerCase()===name.toLowerCase());
           if(ex&&ex.original===undefined){ex.amount+=amt;}else{parsed.push({name,amount:amt});}
           parsed.sort((a,b)=>b.amount-a.amount);
- p.donorsRaw=parsed.map(d=>{if(d.original!==undefined)return d.original;return`${d.name} — ${fmtNum(d.amount)} ₸`;}).join('\n');
+          p.donorsRaw=parsed.map(d=>{if(d.original!==undefined)return d.original;return`${d.name} — ${fmtNum(d.amount)} ₸`;}).join('\n');
         }
         if(p.type==='challenge')p.current=(p.current||0)+amt;
       });
- }
+    }
 
     // ═══ TRIGGER ALERT ═══
     const pCanvas=ref(null);
- function triggerAlert(name,amt,msg,pushToFB,isTest=false){
+    function triggerAlert(name,amt,msg,pushToFB,isTest=false){
       if(pushToFB&&db){
         try{db.ref('alert').set({name,amount:amt,msg,ts:Date.now(),cfg:JSON.parse(JSON.stringify(alertCfg))});}catch(e){}
         return;
- }
+      }
       curDonation.name=name;
       curDonation.amount=fmtNum(cleanNum(amt));
       curDonation.msg=msg;
@@ -1586,87 +1514,86 @@ createApp({
       playDonationSound(isTest);
       playTTSVoice(msg,isTest);
       if(pCanvas.value)launchParticles(pCanvas.value);
- }
+    }
 
     // ═══ ОТПРАВКА ДОНАТА (PC ADMIN) ═══
     function doQuickDonate(){
       const name=quickName.value.trim()||'Аноним';
- const amt=cleanNum(quickAmount.value);
+      const amt=cleanNum(quickAmount.value);
       if(!amt){showToast('Сумма не найдена!','err');return;}
       const extracted=extractYT(quickMessage.value);
       applyDonateToPanel(name,amt);
       updateTopDonors(name,amt);
       triggerAlert(name,amt,extracted.cleanMsg,true);
       pushState();
- if(extracted.tracks.length>0){extracted.tracks.forEach(vid=>musicQueue.push({uid:uid(),videoId:vid}));pushQueueState();}
+      if(extracted.tracks.length>0){extracted.tracks.forEach(vid=>musicQueue.push({uid:uid(),videoId:vid}));pushQueueState();}
       showToast(`✓ Отправлено: ${name}`,'ok');
       quickName.value='';quickAmount.value='';quickMessage.value='';kaspiPaste.value='';
- }
+    }
     function doQuickTest(){const extracted=extractYT(quickMessage.value.trim()||'Тест!');triggerAlert(quickName.value.trim()||'Тест',cleanNum(quickAmount.value)||500,extracted.cleanMsg,false,true);}
     function doTrigger(){const extracted=extractYT(tMessage.value.trim());triggerAlert(tName.value.trim(),cleanNum(tAmount.value),extracted.cleanMsg,true);}
 
-    // ═══ ОТПРАВКА ДОНАТА (МОБИЛЬНЫЙ) — НЕ ЗАТРАГИВАЕТ CONFIG ═══
+    // ═══ ОТПРАВКА ДОНАТА (МОБИЛЬНЫЙ) ═══
     function doMobileDonate(){
       const name=quickName.value.trim()||'Аноним';
- const amt=cleanNum(quickAmount.value);
+      const amt=cleanNum(quickAmount.value);
       if(!amt){showToast('Укажи сумму!','err');return;}
       const extracted=extractYT(quickMessage.value);
- // ТОЛЬКО запись алерта и музыки — конфиг НЕ трогаем!
- if(db){
+      if(db){
         try{
           db.ref('alert').set({name,amount:amt,msg:extracted.cleanMsg,ts:Date.now()});
- }catch(e){showToast('Ошибка Firebase','err');return;}
+        }catch(e){showToast('Ошибка Firebase','err');return;}
         if(extracted.tracks.length>0){
           db.ref('musicQueue').once('value',snap=>{
             const cur=snap.val()||[];
             const next=[...cur,...extracted.tracks.map(vid=>({uid:uid(),videoId:vid}))];
             db.ref('musicQueue').set(next);
           });
- }
+        }
       }
       showToast(`✓ Донат отправлен!`,'ok');
       quickName.value='';quickAmount.value='';quickMessage.value='';kaspiPaste.value='';
- }
+    }
     function clearMobile(){kaspiPaste.value='';quickName.value='';quickAmount.value='';quickMessage.value='';}
 
     // Парсинг Kaspi
     function handleKaspiPaste(){
       const txt=kaspiPaste.value;if(!txt)return;
- const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
+      const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
       let name='',amount='',msg='';
       const popIdx=lines.findIndex(l=>l.toLowerCase().includes('пополнение')||l.toLowerCase().includes('перевод'));
       if(popIdx!==-1){
         amount=cleanNum(lines[popIdx]);
- if(popIdx+1<lines.length&&!lines[popIdx+1].toLowerCase().includes('доступно')&&!lines[popIdx+1].match(/^\d{1,2}:\d{2}/))
+        if(popIdx+1<lines.length&&!lines[popIdx+1].toLowerCase().includes('доступно')&&!lines[popIdx+1].match(/^\d{1,2}:\d{2}/))
           name=lines[popIdx+1];
- }
+      }
       if(!amount){const amtLine=lines.find(l=>l.match(/[\d\s]+[₸T]|[\d\s]+тенге/i));if(amtLine)amount=cleanNum(amtLine);}
       const msgIdx=lines.findIndex(l=>l.toLowerCase()==='сообщение'||l.toLowerCase().includes('сообщение:'));
       if(msgIdx!==-1)msg=lines.slice(msgIdx+1).join(' ');
       if(amount)quickAmount.value=amount;
       if(name)quickName.value=name;
       if(msg)quickMessage.value=msg;
- }
+    }
 
     function clearProgress(){if(confirm('Очистить суммы?')){panels.forEach(p=>{p.current=0;});pushState();}}
     function clearDonors(){if(confirm('Очистить донатеров?')){panels.forEach(p=>{if(p.type==='goal')p.donorsRaw='Пусто — 0 ₸';});pushState();}}
     function saveAll(){pushState();showToast('✓ Сохранено!','ok');}
     function copyObs(type){
       const url=`${location.href.split('?')[0]}?mode=${type}`;
- navigator.clipboard.writeText(url).then(()=>{showToast('✓ URL скопирован!','ok');copiedObs[type]=true;setTimeout(()=>{copiedObs[type]=false;},2500);});
+      navigator.clipboard.writeText(url).then(()=>{showToast('✓ URL скопирован!','ok');copiedObs[type]=true;setTimeout(()=>{copiedObs[type]=false;},2500);});
     }
     function skipTrack(idx){musicQueue.splice(idx,1);pushQueueState();}
     function clearQueue(){musicQueue.splice(0,musicQueue.length);pushQueueState();}
 
     // ═══ YOUTUBE PLAYER ═══
     let currentTrackUid=null;
- let maxDurTimer=null;
+    let maxDurTimer=null;
 
     function checkQueuePlay(){
       if(mode.value==='widget'||mode.value==='goal'||mode.value==='challenge'||mode.value==='top'||isMobile.value)return;
       if(mode.value==='admin'&&!musicCfg.adminEnablePlayer){if(window.ytPlayerObj&&typeof window.ytPlayerObj.stopVideo==='function')window.ytPlayerObj.stopVideo();return;}
       if(!window.ytPlayerObj||!window.ytPlayerObj.loadVideoById)return;
- if(musicQueue.length===0){window.ytPlayerObj.stopVideo();currentTrackUid=null;clearTimeout(maxDurTimer);return;}
+      if(musicQueue.length===0){window.ytPlayerObj.stopVideo();currentTrackUid=null;clearTimeout(maxDurTimer);return;}
       const next=musicQueue[0];
       if(currentTrackUid!==next.uid){currentTrackUid=next.uid;window.ytPlayerObj.loadVideoById(next.videoId);applyVolume();}
     }
@@ -1675,7 +1602,7 @@ createApp({
     }
     function setupMaxDuration(){
       clearTimeout(maxDurTimer);
- setTimeout(()=>{
+      setTimeout(()=>{
         if(!window.ytPlayerObj||typeof window.ytPlayerObj.getDuration!=='function')return;
         const dur=window.ytPlayerObj.getDuration();
         const maxDur=musicCfg.maxTrackDuration||300;
@@ -1684,13 +1611,13 @@ createApp({
           maxDurTimer=setTimeout(()=>{shiftQueueFromPlayer();},remaining*1000);
         }
       },3000);
- }
+    }
     function toggleAdminPlayer(){pushState();if(!musicCfg.adminEnablePlayer&&window.ytPlayerObj&&typeof window.ytPlayerObj.stopVideo==='function')window.ytPlayerObj.stopVideo();else checkQueuePlay();}
 
     window.onYouTubeIframeAPIReady=()=>{
       if(mode.value==='widget'||mode.value==='goal'||mode.value==='challenge'||mode.value==='top')return;
       if(isMobile.value)return;
- const cId=(mode.value==='music')?'yt-music-widget':(mode.value==='alert')?'yt-alert-player':'yt-player';
+      const cId=(mode.value==='music')?'yt-music-widget':(mode.value==='alert')?'yt-alert-player':'yt-player';
       window.ytPlayerObj=new YT.Player(cId,{height:'100%',width:'100%',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3},events:{
         'onReady':()=>{applyVolume();checkQueuePlay();},
         'onStateChange':(e)=>{
@@ -1699,7 +1626,7 @@ createApp({
         },
         'onError':()=>shiftQueueFromPlayer()
       }});
- };
+    };
 
     // ═══ onMounted ═══
     onMounted(()=>{
@@ -1710,54 +1637,48 @@ createApp({
       }
       if(!db)return;
 
-      // Слушаем ALERT — для OBS и для PC (для предпросмотра и звуков)
+      // Слушаем ALERT
       if(mode.value==='alert'||mode.value==='admin'){
         let firstAlert=true;
         db.ref('alert').on('value',s=>{
-         
-  const d=s.val();
+          const d=s.val();
           if(d){
             if(firstAlert){firstAlert=false;return;}
             if(d.cfg)Object.assign(alertCfg,d.cfg);
             triggerAlert(d.name,cleanNum(d.amount),d.msg,false);
-            // PC admin обновляет панели и топ когда получает донат
             if(mode.value==='admin'){
               const amt=cleanNum(d.amount);
-    
-           const name=d.name||'Аноним';
+              const name=d.name||'Аноним';
               applyDonateToPanel(name,amt);
- updateTopDonors(name,amt);
+              updateTopDonors(name,amt);
               pushState();
             }
           }else{firstAlert=false;}
         });
- }
+      }
 
-      // Слушаем CONFIG — для всех кроме top и мобилки
-      if(mode.value!=='top'){
-        db.ref('config').on('value',s=>{
-          const d=s.val();if(!d)return;
-          if(d.panels&&mode.value!=='alert'){d.panels.forEach((nP,i)=>{if(!panels[i])panels.push(nP);else Object.keys(nP).forEach(k=>{panels[i][k]=nP[k];});});if(panels.length>d.panels.length)panels.splice(d.panels.length);}
-          if(d.globalScale&&mode.value!=='alert')globalScale.value=d.globalScale;
-          if(d.musicCfg)Object.keys(d.musicCfg).forEach(k=>musicCfg[k]=d.musicCfg[k]);
-          if(d.topCfg)Object.keys(d.topCfg).forEach(k=>topCfg[k]=d.topCfg[k]);
-          if(d.alertCfg&&mode.value!=='admin')Object.keys(d.alertCfg).forEach(k=>alertCfg[k]=d.alertCfg[k]);
-        });
- }
+      // Слушаем CONFIG — ТЕПЕРЬ ДЛЯ ВСЕХ РЕЖИМОВ (включая top)
+      db.ref('config').on('value',s=>{
+        const d=s.val();if(!d)return;
+        if(d.panels&&mode.value!=='alert'){d.panels.forEach((nP,i)=>{if(!panels[i])panels.push(nP);else Object.keys(nP).forEach(k=>{panels[i][k]=nP[k];});});if(panels.length>d.panels.length)panels.splice(d.panels.length);}
+        if(d.globalScale&&mode.value!=='alert')globalScale.value=d.globalScale;
+        if(d.musicCfg)Object.keys(d.musicCfg).forEach(k=>musicCfg[k]=d.musicCfg[k]);
+        if(d.topCfg)Object.keys(d.topCfg).forEach(k=>topCfg[k]=d.topCfg[k]);
+        if(d.alertCfg&&mode.value!=='admin')Object.keys(d.alertCfg).forEach(k=>alertCfg[k]=d.alertCfg[k]);
+      });
 
-      // Слушаем топ донатов (для OBS top страницы)
+      // Слушаем топ донатов
       db.ref('topDonors').on('value',snap=>{
         const arr=snap.val()||[];
         topDonors.splice(0,topDonors.length,...arr);
       });
- // Слушаем музыку и громкость (для музыкального режима и alert OBS)
+      // Слушаем музыку и громкость
       db.ref('musicQueue').on('value',snap=>{
         const q=snap.val()||[];musicQueue.splice(0,musicQueue.length,...q);checkQueuePlay();
       });
- db.ref('musicVolume').on('value',snap=>{const v=snap.val();if(v!==null){musicVolume.value=v;applyVolume();}});
+      db.ref('musicVolume').on('value',snap=>{const v=snap.val();if(v!==null){musicVolume.value=v;applyVolume();}});
     });
 
-    // Alert enter/leave hooks for canvas particles
     function onAlertEnter(el){if(pCanvas.value)launchParticles(pCanvas.value);}
     function onAlertLeave(el){}
 
@@ -1774,14 +1695,13 @@ createApp({
       idleTextStyle,idlePreviewStyle,topSceneStyle,topTitleStyle,
       cardPos,compFor,
       addPanel,removePanel,clearProgress,clearDonors,clearTopDonors,removeTopDonor,
-     
-  doQuickDonate,doQuickTest,doTrigger,doMobileDonate,clearMobile,
+      doQuickDonate,doQuickTest,doTrigger,doMobileDonate,clearMobile,
       saveAll,copyObs,selectObs,obsSelected,copiedObs,currentObsUrl,
       playDonationSound,toggleAdminPlayer,testTTSVoice,
       topEntryStyle,topNameStyle,topAmountStyle,rankEmoji,fmtNum,
       onAlertEnter,onAlertLeave,pCanvas,
     };
- }
+  }
 }).mount('#app');
 </script>
 </body>
