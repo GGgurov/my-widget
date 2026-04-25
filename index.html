@@ -13,8 +13,7 @@
    ПЕРЕМЕННЫЕ И БАЗОВЫЕ СТИЛИ
 ══════════════════════════════════════════════════════ */
 :root {
-  --gold: #ffd700;
-  --silver: #c8c8c8; --bronze: #cd7f32;
+  --gold: #ffd700; --silver: #c8c8c8; --bronze: #cd7f32;
   --red: #ff0044; --bg: #080808; --panel: #111111;
   --border: #1e1e1e; --border-hi: #2e2e2e;
   --text-dim: #555; --text-mid: #888; --text: #cccccc;
@@ -257,7 +256,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 ══════════════════════════════════════════════════════ */
 .top-scene{
   width:100vw; height:100vh; background:transparent;
-  display:flex; align-items:flex-start; /* ПРИКЛЕИВАЕМ К ВЕРХУ */
+  display:flex; align-items:flex-start;
   justify-content:flex-start; position:relative;
   overflow:hidden; box-sizing:border-box;
 }
@@ -267,134 +266,122 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   gap:10px;margin-bottom:10px;padding:12px;
   border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,0.3);
 }
-.top-entry{position:relative;display:flex;align-items:center;gap:12px;padding:10px 14px;transition:all .6s cubic-bezier(.34,1.56,.64,1);cursor:default;will-change:transform;}
+.top-entry{
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:10px 14px;transition:all .6s cubic-bezier(.34,1.56,.64,1);
+  cursor:default;will-change:transform;
+}
 .top-rank-badge{font-weight:900;text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.top-name{font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.top-amount{font-weight:900;white-space:nowrap;flex-shrink:0;}
 
-/* ═══ ТЕМА 1: UNIVERSAL (золотая, 1-е место золото/2-е серебро/3-е бронза) ═══ */
-.top-theme-universal .top-title-row{
-  background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.3);
+/* БАЗОВЫЕ НАСТРОЙКИ ШРИФТОВ ДЛЯ ВСЕХ ТЕМ (контролируются ползунками) */
+.top-name{
+  font-family:'Unbounded',sans-serif;
+  font-size: var(--top-name-sz, 14px);
+  font-weight:700; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  text-transform:uppercase; letter-spacing:.5px;
 }
-.top-theme-universal .top-title{
-  font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
-  text-transform:uppercase;letter-spacing:3px;
-  color:#ffd700;text-shadow:0 0 18px rgba(255,215,0,.5);
+.top-amount{
+  font-family:'Unbounded',sans-serif;
+  font-size: var(--top-amt-sz, 16px);
+  font-weight:900; white-space:nowrap; flex-shrink:0;
 }
-.top-theme-universal .top-entry{
-  border-radius:6px;overflow:hidden;position:relative;
-  background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.12);
-  margin-bottom:2px;
-}
-/* СДЕЛАЛ НЕПРОЗРАЧНЕЕ ДЛЯ ЧИТАЕМОСТИ В ИГРЕ */
+/* СКАЛИРОВАНИЕ ДЛЯ ТОП 1, 2, 3 */
+.rank-1 .top-name { font-size: calc(var(--top-name-sz) * 1.3); font-weight: 900; }
+.rank-1 .top-amount { font-size: calc(var(--top-amt-sz) * 1.3); }
+.rank-2 .top-name { font-size: calc(var(--top-name-sz) * 1.15); font-weight: 800; }
+.rank-2 .top-amount { font-size: calc(var(--top-amt-sz) * 1.15); }
+.rank-3 .top-name { font-size: calc(var(--top-name-sz) * 1.05); font-weight: 800; }
+.rank-3 .top-amount { font-size: calc(var(--top-amt-sz) * 1.05); }
+
+
+/* ═══ ТЕМА 1: UNIVERSAL ═══ */
+.top-theme-universal .top-title-row{ background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.3); }
+.top-theme-universal .top-title{ font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:#ffd700;text-shadow:0 0 18px rgba(255,215,0,.5); }
+.top-theme-universal .top-entry{ border-radius:6px;overflow:hidden;position:relative; margin-bottom:2px; }
+
+/* Красивые выделения для 1, 2, 3 места */
 .top-theme-universal .top-entry.rank-1{
-  background:linear-gradient(90deg,rgba(255,215,0,.85) 0%,rgba(255,180,0,.65) 55%,rgba(20,15,5,1) 100%);
-  border:1.5px solid rgba(255,215,0,.8);animation:univGold 2.5s ease-in-out infinite;
+  background:linear-gradient(90deg,rgba(255,215,0,.3) 0%, rgba(20,15,5,.9) 60%);
+  border:1.5px solid rgba(255,215,0,.8); box-shadow: inset 0 0 15px rgba(255,215,0,.2);
 }
 .top-theme-universal .top-entry.rank-2{
-  background:linear-gradient(90deg,rgba(200,200,200,.75) 0%,rgba(20,15,5,1) 100%);
-  border:1px solid rgba(200,200,200,.6);
+  background:linear-gradient(90deg,rgba(200,200,200,.2) 0%,rgba(20,15,5,.9) 50%);
+  border:1px solid rgba(200,200,200,.6); box-shadow: inset 0 0 10px rgba(200,200,200,.1);
 }
 .top-theme-universal .top-entry.rank-3{
-  background:linear-gradient(90deg,rgba(205,127,50,.75) 0%,rgba(20,15,5,1) 100%);
-  border:1px solid rgba(205,127,50,.6);
+  background:linear-gradient(90deg,rgba(205,127,50,.2) 0%,rgba(20,15,5,.9) 50%);
+  border:1px solid rgba(205,127,50,.6); box-shadow: inset 0 0 10px rgba(205,127,50,.1);
 }
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){
-  background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.06);
-}
-@keyframes univGold{0%,100%{box-shadow:0 0 10px rgba(255,215,0,.2);}50%{box-shadow:0 0 28px rgba(255,215,0,.45),0 0 55px rgba(255,215,0,.12);}}
+.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){ background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.06); }
+
+/* Значки ранга */
 .top-theme-universal .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.6);}
 .top-theme-universal .rank-1 .top-rank-badge{font-size:18px;color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,.8);}
 .top-theme-universal .rank-2 .top-rank-badge{font-size:15px;color:#ffffff;text-shadow:0 0 8px rgba(200,200,200,.6);}
 .top-theme-universal .rank-3 .top-rank-badge{font-size:13px;color:#ffcca1;text-shadow:0 0 6px rgba(205,127,50,.5);}
-.top-theme-universal .top-name{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:700;color:#ddd;text-transform:uppercase;letter-spacing:.5px;}
+
+/* Цвета имен и сумм в зависимости от места */
 .top-theme-universal .rank-1 .top-name{
-  font-size:15px;font-weight:900;
   background:linear-gradient(90deg,#fff,#ffd700,#fff,#ffd700);background-size:300% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   animation:univNameShimmer 4s linear infinite;
 }
-@keyframes univNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-.top-theme-universal .rank-2 .top-name{color:#ffffff;font-size:14px;}
-.top-theme-universal .rank-3 .top-name{color:#ffe4c4;font-size:13px;}
-.top-theme-universal .top-amount{font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;color:rgba(255,215,0,.9);}
 .top-theme-universal .rank-1 .top-amount{
-  font-size:17px;
   background:linear-gradient(90deg,#ffd700,#fff5aa,#ffaa00,#ffd700);background-size:300% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   animation:univAmtShimmer 2.5s linear infinite;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));
 }
-@keyframes univAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-.top-theme-universal .rank-2 .top-amount{color:#ffffff;font-size:15px;}
-.top-theme-universal .rank-3 .top-amount{color:#ffcca1;font-size:13px;}
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#ccc;font-size:11px;}
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#bbb;font-size:11px;}
+.top-theme-universal .rank-2 .top-name, .top-theme-universal .rank-2 .top-amount{ color:#ffffff; }
+.top-theme-universal .rank-3 .top-name, .top-theme-universal .rank-3 .top-amount{ color:#ffe4c4; }
+.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{ color:#ccc; }
+.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{ color:#bbb; }
 
-/* ═══ ТЕМА 2: HUDPRO (teal — синяя) ═══ */
-.top-theme-hudpro .top-title-row{
-  background:linear-gradient(90deg,rgba(0,30,45,.98),rgba(0,15,25,.98));border:1px solid rgba(0,150,180,.4);
-}
-.top-theme-hudpro .top-title{
-  font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
-  letter-spacing:3px;text-transform:uppercase;
-  color:#b3ff00;text-shadow:0 0 14px rgba(140,220,0,.5);
-}
+@keyframes univNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+@keyframes univAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+
+/* ═══ ТЕМА 2: HUDPRO ═══ */
+.top-theme-hudpro .top-title-row{ background:linear-gradient(90deg,rgba(0,30,45,.98),rgba(0,15,25,.98));border:1px solid rgba(0,150,180,.4); }
+.top-theme-hudpro .top-title{ font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900; letter-spacing:3px;text-transform:uppercase; color:#b3ff00;text-shadow:0 0 14px rgba(140,220,0,.5); }
 .top-theme-hudpro .top-entry{
   border-radius:6px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,rgba(0,50,70,1),rgba(0,30,45,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
-  border:1px solid rgba(0,150,180,.5);
-  margin-bottom:2px;
+  background:linear-gradient(90deg,rgba(0,40,60,.95),rgba(0,20,35,.98));
+  border:1px solid rgba(0,150,180,.3); margin-bottom:2px;
 }
-.top-theme-hudpro .top-entry::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
-  background:rgba(0,160,190,.8);
-}
-.top-theme-hudpro .top-entry.rank-1 .top-amount{
-  font-size:16px;color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);
-}
-.top-theme-hudpro .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.95;}
-.top-theme-hudpro .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.85;}
-.top-theme-hudpro .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.7;}
-.top-theme-hudpro .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
-.top-theme-hudpro .top-name{
-  font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;
-  color:#ffffff;text-transform:uppercase;letter-spacing:.5px;
-}
-.top-theme-hudpro .rank-1 .top-name{font-size:15px;font-weight:900;}
+.top-theme-hudpro .top-entry.rank-1{ background:linear-gradient(90deg,rgba(0,60,80,.95),rgba(0,20,35,.98)); border-color: rgba(0,200,255,.6); }
+.top-theme-hudpro .top-entry.rank-2{ background:linear-gradient(90deg,rgba(0,50,70,.95),rgba(0,20,35,.98)); }
+.top-theme-hudpro .top-entry::before{ content:'';position:absolute;left:0;top:0;bottom:0;width:4px; background:rgba(0,160,190,.8); }
+.top-theme-hudpro .rank-1::before{ background:#00c8ff; box-shadow: 0 0 10px #00c8ff; width: 6px;}
 
-/* ═══ ТЕМА 3: HPP (бордовая) ═══ */
-.top-theme-hpp .top-title-row{
-  background:linear-gradient(90deg,rgba(50,5,15,.98),rgba(30,0,10,.98));border:1px solid rgba(180,20,60,.4);
-}
-.top-theme-hpp .top-title{
-  font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
-  letter-spacing:3px;text-transform:uppercase;
-  color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,.4);
-}
+.top-theme-hudpro .top-amount{ color:#ffd700; opacity:.7;}
+.top-theme-hudpro .rank-1 .top-amount{ color:#ffd700; opacity: 1; text-shadow:0 0 8px rgba(255,215,0,.5);}
+.top-theme-hudpro .rank-2 .top-amount{ color:#ffd700; opacity:.95; }
+.top-theme-hudpro .rank-3 .top-amount{ color:#ffd700; opacity:.85; }
+.top-theme-hudpro .top-name{ color:#ffffff; }
+.top-theme-hudpro .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{ color:#cccccc; }
+.top-theme-hudpro .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
+
+
+/* ═══ ТЕМА 3: HPP ═══ */
+.top-theme-hpp .top-title-row{ background:linear-gradient(90deg,rgba(50,5,15,.98),rgba(30,0,10,.98));border:1px solid rgba(180,20,60,.4); }
+.top-theme-hpp .top-title{ font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900; letter-spacing:3px;text-transform:uppercase; color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,.4); }
 .top-theme-hpp .top-entry{
   border-radius:6px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,rgba(80,10,30,1),rgba(50,0,15,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
-  border:1px solid rgba(180,20,60,.5);
-  margin-bottom:2px;
+  background:linear-gradient(90deg,rgba(60,10,20,.95),rgba(40,0,10,.98));
+  border:1px solid rgba(180,20,60,.4); margin-bottom:2px;
 }
-.top-theme-hpp .top-entry::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
-  background:rgba(200,30,70,.8);
-}
-.top-theme-hpp .top-entry.rank-1{
-  background:linear-gradient(90deg,rgba(120,10,40,1),rgba(80,0,30,1)); /* УВЕЛИЧИЛ НЕПРОЗРАЧНОСТЬ */
-  border-color:rgba(220,40,80,.8);
-}
-.top-theme-hpp .top-entry.rank-1 .top-amount{font-size:16px;color:#ffd700;text-shadow:0 0 8px rgba(255,215,0,.5);}
-.top-theme-hpp .top-entry.rank-2 .top-amount{font-size:15px;color:#ffd700;opacity:.95;}
-.top-theme-hpp .top-entry.rank-3 .top-amount{font-size:14px;color:#ffd700;opacity:.85;}
-.top-theme-hpp .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{font-size:13px;color:#ffd700;opacity:.7;}
+.top-theme-hpp .top-entry.rank-1{ background:linear-gradient(90deg,rgba(100,10,30,.95),rgba(50,0,15,.98)); border-color: rgba(220,40,80,.8); }
+.top-theme-hpp .top-entry.rank-2{ background:linear-gradient(90deg,rgba(80,10,25,.95),rgba(40,0,10,.98)); }
+.top-theme-hpp .top-entry::before{ content:'';position:absolute;left:0;top:0;bottom:0;width:4px; background:rgba(200,30,70,.8); }
+.top-theme-hpp .rank-1::before{ background:#ff3366; box-shadow: 0 0 10px #ff3366; width: 6px;}
+
+.top-theme-hpp .top-amount{ color:#ffd700; opacity:.7;}
+.top-theme-hpp .rank-1 .top-amount{ color:#ffd700; opacity: 1; text-shadow:0 0 8px rgba(255,215,0,.5); }
+.top-theme-hpp .rank-2 .top-amount{ color:#ffd700; opacity:.95; }
+.top-theme-hpp .rank-3 .top-amount{ color:#ffd700; opacity:.85; }
+.top-theme-hpp .top-name{ color:#ffffff; }
+.top-theme-hpp .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{ color:#cccccc; }
 .top-theme-hpp .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
-.top-theme-hpp .top-name{
-  font-family:'Unbounded',sans-serif;font-size:14px;font-weight:700;
-  color:#ffffff;text-transform:uppercase;letter-spacing:.5px;
-}
-.top-theme-hpp .rank-1 .top-name{font-size:15px;font-weight:900;}
+
 
 /* Top entry move animation */
 .top-move-enter-active,.top-move-leave-active{transition:all .7s cubic-bezier(.34,1.56,.64,1);}
@@ -480,14 +467,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 ══════════════════════════════════════════════════════ */
 .mobile-kaspi-view{display:flex;flex-direction:column;height:100dvh;background:#060606;overflow:hidden;}
 
-/* Topbar */
 .mob-topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px 12px;
-  background:rgba(10,10,10,.95);
-  border-bottom:1px solid rgba(255,0,68,.15);
-  flex-shrink:0;
-  backdrop-filter:blur(10px);
+  padding:14px 18px 12px; background:rgba(10,10,10,.95);
+  border-bottom:1px solid rgba(255,0,68,.15); flex-shrink:0; backdrop-filter:blur(10px);
 }
 .mob-logo{font-size:15px;font-weight:900;letter-spacing:.5px;}
 .mob-logo span{color:var(--red);}
@@ -495,32 +478,20 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .mob-fb-dot.ok{background:#00cc44;box-shadow:0 0 10px #00cc44;animation:pulseDot 2s infinite;}
 .mob-fb-dot.err{background:#ff4444;box-shadow:0 0 10px #ff4444;}
 
-/* Scrollable content */
-.mob-scroll{
-  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
-  padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px;
-}
+.mob-scroll{ flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch; padding:16px 16px 8px;display:flex;flex-direction:column;gap:12px; }
 
-/* Kaspi paste area */
 .kaspi-paste-area{
   background:#111;border:2px dashed rgba(255,0,68,.4);
   border-radius:16px;padding:16px;color:#fff;
   font-size:15px;min-height:110px;width:100%;resize:none;
-  font-family:'Unbounded';transition:all 0.25s;line-height:1.6;
-  caret-color:var(--red);
+  font-family:'Unbounded';transition:all 0.25s;line-height:1.6; caret-color:var(--red);
 }
 .kaspi-paste-area::placeholder{color:#333;font-size:12px;line-height:1.7;}
-.kaspi-paste-area:focus{
-  border-style:solid;border-color:var(--red);
-  box-shadow:0 0 24px rgba(255,0,68,.12);
-  min-height:130px;outline:none;
-}
+.kaspi-paste-area:focus{ border-style:solid;border-color:var(--red); box-shadow:0 0 24px rgba(255,0,68,.12); min-height:130px;outline:none; }
 
-/* Parsed card */
 .parsed-card{
   background:rgba(20,0,8,.9);border:1px solid rgba(255,0,68,.3);
-  border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;
-  animation:fadeIn .2s ease-out;
+  border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px; animation:fadeIn .2s ease-out;
 }
 .parsed-row{display:flex;align-items:center;gap:12px;}
 .parsed-row label{font-size:9px;min-width:65px;color:var(--text-dim);letter-spacing:.5px;}
@@ -530,71 +501,36 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   color:#fff;border-radius:10px;font-family:'Unbounded';
 }
 .parsed-row textarea{min-height:52px;resize:none;line-height:1.5;}
-.parsed-row input:focus,.parsed-row textarea:focus{
-  border-color:rgba(255,0,68,.5);outline:none;
-  box-shadow:0 0 0 2px rgba(255,0,68,.08);
-}
+.parsed-row input:focus,.parsed-row textarea:focus{ border-color:rgba(255,0,68,.5);outline:none; box-shadow:0 0 0 2px rgba(255,0,68,.08); }
 
-/* Info note */
 .mob-info-note{
   background:rgba(0,194,255,.06);border:1px solid rgba(0,194,255,.18);
   border-radius:10px;padding:11px 14px;font-size:10px;
-  color:rgba(0,194,255,.7);font-weight:700;text-align:center;letter-spacing:.3px;
-  line-height:1.5;
+  color:rgba(0,194,255,.7);font-weight:700;text-align:center;letter-spacing:.3px; line-height:1.5;
 }
 
-/* Music card */
-.mob-music-card{
-  background:linear-gradient(135deg,#000d15,#00060d);
-  border:1px solid rgba(0,194,255,.2);border-radius:14px;overflow:hidden;
-}
-.mob-music-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 16px;border-bottom:1px solid rgba(0,194,255,.1);
-}
+.mob-music-card{ background:linear-gradient(135deg,#000d15,#00060d); border:1px solid rgba(0,194,255,.2);border-radius:14px;overflow:hidden; }
+.mob-music-head{ display:flex;align-items:center;justify-content:space-between; padding:13px 16px;border-bottom:1px solid rgba(0,194,255,.1); }
 .mob-music-title{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:900;color:var(--tenge);text-transform:uppercase;}
-.mob-volume-row{
-  display:flex;align-items:center;gap:12px;padding:12px 16px;
-  background:rgba(0,194,255,.04);border-bottom:1px solid rgba(0,194,255,.08);
-}
+.mob-volume-row{ display:flex;align-items:center;gap:12px;padding:12px 16px; background:rgba(0,194,255,.04);border-bottom:1px solid rgba(0,194,255,.08); }
 .mob-volume-row input[type=range]{flex:1;height:32px;accent-color:var(--tenge);border:none;background:transparent;}
 .mob-vol-val{font-size:12px;font-weight:900;color:var(--tenge);min-width:42px;text-align:right;}
-.mob-track-item{
-  display:flex;align-items:center;padding:13px 16px;gap:12px;
-  border-bottom:1px solid rgba(255,255,255,.04);
-  -webkit-tap-highlight-color:transparent;
-}
+.mob-track-item{ display:flex;align-items:center;padding:13px 16px;gap:12px; border-bottom:1px solid rgba(255,255,255,.04); -webkit-tap-highlight-color:transparent; }
 .mob-track-meta{flex:1;display:flex;flex-direction:column;gap:3px;}
 .mob-track-status{font-size:11px;font-weight:900;color:#ccc;display:flex;align-items:center;gap:6px;}
 .mob-track-status.now{color:var(--tenge);}
-.mob-skip-btn{
-  font-family:'Unbounded';padding:12px 18px;border-radius:10px;
-  border:1px solid rgba(0,194,255,.4);background:rgba(0,194,255,.1);
-  color:var(--tenge);font-size:13px;font-weight:900;cursor:pointer;
-  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
-  transition:all .15s;white-space:nowrap;min-width:52px;text-align:center;
-}
+.mob-skip-btn{ font-family:'Unbounded';padding:12px 18px;border-radius:10px; border:1px solid rgba(0,194,255,.4);background:rgba(0,194,255,.1); color:var(--tenge);font-size:13px;font-weight:900;cursor:pointer; touch-action:manipulation;-webkit-tap-highlight-color:transparent; transition:all .15s;white-space:nowrap;min-width:52px;text-align:center; }
 .mob-skip-btn:active{background:rgba(0,194,255,.25);transform:scale(.94);}
-.mob-remove-btn{
-  font-family:'Unbounded';padding:12px 16px;border-radius:10px;
-  border:1px solid var(--border);background:rgba(255,255,255,.04);
-  color:var(--text-dim);font-size:16px;cursor:pointer;
-  touch-action:manipulation;transition:all .15s;min-width:48px;text-align:center;
-}
+.mob-remove-btn{ font-family:'Unbounded';padding:12px 16px;border-radius:10px; border:1px solid var(--border);background:rgba(255,255,255,.04); color:var(--text-dim);font-size:16px;cursor:pointer; touch-action:manipulation;transition:all .15s;min-width:48px;text-align:center; }
 .mob-remove-btn:active{background:rgba(255,50,50,.15);color:#ff5555;}
 
-/* Bottom actions */
 .mob-actions{
   display:flex;flex-direction:column;gap:10px;
   padding:12px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
-  background:rgba(8,8,8,.97);
-  border-top:1px solid rgba(255,255,255,.06);
-  flex-shrink:0;
-  backdrop-filter:blur(10px);
+  background:rgba(8,8,8,.97); border-top:1px solid rgba(255,255,255,.06); flex-shrink:0; backdrop-filter:blur(10px);
 }
 .btn-mob-send{
-  font-family:'Unbounded';font-weight:900;font-size:17px;
-  text-transform:uppercase;letter-spacing:.5px;
+  font-family:'Unbounded';font-weight:900;font-size:17px; text-transform:uppercase;letter-spacing:.5px;
   padding:22px;border-radius:14px;border:none;cursor:pointer;
   background:linear-gradient(135deg,#ff0044,#cc0034);color:#fff;
   width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
@@ -602,26 +538,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
   position:relative;overflow:hidden;
 }
-.btn-mob-send::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
-  transform:translateX(-200%);
-}
-.btn-mob-send:not(:disabled):active{
-  transform:scale(.96);
-  box-shadow:0 2px 12px rgba(255,0,68,.3);
-}
+.btn-mob-send::after{ content:'';position:absolute;inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent); transform:translateX(-200%); }
+.btn-mob-send:not(:disabled):active{ transform:scale(.96); box-shadow:0 2px 12px rgba(255,0,68,.3); }
 .btn-mob-send:not(:disabled):active::after{animation:panelRowShine .5s ease forwards;}
 .btn-mob-send:disabled{opacity:.3;pointer-events:none;}
-
-.btn-mob-clear{
-  font-family:'Unbounded';font-weight:700;font-size:13px;
-  text-transform:uppercase;padding:15px;border-radius:12px;
-  border:1px solid rgba(255,0,0,.18);cursor:pointer;
-  background:rgba(255,0,0,.05);color:#ff5555;width:100%;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
-}
+.btn-mob-clear{ font-family:'Unbounded';font-weight:700;font-size:13px; text-transform:uppercase;padding:15px;border-radius:12px; border:1px solid rgba(255,0,0,.18);cursor:pointer; background:rgba(255,0,0,.05);color:#ff5555;width:100%; display:flex;align-items:center;justify-content:center;gap:8px; transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation; }
 .btn-mob-clear:active{background:rgba(255,0,0,.15);}
 
 .desktop-only{display:block;}
@@ -683,13 +604,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}"></div>
       </div>
     </transition>
-    <div id="yt-alert-player" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
   </div>
 
   <div v-if="mode==='music'" class="music-scene">
     <div v-if="musicQueue.length===0" class="idle-music-text" :class="'music-anim-'+(musicCfg.animStyle||'shimmer')" :style="idleTextStyle">{{musicCfg.idleText||'Заказ музыки 250 тенге'}}</div>
     <div v-if="musicQueue.length>0" class="idle-music-text" :class="'music-anim-'+(musicCfg.animStyle||'shimmer')" :style="{...idleTextStyle,'--idle-c1':musicCfg.nowPlayingColor||'#00c2ff'}">🎵 {{musicCfg.nowPlayingText||'СЕЙЧАС ИГРАЕТ'}}</div>
-    <div id="yt-music-widget" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
   </div>
 
   <div v-if="mode==='widget'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
@@ -704,7 +623,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </div>
   </div>
 
-  <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+topCfg.theme" :style="topSceneStyle">
+  <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+(topCfg.theme||'universal')" :style="topSceneStyle">
     <div class="top-widget">
       <div v-if="topCfg.showTitle" class="top-title-row">
         <span class="top-title" :style="topTitleStyle">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span>
@@ -949,7 +868,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <div v-if="sections.alertTTS" class="sec-body">
               <div class="cb-row"><label>Включить озвучку</label><input type="checkbox" v-model="alertCfg.ttsEnabled"></div>
               <template v-if="alertCfg.ttsEnabled">
-                <div style="font-size:9px;color:#00cc44;padding:4px 0 6px;">💡 Голос будет выбран автоматически вашим OBS / TikTok Live Studio</div>
+                <div style="font-size:9px;color:#00cc44;padding:4px 0 6px;">💡 Озвучка проигрывается ИСКЛЮЧИТЕЛЬНО на этой странице Админки. В OBS звук не пойдет, чтобы не было эха! Задержка 3.5 секунды!</div>
                 <div class="fg"><label>Скорость речи</label><div class="rr"><input type="range" min="0.5" max="2" step="0.1" v-model.number="alertCfg.ttsRate"><span class="rv">{{alertCfg.ttsRate||1}}x</span></div></div>
                 <div class="fg"><label>Тон голоса</label><div class="rr"><input type="range" min="0" max="2" step="0.1" v-model.number="alertCfg.ttsPitch"><span class="rv">{{alertCfg.ttsPitch||1}}</span></div></div>
                 <div class="fg"><label>Громкость</label><div class="rr"><input type="range" min="0" max="100" v-model.number="alertCfg.ttsVolume"><span class="rv">{{alertCfg.ttsVolume}}%</span></div></div>
@@ -1010,15 +929,18 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
               <div class="fg"><label>Отступ сверху (vh)</label><div class="rr"><input type="range" min="0" max="100" v-model.number="topCfg.posY"><span class="rv">{{topCfg.posY||10}}vh</span></div></div>
               <div class="fg"><label>Отступ между строками (px)</label><div class="rr"><input type="range" min="2" max="20" v-model.number="topCfg.gap"><span class="rv">{{topCfg.gap||6}}px</span></div></div>
               <div class="fg"><label>Внутренний отступ строк</label><div class="rr"><input type="range" min="4" max="24" v-model.number="topCfg.rowPad"><span class="rv">{{topCfg.rowPad||10}}px</span></div></div>
-              <div class="fg"><label>Размер шрифта (px)</label><div class="rr"><input type="range" min="10" max="22" v-model.number="topCfg.fontSize"><span class="rv">{{topCfg.fontSize||14}}px</span></div></div>
+              
+              <div class="fg"><label>Размер имени донатера (px)</label><div class="rr"><input type="range" min="10" max="30" v-model.number="topCfg.nameSize"><span class="rv">{{topCfg.nameSize||14}}px</span></div></div>
+              <div class="fg"><label>Размер суммы (px)</label><div class="rr"><input type="range" min="10" max="40" v-model.number="topCfg.amountSize"><span class="rv">{{topCfg.amountSize||16}}px</span></div></div>
             </div>
           </template>
 
           <template v-if="tab==='music'">
-            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🔊 Всё аудио идёт через OBS Alert</div></div></div>
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🔊 Аудио маршрутизация</div></div></div>
             <div class="sec-body">
               <div style="font-size:10px;color:#00c2ff;background:rgba(0,194,255,.07);border:1px solid rgba(0,194,255,.2);border-radius:8px;padding:10px 12px;line-height:1.6;font-weight:700;">
-                🎵 Музыка, 🔔 уведомления и 🗣 TTS — всё воспроизводится через Browser Source <b>Alert</b> в OBS. Включи "Use custom audio device" в настройках Browser Source.
+                🎵 Музыка и 🗣 Озвучка TTS играют <b>ТОЛЬКО НА ЭТОЙ СТРАНИЦЕ АДМИНКИ</b>. В OBS они передаваться не будут!<br>
+                🔔 Звуки уведомлений (деньги, колокольчик) — всё ещё идут в OBS Alert.
               </div>
               <div class="music-queue-card" v-if="musicQueue.length>0">
                 <div class="music-queue-header">
@@ -1033,7 +955,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 <div v-for="(track,idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing:idx===0}">
                   <div class="track-info">
                     <div class="track-status" :class="{now:idx===0}">
-                      <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет</template>
+                      <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет на ПК</template>
                       <template v-else>⏳ #{{idx}}</template>
                     </div>
                     <div class="track-id">{{track.videoId}}</div>
@@ -1043,11 +965,12 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
                 </div>
               </div>
               <div v-else style="font-size:10px;color:var(--text-dim);text-align:center;padding:10px;">Очередь пуста</div>
+              
               <div id="yt-player" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
             </div>
 
             <div class="sec-head" :class="{on:sections.musicText}" @click="sections.musicText=!sections.musicText">
-              <div class="sec-head-l"><div class="sec-name">✏ Текст заказа музыки</div></div><span class="sec-chevron">▼</span>
+              <div class="sec-head-l"><div class="sec-name">✏ Текст заказа музыки (в OBS)</div></div><span class="sec-chevron">▼</span>
             </div>
             <div v-if="sections.musicText" class="sec-body">
               <div class="fg">
@@ -1135,16 +1058,16 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
           <div class="obs-url-card">
             <div class="obs-url-title">📡 OBS Browser Source — выбери и скопируй URL</div>
-            <div style="font-size:8px;color:#00c2ff;padding:4px 0 6px;font-weight:700;letter-spacing:.3px;">💡 Alert = уведомления + музыка + TTS — всё звучит через него!</div>
+            <div style="font-size:8px;color:#00c2ff;padding:4px 0 6px;font-weight:700;letter-spacing:.3px;">💡 Обрати внимание: TTS и Музыка играют теперь в этой вкладке на ПК. В OBS скопируй нужные визуалы!</div>
             <div class="obs-btn-grid">
-              <button class="btn-obs" :class="{active:obsSelected==='alert',copied:copiedObs.alert}" @click="selectObs('alert')"><span class="btn-obs-icon">🔔🎵</span><span>Alert + Музыка</span><span class="btn-obs-sub">{{copiedObs.alert?'✓ скопирован':'нажми'}}</span></button>
-              <button class="btn-obs" :class="{active:obsSelected==='widget',copied:copiedObs.widget}" @click="selectObs('widget')"><span class="btn-obs-icon">🎯</span><span>Виджет</span><span class="btn-obs-sub">{{copiedObs.widget?'✓':'нажми'}}</span></button>
-              <button class="btn-obs" :class="{active:obsSelected==='music',copied:copiedObs.music}" @click="selectObs('music')"><span class="btn-obs-icon">🎵</span><span>Музыка (текст)</span><span class="btn-obs-sub">{{copiedObs.music?'✓':'нажми'}}</span></button>
+              <button class="btn-obs" :class="{active:obsSelected==='alert',copied:copiedObs.alert}" @click="selectObs('alert')"><span class="btn-obs-icon">🔔</span><span>Alert (Визуал+Звук)</span><span class="btn-obs-sub">{{copiedObs.alert?'✓ скопирован':'нажми'}}</span></button>
+              <button class="btn-obs" :class="{active:obsSelected==='widget',copied:copiedObs.widget}" @click="selectObs('widget')"><span class="btn-obs-icon">🎯</span><span>Виджет (Всё)</span><span class="btn-obs-sub">{{copiedObs.widget?'✓':'нажми'}}</span></button>
+              <button class="btn-obs" :class="{active:obsSelected==='music',copied:copiedObs.music}" @click="selectObs('music')"><span class="btn-obs-icon">🎵</span><span>Музыка (Текст)</span><span class="btn-obs-sub">{{copiedObs.music?'✓':'нажми'}}</span></button>
             </div>
             <div class="obs-btn-grid-2">
               <button class="btn-obs" :class="{active:obsSelected==='top',copied:copiedObs.top}" @click="selectObs('top')"><span class="btn-obs-icon">🏆</span><span>Топ донатов</span><span class="btn-obs-sub">{{copiedObs.top?'✓':'нажми'}}</span></button>
               <button class="btn-obs" :class="{active:obsSelected==='goal',copied:copiedObs.goal}" @click="selectObs('goal')"><span class="btn-obs-icon">🎯</span><span>Цель</span><span class="btn-obs-sub">{{copiedObs.goal?'✓':'нажми'}}</span></button>
-            </div>
+             </div>
             <div v-if="obsSelected" class="obs-url-display">{{ currentObsUrl }}</div>
             <button v-if="obsSelected" class="btn-copy-url" :class="{copied:copiedObs[obsSelected]}" @click="copyObs(obsSelected)">{{ copiedObs[obsSelected]?'✓ URL скопирован!':'📋 Копировать URL' }}</button>
           </div>
@@ -1159,8 +1082,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
           </div>
         </div>
-        <div v-if="tab==='top'" style="width:100%;height:100%;position:relative;overflow:hidden;" class="top-scene" :class="'top-theme-'+topCfg.theme">
-          <div class="top-widget" :style="{...topSceneStyle,position:'absolute',padding:'20px',display:'flex',flexDirection:'column',gap:(topCfg.gap||6)+'px'}">
+        <div v-if="tab==='top'" style="width:100%;height:100%;position:relative;overflow:hidden;" class="top-scene" :class="'top-theme-'+(topCfg.theme||'universal')">
+          <div class="top-widget" :style="{...topSceneStyle,position:'absolute',display:'flex',flexDirection:'column'}">
             <div v-if="topCfg.showTitle" class="top-title-row"><span class="top-title">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span></div>
             <div v-for="(d,i) in topDonors.slice(0,Math.min(topCfg.maxRows||10,5))" :key="d.uid" class="top-entry" :class="'rank-'+(i+1)" :style="topEntryStyle(i)">
               <span class="top-rank-badge">{{topCfg.rankEmoji?rankEmoji(i):'#'+(i+1)}}</span>
@@ -1186,7 +1109,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 <script>
 const { createApp, reactive, computed, ref, onMounted, defineComponent, watch } = Vue;
-
 function uid(){ return Math.random().toString(36).slice(2,9); }
 function hexToRgb(h){ h=h||'#000000'; let r=parseInt(h.slice(1,3),16)||0,g=parseInt(h.slice(3,5),16)||0,b=parseInt(h.slice(5,7),16)||0; return `${r},${g},${b}`; }
 function cleanNum(v){ return Math.round(parseFloat(String(v||'0').replace(/\s/g,'').replace(/[^\d.]/g,''))||0); }
@@ -1211,7 +1133,6 @@ const GoalComp = defineComponent({
   },
   methods:{formatNum(n){return Number(n).toLocaleString('ru');}}
 });
-
 const ChalComp = defineComponent({
   template:'#tpl-challenge', props:['p','isObs'],
   computed:{
@@ -1248,7 +1169,6 @@ createApp({
     const musicVolume=ref(100);
     const topDonors=reactive(saved.topDonors||[]);
 
-    // Sections accordion state
     const sections=reactive({alertStyle:false,alertMedia:false,alertSound:true,alertTTS:false,alertParticles:false,musicText:true,musicFont:false,musicColors:false,musicMax:false,topStyle:true,topSettings:false});
 
     const panels=reactive(saved.panels||[]);
@@ -1275,9 +1195,10 @@ createApp({
       maxTrackDuration:300
     },saved.musicCfg||{}));
 
+    // Добавлены nameSize и amountSize в topCfg по-умолчанию
     const topCfg=reactive(Object.assign({
       theme:'universal',title:'ТОП ДНЯ',showTitle:true,rankEmoji:true,
-      maxRows:10,width:400,posX:2,posY:10,gap:6,rowPad:10,fontSize:14
+      maxRows:10,width:400,posX:2,posY:10,gap:6,rowPad:10, nameSize: 14, amountSize: 16
     },saved.topCfg||{}));
 
     const topThemes=[
@@ -1286,7 +1207,6 @@ createApp({
       {id:'hpp',name:'🟥 HPP',preview:{bg:'background:linear-gradient(135deg,#200008,#150005)',title:'#ffd700',rows:[{w:'100%',c:'rgba(200,20,60,.55)',h:'10px'},{w:'80%',c:'rgba(180,15,50,.45)',h:'9px'},{w:'65%',c:'rgba(160,10,40,.35)',h:'8px'},{w:'50%',c:'rgba(140,5,30,.25)',h:'7px'}]}}
     ];
 
-    // TTS voices
     const ttsVoices=ref([]);
     function loadTTSVoices(){
       if(!window.speechSynthesis)return;
@@ -1306,6 +1226,7 @@ createApp({
     function selectObs(t){obsSelected.value=t;}
     let toastTm;
     function showToast(msg,type='ok'){toast.msg=msg;toast.type=type;toast.show=true;clearTimeout(toastTm);toastTm=setTimeout(()=>toast.show=false,2800);}
+    
     const sceneStyle=computed(()=>({transform:`scale(${globalScale.value})`}));
     const alertCardStyle=computed(()=>{const c=alertCfg,bg=c.bgColor||'#111111',op=c.bgOpacity!==undefined?c.bgOpacity:.9;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(c.cardRadius||16)+'px',border:`2px solid ${c.borderColor||'rgba(255,215,0,.3)'}`,'--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)`};});
 
@@ -1338,47 +1259,55 @@ createApp({
       '--top-w':(topCfg.width||400)+'px',
       '--top-gap':(topCfg.gap||6)+'px',
       'padding-top': (topCfg.posY||10)+'vh',
-      'padding-left': (topCfg.posX||2)+'vw'
+      'padding-left': (topCfg.posX||2)+'vw',
+      '--top-name-sz': (topCfg.nameSize||14)+'px',
+      '--top-amt-sz': (topCfg.amountSize||16)+'px'
     }));
 
-    function topEntryStyle(i){return{padding:(topCfg.rowPad||10)+'px 14px',fontSize:(topCfg.fontSize||14)+'px'};}
+    function topEntryStyle(i){return{padding:(topCfg.rowPad||10)+'px 14px'};}
     function topNameStyle(i){return{};}
     function topAmountStyle(i){return{};}
     function rankEmoji(i){return['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟'][i]||'#'+(i+1);}
     function topTitleStyle(){return{};}
 
-    // ═══ TTS / ЗВУК ═══
-    function playTTSVoice(text,isTest=false){
-      if(isTest&&mode.value!=='admin')return;
-      if(!isTest&&mode.value!=='alert')return;
+    // ═══ TTS / ЗВУК (TTS СТРОГО В АДМИНКЕ) ═══
+    function playTTSVoice(msgText, vName, vAmt, isTest=false){
       if(isMobile.value)return;
-      if(!alertCfg.ttsEnabled||!text)return;
-      let t=text.replace(/https?:\/\/\S+/gi,'').replace(/www\.\S+/gi,'').trim();
-      let prefix='';
-      if(alertCfg.ttsReadName&&curDonation.name)prefix+=curDonation.name+'. ';
-      if(alertCfg.ttsReadAmount&&curDonation.amount)prefix+=curDonation.amount+' тенге. ';
-      let full=(prefix+t).trim();
-      if(!full)full=text;
-      if(!full)return;
-      const u=new SpeechSynthesisUtterance(full);
+      // TTS ВОСПРОИЗВОДИТСЯ ТОЛЬКО ЕСЛИ ВКЛЮЧЕНА АДМИНКА НА ПК (ЧТОБЫ НЕ БЫЛО ЭХА В OBS)
+      if(mode.value !== 'admin') return; 
+      if(!alertCfg.ttsEnabled || !msgText) return;
+
+      let t = msgText.replace(/https?:\/\/\S+/gi,'').replace(/www\.\S+/gi,'').trim();
+      let prefix = '';
+      if(alertCfg.ttsReadName && vName) prefix += vName + '. ';
+      if(alertCfg.ttsReadAmount && vAmt) prefix += vAmt + ' тенге. ';
       
-      // Позволяем системе самой выбрать стандартный голос
-      u.lang='ru-RU';
-      u.volume=(alertCfg.ttsVolume||100)/100;
-      u.rate=alertCfg.ttsRate||1;
-      u.pitch=alertCfg.ttsPitch||1;
+      let full = (prefix+t).trim();
+      if(!full) full = msgText;
+      if(!full) return;
+
+      const u = new SpeechSynthesisUtterance(full);
+      u.lang = 'ru-RU';
+      u.volume = (alertCfg.ttsVolume||100)/100;
+      u.rate = alertCfg.ttsRate||1;
+      u.pitch = alertCfg.ttsPitch||1;
       
       window.speechSynthesis.speak(u);
     }
-    function testTTSVoice(){curDonation.name='Тестер';curDonation.amount='1000';playTTSVoice('Проверка голоса! Этот голос будет озвучивать донаты.',true);}
+    
+    function testTTSVoice(){
+      playTTSVoice('Проверка голоса! Этот голос будет озвучивать донаты.', 'Тестер', '1000', true);
+    }
 
     function playDonationSound(isTest=false){
-      if(isTest&&mode.value!=='admin')return;
-      if(!isTest&&mode.value!=='alert')return;
       if(isMobile.value)return;
-      if(!alertCfg.soundEnabled)return;
+      if(isTest && mode.value !== 'admin') return;
+      // ЗВУК АЛЕРТА ДОЛЖЕН ИГРАТЬ В OBS ALERT
+      if(!isTest && mode.value !== 'alert') return; 
+      if(!alertCfg.soundEnabled) return;
+      
       try{
-        if(alertCfg.soundType==='custom'&&alertCfg.customSoundData){
+        if(alertCfg.soundType==='custom' && alertCfg.customSoundData){
           const audio=new Audio(alertCfg.customSoundData);
           audio.volume=(alertCfg.soundVolume||70)/100;
           audio.play().catch(()=>{});
@@ -1387,6 +1316,7 @@ createApp({
         const ctx=new(window.AudioContext||window.webkitAudioContext)();
         const vol=(alertCfg.soundVolume||70)/100;
         const type=alertCfg.soundType||'chime';
+        
         if(type==='chime'){
           [[523.25,0],[659.25,.13],[783.99,.26],[1046.5,.39]].forEach(([freq,delay])=>{
             const osc=ctx.createOscillator();const gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);
@@ -1447,7 +1377,6 @@ createApp({
     }
     function uploadIcon(e,p){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{p.iconData=ev.target.result;};r.readAsDataURL(f);}
 
-    // Позиционирование виджетов
     function cardPos(p){return{left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'};}
     function compFor(type){return type==='goal'?'goal-widget':'challenge-widget';}
     function addPanel(type){panels.push({id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж',current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',x:80+(panels.length*30),y:60+(panels.length*30)});}
@@ -1465,10 +1394,10 @@ createApp({
     function removeTopDonor(i){topDonors.splice(i,1);if(db)db.ref('topDonors').set(JSON.parse(JSON.stringify(topDonors)));}
     function clearTopDonors(){if(confirm('Сбросить топ донатеров?')){topDonors.splice(0,topDonors.length);if(db)db.ref('topDonors').set([]);}}
 
-    // ═══ СОХРАНЕНИЕ STATE (только для PC admin!) ═══
     function buildState(){return{panels:JSON.parse(JSON.stringify(panels)),alertCfg:JSON.parse(JSON.stringify(alertCfg)),musicCfg:JSON.parse(JSON.stringify(musicCfg)),topCfg:JSON.parse(JSON.stringify(topCfg)),globalScale:globalScale.value};}
     const _doPushFirebase=debounce((state)=>{if(db){try{db.ref('config').set(state);}catch(e){}}},600);
     function pushState(){const state=buildState();saveState(state);_doPushFirebase(state);}
+    
     const _doPushQueue=debounce(()=>{if(db)db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue)));},400);
     function pushQueueState(){_doPushQueue();}
     const _pushVolume=debounce((v)=>{if(db)db.ref('musicVolume').set(v);},300);
@@ -1504,19 +1433,30 @@ createApp({
         try{db.ref('alert').set({name,amount:amt,msg,ts:Date.now(),cfg:JSON.parse(JSON.stringify(alertCfg))});}catch(e){}
         return;
       }
+      
       curDonation.name=name;
       curDonation.amount=fmtNum(cleanNum(amt));
       curDonation.msg=msg;
+      
       alertKey.value++;
       alertVis.value=true;
       clearTimeout(alertTimer);
       alertTimer=setTimeout(()=>alertVis.value=false,(alertCfg.duration||7)*1000+600);
+      
+      // Звук алерта играет сразу
       playDonationSound(isTest);
-      playTTSVoice(msg,isTest);
+      
+      // СОХРАНЯЕМ ДАННЫЕ И ВОСПРОИЗВОДИМ TTS С ЗАДЕРЖКОЙ 3.5 СЕКУНДЫ
+      const voiceMsg = msg;
+      const voiceName = name;
+      const voiceAmt = curDonation.amount;
+      setTimeout(() => {
+        playTTSVoice(voiceMsg, voiceName, voiceAmt, isTest);
+      }, 3500);
+
       if(pCanvas.value)launchParticles(pCanvas.value);
     }
 
-    // ═══ ОТПРАВКА ДОНАТА (PC ADMIN) ═══
     function doQuickDonate(){
       const name=quickName.value.trim()||'Аноним';
       const amt=cleanNum(quickAmount.value);
@@ -1533,7 +1473,6 @@ createApp({
     function doQuickTest(){const extracted=extractYT(quickMessage.value.trim()||'Тест!');triggerAlert(quickName.value.trim()||'Тест',cleanNum(quickAmount.value)||500,extracted.cleanMsg,false,true);}
     function doTrigger(){const extracted=extractYT(tMessage.value.trim());triggerAlert(tName.value.trim(),cleanNum(tAmount.value),extracted.cleanMsg,true);}
 
-    // ═══ ОТПРАВКА ДОНАТА (МОБИЛЬНЫЙ) ═══
     function doMobileDonate(){
       const name=quickName.value.trim()||'Аноним';
       const amt=cleanNum(quickAmount.value);
@@ -1556,7 +1495,6 @@ createApp({
     }
     function clearMobile(){kaspiPaste.value='';quickName.value='';quickAmount.value='';quickMessage.value='';}
 
-    // Парсинг Kaspi
     function handleKaspiPaste(){
       const txt=kaspiPaste.value;if(!txt)return;
       const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
@@ -1585,20 +1523,22 @@ createApp({
     function skipTrack(idx){musicQueue.splice(idx,1);pushQueueState();}
     function clearQueue(){musicQueue.splice(0,musicQueue.length);pushQueueState();}
 
-    // ═══ YOUTUBE PLAYER ═══
+    // ═══ YOUTUBE PLAYER (СТРОГО В АДМИНКЕ) ═══
     let currentTrackUid=null;
     let maxDurTimer=null;
 
     function checkQueuePlay(){
-      if(mode.value==='widget'||mode.value==='goal'||mode.value==='challenge'||mode.value==='top'||isMobile.value)return;
-      if(mode.value==='admin'&&!musicCfg.adminEnablePlayer){if(window.ytPlayerObj&&typeof window.ytPlayerObj.stopVideo==='function')window.ytPlayerObj.stopVideo();return;}
+      // Если мы не в админке — мы ничего не играем
+      if(mode.value !== 'admin') return;
+      if(!musicCfg.adminEnablePlayer){if(window.ytPlayerObj&&typeof window.ytPlayerObj.stopVideo==='function')window.ytPlayerObj.stopVideo();return;}
       if(!window.ytPlayerObj||!window.ytPlayerObj.loadVideoById)return;
+      
       if(musicQueue.length===0){window.ytPlayerObj.stopVideo();currentTrackUid=null;clearTimeout(maxDurTimer);return;}
       const next=musicQueue[0];
       if(currentTrackUid!==next.uid){currentTrackUid=next.uid;window.ytPlayerObj.loadVideoById(next.videoId);applyVolume();}
     }
     function shiftQueueFromPlayer(){
-      if((mode.value==='music'||mode.value==='admin'||mode.value==='alert')&&musicQueue.length>0){musicQueue.shift();pushQueueState();}
+      if(mode.value==='admin' && musicQueue.length>0){musicQueue.shift();pushQueueState();}
     }
     function setupMaxDuration(){
       clearTimeout(maxDurTimer);
@@ -1615,10 +1555,10 @@ createApp({
     function toggleAdminPlayer(){pushState();if(!musicCfg.adminEnablePlayer&&window.ytPlayerObj&&typeof window.ytPlayerObj.stopVideo==='function')window.ytPlayerObj.stopVideo();else checkQueuePlay();}
 
     window.onYouTubeIframeAPIReady=()=>{
-      if(mode.value==='widget'||mode.value==='goal'||mode.value==='challenge'||mode.value==='top')return;
-      if(isMobile.value)return;
-      const cId=(mode.value==='music')?'yt-music-widget':(mode.value==='alert')?'yt-alert-player':'yt-player';
-      window.ytPlayerObj=new YT.Player(cId,{height:'100%',width:'100%',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3},events:{
+      // ИНИЦИАЛИЗАЦИЯ ПЛЕЕРА ТОЛЬКО ДЛЯ АДМИНКИ (mode=admin)
+      if(mode.value !== 'admin') return; 
+      
+      window.ytPlayerObj=new YT.Player('yt-player',{height:'100%',width:'100%',host:'https://www.youtube-nocookie.com',playerVars:{autoplay:1,controls:0,rel:0,modestbranding:1,iv_load_policy:3},events:{
         'onReady':()=>{applyVolume();checkQueuePlay();},
         'onStateChange':(e)=>{
           if(e.data===YT.PlayerState.PLAYING)setupMaxDuration();
@@ -1631,7 +1571,8 @@ createApp({
     // ═══ onMounted ═══
     onMounted(()=>{
       loadTTSVoices();
-      if(mode.value==='admin'||mode.value==='music'||mode.value==='alert'){
+      // Грузим скрипт ютуба только для админки (остальным он не нужен для воспроизведения)
+      if(mode.value==='admin'){
         let tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';
         let fst=document.getElementsByTagName('script')[0];fst.parentNode.insertBefore(tag,fst);
       }
@@ -1657,7 +1598,7 @@ createApp({
         });
       }
 
-      // Слушаем CONFIG — ТЕПЕРЬ ДЛЯ ВСЕХ РЕЖИМОВ (включая top)
+      // Слушаем CONFIG
       db.ref('config').on('value',s=>{
         const d=s.val();if(!d)return;
         if(d.panels&&mode.value!=='alert'){d.panels.forEach((nP,i)=>{if(!panels[i])panels.push(nP);else Object.keys(nP).forEach(k=>{panels[i][k]=nP[k];});});if(panels.length>d.panels.length)panels.splice(d.panels.length);}
@@ -1666,12 +1607,13 @@ createApp({
         if(d.topCfg)Object.keys(d.topCfg).forEach(k=>topCfg[k]=d.topCfg[k]);
         if(d.alertCfg&&mode.value!=='admin')Object.keys(d.alertCfg).forEach(k=>alertCfg[k]=d.alertCfg[k]);
       });
-
+      
       // Слушаем топ донатов
       db.ref('topDonors').on('value',snap=>{
         const arr=snap.val()||[];
         topDonors.splice(0,topDonors.length,...arr);
       });
+      
       // Слушаем музыку и громкость
       db.ref('musicQueue').on('value',snap=>{
         const q=snap.val()||[];musicQueue.splice(0,musicQueue.length,...q);checkQueuePlay();
