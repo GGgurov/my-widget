@@ -535,6 +535,139 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 .desktop-only{display:block;}
 @media(max-width:900px){.desktop-only{display:none!important;}}
+   /* ══════════════════════════════════════════════════════
+   СТИЛИ ТОП ДОНАТЕРОВ (NEON CYBER STYLE)
+══════════════════════════════════════════════════════ */
+.top-donors-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 450px; /* Можешь подогнать под свой размер */
+  font-family: 'Orbitron', 'Unbounded', sans-serif;
+}
+
+/* Заголовок "ТОП ДОНАТЕРОВ" */
+.top-donors-title {
+  background: rgba(10, 15, 20, 0.85);
+  color: #00f0ff;
+  text-transform: uppercase;
+  font-weight: 900;
+  text-align: center;
+  padding: 10px;
+  border-top: 2px solid #00f0ff;
+  border-bottom: 2px solid #00f0ff;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+  clip-path: polygon(5% 0, 95% 0, 100% 50%, 95% 100%, 5% 100%, 0 50%);
+  margin-bottom: 10px;
+}
+
+/* Карточка каждого донатера */
+.top-donor-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 15, 20, 0.9);
+  padding: 15px 20px;
+  color: #fff;
+  clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+  border-bottom: 3px solid #b026ff;
+  box-shadow: 0px 10px 20px rgba(176, 38, 255, 0.15);
+  transition: transform 0.2s ease;
+}
+
+/* Голубая неоновая полоса слева */
+.top-donor-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background: #00f0ff;
+  box-shadow: 0 0 10px #00f0ff;
+}
+
+.top-donor-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.top-donor-rank {
+  color: #00f0ff;
+  font-weight: 900;
+  font-size: 1.3rem;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+.top-donor-name {
+  font-family: 'Exo 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.top-donor-amount {
+  color: #ff00ea;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-shadow: 0 0 10px rgba(255, 0, 234, 0.5);
+  background: rgba(255, 0, 234, 0.1);
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+/* ══════════════════════════════════════════════════════
+   ЛОГИКА УДАЛЕНИЯ (ФИКС ДЛЯ МОБИЛОК)
+══════════════════════════════════════════════════════ */
+.top-donor-delete-btn {
+  background: #ff003c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  opacity: 0; /* Скрыто на ПК по умолчанию */
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+
+.top-donors-clear-btn {
+  background: rgba(255, 0, 60, 0.2);
+  color: #ff003c;
+  border: 1px solid #ff003c;
+  padding: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  margin-top: 10px;
+  transition: all 0.3s;
+}
+
+.top-donors-clear-btn:hover {
+  background: #ff003c;
+  color: #fff;
+}
+
+/* На ПК кнопка удаления появляется при наведении */
+.top-donor-item:hover .top-donor-delete-btn {
+  opacity: 1;
+}
+
+/* ФИКС ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ: Делаем кнопки всегда видимыми и удобными для пальца */
+@media (max-width: 768px) {
+  .top-donor-delete-btn {
+    opacity: 1 !important;
+    width: 40px;
+    height: 40px; /* Увеличиваем зону клика */
+    font-size: 1.2rem;
+  }
+}
 </style>
 
 <!-- ══════════════════════ ШАБЛОНЫ ВИДЖЕТОВ ══════════════════════ -->
@@ -618,23 +751,24 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
   </div>
 
   <!-- ════ OBS TOP DONORS MODE ════ -->
-  <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+topCfg.theme" :style="topSceneStyle">
-    <div class="top-widget">
-      <div v-if="topCfg.showTitle" class="top-title-row">
-        <span class="top-title" :style="topTitleStyle">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span>
-      </div>
-      <transition-group name="top-move" tag="div" style="display:flex;flex-direction:column;gap:var(--top-gap,6px)">
-        <div v-for="(donor,idx) in topDonors.slice(0,topCfg.maxRows||10)" :key="donor.uid"
-          class="top-entry"
-          :class="['rank-'+(idx+1), {newTop1: donor._new}]"
-          :style="topEntryStyle(idx)">
-          <span class="top-rank-badge">{{topCfg.rankEmoji ? rankEmoji(idx) : '#'+(idx+1)}}</span>
-          <span class="top-name" :style="topNameStyle(idx)">{{donor.name}}</span>
-          <span class="top-amount" :style="topAmountStyle(idx)">{{fmtNum(donor.amount)}} ₸</span>
-        </div>
-      </transition-group>
+  <div class="top-donors-container" v-if="topDonors && topDonors.length > 0">
+  <div class="top-donors-title">Топ Донатеров</div>
+
+  <div class="top-donor-item" v-for="(donor, index) in topDonors" :key="index">
+    <div class="top-donor-info">
+      <span class="top-donor-rank">{{ index + 1 }}</span>
+      <span class="top-donor-name">{{ donor.name }}</span>
     </div>
+
+    <div class="top-donor-amount">
+      {{ donor.amount }} KZT
+    </div>
+
+    <button class="top-donor-delete-btn" @click.stop="removeTopDonor(index)">✕</button>
   </div>
+
+  <button class="top-donors-clear-btn" @click.stop="clearTopDonors()">Очистить весь ТОП</button>
+</div>
 
   <!-- ════ MOBILE MODE ════ -->
   <div v-if="isMobile" class="mobile-kaspi-view">
