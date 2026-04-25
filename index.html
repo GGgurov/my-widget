@@ -474,7 +474,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 @media(max-width:900px){.desktop-only{display:none!important;}}
 </style>
 
-<!-- ══════════════════════ ШАБЛОНЫ ВИДЖЕТОВ ══════════════════════ -->
 <script type="text/x-template" id="tpl-goal">
 <div class="glass" :style="glassStyle">
   <div class="goal-wrap" :style="{padding:(p.padding||20)+'px'}">
@@ -516,7 +515,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 <body>
 <div id="app">
 
-  <!-- ════ OBS ALERT MODE ════ -->
   <div v-if="mode==='alert'" class="alert-scene" :class="alertCfg.animStyle ? 'alert-anim-'+alertCfg.animStyle+(alertVis?'':'-leave') : ''">
     <canvas class="particle-canvas" ref="pCanvas"></canvas>
     <transition :name="'alert-transition-'+alertCfg.animStyle" @enter="onAlertEnter" @leave="onAlertLeave">
@@ -533,35 +531,30 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </transition>
   </div>
 
-  <!-- ════ OBS MUSIC MODE ════ -->
   <div v-if="mode==='music'" class="music-scene">
     <div v-if="musicQueue.length===0" class="idle-music-text" :class="'music-anim-'+(musicCfg.animStyle||'shimmer')" :style="idleTextStyle">{{musicCfg.idleText||'Заказ музыки 250 тенге'}}</div>
     <div v-if="musicQueue.length>0" class="idle-music-text" :class="'music-anim-'+(musicCfg.animStyle||'shimmer')" :style="{...idleTextStyle,'--idle-c1':musicCfg.nowPlayingColor||'#00c2ff'}">🎵 {{musicCfg.nowPlayingText||'СЕЙЧАС ИГРАЕТ'}}</div>
     <div id="yt-music-widget" style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;"></div>
   </div>
 
-  <!-- ════ OBS WIDGET MODE (goal+challenge) ════ -->
   <div v-if="mode==='widget'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
     <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
-  <!-- ════ OBS GOAL ONLY MODE ════ -->
   <div v-if="mode==='goal'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
     <div v-for="p in panels.filter(x=>x.type==='goal')" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
-  <!-- ════ OBS CHALLENGE ONLY MODE ════ -->
   <div v-if="mode==='challenge'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
     <div v-for="p in panels.filter(x=>x.type==='challenge')" :key="p.id" class="static-panel" :style="cardPos(p)">
       <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
     </div>
   </div>
 
-  <!-- ════ OBS TOP DONORS MODE ════ -->
   <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+topCfg.theme" :style="topSceneStyle">
     <div class="top-widget">
       <div v-if="topCfg.showTitle" class="top-title-row">
@@ -580,7 +573,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </div>
   </div>
 
-  <!-- ════ MOBILE MODE ════ -->
   <div v-if="isMobile" class="mobile-kaspi-view">
     <div class="mob-topbar">
       <div class="mob-logo">SUPREME <span>WIDGET</span></div>
@@ -627,7 +619,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     </div>
   </div>
 
-  <!-- ════ DESKTOP ADMIN MODE ════ -->
   <template v-if="!isMobile && mode==='admin'">
     <div class="admin-shell">
       <div class="sidebar">
@@ -650,7 +641,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="sidebar-body">
 
-          <!-- ═══ ВКЛАДКА ДОНАТ ═══ -->
           <template v-if="tab==='donate'">
             <div class="donate-form-card">
               <div class="donate-form-title"><div class="dft-icon">💸</div>ОТПРАВИТЬ ДОНАТ</div>
@@ -671,7 +661,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ ВКЛАДКА ВИДЖЕТЫ ═══ -->
           <template v-if="tab==='widgets'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">Запустить Alert вручную</div></div></div>
             <div class="sec-body">
@@ -724,7 +713,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ ВКЛАДКА АЛЕРТ ═══ -->
           <template v-if="tab==='alert'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🔔 Запустить Alert вручную</div></div></div>
             <div class="sec-body">
@@ -845,7 +833,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ ВКЛАДКА ТОП ═══ -->
           <template v-if="tab==='top'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">🏆 Список топ донатеров</div></div></div>
             <div class="sec-body">
@@ -892,7 +879,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
           </template>
 
-          <!-- ═══ ВКЛАДКА МУЗЫКА ═══ -->
           <template v-if="tab==='music'">
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">▶ Плеер в Admin</div></div></div>
             <div class="sec-body">
@@ -1534,17 +1520,15 @@ createApp({
         });
       }
 
-      // Слушаем CONFIG — для всех кроме alert и мобилки
-      if(mode.value!=='alert'&&mode.value!=='top'){
-        db.ref('config').on('value',s=>{
-          const d=s.val();if(!d)return;
-          if(d.panels){d.panels.forEach((nP,i)=>{if(!panels[i])panels.push(nP);else Object.keys(nP).forEach(k=>{panels[i][k]=nP[k];});});if(panels.length>d.panels.length)panels.splice(d.panels.length);}
-          if(d.globalScale)globalScale.value=d.globalScale;
-          if(d.musicCfg)Object.keys(d.musicCfg).forEach(k=>musicCfg[k]=d.musicCfg[k]);
-          if(d.topCfg)Object.keys(d.topCfg).forEach(k=>topCfg[k]=d.topCfg[k]);
-          if(d.alertCfg&&mode.value!=='admin')Object.keys(d.alertCfg).forEach(k=>alertCfg[k]=d.alertCfg[k]);
-        });
-      }
+      // Слушаем CONFIG — ДЛЯ ВСЕХ РЕЖИМОВ (включая OBS виджеты)
+      db.ref('config').on('value',s=>{
+        const d=s.val();if(!d)return;
+        if(d.panels){d.panels.forEach((nP,i)=>{if(!panels[i])panels.push(nP);else Object.keys(nP).forEach(k=>{panels[i][k]=nP[k];});});if(panels.length>d.panels.length)panels.splice(d.panels.length);}
+        if(d.globalScale)globalScale.value=d.globalScale;
+        if(d.musicCfg)Object.keys(d.musicCfg).forEach(k=>musicCfg[k]=d.musicCfg[k]);
+        if(d.topCfg)Object.keys(d.topCfg).forEach(k=>topCfg[k]=d.topCfg[k]);
+        if(d.alertCfg)Object.keys(d.alertCfg).forEach(k=>alertCfg[k]=d.alertCfg[k]);
+      });
 
       // Слушаем топ донатов (для OBS top страницы)
       db.ref('topDonors').on('value',snap=>{
