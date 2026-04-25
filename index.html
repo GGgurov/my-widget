@@ -3,304 +3,392 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>SUPREME STREAM WIDGET</title>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<title>SUPREME STREAM CORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Exo+2:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-/* ════ Базовые стили и переменные ════ */
+/* =========================================
+   БАЗОВЫЕ СТИЛИ И ПЕРЕМЕННЫЕ
+   ========================================= */
 :root {
-  --brand-purple: #8A2BE2;
-  --brand-purple-glow: rgba(138, 43, 226, 0.6);
-  --bg-dark: #121218;
-  --text-main: #ffffff;
+  --neon-blue: #00f3ff;
+  --neon-pink: #ff00ea;
+  --neon-gold: #ffd700;
+  --bg-dark: #0f0f13;
+  --panel-bg: #1a1a24;
 }
 
-body {
-  font-family: 'Unbounded', sans-serif;
-  margin: 0; padding: 0;
-  background: transparent; color: var(--text-main);
-  overflow: hidden;
+body, html {
+  margin: 0; padding: 0; width: 100%; height: 100%;
+  background: transparent; /* Для OBS */
+  font-family: 'Exo 2', sans-serif;
+  color: #fff; overflow: hidden;
 }
 
-/* ════ ПАНЕЛЬ УПРАВЛЕНИЯ ════ */
-.panel-mode {
+/* Фон панели управления (не OBS) */
+body.is-control {
   background: var(--bg-dark);
-  height: 100vh; overflow-y: auto; padding: 20px;
-  box-sizing: border-box;
+  overflow-y: auto;
 }
-.header-title { color: var(--brand-purple); font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
-.card {
-  background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px;
-  border: 1px solid rgba(138, 43, 226, 0.2); margin-bottom: 20px;
-}
-.input-group { margin-bottom: 15px; }
-label { display: block; font-size: 12px; color: #aaa; margin-bottom: 5px; }
-input, select, textarea {
-  width: 100%; padding: 12px; border-radius: 8px; border: none;
-  background: rgba(0,0,0,0.3); color: #fff; font-family: 'Unbounded', sans-serif;
-  box-sizing: border-box; outline: 2px solid transparent; transition: 0.3s;
-}
-input:focus, textarea:focus { outline: 2px solid var(--brand-purple); }
-.btn {
-  background: var(--brand-purple); color: #fff; border: none; padding: 12px 20px;
-  border-radius: 8px; font-family: 'Unbounded', sans-serif; font-weight: 700;
-  cursor: pointer; text-transform: uppercase; transition: 0.3s;
-  box-shadow: 0 4px 15px var(--brand-purple-glow); width: 100%;
-}
-.btn:hover { filter: brightness(1.2); transform: translateY(-2px); }
-.btn.danger { background: #e74c3c; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4); }
 
-/* Быстрый ввод с телефона (Kaspi) */
-.smart-paste { background: rgba(138, 43, 226, 0.1); border: 2px dashed var(--brand-purple); }
-
-/* ════ АЛЕРТЫ ════ */
+/* =========================================
+   WIDGET: АЛЕРТЫ (ДОНАТЫ)
+   ========================================= */
 .alert-container {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-  text-align: center; z-index: 999;
+  position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+  text-align: center; z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
+
 .alert-box {
-  background: linear-gradient(135deg, rgba(20,20,25,0.95), rgba(138, 43, 226, 0.2));
-  padding: 30px 50px; border-radius: 20px;
-  border: 2px solid var(--brand-purple);
-  box-shadow: 0 0 40px var(--brand-purple-glow);
-  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.alert-name { font-size: 32px; font-weight: 900; color: var(--brand-purple); text-shadow: 0 0 10px var(--brand-purple); }
-.alert-amount { font-size: 48px; font-weight: 900; margin: 10px 0; color: #fff; }
-.alert-msg { font-size: 24px; font-weight: 400; font-style: italic; color: #ddd; }
-
-@keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-
-/* ════ ТОП ДОНАТОВ (ШАБЛОНЫ) ════ */
-.top-widget { position: absolute; padding: 20px; width: 350px; }
-.top-item { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
-
-/* Анимация переливашки */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  background: rgba(20, 20, 30, 0.7);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 30px 50px;
+  box-shadow: 0 0 40px rgba(0, 243, 255, 0.3), inset 0 0 20px rgba(255, 0, 234, 0.2);
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* 1. Universal (Чистый, строгий) */
+.alert-title {
+  font-family: 'Unbounded', sans-serif; font-size: 32px; font-weight: 900;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 10px; text-transform: uppercase;
+}
+.alert-amount {
+  font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900;
+  color: var(--neon-gold); text-shadow: 0 0 20px rgba(255,215,0,0.5);
+  margin-bottom: 15px;
+}
+.alert-message { font-size: 24px; max-width: 600px; line-height: 1.4; }
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* =========================================
+   WIDGET: ТОП ДОНАТЕРОВ (ТЕМЫ)
+   ========================================= */
+.top-donors-widget {
+  position: absolute; top: 20px; right: 20px; width: 320px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+
+/* ТЕМА 1: UNIVERSAL (Clean Glassmorphism) */
 .theme-universal .top-item {
-  background: rgba(20, 20, 20, 0.85); padding: 15px; border-radius: 8px;
-  border-left: 4px solid var(--brand-purple);
+  background: rgba(15, 15, 20, 0.5);
+  backdrop-filter: blur(12px); border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.05);
+  padding: 12px 18px; display: flex; justify-content: space-between;
+  font-family: 'Exo 2'; font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
-.theme-universal .t-name { font-weight: 700; color: #fff; }
-.theme-universal .t-amount { color: var(--brand-purple); font-weight: 900; }
 
-/* 2. HUD Pro (Киберспорт, техно) */
+/* ТЕМА 2: HUD PRO (Cyberpunk Neon) */
 .theme-hudpro .top-item {
-  background: linear-gradient(90deg, rgba(138,43,226,0.3) 0%, rgba(0,0,0,0.7) 100%);
-  padding: 12px 20px; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  border-bottom: 2px solid var(--brand-purple); text-transform: uppercase;
+  background: linear-gradient(90deg, rgba(0, 243, 255, 0.1) 0%, transparent 100%);
+  border-left: 4px solid var(--neon-blue);
+  padding: 10px 15px; display: flex; justify-content: space-between;
+  font-family: 'Orbitron'; text-transform: uppercase; letter-spacing: 1px;
+  position: relative; overflow: hidden;
 }
-.theme-hudpro .t-name { font-weight: 900; letter-spacing: 1px; }
+.theme-hudpro .top-item::after {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: hudScan 3s linear infinite;
+}
+@keyframes hudScan { 100% { left: 200%; } }
 
-/* 3. HPP (Liquid Glass Skeuomorphism) */
+/* ТЕМА 3: HPP PREMIUM (Переливашки, Liquid-Glass) */
 .theme-hpp .top-item {
-  background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px);
-  padding: 16px 20px; border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 0 20px rgba(138, 43, 226, 0.1), 0 8px 32px rgba(0, 0, 0, 0.5);
+  position: relative;
+  background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(20px);
+  border-radius: 15px; padding: 15px 20px;
+  display: flex; justify-content: space-between; font-family: 'Unbounded'; font-weight: 700;
+  background-clip: padding-box; border: 2px solid transparent;
 }
 .theme-hpp .top-item::before {
-  content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.2), transparent);
-  background-size: 200% 100%; animation: shimmer 3s infinite linear; z-index: 1; pointer-events: none;
+  content: ""; position: absolute; inset: -2px; border-radius: 17px; z-index: -1;
+  background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+  background-size: 400%; animation: animateGlow 15s linear infinite;
 }
-.theme-hpp .t-name, .theme-hpp .t-amount { position: relative; z-index: 2; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-.theme-hpp .t-amount { color: #d4b5ff; font-weight: 900; }
+.theme-hpp .item-amount { color: var(--neon-gold); text-shadow: 0 0 10px rgba(255,215,0,0.8); }
 
-/* Утилиты */
-.fade-enter-active, .fade-leave-active { transition: opacity 0.5s; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
+@keyframes animateGlow { 0% { background-position: 0 0; } 100% { background-position: 400% 0; } }
+
+/* =========================================
+   CONTROL PANEL (Панель управления)
+   ========================================= */
+.control-panel { max-width: 600px; margin: 0 auto; padding: 20px; }
+.card {
+  background: var(--panel-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px;
+  border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.card h2 { font-family: 'Unbounded'; margin-top: 0; font-size: 20px; color: var(--neon-blue); }
+textarea, input, select {
+  width: 100%; box-sizing: border-box; background: #0a0a0f; border: 1px solid #333;
+  color: #fff; padding: 15px; border-radius: 10px; font-family: 'Exo 2'; font-size: 16px;
+  margin-bottom: 15px; resize: vertical;
+}
+textarea:focus, input:focus { outline: none; border-color: var(--neon-pink); }
+button {
+  width: 100%; background: linear-gradient(90deg, var(--neon-blue), #0088ff);
+  border: none; color: #fff; padding: 15px; border-radius: 10px; font-family: 'Unbounded';
+  font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,243,255,0.4); }
+button.btn-danger { background: linear-gradient(90deg, #ff0055, #a80038); }
+button.btn-danger:hover { box-shadow: 0 5px 15px rgba(255,0,85,0.4); }
+
+.donor-list-admin { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333;}
+.donor-list-admin span { cursor: pointer; color: #ff0055; font-weight: bold; }
 </style>
 </head>
 <body>
+
 <div id="app">
-  <div v-if="mode === 'panel'" class="panel-mode">
-    <h1 class="header-title">Stream Control Panel</h1>
+  <div v-if="mode === 'widget'" class="widget-view">
+    <div v-if="currentAlert" class="alert-container">
+      <div class="alert-box">
+        <div class="alert-title">{{ currentAlert.name }}</div>
+        <div class="alert-amount">{{ currentAlert.amount }} {{ currentAlert.currency || '₸' }}</div>
+        <div class="alert-message">{{ currentAlert.message }}</div>
+      </div>
+    </div>
+
+    <div :class="['top-donors-widget', 'theme-' + activeTheme]">
+      <div v-for="(donor, index) in topDonors" :key="index" class="top-item">
+        <div class="item-name">{{ index + 1 }}. {{ donor.name }}</div>
+        <div class="item-amount">{{ donor.amount }} ₸</div>
+      </div>
+    </div>
+    
+    <audio id="alertSoundPlayer" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="ttsPlayer"></audio>
+  </div>
+
+  <div v-else class="control-panel">
     
     <div class="card">
-      <label>📱 УМНАЯ ВСТАВКА (Вставь чек с телефона — сработает само)</label>
-      <textarea class="smart-paste" v-model="smartText" @input="handleSmartPaste" rows="4" placeholder="Вставь сюда текст перевода (например: Перевод от Влад Г. 5000 ₸ Сообщение: Привет стример)"></textarea>
+      <h2>🚀 МОБИЛЬНЫЙ ПУЛЬТ (ВСТАВКА ИЗ БАНКА)</h2>
+      <p style="font-size: 12px; color: #888;">Скопируй чек/СМС из Каспи и вставь сюда. Оно само распознает имя и сумму.</p>
+      <textarea v-model="kaspiText" placeholder="Вставь текст из Kaspi/Банка сюда..." rows="5" @input="processKaspiPaste"></textarea>
+      <div style="display: flex; gap: 10px;">
+        <input v-model="parsedName" placeholder="Имя">
+        <input v-model="parsedAmount" placeholder="Сумма" type="number">
+      </div>
+      <input v-model="parsedMessage" placeholder="Сообщение доната (если есть)">
+      <button @click="sendAlert">🔥 ОТПРАВИТЬ АЛЕРТ НА СТРИМ</button>
     </div>
 
     <div class="card">
-      <label>Визуал Топа</label>
-      <select v-model="settings.topTheme" @change="saveSettings">
-        <option value="universal">Universal (Строгий)</option>
-        <option value="hudpro">HUD Pro (Киберспорт)</option>
-        <option value="hpp">HPP (Liquid Glass)</option>
+      <h2>⚙️ НАСТРОЙКИ ТОПА</h2>
+      <select v-model="activeTheme" @change="saveTheme">
+        <option value="universal">Universal (Glassmorphism)</option>
+        <option value="hudpro">HUD Pro (Cyberpunk)</option>
+        <option value="hpp">HPP Premium (Переливашки)</option>
       </select>
-      <br><br>
-      <label>Громкость оповещений (OBS)</label>
-      <input type="range" min="0" max="1" step="0.05" v-model="settings.volume" @change="saveSettings">
-    </div>
-
-    <div class="card">
-      <label>Ссылки для OBS (Скопируй и вставь в источник браузера)</label>
-      <input type="text" :value="obsAlertLink" readonly @click="$event.target.select()">
-      <br><br>
-      <input type="text" :value="obsTopLink" readonly @click="$event.target.select()">
-    </div>
-
-    <div class="card">
-      <button class="btn danger" @click="clearTop">Очистить Топ Донатеров</button>
-    </div>
-  </div>
-
-  <div v-if="mode === 'alert'" class="alert-container">
-    <transition name="fade">
-      <div v-if="currentAlert" class="alert-box">
-        <div class="alert-name">{{ currentAlert.name }}</div>
-        <div class="alert-amount">{{ currentAlert.amount }} ₸</div>
-        <div class="alert-msg">{{ currentAlert.msg }}</div>
+      <button class="btn-danger" @click="clearTop">ОЧИСТИТЬ ТОП ДОНАТЕРОВ</button>
+      
+      <div style="margin-top: 15px; max-height: 200px; overflow-y: auto;">
+        <div v-for="(donor, key) in topDonorsDict" :key="key" class="donor-list-admin">
+          <b>{{ donor.name }}</b> - {{ donor.amount }} ₸ 
+          <span @click="removeDonor(key)">[X]</span>
+        </div>
       </div>
-    </transition>
-  </div>
+    </div>
 
-  <div v-if="mode === 'top'" class="top-widget" :class="'theme-' + settings.topTheme">
-    <transition-group name="fade">
-      <div v-for="(donor, index) in sortedTop" :key="donor.name" class="top-item">
-        <div class="t-name">#{{ index + 1 }} {{ donor.name }}</div>
-        <div class="t-amount">{{ donor.amount }} ₸</div>
-      </div>
-    </transition-group>
   </div>
 </div>
 
 <script>
-// ВСТАВЬ СЮДА СВОИ ДАННЫЕ FIREBASE
+// ==========================================
+// 1. ВСТАВЬ СВОИ ДАННЫЕ FIREBASE СЮДА
+// ==========================================
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-  projectId: "YOUR_PROJECT",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "ТВОЙ_API_KEY",
+  authDomain: "ТВОЙ_ПРОЕКТ.firebaseapp.com",
+  databaseURL: "https://ТВОЙ_ПРОЕКТ-default-rtdb.firebaseio.com",
+  projectId: "ТВОЙ_ПРОЕКТ",
+  storageBucket: "ТВОЙ_ПРОЕКТ.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "ТВОЙ_APP_ID"
 };
 
-if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+// Инициализация
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 const app = Vue.createApp({
   data() {
-    const urlParams = new URLSearchParams(window.location.search);
     return {
-      mode: urlParams.get('mode') || 'panel',
-      smartText: '',
-      settings: { topTheme: 'hpp', volume: 0.5 },
+      // Определение режима (виджет для OBS или контроль)
+      mode: new URLSearchParams(window.location.search).get('mode') || 'control',
+      
+      // Стейт виджета
       currentAlert: null,
       alertQueue: [],
       isAlertPlaying: false,
-      topDonors: {},
-      baseUrl: window.location.href.split('?')[0]
-    }
+      topDonors: [],
+      topDonorsDict: {},
+      activeTheme: 'hpp', // По умолчанию переливашки
+
+      // Стейт контроля
+      kaspiText: '',
+      parsedName: '',
+      parsedAmount: '',
+      parsedMessage: ''
+    };
   },
-  computed: {
-    obsAlertLink() { return `${this.baseUrl}?mode=alert`; },
-    obsTopLink() { return `${this.baseUrl}?mode=top`; },
-    sortedTop() {
-      return Object.values(this.topDonors)
+  mounted() {
+    if (this.mode === 'control') {
+      document.body.classList.add('is-control');
+    }
+
+    // Слушаем настройки темы
+    db.ref('settings/theme').on('value', snap => {
+      if(snap.val()) this.activeTheme = snap.val();
+    });
+
+    // Слушаем топ донатеров
+    db.ref('topDonors').on('value', snap => {
+      const data = snap.val() || {};
+      this.topDonorsDict = data;
+      // Сортировка по сумме и лимит топ-5
+      this.topDonors = Object.values(data)
         .sort((a, b) => b.amount - a.amount)
-        .slice(0, 5); // Топ 5
+        .slice(0, 5);
+    });
+
+    // WIDGET ONLY: Слушаем очередь алертов и воспроизводим аудио!
+    if (this.mode === 'widget') {
+      db.ref('alertsQueue').on('child_added', snap => {
+        const alert = snap.val();
+        alert.id = snap.key;
+        this.alertQueue.push(alert);
+        this.processQueue();
+        db.ref('alertsQueue').child(snap.key).remove(); // Удаляем из БД, забрали в локальную очередь
+      });
     }
   },
   methods: {
-    saveSettings() { db.ref('settings').set(this.settings); },
-    
-    // ПАРСЕР ДЛЯ ТЕЛЕФОНА: Сам понимает текст, отправляет донат и чистит поле
-    handleSmartPaste() {
-      if(!this.smartText) return;
-      setTimeout(() => {
-        const text = this.smartText;
-        let name = "Аноним", amount = 0, msg = "";
-        
-        // Регулярки для вытягивания данных (настрой под формат чеков, если нужно)
-        const amountMatch = text.match(/(\d+[\s\d]*)(?:₸|KZT|тг|тенге)/i);
-        if (amountMatch) amount = parseInt(amountMatch[1].replace(/\s/g, ''));
-        
-        const nameMatch = text.match(/от\s+([А-Яа-яA-Za-z\s]+)(?:\d|Сумма|Сообщение|$)/i);
-        if (nameMatch) name = nameMatch[1].trim();
+    /* =============================
+       ЛОГИКА ПАНЕЛИ УПРАВЛЕНИЯ
+       ============================= */
+    processKaspiPaste() {
+      // Умный парсер. Ищет паттерны Каспи/СМС
+      const txt = this.kaspiText;
+      if (!txt) return;
 
-        const msgMatch = text.match(/Сообщение[:\s]*(.*)/i);
-        if (msgMatch) msg = msgMatch[1].trim();
+      // Вытаскиваем сумму (все цифры перед знаком ₸ или тг)
+      const amtMatch = txt.match(/([\d\s]+)\s*(₸|тг|KZT)/i) || txt.match(/Сумма:\s*([\d\s]+)/i);
+      if (amtMatch) this.parsedAmount = amtMatch[1].replace(/\s/g, '');
 
-        if (amount > 0) {
-          this.triggerDonation(name, amount, msg);
-        }
-        this.smartText = ''; // Сразу очищаем поле
-      }, 100);
+      // Вытаскиваем имя
+      const nameMatch = txt.match(/от\s*([A-Za-zА-Яа-я\s]+)\.?\n/i) || txt.match(/Пополнение от\s*(.*)/i);
+      if (nameMatch) this.parsedName = nameMatch[1].trim();
+      else this.parsedName = "Аноним";
+
+      // Вытаскиваем сообщение
+      const msgMatch = txt.match(/Сообщение:\s*(.*)/i);
+      if (msgMatch) this.parsedMessage = msgMatch[1].trim();
+      else this.parsedMessage = "";
     },
 
-    triggerDonation(name, amount, msg) {
-      // 1. Отправляем алерт
-      db.ref('alerts').push({ name, amount, msg, timestamp: Date.now() });
-      
-      // 2. Обновляем топ
-      db.ref(`top/${name}`).once('value', snap => {
-        const current = snap.val() ? snap.val().amount : 0;
-        db.ref(`top/${name}`).set({ name, amount: current + amount });
+    sendAlert() {
+      if (!this.parsedAmount) return alert("Введите сумму!");
+      const alertData = {
+        name: this.parsedName || 'Аноним',
+        amount: Number(this.parsedAmount),
+        message: this.parsedMessage,
+        timestamp: Date.now()
+      };
+
+      // 1. Отправляем в очередь алертов
+      db.ref('alertsQueue').push(alertData);
+
+      // 2. Добавляем в топ (или обновляем, суммируя)
+      db.ref('topDonors').once('value', snap => {
+        const donors = snap.val() || {};
+        let foundKey = null;
+        for (const [key, val] of Object.entries(donors)) {
+          if (val.name.toLowerCase() === alertData.name.toLowerCase()) foundKey = key;
+        }
+
+        if (foundKey) {
+          db.ref(`topDonors/${foundKey}`).update({ amount: Number(donors[foundKey].amount) + alertData.amount });
+        } else {
+          db.ref('topDonors').push({ name: alertData.name, amount: alertData.amount });
+        }
       });
+
+      // Очистка полей
+      this.kaspiText = ''; this.parsedName = ''; this.parsedAmount = ''; this.parsedMessage = '';
     },
 
     clearTop() {
-      if(confirm('Точно очистить топ?')) db.ref('top').remove();
+      if(confirm('Точно снести весь ТОП?')) db.ref('topDonors').remove();
+    },
+    removeDonor(key) {
+      db.ref(`topDonors/${key}`).remove();
+    },
+    saveTheme() {
+      db.ref('settings/theme').set(this.activeTheme);
     },
 
-    // ════ ЛОГИКА АЛЕРТОВ И ОЗВУЧКИ (Идет напрямую в OBS) ════
-    processQueue() {
+    /* =============================
+       ЛОГИКА ВИДЖЕТА (OBS)
+       ============================= */
+    async processQueue() {
       if (this.isAlertPlaying || this.alertQueue.length === 0) return;
       this.isAlertPlaying = true;
       this.currentAlert = this.alertQueue.shift();
 
-      // Озвучка TTS (Попадает в OBS)
-      const ttsText = `${this.currentAlert.name} задонатил ${this.currentAlert.amount} тенге. ${this.currentAlert.msg}`;
-      const utterance = new SpeechSynthesisUtterance(ttsText);
-      utterance.volume = this.settings.volume;
-      utterance.lang = 'ru-RU';
+      // 1. Играем звук уведомления (эффект)
+      const alertSound = document.getElementById('alertSoundPlayer');
+      alertSound.volume = 0.5; // Громкость системного звука
       
-      // Звук уведомления (опционально, если есть файл)
-      // const alertSound = new Audio('notify.mp3');
-      // alertSound.volume = this.settings.volume;
-      // alertSound.play();
+      try { await alertSound.play(); } catch(e){}
 
-      window.speechSynthesis.speak(utterance);
+      // Ждем 1 секунду чтобы звук отыграл начало
+      await new Promise(r => setTimeout(r, 1000));
 
-      // Ждем конца озвучки + пару секунд, чтобы убрать алерт
-      utterance.onend = () => {
+      // 2. Генерируем и играем TTS Озвучку через Google Translate API
+      // Звук пойдет прямо в OBS микшер!
+      const ttsText = `${this.currentAlert.name} донатит ${this.currentAlert.amount} тенге. ${this.currentAlert.message}`;
+      const ttsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ru&client=tw-ob&q=${encodeURIComponent(ttsText)}`;
+      
+      const ttsPlayer = document.getElementById('ttsPlayer');
+      ttsPlayer.src = ttsUrl;
+      
+      ttsPlayer.onended = () => {
+        // Заканчиваем показ после озвучки + пара секунд чтения
         setTimeout(() => {
           this.currentAlert = null;
           this.isAlertPlaying = false;
-          setTimeout(() => this.processQueue(), 1000); // Пауза перед следующим
+          this.processQueue(); // Запускаем следующий донат в очереди
         }, 3000);
       };
-    }
-  },
-  mounted() {
-    // Синхронизация настроек
-    db.ref('settings').on('value', snap => { if(snap.val()) this.settings = snap.val(); });
-    
-    if (this.mode === 'alert') {
-      // Слушаем новые донаты
-      db.ref('alerts').on('child_added', snap => {
-        const data = snap.val();
-        // Фильтр от старых уведомлений при загрузке
-        if (Date.now() - data.timestamp < 10000) {
-          this.alertQueue.push(data);
-          this.processQueue();
-        }
-      });
-    }
 
-    if (this.mode === 'top') {
-      db.ref('top').on('value', snap => { this.topDonors = snap.val() || {}; });
+      ttsPlayer.onerror = () => {
+         // Если TTS отвалился, просто скрываем через 5 сек
+         setTimeout(() => {
+          this.currentAlert = null;
+          this.isAlertPlaying = false;
+          this.processQueue();
+        }, 5000);
+      }
+
+      try { await ttsPlayer.play(); } catch(e){
+        // Fallback если браузер/OBS заблокировал автоплей
+        ttsPlayer.onerror();
+      }
     }
   }
 });
