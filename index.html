@@ -341,6 +341,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#ffd700;}
 .top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-rank-badge{color:#888;}
 
+
+/* ══ АВТО-ОБНОВЛЕНИЕ ПЛАШЕК ══ */
+@keyframes topEntryPulse{0%{opacity:1;}50%{opacity:.85;}100%{opacity:1;}}
+.top-entry-refresh{animation:topEntryPulse .5s ease-in-out;}
+
 /* Top entry move animation */
 .top-move-enter-active,.top-move-leave-active{transition:all .7s cubic-bezier(.34,1.56,.64,1);}
 .top-move-enter-from{transform:translateX(-60px) scale(.9);opacity:0;}
@@ -1523,6 +1528,23 @@ createApp({
       });
       db.ref('musicVolume').on('value',snap=>{const v=snap.val();if(v!==null){musicVolume.value=v;applyVolume();}});
     });
+
+    // ═══ АВТО-ОБНОВЛЕНИЕ ТОПА В OBS (каждые 3 сек) ═══
+    if(mode.value==='top'){
+      setInterval(()=>{
+        // Форсируем реактивное обновление — добавляем и убираем фиктивный ключ
+        topDonors.forEach(d=>{
+          const old=d._refresh;
+          d._refresh=Date.now();
+        });
+        // Мигание плашек
+        document.querySelectorAll('.top-entry').forEach(el=>{
+          el.classList.remove('top-entry-refresh');
+          void el.offsetWidth; // reflow
+          el.classList.add('top-entry-refresh');
+        });
+      },3500);
+    }
 
     function onAlertEnter(el){if(pCanvas.value)launchParticles(pCanvas.value);}
     function onAlertLeave(el){}
