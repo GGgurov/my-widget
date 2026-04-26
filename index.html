@@ -126,34 +126,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .toast.err{border-color:#ff4444;color:#ff4444;}
 
 /* ══════════════════════════════════════════════════════
-   ВИДЖЕТЫ ЦЕЛИ / ЧЕЛЛЕНДЖА
-══════════════════════════════════════════════════════ */
-.goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
-.goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
-.prog-track{width:100%;background:rgba(0,0,0,.6);overflow:hidden;border:1px solid rgba(255,255,255,.05);position:relative;box-shadow:inset 0 2px 10px rgba(0,0,0,.5);}
-.prog-fill{height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
-.prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2.5s infinite linear;}
-@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
-.ld-section{margin-top:13px;}
-.ld-label{display:inline-flex;align-items:center;gap:5px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
-.donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
-.donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04);transition:transform 0.2s;box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-.rk-1{background:linear-gradient(90deg,rgba(255,215,0,.15),transparent)!important;border-color:rgba(255,215,0,.3)!important;color:var(--gold)!important;font-weight:900;}
-.rk-2{background:linear-gradient(90deg,rgba(200,200,200,.08),transparent)!important;border-color:rgba(200,200,200,.2)!important;color:var(--silver)!important;}
-.rk-3{background:linear-gradient(90deg,rgba(205,127,50,.08),transparent)!important;border-color:rgba(205,127,50,.2)!important;color:var(--bronze)!important;}
-.chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
-.chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
-.chal-brand{display:flex;align-items:center;}
-.icon-mask{background-color:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;flex-shrink:0;}
-.chal-title{font-weight:800;text-transform:uppercase;letter-spacing:1px;}
-.chal-divider{height:1px;width:100%;margin:7px 0;opacity:.15;}
-.chal-label{opacity:.7;font-weight:700;}
-.chal-val,.chal-total{font-weight:900;text-align:right;}
-.ed{cursor:text;border-bottom:1px dashed rgba(255,255,255,.2);transition:all .15s;}
-.ed:hover{background:rgba(255,255,255,.05);}
-.ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
-
-/* ══════════════════════════════════════════════════════
    OBS ALERT
 ══════════════════════════════════════════════════════ */
 .alert-scene{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:50px;}
@@ -294,71 +266,59 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .rank-3 .top-amount { font-size: calc(var(--top-amt-sz) * 1.05); }
 
 
-/* ═══ ТЕМА 1: UNIVERSAL ═══ */
-.top-theme-universal .top-title-row{ background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.3); }
-.top-theme-universal .top-title{ font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:#ffd700;text-shadow:0 0 18px rgba(255,215,0,.5); }
-.top-theme-universal .top-entry{ border-radius:6px;overflow:hidden;position:relative; margin-bottom:2px; }
-
-/* Красивые выделения для 1, 2, 3 места */
-.top-theme-universal .top-entry.rank-1{
-  background:linear-gradient(90deg,rgba(255,215,0,.3) 0%, rgba(20,15,5,.9) 60%);
-  border:1.5px solid rgba(255,215,0,.8); box-shadow: inset 0 0 15px rgba(255,215,0,.2);
+/* ═══ ТЕМА 1: GOLDEN ═══ */
+.top-theme-golden .top-title-row{
+  background:linear-gradient(90deg,#1a1200,#0d0a00);
+  border:1px solid rgba(255,215,0,.5);
+  box-shadow:0 2px 16px rgba(255,215,0,.1);
 }
-.top-theme-universal .top-entry.rank-2{
-  background:linear-gradient(90deg,rgba(200,200,200,.2) 0%,rgba(20,15,5,.9) 50%);
-  border:1px solid rgba(200,200,200,.6); box-shadow: inset 0 0 10px rgba(200,200,200,.1);
+.top-theme-golden .top-title{
+  font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
+  text-transform:uppercase;letter-spacing:3px;
+  color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,.5);
 }
-.top-theme-universal .top-entry.rank-3{
-  background:linear-gradient(90deg,rgba(205,127,50,.2) 0%,rgba(20,15,5,.9) 50%);
-  border:1px solid rgba(205,127,50,.6); box-shadow: inset 0 0 10px rgba(205,127,50,.1);
+.top-theme-golden .top-entry{
+  border-radius:6px;position:relative;overflow:hidden;margin-bottom:2px;
 }
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){ background:rgba(20,15,5,.98);border:1px solid rgba(255,215,0,.06); }
-
-/* Значки ранга */
-.top-theme-universal .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.6);}
-.top-theme-universal .rank-1 .top-rank-badge{font-size:18px;color:#ffd700;text-shadow:0 0 12px rgba(255,215,0,.8);}
-.top-theme-universal .rank-2 .top-rank-badge{font-size:15px;color:#ffffff;text-shadow:0 0 8px rgba(200,200,200,.6);}
-.top-theme-universal .rank-3 .top-rank-badge{font-size:13px;color:#ffcca1;text-shadow:0 0 6px rgba(205,127,50,.5);}
-
-/* Цвета имен и сумм в зависимости от места */
-.top-theme-universal .rank-1 .top-name{
+.top-theme-golden .top-entry.rank-1{
+  background:linear-gradient(90deg,#3d2e00,#1a1400);
+  border:2px solid #ffd700;
+  box-shadow:0 0 12px rgba(255,215,0,.3),inset 0 0 20px rgba(255,215,0,.05);
+}
+.top-theme-golden .top-entry.rank-2{
+  background:linear-gradient(90deg,#1e1a00,#111000);
+  border:1.5px solid rgba(255,215,0,.55);
+}
+.top-theme-golden .top-entry.rank-3{
+  background:linear-gradient(90deg,#161400,#0c0b00);
+  border:1px solid rgba(255,215,0,.3);
+}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){
+  background:linear-gradient(90deg,#111000,#0a0900);
+  border:1px solid rgba(255,215,0,.12);
+}
+.top-theme-golden .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.5);}
+.top-theme-golden .rank-1 .top-rank-badge{font-size:18px;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.8);}
+.top-theme-golden .rank-2 .top-rank-badge{font-size:15px;color:#ffe566;}
+.top-theme-golden .rank-3 .top-rank-badge{font-size:13px;color:#ccaa00;}
+.top-theme-golden .rank-1 .top-name{
   background:linear-gradient(90deg,#fff,#ffd700,#fff,#ffd700);background-size:300% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:univNameShimmer 4s linear infinite;
+  animation:goldenNameShimmer 4s linear infinite;
 }
-.top-theme-universal .rank-1 .top-amount{
+.top-theme-golden .rank-1 .top-amount{
   background:linear-gradient(90deg,#ffd700,#fff5aa,#ffaa00,#ffd700);background-size:300% 100%;
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:univAmtShimmer 2.5s linear infinite;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));
+  animation:goldenAmtShimmer 2.5s linear infinite;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));
 }
-.top-theme-universal .rank-2 .top-name, .top-theme-universal .rank-2 .top-amount{ color:#ffffff; }
-.top-theme-universal .rank-3 .top-name, .top-theme-universal .rank-3 .top-amount{ color:#ffe4c4; }
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{ color:#ccc; }
-.top-theme-universal .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{ color:#bbb; }
-
-@keyframes univNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-@keyframes univAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-
-/* ═══ ТЕМА 2: HUDPRO ═══ */
-.top-theme-hudpro .top-title-row{ background:linear-gradient(90deg,rgba(0,30,45,.98),rgba(0,15,25,.98));border:1px solid rgba(0,150,180,.4); }
-.top-theme-hudpro .top-title{ font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900; letter-spacing:3px;text-transform:uppercase; color:#b3ff00;text-shadow:0 0 14px rgba(140,220,0,.5); }
-.top-theme-hudpro .top-entry{
-  border-radius:6px;position:relative;overflow:hidden;
-  background:linear-gradient(90deg,rgba(0,40,60,.95),rgba(0,20,35,.98));
-  border:1px solid rgba(0,150,180,.3); margin-bottom:2px;
-}
-.top-theme-hudpro .top-entry.rank-1{ background:linear-gradient(90deg,rgba(0,60,80,.95),rgba(0,20,35,.98)); border-color: rgba(0,200,255,.6); }
-.top-theme-hudpro .top-entry.rank-2{ background:linear-gradient(90deg,rgba(0,50,70,.95),rgba(0,20,35,.98)); }
-.top-theme-hudpro .top-entry::before{ content:'';position:absolute;left:0;top:0;bottom:0;width:4px; background:rgba(0,160,190,.8); }
-.top-theme-hudpro .rank-1::before{ background:#00c8ff; box-shadow: 0 0 10px #00c8ff; width: 6px;}
-
-.top-theme-hudpro .top-amount{ color:#ffd700; opacity:.7;}
-.top-theme-hudpro .rank-1 .top-amount{ color:#ffd700; opacity: 1; text-shadow:0 0 8px rgba(255,215,0,.5);}
-.top-theme-hudpro .rank-2 .top-amount{ color:#ffd700; opacity:.95; }
-.top-theme-hudpro .rank-3 .top-amount{ color:#ffd700; opacity:.85; }
-.top-theme-hudpro .top-name{ color:#ffffff; }
-.top-theme-hudpro .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{ color:#cccccc; }
-.top-theme-hudpro .top-rank-badge{font-size:0;width:0;overflow:hidden;min-width:0;padding:0;margin:0;}
+.top-theme-golden .rank-2 .top-name{color:#ffe566;}
+.top-theme-golden .rank-2 .top-amount{color:#ffd700;}
+.top-theme-golden .rank-3 .top-name{color:#ccaa00;}
+.top-theme-golden .rank-3 .top-amount{color:#ccaa00;}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#999;}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#888;}
+@keyframes goldenNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+@keyframes goldenAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
 
 
 /* ═══ ТЕМА 3: HPP ═══ */
@@ -549,43 +509,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 @media(max-width:900px){.desktop-only{display:none!important;}}
 </style>
 
-<script type="text/x-template" id="tpl-goal">
-<div class="glass" :style="glassStyle">
-  <div class="goal-wrap" :style="{padding:(p.padding||20)+'px'}">
-    <div class="goal-top">
-      <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
-      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} / {{p.max||'50 000'}} ₸</span>
-    </div>
-    <div class="prog-track" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
-      <div class="prog-fill" :style="{width:pct+'%',background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',borderRadius:(p.radius||15)+'px'}"></div>
-    </div>
-    <div class="ld-section" v-if="donors.length">
-      <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc',fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
-      <ul class="donor-list">
-        <li v-for="(d,i) in donors" :key="i" class="donor-item" :class="{'rk-1':i===0,'rk-2':i===1,'rk-3':i===2}" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}"><span>{{d.name}}</span><span>{{d.amount}}</span></li>
-      </ul>
-    </div>
-  </div>
-</div>
-</script>
 
-<script type="text/x-template" id="tpl-challenge">
-<div class="glass" :style="glassStyle">
-  <div class="chal-wrap" :style="{padding:(p.padding||20)+'px'}">
-    <div class="chal-row">
-      <div class="chal-brand">
-        <div v-if="p.iconData" class="icon-mask" :style="{width:(p.iconSize||35)+'px',height:(p.iconSize||35)+'px',backgroundColor:p.cIcon||'#fff',maskImage:'url('+p.iconData+')',WebkitMaskImage:'url('+p.iconData+')',marginRight:(p.iconGap||15)+'px'}"></div>
-        <span :contenteditable="!isObs" class="ed chal-title" :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}" @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
-      </div>
-      <div v-if="p.showCount"><div class="chal-val" :style="{fontSize:(p.titleSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div><div class="chal-total" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}} ₸</div></div>
-    </div>
-    <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
-    <div v-if="p.showCount" style="display:flex;justify-content:space-between;align-items:center;">
-      <span class="chal-label" :style="{fontSize:(p.textSize||12)+'px',color:p.cText||'#aaa'}">Прогресс</span><span :style="{fontSize:(p.textSize||12)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
-    </div>
-  </div>
-</div>
-</script>
 </head>
 <body>
 <div id="app">
@@ -611,16 +535,8 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
     <div v-if="musicQueue.length>0" class="idle-music-text" :class="'music-anim-'+(musicCfg.animStyle||'shimmer')" :style="{...idleTextStyle,'--idle-c1':musicCfg.nowPlayingColor||'#00c2ff'}">🎵 {{musicCfg.nowPlayingText||'СЕЙЧАС ИГРАЕТ'}}</div>
   </div>
 
-  <div v-if="mode==='widget'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
-    <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
-      <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
-    </div>
   </div>
 
-  <div v-if="mode==='goal'" style="width:100vw;height:100vh;background:transparent;position:relative;" :class="'obs-mode'">
-    <div v-for="p in panels.filter(x=>x.type==='goal')" :key="p.id" class="static-panel" :style="cardPos(p)">
-      <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
-    </div>
   </div>
 
   <div v-if="mode==='top'" class="top-scene" :class="'top-theme-'+(topCfg.theme||'universal')" :style="topSceneStyle">
@@ -698,8 +614,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         </div>
         <div class="tabs">
           <button class="tab" :class="{on:tab==='donate'}" @click="tab='donate'">💸 Донат</button>
-          <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
-          <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🔔 Алерт</button>
+                    <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🔔 Алерт</button>
           <button class="tab" :class="{on:tab==='top'}" @click="tab='top'">🏆 Топ</button>
           <button class="tab" :class="{on:tab==='music'}" @click="tab='music'">🎵 Музыка</button>
         </div>
@@ -720,31 +635,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
             </div>
             <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">📋 Сброс и статистика</div></div></div>
             <div class="sec-body">
-              <div class="fr"><button class="btn btn-flat" @click="clearProgress">🔄 Сбросить суммы</button><button class="btn btn-flat" @click="clearDonors">🗑 Очистить донатеров</button></div>
+              
               <div class="fr"><button class="btn btn-flat" @click="clearTopDonors">🏆 Сбросить топ</button></div>
             </div>
           </template>
 
-          <template v-if="tab==='widgets'">
-            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">Запустить Alert вручную</div></div></div>
-            <div class="sec-body">
-              <div class="fr"><div class="fg"><label>Имя</label><input type="text" v-model="tName" placeholder="Иван"></div><div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="tAmount" placeholder="500"><span class="tenge-badge">₸</span></div></div></div>
-              <div class="fg"><label>Сообщение</label><textarea v-model="tMessage" placeholder="Текст"></textarea></div>
-              <button class="btn btn-green" @click="doTrigger">▶ В OBS</button>
-            </div>
-            <div class="fr"><button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button></div>
-            <div v-for="(p,i) in panels" :key="p.id">
-              <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
-                <div class="sec-head-l"><div class="sec-dot">{{i+1}}</div><div class="sec-name">🎯 ЦЕЛЬ</div></div>
-                <div style="display:flex;gap:7px;align-items:center"><button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button><span class="sec-chevron">▼</span></div>
-              </div>
-              <div v-if="selId===p.id" class="sec-body">
-                <div class="fr"><div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div><div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div></div>
-                <template v-if="p.type==='goal'">
-                  <div class="fr"><div class="fg"><label>Текущая сумма (₸)</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель (₸)</label><input type="text" v-model="p.max"></div></div>
-                  <div class="fg"><label>Метка последнего доната</label><input type="text" v-model="p.lastDonorLabel"></div>
-                  <div class="fg"><label>Список донатеров</label><textarea v-model="p.donorsRaw" placeholder="Иван — 500 ₸"></textarea></div>
-                </template>
                 <div class="divider"></div>
                 <div class="sub-lbl">Размеры</div>
                 <div class="fg"><label>Ширина панели</label><div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div></div>
@@ -1059,15 +954,11 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div class="obs-url-card">
             <div class="obs-url-title">📡 OBS Browser Source — выбери и скопируй URL</div>
             <div style="font-size:8px;color:#00c2ff;padding:4px 0 6px;font-weight:700;letter-spacing:.3px;">💡 Обрати внимание: TTS и Музыка играют теперь в этой вкладке на ПК. В OBS скопируй нужные визуалы!</div>
-            <div class="obs-btn-grid">
+            <div class="obs-btn-grid-2">
               <button class="btn-obs" :class="{active:obsSelected==='alert',copied:copiedObs.alert}" @click="selectObs('alert')"><span class="btn-obs-icon">🔔</span><span>Alert (Визуал+Звук)</span><span class="btn-obs-sub">{{copiedObs.alert?'✓ скопирован':'нажми'}}</span></button>
-              <button class="btn-obs" :class="{active:obsSelected==='widget',copied:copiedObs.widget}" @click="selectObs('widget')"><span class="btn-obs-icon">🎯</span><span>Виджет (Всё)</span><span class="btn-obs-sub">{{copiedObs.widget?'✓':'нажми'}}</span></button>
               <button class="btn-obs" :class="{active:obsSelected==='music',copied:copiedObs.music}" @click="selectObs('music')"><span class="btn-obs-icon">🎵</span><span>Музыка (Текст)</span><span class="btn-obs-sub">{{copiedObs.music?'✓':'нажми'}}</span></button>
             </div>
-            <div class="obs-btn-grid-2">
-              <button class="btn-obs" :class="{active:obsSelected==='top',copied:copiedObs.top}" @click="selectObs('top')"><span class="btn-obs-icon">🏆</span><span>Топ донатов</span><span class="btn-obs-sub">{{copiedObs.top?'✓':'нажми'}}</span></button>
-              <button class="btn-obs" :class="{active:obsSelected==='goal',copied:copiedObs.goal}" @click="selectObs('goal')"><span class="btn-obs-icon">🎯</span><span>Цель</span><span class="btn-obs-sub">{{copiedObs.goal?'✓':'нажми'}}</span></button>
-             </div>
+            
             <div v-if="obsSelected" class="obs-url-display">{{ currentObsUrl }}</div>
             <button v-if="obsSelected" class="btn-copy-url" :class="{copied:copiedObs[obsSelected]}" @click="copyObs(obsSelected)">{{ copiedObs[obsSelected]?'✓ URL скопирован!':'📋 Копировать URL' }}</button>
           </div>
@@ -1077,11 +968,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="pz-label">PREVIEW · NO DRAG · USE X/Y</div>
         <div class="pz-mode">OBS OVERLAY</div>
         <div v-if="tab==='alert'" class="alert-preview-wrap"></div>
-        <div v-if="tab==='widgets'||tab==='donate'" class="widget-scene" :style="sceneStyle" ref="wscene">
-          <div v-for="p in panels" :key="p.id" class="static-panel" :class="{sel:selId===p.id}" :style="cardPos(p)" @click="selId=p.id">
-            <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
-          </div>
-        </div>
+        
         <div v-if="tab==='top'" style="width:100%;height:100%;position:relative;overflow:hidden;" class="top-scene" :class="'top-theme-'+(topCfg.theme||'universal')">
           <div class="top-widget" :style="{...topSceneStyle,position:'absolute',display:'flex',flexDirection:'column'}">
             <div v-if="topCfg.showTitle" class="top-title-row"><span class="top-title">{{topCfg.title||'ТОП ДОНАТЕРОВ'}}</span></div>
@@ -1119,26 +1006,10 @@ function extractYT(msg){
   return {cleanMsg,tracks};
 }
 
-const GoalComp = defineComponent({
-  template:'#tpl-goal', props:['p','isObs'],
-  computed:{
-    pct(){const c=this.p.current||0,m=parseFloat(this.p.max)||1;return Math.min(100,Math.round(c/m*100));},
-    donors(){
-      const raw=this.p.donorsRaw||'';
-      return raw.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean).map(s=>{
-        const m=s.match(/^(.+?)[—\-–]\s*(.+)$/);return m?{name:m[1].trim(),amount:m[2].trim()}:{name:s,amount:''};
-      });
     },
     glassStyle(){const p=this.p,bg=p.bgColor||'#111111',op=p.bgOpacity!==undefined?p.bgOpacity:0.75;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'80px'};}
   },
   methods:{formatNum(n){return Number(n).toLocaleString('ru');}}
-});
-const ChalComp = defineComponent({
-  template:'#tpl-challenge', props:['p','isObs'],
-  computed:{
-    pct(){const c=this.p.current||0,m=parseFloat(this.p.max)||1;return Math.min(100,Math.round(c/m*100));},
-    glassStyle(){const p=this.p,bg=p.bgColor||'#111111',op=p.bgOpacity!==undefined?p.bgOpacity:0.75;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'60px'};}
-  }
 });
 
 const FB_CFG = { apiKey:"AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",authDomain:"tt-widget-88711.firebaseapp.com",databaseURL:"https://tt-widget-88711-default-rtdb.firebaseio.com",projectId:"tt-widget-88711",storageBucket:"tt-widget-88711.firebasestorage.app",messagingSenderId:"997435022478",appId:"1:997435022478:web:a0ad462f2a7dd074d27ddf" };
@@ -1150,7 +1021,7 @@ function loadState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'n
 function saveState(s){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}catch(e){}}
 
 createApp({
-  components:{'goal-widget':GoalComp,'challenge-widget':ChalComp},
+  components:{},
   setup(){
     const saved=loadState()||{};
     const urlMode=new URLSearchParams(location.search).get('mode');
@@ -1172,7 +1043,7 @@ createApp({
     const sections=reactive({alertStyle:false,alertMedia:false,alertSound:true,alertTTS:false,alertParticles:false,musicText:true,musicFont:false,musicColors:false,musicMax:false,topStyle:true,topSettings:false});
 
     const panels=reactive(saved.panels||[]);
-    if(!panels.length)panels.push({id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'',lastDonorLabelSize:8,width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',titleSize:16,textSize:13,barHeight:14,x:80,y:60});
+    
 
     const alertCfg=reactive(Object.assign({
       labelText:'НОВЫЙ ДОНАТ!',duration:7,animStyle:'bounce',
@@ -1197,13 +1068,12 @@ createApp({
 
     // Добавлены nameSize и amountSize в topCfg по-умолчанию
     const topCfg=reactive(Object.assign({
-      theme:'universal',title:'ТОП ДНЯ',showTitle:true,rankEmoji:true,
+      theme:'golden',title:'ТОП ДНЯ',showTitle:true,rankEmoji:true,
       maxRows:10,width:400,posX:2,posY:10,gap:6,rowPad:10, nameSize: 14, amountSize: 16
     },saved.topCfg||{}));
 
     const topThemes=[
-      {id:'universal',name:'⭐ UNIVERSAL',preview:{bg:'background:linear-gradient(135deg,#0a0800,#060400)',title:'#ffd700',rows:[{w:'100%',c:'rgba(255,215,0,.6)',h:'11px'},{w:'80%',c:'rgba(200,200,200,.4)',h:'9px'},{w:'65%',c:'rgba(205,127,50,.35)',h:'8px'},{w:'50%',c:'rgba(255,215,0,.15)',h:'7px'}]}},
-      {id:'hudpro',name:'🔷 HUDPRO',preview:{bg:'background:linear-gradient(135deg,#00151e,#000d15)',title:'#b3ff00',rows:[{w:'100%',c:'rgba(0,180,210,.5)',h:'10px'},{w:'80%',c:'rgba(0,160,190,.4)',h:'9px'},{w:'65%',c:'rgba(0,140,170,.3)',h:'8px'},{w:'50%',c:'rgba(0,120,150,.2)',h:'7px'}]}},
+      {id:'golden',name:'🥇 GOLDEN',preview:{bg:'background:linear-gradient(135deg,#1a1200,#0d0a00)',title:'#ffd700',rows:[{w:'100%',c:'rgba(255,215,0,.7)',h:'11px'},{w:'80%',c:'rgba(255,215,0,.45)',h:'9px'},{w:'65%',c:'rgba(255,215,0,.25)',h:'8px'},{w:'50%',c:'rgba(255,215,0,.12)',h:'7px'}]}},
       {id:'hpp',name:'🟥 HPP',preview:{bg:'background:linear-gradient(135deg,#200008,#150005)',title:'#ffd700',rows:[{w:'100%',c:'rgba(200,20,60,.55)',h:'10px'},{w:'80%',c:'rgba(180,15,50,.45)',h:'9px'},{w:'65%',c:'rgba(160,10,40,.35)',h:'8px'},{w:'50%',c:'rgba(140,5,30,.25)',h:'7px'}]}}
     ];
 
@@ -1422,7 +1292,6 @@ createApp({
           parsed.sort((a,b)=>b.amount-a.amount);
           p.donorsRaw=parsed.map(d=>{if(d.original!==undefined)return d.original;return`${d.name} — ${fmtNum(d.amount)} ₸`;}).join('\n');
         }
-        if(p.type==='challenge')p.current=(p.current||0)+amt;
       });
     }
 
