@@ -1006,11 +1006,7 @@ function extractYT(msg){
   return {cleanMsg,tracks};
 }
 
-    },
-    glassStyle(){const p=this.p,bg=p.bgColor||'#111111',op=p.bgOpacity!==undefined?p.bgOpacity:0.75;return{background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'80px'};}
-  },
-  methods:{formatNum(n){return Number(n).toLocaleString('ru');}}
-});
+
 
 const FB_CFG = { apiKey:"AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",authDomain:"tt-widget-88711.firebaseapp.com",databaseURL:"https://tt-widget-88711-default-rtdb.firebaseio.com",projectId:"tt-widget-88711",storageBucket:"tt-widget-88711.firebasestorage.app",messagingSenderId:"997435022478",appId:"1:997435022478:web:a0ad462f2a7dd074d27ddf" };
 let db=null;
