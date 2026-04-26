@@ -295,58 +295,51 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 
 /* ═══ ТЕМА 1: GOLDEN ═══ */
+/* Заголовок ТОП ДНЯ */
 .top-theme-golden .top-title-row{
-  background:linear-gradient(90deg,#1a1200,#0d0a00);
-  border:1px solid rgba(255,215,0,.5);
-  box-shadow:0 2px 16px rgba(255,215,0,.1);
+  background:#111;border:1px solid rgba(255,215,0,.3);border-radius:6px;
 }
 .top-theme-golden .top-title{
   font-family:'Unbounded',sans-serif;font-size:22px;font-weight:900;
-  text-transform:uppercase;letter-spacing:3px;
-  color:#ffd700;text-shadow:0 0 14px rgba(255,215,0,.5);
+  text-transform:uppercase;letter-spacing:3px;color:#ffd700;
 }
-.top-theme-golden .top-entry{
-  border-radius:6px;position:relative;overflow:hidden;margin-bottom:2px;
-}
+/* Базовая строка */
+.top-theme-golden .top-entry{border-radius:4px;overflow:hidden;margin-bottom:2px;}
+
+/* #1 — золотой фон */
 .top-theme-golden .top-entry.rank-1{
-  background:linear-gradient(90deg,#3d2e00,#1a1400);
-  border:2px solid #ffd700;
-  box-shadow:0 0 12px rgba(255,215,0,.3),inset 0 0 20px rgba(255,215,0,.05);
+  background:linear-gradient(90deg,#c8a84b,#f0d060,#c8a84b);
+  border:none;
 }
+.top-theme-golden .rank-1 .top-name{color:#1a1000;font-weight:900;}
+.top-theme-golden .rank-1 .top-amount{color:#7a4f00;font-weight:900;}
+.top-theme-golden .rank-1 .top-rank-badge{color:#1a1000;font-size:15px;}
+
+/* #2 — серебряный фон */
 .top-theme-golden .top-entry.rank-2{
-  background:linear-gradient(90deg,#1e1a00,#111000);
-  border:1.5px solid rgba(255,215,0,.55);
+  background:linear-gradient(90deg,#7a7a7a,#b0b0b0,#7a7a7a);
+  border:none;
 }
+.top-theme-golden .rank-2 .top-name{color:#111;font-weight:800;}
+.top-theme-golden .rank-2 .top-amount{color:#ffd700;font-weight:900;}
+.top-theme-golden .rank-2 .top-rank-badge{color:#111;font-size:13px;}
+
+/* #3 — бронзовый фон */
 .top-theme-golden .top-entry.rank-3{
-  background:linear-gradient(90deg,#161400,#0c0b00);
-  border:1px solid rgba(255,215,0,.3);
+  background:linear-gradient(90deg,#7a4a1a,#b06828,#7a4a1a);
+  border:none;
 }
+.top-theme-golden .rank-3 .top-name{color:#fff;font-weight:800;}
+.top-theme-golden .rank-3 .top-amount{color:#ffd700;font-weight:900;}
+.top-theme-golden .rank-3 .top-rank-badge{color:#fff;font-size:12px;}
+
+/* #4+ — тёмный фон */
 .top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3){
-  background:linear-gradient(90deg,#111000,#0a0900);
-  border:1px solid rgba(255,215,0,.12);
+  background:#1a1a1a;border:1px solid rgba(255,215,0,.1);
 }
-.top-theme-golden .top-rank-badge{font-family:'Unbounded',sans-serif;font-size:11px;font-weight:900;min-width:30px;color:rgba(255,215,0,.5);}
-.top-theme-golden .rank-1 .top-rank-badge{font-size:18px;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,.8);}
-.top-theme-golden .rank-2 .top-rank-badge{font-size:15px;color:#ffe566;}
-.top-theme-golden .rank-3 .top-rank-badge{font-size:13px;color:#ccaa00;}
-.top-theme-golden .rank-1 .top-name{
-  background:linear-gradient(90deg,#fff,#ffd700,#fff,#ffd700);background-size:300% 100%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:goldenNameShimmer 4s linear infinite;
-}
-.top-theme-golden .rank-1 .top-amount{
-  background:linear-gradient(90deg,#ffd700,#fff5aa,#ffaa00,#ffd700);background-size:300% 100%;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:goldenAmtShimmer 2.5s linear infinite;filter:drop-shadow(0 0 6px rgba(255,215,0,.6));
-}
-.top-theme-golden .rank-2 .top-name{color:#ffe566;}
-.top-theme-golden .rank-2 .top-amount{color:#ffd700;}
-.top-theme-golden .rank-3 .top-name{color:#ccaa00;}
-.top-theme-golden .rank-3 .top-amount{color:#ccaa00;}
-.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#999;}
-.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#888;}
-@keyframes goldenNameShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
-@keyframes goldenAmtShimmer{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-name{color:#ccc;}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-amount{color:#ffd700;}
+.top-theme-golden .top-entry:not(.rank-1):not(.rank-2):not(.rank-3) .top-rank-badge{color:#888;}
 
 /* Top entry move animation */
 .top-move-enter-active,.top-move-leave-active{transition:all .7s cubic-bezier(.34,1.56,.64,1);}
