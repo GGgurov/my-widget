@@ -403,10 +403,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
           <div style="font-size:10px; font-weight:900; color:#fff; text-transform:uppercase; margin-bottom:8px;">💰 Быстро в копилку (без алерта)</div>
           
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+             <button class="btn-quick-add" @click="addKztSilently(100)">+ 100 ₸</button>
+             <button class="btn-quick-add" @click="addKztSilently(250)">+ 250 ₸</button>
              <button class="btn-quick-add" @click="addKztSilently(500)">+ 500 ₸</button>
              <button class="btn-quick-add" @click="addKztSilently(1000)">+ 1000 ₸</button>
-             <button class="btn-quick-add" @click="addKztSilently(2000)">+ 2000 ₸</button>
-             <button class="btn-quick-add" @click="addKztSilently(5000)">+ 5000 ₸</button>
           </div>
 
           <div class="parsed-row">
