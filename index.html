@@ -201,10 +201,10 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
 /* Своя сумма */
 .huge-input {
-  background: #080808; border: 2px solid var(--border); color: #fff;
+  heigh: 40px; background: #080808; border: 2px solid var(--border); color: #fff;
   padding: 20px; border-radius: 14px; font-family: 'Unbounded'; font-size: 24px; font-weight: 900;
   width: 100%; text-align: center; margin-bottom: 15px; transition: border-color 0.2s;
-  touch-action: manipulation;
+  touch-action: manipulation; 
 }
 .huge-input:focus { border-color: #00cc44; outline: none; box-shadow: 0 0 15px rgba(0, 204, 68, 0.2); }
 
@@ -405,7 +405,6 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
           <div style="display:flex; flex-direction:column; gap:15px; margin-top:20px; border-top: 1px solid var(--border); padding-top:25px;">
             <button class="btn-huge-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СУММУ СБОРОВ</button>
-            <button class="btn-huge-clear-donors" @click="clearDonors">🗑️ ОЧИСТИТЬ ДОНАТЕРОВ</button>
           </div>
 
         </div>
