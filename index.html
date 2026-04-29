@@ -182,74 +182,66 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 .fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
 @keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ */
+/* МОБИЛЬНАЯ ВЕРСИЯ - НОВЫЙ ДИЗАЙН ПУЛЬТА */
 .mobile-kaspi-view { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); padding: 0; gap: 0; overflow: hidden; }
-.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 10px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.mob-logo { font-size: 13px; font-weight: 900; }
+.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+.mob-logo { font-size: 16px; font-weight: 900; }
 .mob-logo span { color: var(--red); }
-.mob-fb-dot { width: 8px; height: 8px; border-radius: 50%; background: #555; transition: background .3s; }
-.mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 8px #00cc44; animation: pulseDot 2s infinite; }
-.mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
-.mob-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
-.kaspi-paste-area { background: #111; border: 2px dashed var(--red); border-radius: var(--radius-lg); padding: 14px; color: #fff; font-size: 13px; min-height: 100px; width: 100%; resize: none; font-family: 'Unbounded'; transition: all 0.25s; line-height: 1.5; }
-.kaspi-paste-area:focus { border-style: solid; border-color: var(--red); box-shadow: 0 0 20px rgba(255,0,68,.15); min-height: 120px; }
-.parsed-card { background: #0d0d0d; border: 1px solid rgba(255,0,68,.3); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 8px; animation: fadeIn .2s ease-out; }
-.parsed-row { display: flex; align-items: center; gap: 10px; }
-.parsed-row label { font-size: 8px; min-width: 60px; color: var(--text-dim); }
-.parsed-row input, .parsed-row textarea { flex: 1; padding: 10px 12px; font-size: 13px; }
-.parsed-row textarea { min-height: 44px; resize: none; }
-.auto-send-banner { display: flex; align-items: center; justify-content: space-between; background: rgba(0,170,68,.1); border: 1px solid rgba(0,170,68,.3); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 9px; font-weight: 700; color: #00cc44; }
-.auto-send-countdown { font-size: 16px; font-weight: 900; color: #00cc44; min-width: 20px; text-align: right; }
-.mob-actions { display: flex; flex-direction: column; gap: 8px; padding: 10px 14px 14px; background: var(--panel); border-top: 1px solid var(--border); flex-shrink: 0; }
-.btn-mob-send { font-family: 'Unbounded'; font-weight: 900; font-size: 16px; text-transform: uppercase; letter-spacing: .5px; padding: 20px; border-radius: var(--radius-md); border: none; cursor: pointer; background: linear-gradient(135deg, #ff0044, #cc0034); color: #fff; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 20px rgba(255,0,68,.3); transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-.btn-mob-send:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(255,0,68,.2); }
-.btn-mob-send:disabled { opacity: .35; transform: none; box-shadow: none; }
-.btn-mob-clear { font-family: 'Unbounded'; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: .3px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,0,0,.2); cursor: pointer; background: rgba(255,0,0,.06); color: #ff5555; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-.btn-mob-clear:active { background: rgba(255,0,0,.15); }
-.mob-music-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0,194,255,.2); border-radius: var(--radius-lg); overflow: hidden; }
-.mob-music-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid rgba(0,194,255,.1); }
-.mob-music-title { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 900; color: var(--ac-blue); text-transform: uppercase; letter-spacing: .5px; }
-.mob-volume-row { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: rgba(0,194,255,.04); border-bottom: 1px solid rgba(0,194,255,.08); }
-.mob-volume-row input[type=range] { flex: 1; height: 28px; accent-color: var(--ac-blue); cursor: pointer; border: none; background: transparent; }
-.mob-vol-val { font-size: 11px; font-weight: 900; color: var(--ac-blue); min-width: 38px; text-align: right; }
-.mob-track-item { display: flex; align-items: center; padding: 10px 14px; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.04); transition: background .15s; -webkit-tap-highlight-color: transparent; touch-action: pan-y; }
-.mob-track-item:last-child { border-bottom: none; }
-.mob-track-item.playing { background: rgba(0,194,255,.07); }
-.mob-track-meta { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.mob-track-status { font-size: 10px; font-weight: 900; color: #ccc; display: flex; align-items: center; gap: 5px; }
-.mob-track-status.now { color: var(--ac-blue); }
-.mob-track-id { font-size: 9px; color: var(--text-dim); }
-.mob-skip-btn { font-family: 'Unbounded'; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(0,194,255,.4); background: rgba(0,194,255,.1); color: var(--ac-blue); font-size: 11px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; white-space: nowrap; min-width: 52px; text-align: center; }
-.mob-skip-btn:active { background: rgba(0,194,255,.25); transform: scale(.94); }
-.mob-remove-btn { font-family: 'Unbounded'; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: rgba(255,255,255,.04); color: var(--text-dim); font-size: 14px; font-weight: 900; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; transition: all .15s; }
-.mob-remove-btn:active { background: rgba(255,50,50,.15); color: #ff5555; }
-.music-queue-card { background: linear-gradient(135deg, #000d15, #00060d); border: 1px solid rgba(0, 194, 255, 0.2); border-radius: var(--radius-lg); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.music-queue-header { display: flex; align-items: center; justify-content: space-between; }
-.music-queue-title { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: var(--ac-blue); }
-.music-queue-title .mq-icon { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #0088cc, #004488); display: flex; align-items: center; justify-content: center; font-size: 11px; }
-.btn-clear-queue { background: rgba(255, 50, 50, 0.1); border: 1px solid rgba(255, 50, 50, 0.3); color: #ff5555; padding: 6px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; }
-.btn-clear-queue:hover { background: rgba(255, 50, 50, 0.25); border-color: rgba(255, 50, 50, 0.6); transform: translateY(-1px); }
-.queue-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--radius-sm); }
-.queue-item.playing { border-color: rgba(0, 194, 255, 0.5); background: rgba(0, 194, 255, 0.06); }
-.track-info { display: flex; flex-direction: column; gap: 3px; }
-.track-status { font-size: 10px; font-weight: 900; color: var(--text-bright); display: flex; align-items: center; gap: 5px; }
-.track-status.now { color: var(--ac-blue); }
-.track-id { font-size: 8px; color: var(--text-dim); letter-spacing: 0.3px; }
-.btn-skip { background: linear-gradient(135deg, rgba(0,194,255,0.15), rgba(0,100,200,0.15)); border: 1px solid rgba(0, 194, 255, 0.4); color: var(--ac-blue); padding: 7px 12px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
-.btn-skip:hover { background: linear-gradient(135deg, rgba(0,194,255,0.3), rgba(0,100,200,0.3)); transform: translateY(-1px); box-shadow: 0 3px 12px rgba(0,194,255,0.2); }
-.btn-remove { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 10px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 9px; font-weight: 900; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 4px; }
-.btn-remove:hover { background: rgba(255,50,50,0.1); border-color: rgba(255,50,50,0.3); color: #ff5555; }
-.bar-anim { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
-.bar-anim span { width: 3px; background: var(--ac-blue); border-radius: 2px; animation: barBounce 0.8s ease-in-out infinite; }
-.bar-anim span:nth-child(2) { animation-delay: 0.15s; }
-.bar-anim span:nth-child(3) { animation-delay: 0.3s; }
-@keyframes barBounce { 0%,100% { height: 4px; } 50% { height: 12px; } }
-.volume-control-wrap { display: flex; align-items: center; gap: 12px; background: rgba(0, 194, 255, 0.05); border: 1px solid rgba(0, 194, 255, 0.2); padding: 12px 16px; border-radius: var(--radius-sm); margin-top: 8px; }
-.volume-icon { font-size: 16px; }
-.volume-slider { flex: 1; accent-color: var(--ac-blue); height: 4px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
-.volume-value { font-size: 10px; font-weight: 900; color: var(--ac-blue); min-width: 40px; text-align: right; font-variant-numeric: tabular-nums; }
-.btn-quick-add { font-family: 'Unbounded'; font-weight: 700; font-size: 14px; padding: 12px; border-radius: var(--radius-sm); border: 1px solid rgba(0, 204, 68, 0.2); background: rgba(0, 204, 68, 0.08); color: #00cc44; cursor: pointer; transition: all .15s; touch-action: manipulation; }
-.btn-quick-add:active { background: rgba(0, 204, 68, 0.2); transform: scale(0.96); }
+.mob-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+/* Гигантские кнопки пресетов */
+.btn-huge-preset {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 18px;
+  padding: 20px 10px; border-radius: 14px; border: none;
+  background: rgba(0, 204, 68, 0.08); color: #00cc44; border: 2px solid rgba(0, 204, 68, 0.25);
+  cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-preset:active { transform: scale(0.95); background: rgba(0, 204, 68, 0.2); }
+
+/* Своя сумма */
+.huge-input {
+  background: #080808; border: 2px solid var(--border); color: #fff;
+  padding: 20px; border-radius: 14px; font-family: 'Unbounded'; font-size: 24px; font-weight: 900;
+  width: 100%; text-align: center; margin-bottom: 15px; transition: border-color 0.2s;
+  touch-action: manipulation;
+}
+.huge-input:focus { border-color: #00cc44; outline: none; box-shadow: 0 0 15px rgba(0, 204, 68, 0.2); }
+
+/* Гигантская кнопка добавления */
+.btn-huge-add {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 18px; text-transform: uppercase;
+  padding: 24px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #00aa44, #007730); color: #fff; width: 100%;
+  box-shadow: 0 6px 20px rgba(0, 170, 68, 0.3); cursor: pointer; transition: all 0.1s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-add:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(0, 170, 68, 0.2); }
+.btn-huge-add:disabled { opacity: 0.3; pointer-events: none; }
+
+/* Кнопки очистки */
+.btn-huge-clear {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 15px;
+  padding: 20px; border-radius: 14px; border: none;
+  background: rgba(255, 0, 68, 0.1); color: #ff0044; border: 2px solid rgba(255, 0, 68, 0.3);
+  cursor: pointer; transition: all 0.1s; width: 100%;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-clear:active { transform: scale(0.96); background: rgba(255, 0, 68, 0.25); }
+
+.btn-huge-clear-donors {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 15px;
+  padding: 20px; border-radius: 14px; border: none;
+  background: rgba(255, 153, 0, 0.1); color: #ff9900; border: 2px solid rgba(255, 153, 0, 0.3);
+  cursor: pointer; transition: all 0.1s; width: 100%;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-clear-donors:active { transform: scale(0.96); background: rgba(255, 153, 0, 0.25); }
+
+.mob-fb-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; transition: background .3s; }
+.mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 10px #00cc44; animation: pulseDot 2s infinite; }
+.mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 10px #ff4444; }
+
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
    КРАСИВЫЙ ПЕРЕЛИВАЮЩИЙСЯ ДОНАТЕР
@@ -378,67 +370,45 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
 
     <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
       <div class="mob-topbar">
-        <div class="mob-logo">WIDGET <span>PRO</span></div>
+        <div class="mob-logo">ПУЛЬТ <span>PRO</span></div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:9px;color:var(--text-dim);font-weight:700;">{{fbOk?'OBS ✓':'NO FB'}}</span>
-          <div class="mob-fb-dot" :class="{ok:fbOk,err:!fbOk}"></div>
+          <span style="font-size:11px;color:var(--text-dim);font-weight:900;">{{fbLoaded?'СВЯЗЬ ✓':'ОЖИДАНИЕ'}}</span>
+          <div class="mob-fb-dot" :class="{ok:fbLoaded,err:!fbLoaded}"></div>
         </div>
       </div>
+      
       <div class="mob-scroll">
-        <textarea class="kaspi-paste-area" v-model="kaspiPaste" @input="handleKaspiPaste" placeholder="📋 Вставь текст сюда — всё распарсится само..."></textarea>
-        <div class="parsed-card" v-if="quickName || quickAmount || quickMessage">
-          <div class="parsed-row"><label>Имя</label><input type="text" v-model="quickName" placeholder="Имя донатера"></div>
-          <div class="parsed-row">
-            <label>Сумма</label>
-            <div class="donate-amount-wrap" style="flex:1;position:relative;">
-              <input type="number" v-model.number="quickAmount" placeholder="0">
-            </div>
-          </div>
-          <div class="parsed-row" style="align-items:flex-start;"><label style="padding-top:8px;">Сообщ.</label><textarea v-model="quickMessage" placeholder="Сообщение"></textarea></div>
-          <div class="auto-send-banner" v-if="autoSendCountdown > 0"><span>⚡ Авто-отправка через</span><span class="auto-send-countdown">{{autoSendCountdown}}</span></div>
-          <div class="auto-send-banner" v-else-if="autoSendCountdown === 0 && (quickName||quickAmount)"><span>✅ Готово к отправке — нажми кнопку</span></div>
+        <div v-if="!fbLoaded" style="text-align:center; padding: 40px 20px; color: var(--text-dim); font-size: 14px; font-weight: 900; line-height: 1.5;">
+          ⏳ Подключение к базе данных...<br>
+          <span style="font-size: 10px; font-weight: 400;">(защита от сброса дизайна)</span>
         </div>
-
-        <div class="parsed-card" style="margin-top:10px;">
-          <div style="font-size:10px; font-weight:900; color:#fff; text-transform:uppercase; margin-bottom:8px;">💰 Быстро в копилку (без алерта)</div>
+        
+        <div v-else style="display:flex; flex-direction:column; gap:25px; max-width: 500px; margin: 0 auto; width: 100%;">
           
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-             <button class="btn-quick-add" @click="addKztSilently(100)">+ 100 ₸</button>
-             <button class="btn-quick-add" @click="addKztSilently(250)">+ 250 ₸</button>
-             <button class="btn-quick-add" @click="addKztSilently(500)">+ 500 ₸</button>
-             <button class="btn-quick-add" @click="addKztSilently(1000)">+ 1000 ₸</button>
+          <div style="text-align:center; font-size:14px; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing: 1px;">💰 Быстро в копилку</div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+             <button class="btn-huge-preset" @click="addKztSilently(100)">+ 100 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(250)">+ 250 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(500)">+ 500 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(1000)">+ 1000 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(2000)">+ 2000 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(5000)">+ 5000 ₸</button>
           </div>
 
-          <div class="parsed-row">
-            <label style="color:var(--text-dim); font-size:9px;">Своя сумма</label>
-            <div class="donate-amount-wrap" style="flex:1;position:relative;">
-              <input type="number" v-model.number="quickKzt" placeholder="Например, 3500">
-            </div>
+          <div style="margin-top: 10px;">
+            <input type="number" v-model.number="quickKzt" placeholder="Своя сумма ₸" class="huge-input">
+            <button class="btn-huge-add" @click="addKztSilently()" :disabled="!quickKzt">
+              ➕ ДОБАВИТЬ {{ quickKzt || 0 }} ₸
+            </button>
           </div>
-          <button class="btn-mob-send" style="margin-top:8px; background: linear-gradient(135deg, #00aa44, #007730);" @click="addKztSilently()" :disabled="!quickKzt">
-            ➕ ДОБАВИТЬ {{ quickKzt || 0 }} ₸
-          </button>
-        </div>
 
-        <div class="mob-music-card" v-if="musicQueue.length > 0">
-          <div class="mob-music-head"><div class="mob-music-title">🎵 Музыка ({{musicQueue.length}})</div><button class="btn-clear-queue" @click="clearQueue">🗑</button></div>
-          <div class="mob-volume-row"><span style="font-size:18px;">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span><input type="range" min="0" max="100" v-model.number="musicVolume" @input="changeVolume"><span class="mob-vol-val">{{musicVolume}}%</span></div>
-          <div v-for="(track, idx) in musicQueue" :key="track.uid" class="mob-track-item" :class="{playing: idx===0}">
-            <div class="mob-track-meta">
-              <div class="mob-track-status" :class="{now: idx===0}">
-                <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Сейчас играет</template><template v-else>⏳ #{{idx}}</template>
-              </div>
-              <span class="mob-track-id">{{track.videoId}}</span>
-            </div>
-            <button v-if="idx===0" class="mob-skip-btn" @click="skipTrack(0)">⏭</button>
-            <button v-else class="mob-remove-btn" @click="skipTrack(idx)">✕</button>
+          <div style="display:flex; flex-direction:column; gap:15px; margin-top:20px; border-top: 1px solid var(--border); padding-top:25px;">
+            <button class="btn-huge-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СУММУ СБОРОВ</button>
+            <button class="btn-huge-clear-donors" @click="clearDonors">🗑️ ОЧИСТИТЬ ДОНАТЕРОВ</button>
           </div>
+
         </div>
-      </div>
-      <div class="mob-actions">
-        <button class="btn-mob-send" @click="doQuickDonate" :disabled="!quickName && !quickAmount">🚀 ОТПРАВИТЬ В OBS</button>
-        <button class="btn-mob-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СУММУ СБОРОВ</button>
-        <button class="btn-mob-clear" @click="clearDonors">🗑️ ОЧИСТИТЬ СПИСОК ДОНАТЕРОВ</button>
       </div>
     </div>
 
@@ -456,7 +426,7 @@ input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:point
         <div class="sidebar-body">
 
           <template v-if="tab==='widgets'">
-            <div class="fb-status"><div class="fb-dot" :class="{ok:fbOk,err:!fbOk}"></div><span>{{fbOk ? 'Firebase подключён' : 'Firebase не подключён'}}</span></div>
+            <div class="fb-status"><div class="fb-dot" :class="{ok:fbLoaded,err:!fbLoaded}"></div><span>{{fbLoaded ? 'Firebase подключён' : 'Ожидание Firebase...'}}</span></div>
             <div class="donate-form-card">
               <div class="donate-form-title"><div class="dft-icon">⭐</div>Быстрый донат</div>
               <div class="live-preview-strip" v-if="quickName||quickAmount">
@@ -840,7 +810,9 @@ createApp({
     const alertOpen = ref(false);
     const ttsOpen = ref(false);
     const globalScale = ref(saved.globalScale||1);
-    const fbOk = ref(!!db);
+    
+    // ПРЕДОХРАНИТЕЛЬ
+    const fbLoaded = ref(false); 
 
     const quickKzt = ref('');
 
@@ -854,7 +826,6 @@ createApp({
     const kaspiPaste = ref('');
     const musicQueue = reactive([]);
     const musicVolume = ref(100);
-    const autoSendCountdown = ref(-1);
 
     const panels = reactive(saved.panels || []);
     if(!panels.length) panels.push({
@@ -994,7 +965,12 @@ createApp({
 
     function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value }; }
     const _doPushFirebase = debounce((state) => { if(db){ try{ db.ref('config').set(state); }catch(e){} } }, 600);
-    function pushState(){ const state = buildState(); saveState(state); _doPushFirebase(state); }
+    
+    function pushState(){ 
+      if(isMobile.value && !fbLoaded.value) return; // Защита для мобилки
+      const state = buildState(); saveState(state); _doPushFirebase(state); 
+    }
+    
     const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
     function pushQueueState() { _doPushQueue(); }
     const _pushVolume = debounce((v) => { if(db) db.ref('musicVolume').set(v); }, 300);
@@ -1002,6 +978,7 @@ createApp({
     function applyVolume() { if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') { window.ytPlayerObj.setVolume(musicVolume.value); } }
 
     function addKztSilently(presetAmount) {
+      if(isMobile.value && !fbLoaded.value) return;
       const amtKzt = presetAmount || cleanNum(quickKzt.value);
       if (!amtKzt) return;
       
@@ -1022,6 +999,7 @@ createApp({
     }
 
     function doQuickDonate(){
+      if(isMobile.value && !fbLoaded.value) return;
       const name = quickName.value.trim() || 'Аноним';
       const amt = cleanNum(quickAmount.value);
       if(!amt) { showToast('Сумма не найдена!','err'); return; }
@@ -1083,8 +1061,21 @@ createApp({
       playTTSVoice(msg, isTest);
     }
     
-    function clearProgress() { if(confirm('Очистить сумму сборов?')){ panels.forEach(p => { p.current = 0; }); pushState(); } }
-    function clearDonors() { if(confirm('Очистить список донатеров?')){ panels.forEach(p => { if(p.type === 'goal') { p.donorsRaw = ''; p.lastDonorStr = ''; } }); pushState(); } }
+    // БЕЗ ПОДТВЕРЖДЕНИЙ ДЛЯ МГНОВЕННОЙ ОЧИСТКИ
+    function clearProgress() { 
+      if(isMobile.value && !fbLoaded.value) return;
+      panels.forEach(p => { p.current = 0; }); 
+      pushState(); 
+      showToast('🗑️ Сборы очищены', 'ok'); 
+    }
+    
+    function clearDonors() { 
+      if(isMobile.value && !fbLoaded.value) return;
+      panels.forEach(p => { if(p.type === 'goal') { p.donorsRaw = ''; p.lastDonorStr = ''; } }); 
+      pushState(); 
+      showToast('🗑️ Донатеры очищены', 'ok'); 
+    }
+
     function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
     
     function copyObs(type){
@@ -1193,11 +1184,17 @@ createApp({
           });
         }
         
-        if(mode.value!=='alert') db.ref('config').on('value', s=>{ const d=s.val(); if(d){
-          if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
-          if(d.globalScale) globalScale.value=d.globalScale;
-          if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
-        }});
+        if(mode.value!=='alert') db.ref('config').on('value', s=>{ 
+          const d=s.val(); 
+          if(d){
+            if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
+            if(d.globalScale) globalScale.value=d.globalScale;
+            if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
+          }
+          // КОГДА ДАННЫЕ С БАЗЫ ПРИШЛИ, ВКЛЮЧАЕМ ИНТЕРФЕЙС
+          fbLoaded.value = true;
+        });
+        
         db.ref('musicQueue').on('value', snap => {
           const q = snap.val() || []; musicQueue.splice(0, musicQueue.length, ...q);
           checkQueuePlay();
@@ -1207,7 +1204,7 @@ createApp({
     });
 
     return { 
-      mode,tab,selId,alertOpen,ttsOpen,globalScale,fbOk,panels,alertCfg,musicCfg,
+      mode,tab,selId,alertOpen,ttsOpen,globalScale,fbLoaded,panels,alertCfg,musicCfg,
       alertVis,alertKey,curDonation,isMobile,kaspiPaste,
       handleKaspiPaste,uploadIcon,
       quickName,quickAmount,quickMessage,
