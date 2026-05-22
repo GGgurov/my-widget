@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Stopwatch Widget Pro</title>
+    <title>Stream Stopwatch Ultimate Designer</title>
     
+    <!-- Подключаем шрифт Unbounded -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
     
+    <!-- Подключаем Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <style>
@@ -19,130 +21,185 @@
 
         /* Эффект Liquid Glass */
         .glass-panel {
-            background: rgba(20, 20, 25, 0.5);
+            background: rgba(15, 15, 20, 0.5);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
         }
 
-        .glow-text {
-            text-shadow: 0px 0px 24px rgba(99, 102, 241, 0.75), 0px 0px 8px rgba(255, 255, 255, 0.3);
+        /* Динамические стили, управляемые через CSS-переменные из JS */
+        :root {
+            --main-color: #818cf8;
+            --flash-color: #f472b6;
+            --glow-radius: 24px;
         }
 
-        /* --- ПРАЗДНИЧНЫЕ АНИМАЦИИ ДЛЯ OBS (Каждые 30/60 минут) --- */
-        @keyframes milestone-card-pulse {
+        .dynamic-glow {
+            color: var(--main-color);
+            text-shadow: 0px 0px var(--glow-radius) var(--main-color), 0px 0px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- ПРАЗДНИЧНЫЕ АНИМАЦИИ ДЛЯ OBS --- */
+        @keyframes custom-card-pulse {
             0%, 100% { 
-                border-color: rgba(255, 255, 255, 0.08); 
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+                border-color: rgba(255, 255, 255, 0.06); 
+                box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
             }
             50% { 
-                border-color: rgba(236, 72, 153, 0.6); 
-                box-shadow: 0 0 60px 20px rgba(99, 102, 241, 0.6), inset 0 0 24px rgba(236, 72, 153, 0.4);
-                transform: scale(1.02);
+                border-color: var(--flash-color); 
+                box-shadow: 0 0 60px 15px var(--flash-color), inset 0 0 20px var(--flash-color);
+                transform: scale(1.03);
             }
         }
 
-        @keyframes milestone-text-pulse {
+        @keyframes custom-text-pulse {
             0%, 100% { 
-                text-shadow: 0px 0px 24px rgba(99, 102, 241, 0.75), 0px 0px 8px rgba(255, 255, 255, 0.3);
-                color: #818cf8; /* indigo-400 */
+                color: var(--main-color);
+                text-shadow: 0px 0px var(--glow-radius) var(--main-color), 0px 0px 8px rgba(255, 255, 255, 0.3);
             }
             50% { 
-                text-shadow: 0px 0px 50px rgba(236, 72, 153, 1), 0px 0px 20px rgba(255, 255, 255, 0.9);
-                color: #f472b6; /* pink-400 */
-                transform: scale(1.06);
+                color: var(--flash-color);
+                text-shadow: 0px 0px calc(var(--glow-radius) * 2) var(--flash-color), 0px 0px 20px #ffffff;
+                transform: scale(1.05);
             }
         }
 
-        /* Классы активации анимации (будут навешиваться скриптом на 6 секунд) */
         .animate-milestone-card {
-            animation: milestone-card-pulse 3s ease-in-out 2;
+            animation: custom-card-pulse 3s ease-in-out 2;
             transition: all 0.5s ease-in-out;
         }
 
         .animate-milestone-text {
-            animation: milestone-text-pulse 3s ease-in-out 2;
+            animation: custom-text-pulse 3s ease-in-out 2;
             transition: all 0.5s ease-in-out;
         }
 
-        /* Режимы отображения */
+        /* Режимы экрана */
         body.widget-mode {
             background: transparent !important;
         }
         body.widget-mode #control-panel {
             display: none !important;
         }
-        body.control-mode #widget-view {
+        body.control-mode #widget-view-container {
             display: none !important;
         }
     </style>
 </head>
 <body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-4">
 
-    <div id="widget-view" class="glass-panel rounded-[2rem] px-14 py-8 flex flex-col items-center justify-center text-center min-w-[360px] transition-all duration-500">
-        <div id="widget-label" class="text-xs md:text-sm font-bold tracking-[0.3em] text-indigo-300/80 uppercase mb-3 select-none transition-all duration-300 whitespace-nowrap">
-            ЧЕЛЛЕНДЖ НАЧАТ
-        </div>
-        <div id="display-widget" class="text-6xl md:text-8xl font-black text-indigo-400 glow-text tracking-wider tabular-nums select-none transition-all duration-300">
-            00:00:00
+    <!-- ВЬЮ ВИДЖЕТА (Для OBS) -->
+    <div id="widget-view-container" class="p-10">
+        <div id="widget-view" class="glass-panel rounded-[2rem] px-14 py-8 flex flex-col items-center justify-center text-center min-w-[380px] transition-all duration-500">
+            <!-- Надпись сверху -->
+            <div id="widget-label" class="font-bold tracking-[0.25em] uppercase mb-2 select-none transition-all duration-300 whitespace-nowrap">
+                СТРИМ ИДЕТ
+            </div>
+            <!-- Цифры секундомера -->
+            <div id="display-widget" class="text-6xl md:text-8xl font-black dynamic-glow tracking-wider tabular-nums select-none transition-all duration-300">
+                00:00:00
+            </div>
         </div>
     </div>
 
-    <div id="control-panel" class="glass-panel rounded-3xl p-8 max-w-md w-full flex flex-col gap-6 hidden">
-        <div>
-            <h1 class="text-2xl font-bold text-center mb-1">Таймер стрима Pro</h1>
-            <p class="text-center text-xs text-gray-400">Синхронизация + Кастомный текст</p>
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ (КОНСТРУКТОР) -->
+    <div id="control-panel" class="glass-panel rounded-3xl p-6 max-w-lg w-full flex flex-col gap-5 hidden max-h-[90vh] overflow-y-auto">
+        <div class="text-center">
+            <h1 class="text-xl font-bold text-indigo-400">Таймер-Конструктор</h1>
+            <p class="text-[10px] text-gray-400 mt-0.5">Полная кастомизация + Синхронизация в OBS</p>
         </div>
 
-        <div class="bg-black/20 rounded-2xl p-4 border border-white/5">
-            <div id="control-label-preview" class="text-[10px] font-bold text-center tracking-widest text-indigo-300/60 uppercase mb-1">
-                ЧЕЛЛЕНДЖ НАЧАТ
+        <!-- Превью таймера в админке -->
+        <div class="bg-black/40 rounded-2xl p-4 border border-white/5 text-center flex flex-col items-center justify-center">
+            <div id="control-label-preview" class="font-bold tracking-widest uppercase mb-1 text-gray-300">
+                СТРИМ ИДЕТ
             </div>
-            <div id="display-control" class="text-5xl font-black text-center text-indigo-400 glow-text tracking-wider tabular-nums">
+            <div id="display-control" class="text-4xl font-black dynamic-glow tracking-wider tabular-nums">
                 00:00:00
             </div>
         </div>
 
-        <div class="flex gap-2 justify-center">
-            <button id="btn-start" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition shadow-lg shadow-indigo-600/20 text-xs uppercase tracking-wider">Старт</button>
-            <button id="btn-pause" class="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-xl font-bold transition shadow-lg shadow-amber-500/20 text-xs uppercase tracking-wider">Пауза</button>
-            <button id="btn-reset" class="flex-1 py-3 bg-red-500 hover:bg-red-400 rounded-xl font-bold transition shadow-lg shadow-red-500/20 text-xs uppercase tracking-wider">Сброс</button>
-        </div>
-
-        <div class="border-t border-gray-800 pt-4">
-            <label class="block text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Текст над таймером (Любая надпись)</label>
-            <div class="flex gap-2">
-                <input type="text" id="inp-label" placeholder="Например: МАРАФОН, СТРИМ ОНЛАЙН" class="flex-1 bg-gray-900/80 rounded-xl px-4 py-2.5 border border-gray-700 focus:border-indigo-500 outline-none transition font-medium text-sm text-white">
-                <button id="btn-set-label" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition text-xs uppercase tracking-wider">ОК</button>
+        <!-- Раздел 1: Управление временем -->
+        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
+            <div class="flex gap-2 justify-center">
+                <button id="btn-start" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition text-xs uppercase tracking-wider">Старт</button>
+                <button id="btn-pause" class="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-lg font-bold transition text-xs uppercase tracking-wider">Пауза</button>
+                <button id="btn-reset" class="flex-1 py-2 bg-red-500 hover:bg-red-400 rounded-lg font-bold transition text-xs uppercase tracking-wider">Сброс</button>
+            </div>
+            <div class="flex gap-2 items-center justify-between border-t border-white/5 pt-2">
+                <div class="flex gap-1 items-center">
+                    <input type="number" id="inp-h" placeholder="00" min="0" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
+                    <span class="text-gray-600 font-bold">:</span>
+                    <input type="number" id="inp-m" placeholder="00" min="0" max="59" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
+                    <span class="text-gray-600 font-bold">:</span>
+                    <input type="number" id="inp-s" placeholder="00" min="0" max="59" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
+                </div>
+                <button id="btn-set" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg font-bold transition text-xs uppercase">Задать время</button>
             </div>
         </div>
 
-        <div class="border-t border-gray-800 pt-4">
-            <label class="block text-[11px] font-bold text-gray-400 mb-2 uppercase tracking-wider">Задать время (ЧЧ : ММ : СС)</label>
-            <div class="flex gap-2 items-center justify-between">
-                <input type="number" id="inp-h" placeholder="00" min="0" class="w-16 bg-gray-900/80 rounded-xl text-center p-2.5 border border-gray-700 focus:border-indigo-500 outline-none transition font-bold">
-                <span class="font-bold text-gray-600">:</span>
-                <input type="number" id="inp-m" placeholder="00" min="0" max="59" class="w-16 bg-gray-900/80 rounded-xl text-center p-2.5 border border-gray-700 focus:border-indigo-500 outline-none transition font-bold">
-                <span class="font-bold text-gray-600">:</span>
-                <input type="number" id="inp-s" placeholder="00" min="0" max="59" class="w-16 bg-gray-900/80 rounded-xl text-center p-2.5 border border-gray-700 focus:border-indigo-500 outline-none transition font-bold">
-                
-                <button id="btn-set" class="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 rounded-xl font-bold transition text-xs uppercase tracking-wider">Задать</button>
+        <!-- Раздел 2: Кастомизация надписи -->
+        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Настройка надписи</h2>
+            <div>
+                <label class="block text-[10px] text-gray-400 mb-1">Текст</label>
+                <input type="text" id="inp-label" placeholder="СТРИМ ИДЕТ" class="w-full bg-gray-900 rounded-lg px-3 py-2 border border-gray-700 focus:border-indigo-500 outline-none transition text-xs">
+            </div>
+            <div>
+                <div class="flex justify-between text-[10px] text-gray-400 mb-1">
+                    <label>Размер надписи</label>
+                    <span id="val-label-size">14px</span>
+                </div>
+                <input type="range" id="scale-label" min="10" max="42" value="14" class="w-full accent-indigo-500">
             </div>
         </div>
 
-        <div class="border-t border-gray-800 pt-4">
-            <button id="btn-copy-link" class="w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-400 text-gray-900 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 flex justify-center items-center gap-2 text-xs uppercase tracking-wider">
+        <!-- Раздел 3: Кастомизация цветов и эффектов -->
+        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Цвета и Свечение</h2>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1">Основной цвет</label>
+                    <div class="flex gap-2 items-center bg-gray-900 p-1.5 rounded-lg border border-gray-700">
+                        <input type="color" id="cp-main" value="#818cf8" class="w-8 h-6 bg-transparent border-0 cursor-pointer">
+                        <span id="txt-main-color" class="text-[10px] font-mono text-gray-400">#818CF8</span>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-gray-400 mb-1">Цвет вспышки (30м)</label>
+                    <div class="flex gap-2 items-center bg-gray-900 p-1.5 rounded-lg border border-gray-700">
+                        <input type="color" id="cp-flash" value="#f472b6" class="w-8 h-6 bg-transparent border-0 cursor-pointer">
+                        <span id="txt-flash-color" class="text-[10px] font-mono text-gray-400">#F472B6</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="flex justify-between text-[10px] text-gray-400 mb-1">
+                    <label>Интенсивность Glow (Свечение)</label>
+                    <span id="val-glow">24px</span>
+                </div>
+                <input type="range" id="scale-glow" min="4" max="60" value="24" class="w-full accent-indigo-500">
+            </div>
+        </div>
+
+        <!-- Сохранение и вывод ссылки -->
+        <div class="flex flex-col gap-2 mt-1">
+            <button id="btn-save-design" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold text-xs uppercase tracking-widest transition shadow-lg shadow-indigo-600/10">
+                Применить настройки дизайна
+            </button>
+            <button id="btn-copy-link" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-gray-900 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/10">
                 Скопировать ссылку для OBS
             </button>
         </div>
     </div>
 
+    <!-- FIREBASE & CORE LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // Твой конфиг Firebase
+        // Конфиг базы данных
         const firebaseConfig = {
             apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
             authDomain: "tt-widget-88711.firebaseapp.com",
@@ -155,29 +212,30 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const timerRef = ref(db, 'stream_stopwatch');
+        const timerRef = ref(db, 'stream_stopwatch_designer');
 
-        // Глобальное состояние (по умолчанию добавлена надпись)
+        // Модель данных с дефолтными настройками стиля
         let state = {
             isRunning: false,
             startTime: 0,
             accumulated: 0,
-            labelText: "ЧЕЛЛЕНДЖ НАЧАТ"
+            labelText: "СТРИМ ИДЕТ",
+            labelSize: "14px",
+            mainColor: "#818cf8",
+            flashColor: "#f472b6",
+            glowRadius: "24px"
         };
 
-        // DOM элементы
+        // Элементы
         const displayWidget = document.getElementById('display-widget');
         const widgetLabel = document.getElementById('widget-label');
-        
         const displayControl = document.getElementById('display-control');
         const controlLabelPreview = document.getElementById('control-label-preview');
         const controlPanel = document.getElementById('control-panel');
-        const inpLabel = document.getElementById('inp-label');
         
-        // Переменная для отслеживания секунд, чтобы анимация срабатывала строго 1 раз
         let lastTriggeredSecond = -1;
 
-        // Определяем режим
+        // Режим работы
         const urlParams = new URLSearchParams(window.location.search);
         const isWidget = urlParams.get('widget') === 'true';
 
@@ -188,162 +246,170 @@
             controlPanel.classList.remove('hidden');
         }
 
-        // Подписка на базу данных (синхро текста и времени)
+        // Обновление CSS переменных на странице
+        function applyDesignStyles(data) {
+            document.documentElement.style.setProperty('--main-color', data.mainColor || '#818cf8');
+            document.documentElement.style.setProperty('--flash-color', data.flashColor || '#f472b6');
+            document.documentElement.style.setProperty('--glow-radius', data.glowRadius || '24px');
+            
+            // Размер текста надписи
+            widgetLabel.style.fontSize = data.labelSize || '14px';
+            controlLabelPreview.style.fontSize = data.labelSize || '14px';
+            
+            // Цвет надписи делаем чуть блеклым от основного для стиля
+            widgetLabel.style.color = (data.mainColor || '#818cf8') + 'cc'; 
+            controlLabelPreview.style.color = (data.mainColor || '#818cf8') + 'cc'; 
+        }
+
+        // Прием данных из Firebase
         onValue(timerRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
                 state = data;
-                if (!state.labelText) state.labelText = "СТРИМ ИДЕТ";
                 
-                // Обновляем текст везде в реальном времени
-                widgetLabel.textContent = state.labelText;
-                controlLabelPreview.textContent = state.labelText;
+                // Рендерим тексты
+                widgetLabel.textContent = state.labelText || "СТРИМ ИДЕТ";
+                controlLabelPreview.textContent = state.labelText || "СТРИМ ИДЕТ";
                 
-                // Заполняем инпут в админке, если пользователь его прямо сейчас не редактирует
-                if (!isWidget && document.activeElement !== inpLabel) {
-                    inpLabel.value = state.labelText;
+                // Применяем стили к CSS
+                applyDesignStyles(state);
+
+                // Если мы в админке, подтягиваем текущие параметры в инпуты
+                if (!isWidget) {
+                    if (document.activeElement !== document.getElementById('inp-label')) {
+                        document.getElementById('inp-label').value = state.labelText || "СТРИМ ИДЕТ";
+                    }
+                    document.getElementById('cp-main').value = state.mainColor || "#818cf8";
+                    document.getElementById('cp-flash').value = state.flashColor || "#f472b6";
+                    document.getElementById('txt-main-color').textContent = (state.mainColor || "#818cf8").toUpperCase();
+                    document.getElementById('txt-flash-color').textContent = (state.flashColor || "#f472b6").toUpperCase();
+                    
+                    const sizeVal = parseInt(state.labelSize || 14);
+                    document.getElementById('scale-label').value = sizeVal;
+                    document.getElementById('val-label-size').textContent = sizeVal + 'px';
+
+                    const glowVal = parseInt(state.glowRadius || 24);
+                    document.getElementById('scale-glow').value = glowVal;
+                    document.getElementById('val-glow').textContent = glowVal + 'px';
                 }
             }
         });
 
-        // Форматирование миллисекунд
+        // Время
         function formatTime(ms) {
             const totalSeconds = Math.floor(ms / 1000);
             const hours = Math.floor(totalSeconds / 3600);
             const minutes = Math.floor((totalSeconds % 3600) / 60);
             const seconds = totalSeconds % 60;
-
             const pad = (num) => num.toString().padStart(2, '0');
             return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
         }
 
-        // Функция запуска праздничного Glow-эффекта на виджете
         function triggerMilestoneAnimation() {
             const card = document.getElementById('widget-view');
             const text = document.getElementById('display-widget');
-            
-            // Сбрасываем классы анимации для перезапуска (хак с деривацией ширины offsetWidth)
             card.classList.remove('animate-milestone-card');
             text.classList.remove('animate-milestone-text');
-            void card.offsetWidth; 
-            void text.offsetWidth;
-            
-            // Навешиваем анимацию (в CSS прописано 2 повтора по 3 секунды = 6 секунд шоу)
+            void card.offsetWidth; void text.offsetWidth; // перезапуск CSS анимации
             card.classList.add('animate-milestone-card');
             text.classList.add('animate-milestone-text');
         }
 
-        // Главный цикл отрисовки
         function updateDisplay() {
-            let currentElapsed = state.accumulated;
-            
+            let currentElapsed = state.accumulated || 0;
             if (state.isRunning) {
                 currentElapsed += (Date.now() - state.startTime);
             }
 
             const formattedTime = formatTime(currentElapsed);
-            
-            // Вывод времени
             if (isWidget) {
                 displayWidget.textContent = formattedTime;
             } else {
                 displayControl.textContent = formattedTime;
             }
 
-            // --- ТРИГГЕР АНИМАЦИИ КАЖДЫЕ 30 И 60 МИНУТ ---
+            // Проверка на отметку 30 минут (1800 сек)
             const totalSeconds = Math.floor(currentElapsed / 1000);
-            
             if (state.isRunning && totalSeconds !== lastTriggeredSecond) {
                 lastTriggeredSecond = totalSeconds;
-                
-                // Проверяем: прошло больше 0 секунд И остаток от деления на 1800 сек (30 минут) равен 0
                 if (totalSeconds > 0 && totalSeconds % 1800 === 0) {
                     triggerMilestoneAnimation();
                 }
             }
-
             requestAnimationFrame(updateDisplay);
         }
         requestAnimationFrame(updateDisplay);
 
-        // --- ЛОГИКА АДМИН-ПАНЕЛИ ---
+        // --- ИНТЕРФЕЙС НАСТРОЕК В АДМИНКЕ ---
         if (!isWidget) {
-            const btnStart = document.getElementById('btn-start');
-            const btnPause = document.getElementById('btn-pause');
-            const borderReset = document.getElementById('btn-reset');
-            const btnSet = document.getElementById('btn-set');
-            const btnSetLabel = document.getElementById('btn-set-label');
-            const btnCopy = document.getElementById('btn-copy-link');
+            const cpMain = document.getElementById('cp-main');
+            const cpFlash = document.getElementById('cp-flash');
+            const scaleLabel = document.getElementById('scale-label');
+            const scaleGlow = document.getElementById('scale-glow');
+            const inpLabel = document.getElementById('inp-label');
 
-            const inpH = document.getElementById('inp-h');
-            const inpM = document.getElementById('inp-m');
-            const inpS = document.getElementById('inp-s');
+            // Живой апдейт цифр в админке при перетаскивании ползунков
+            scaleLabel.addEventListener('input', (e) => {
+                document.getElementById('val-label-size').textContent = e.target.value + 'px';
+            });
+            scaleGlow.addEventListener('input', (e) => {
+                document.getElementById('val-glow').textContent = e.target.value + 'px';
+            });
+            cpMain.addEventListener('input', (e) => {
+                document.getElementById('txt-main-color').textContent = e.target.value.toUpperCase();
+            });
+            cpFlash.addEventListener('input', (e) => {
+                document.getElementById('txt-flash-color').textContent = e.target.value.toUpperCase();
+            });
 
-            // Сохранение новой надписи в БД
-            btnSetLabel.addEventListener('click', () => {
-                const textValue = inpLabel.value.trim() || "СТРИМ ИДЕТ";
+            // Кнопка сохранения ВСЕГО дизайна в Firebase
+            document.getElementById('btn-save-design').addEventListener('click', () => {
                 set(timerRef, {
                     ...state,
-                    labelText: textValue
+                    labelText: inpLabel.value.trim() || "СТРИМ ИДЕТ",
+                    labelSize: scaleLabel.value + 'px',
+                    mainColor: cpMain.value,
+                    flashColor: cpFlash.value,
+                    glowRadius: scaleGlow.value + 'px'
                 });
             });
 
-            btnStart.addEventListener('click', () => {
+            // Кнопки таймера
+            document.getElementById('btn-start').addEventListener('click', () => {
                 if (!state.isRunning) {
-                    set(timerRef, {
-                        ...state,
-                        isRunning: true,
-                        startTime: Date.now()
-                    });
+                    set(timerRef, { ...state, isRunning: true, startTime: Date.now() });
                 }
             });
 
-            btnPause.addEventListener('click', () => {
+            document.getElementById('btn-pause').addEventListener('click', () => {
                 if (state.isRunning) {
-                    const newAccumulated = state.accumulated + (Date.now() - state.startTime);
-                    set(timerRef, {
-                        ...state,
-                        isRunning: false,
-                        startTime: 0,
-                        accumulated: newAccumulated
-                    });
+                    const newAccumulated = (state.accumulated || 0) + (Date.now() - state.startTime);
+                    set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: newAccumulated });
                 }
             });
 
-            borderReset.addEventListener('click', () => {
-                set(timerRef, {
-                    ...state,
-                    isRunning: false,
-                    startTime: 0,
-                    accumulated: 0
-                });
-                inpH.value = ''; inpM.value = ''; inpS.value = '';
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: 0 });
             });
 
-            btnSet.addEventListener('click', () => {
-                const h = parseInt(inpH.value || 0) * 3600000;
-                const m = parseInt(inpM.value || 0) * 60000;
-                const s = parseInt(inpS.value || 0) * 1000;
-                const totalMs = h + m + s;
-
-                set(timerRef, {
-                    ...state,
-                    isRunning: false,
-                    startTime: 0,
-                    accumulated: totalMs
-                });
+            document.getElementById('btn-set').addEventListener('click', () => {
+                const h = parseInt(document.getElementById('inp-h').value || 0) * 3600000;
+                const m = parseInt(document.getElementById('inp-m').value || 0) * 60000;
+                const s = parseInt(document.getElementById('inp-s').value || 0) * 1000;
+                set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: (h + m + s) });
             });
 
-            btnCopy.addEventListener('click', async () => {
+            document.getElementById('btn-copy-link').addEventListener('click', async () => {
                 const widgetUrl = window.location.origin + window.location.pathname + "?widget=true";
                 try {
                     await navigator.clipboard.writeText(widgetUrl);
-                    const originalText = btnCopy.textContent;
-                    btnCopy.textContent = "УСПЕШНО СКОПИРОВАНО!";
-                    btnCopy.classList.replace('bg-emerald-500', 'bg-emerald-600');
+                    const btn = document.getElementById('btn-copy-link');
+                    const originalText = btn.textContent;
+                    btn.textContent = "ССЫЛКА СКОПИРОВАНА!";
+                    btn.classList.replace('bg-emerald-500', 'bg-emerald-600');
                     setTimeout(() => {
-                        btnCopy.textContent = originalText;
-                        btnCopy.classList.replace('bg-emerald-600', 'bg-emerald-500');
+                        btn.textContent = originalText;
+                        btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
                     }, 2000);
                 } catch (err) {
                     alert("Скопируй вручную: " + widgetUrl);
