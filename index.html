@@ -3,239 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Alert System</title>
+    <title>Stream Stopwatch Widget</title>
+    
+    <!-- Подключаем шрифт Unbounded -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Подключаем Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
-        /* ================= CSS ПЕРЕМЕННЫЕ И БАЗА ================= */
-        :root {
-            --bg: #0f0f13;
-            --panel: rgba(25, 25, 30, 0.6);
-            --border: rgba(255, 255, 255, 0.1);
-            --accent: #00e5ff;
-            --text: #ffffff;
-            --text-muted: #8b8b99;
-            --gold: #ffd700;
-            --silver: #c0c0c0;
-            --bronze: #cd7f32;
+        body {
+            font-family: 'Unbounded', sans-serif;
+            transition: background-color 0.3s;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
-        body.widget-mode { background: transparent !important; overflow: hidden; } /* Для OBS */
+        /* Эффект Liquid Glass */
+        .glass-panel {
+            background: rgba(20, 20, 25, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
 
-        /* ================= УТИЛИТЫ И GLASSMORPHISM ================= */
-        .hidden { display: none !important; }
-        .glass { background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; }
-        .btn { background: var(--accent); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn:hover { box-shadow: 0 0 15px var(--accent); transform: translateY(-2px); }
-        .btn-danger { background: #ff4757; color: white; }
-        .btn-danger:hover { box-shadow: 0 0 15px #ff4757; }
-        
-        input, textarea, select { background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 8px; width: 100%; outline: none; }
-        input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+        .glow-text {
+            text-shadow: 0px 0px 24px rgba(99, 102, 241, 0.8), 0px 0px 8px rgba(255, 255, 255, 0.4);
+        }
 
-        /* ================= АДМИН ПАНЕЛЬ (ПК) ================= */
-        #admin-view { display: grid; grid-template-columns: 300px 1fr; min-height: 100vh; }
-        .sidebar { padding: 20px; border-right: 1px solid var(--border); }
-        .sidebar h2 { margin-bottom: 20px; color: var(--accent); text-shadow: 0 0 10px var(--accent); }
-        .nav-btn { display: block; width: 100%; padding: 15px; margin-bottom: 10px; background: transparent; border: 1px solid var(--border); color: white; border-radius: 8px; cursor: pointer; text-align: left; transition: 0.2s; }
-        .nav-btn.active, .nav-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--accent); }
-        .content { padding: 30px; overflow-y: auto; }
-        .settings-group { margin-bottom: 25px; padding: 20px; }
-        .settings-group h3 { margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        .control-row { margin-bottom: 15px; }
-        .control-row label { display: block; margin-bottom: 5px; font-size: 14px; color: var(--text-muted); }
-        .widget-link-box { display: flex; gap: 10px; margin-top: 10px; }
-        .widget-link-box input { flex: 1; }
-
-        /* ================= МОБИЛЬНАЯ ВЕРСИЯ (ТЕЛЕФОН) ================= */
-        #mobile-view { padding: 20px; max-width: 600px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; }
-        .mobile-card { padding: 30px; text-align: center; }
-        .mobile-card h2 { margin-bottom: 20px; color: var(--accent); }
-        #kaspi-input { height: 250px; resize: none; margin-bottom: 20px; font-size: 16px; }
-        #send-btn { width: 100%; padding: 15px; font-size: 18px; }
-        #mobile-status { margin-top: 15px; font-size: 14px; color: var(--accent); height: 20px; }
-
-        /* ================= ВИДЖЕТЫ ================= */
-        .widget-container { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
-        /* Alert Widget */
-        #alert-box { text-align: center; opacity: 0; transform: scale(0.5) translateY(50px); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 30px; border-radius: 20px; background: rgba(0,0,0,0.7); box-shadow: 0 0 30px var(--accent); border: 2px solid var(--accent); max-width: 600px; }
-        #alert-box.show { opacity: 1; transform: scale(1) translateY(0); }
-        #alert-name { font-size: 32px; font-weight: bold; color: var(--accent); text-shadow: 0 0 10px var(--accent); margin-bottom: 10px; }
-        #alert-amount { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 15px; }
-        #alert-message { font-size: 24px; color: #ddd; word-wrap: break-word; }
-
-        /* Top Donators Widget */
-        #top-list { display: flex; flex-direction: column; gap: 10px; padding: 20px; width: 100%; max-width: 400px; }
-        .top-item { display: flex; justify-content: space-between; padding: 15px 20px; background: rgba(0,0,0,0.6); border: 1px solid var(--border); border-radius: 12px; font-size: 20px; font-weight: bold; transition: all 0.3s; position: relative; overflow: hidden; }
-        .top-item:nth-child(1) { border-color: var(--gold); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); color: var(--gold); }
-        .top-item:nth-child(2) { border-color: var(--silver); box-shadow: 0 0 10px rgba(192, 192, 192, 0.3); color: var(--silver); }
-        .top-item:nth-child(3) { border-color: var(--bronze); box-shadow: 0 0 10px rgba(205, 127, 50, 0.3); color: var(--bronze); }
-        .top-item .name { z-index: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
-        .top-item .amount { z-index: 2; }
-
-        /* Goal Widget */
-        #goal-box { padding: 20px; width: 100%; max-width: 600px; background: rgba(0,0,0,0.7); border-radius: 16px; border: 1px solid var(--accent); }
-        .goal-title { font-size: 24px; text-align: center; margin-bottom: 10px; color: #fff; }
-        .goal-bar-bg { width: 100%; height: 30px; background: rgba(255,255,255,0.1); border-radius: 15px; overflow: hidden; position: relative; }
-        .goal-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #00ff88); width: 0%; transition: width 1s ease-in-out; box-shadow: 0 0 20px var(--accent); }
-        .goal-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; font-weight: bold; text-shadow: 1px 1px 2px #000; }
-
-        /* Music Info Widget (for OBS) */
-        #music-info-box { padding: 15px 25px; background: rgba(0,0,0,0.8); border-left: 4px solid var(--accent); border-radius: 8px; display: flex; align-items: center; gap: 15px; transform: translateX(-120%); transition: transform 0.5s; position: absolute; bottom: 20px; left: 20px; }
-        #music-info-box.show { transform: translateX(0); }
-        .music-icon { font-size: 24px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); color: var(--accent); } 100% { transform: scale(1); } }
+        /* Режим виджета (OBS) */
+        body.widget-mode {
+            background: transparent !important;
+        }
+        body.widget-mode #control-panel {
+            display: none !important;
+        }
+        body.control-mode #widget-view {
+            display: none !important;
+        }
     </style>
 </head>
-<body>
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
 
-    <!-- ================= АДМИН ПАНЕЛЬ ================= -->
-    <div id="admin-view" class="hidden">
-        <div class="sidebar glass">
-            <h2>Stream Control</h2>
-            <button class="nav-btn active" onclick="switchTab('tab-general')">Общие & Ссылки</button>
-            <button class="nav-btn" onclick="switchTab('tab-top')">Топ Донатеров</button>
-            <button class="nav-btn" onclick="switchTab('tab-goal')">Сбор средств</button>
-            <button class="nav-btn" onclick="switchTab('tab-music')">Музыка & Очередь</button>
-        </div>
-        <div class="content">
-            <div id="tab-general" class="tab-content">
-                <div class="settings-group glass">
-                    <h3>Ссылки для OBS (Browser Source)</h3>
-                    <div class="control-row">
-                        <label>Виджет Алерта (Донат на экране)</label>
-                        <div class="widget-link-box">
-                            <input type="text" id="link-alert" readonly>
-                            <button class="btn" onclick="copyLink('link-alert')">Копировать</button>
-                        </div>
-                    </div>
-                    <div class="control-row">
-                        <label>Виджет Топа Донатеров</label>
-                        <div class="widget-link-box">
-                            <input type="text" id="link-top" readonly>
-                            <button class="btn" onclick="copyLink('link-top')">Копировать</button>
-                        </div>
-                    </div>
-                    <div class="control-row">
-                        <label>Виджет Сбора Средств</label>
-                        <div class="widget-link-box">
-                            <input type="text" id="link-goal" readonly>
-                            <button class="btn" onclick="copyLink('link-goal')">Копировать</button>
-                        </div>
-                    </div>
-                    <div class="control-row">
-                        <label>Виджет Музыки (Скрытый, играет звук и показывает трек)</label>
-                        <div class="widget-link-box">
-                            <input type="text" id="link-music" readonly>
-                            <button class="btn" onclick="copyLink('link-music')">Копировать</button>
-                        </div>
-                    </div>
-                    <div class="control-row" style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
-                        <label style="color: var(--accent); font-weight: bold; font-size: 16px;">Ссылка для ТЕЛЕФОНА (Отправка донатов)</label>
-                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Откройте эту ссылку на телефоне. Там нет настроек, только поле ввода.</p>
-                        <div class="widget-link-box">
-                            <input type="text" id="link-mobile" readonly>
-                            <button class="btn" onclick="copyLink('link-mobile')">Копировать</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="settings-group glass">
-                    <h3>Настройки TTS (Голос) - Применяются к виджету алерта</h3>
-                    <div class="control-row"><label>Громкость (0 - 1)</label><input type="number" id="set-tts-volume" step="0.1" min="0" max="1" value="1" onchange="saveSettings()"></div>
-                </div>
-            </div>
-
-            <div id="tab-top" class="tab-content hidden">
-                <div class="settings-group glass">
-                    <h3>Настройка Топа</h3>
-                    <div class="control-row"><label>Количество мест (Топ-X)</label><input type="number" id="set-top-count" value="5" onchange="saveSettings()"></div>
-                    <div class="control-row">
-                        <label>Управление донатерами (База данных)</label>
-                        <div id="admin-top-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;"></div>
-                        <button class="btn btn-danger" onclick="clearTop()">Сбросить весь Топ</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="tab-goal" class="tab-content hidden">
-                <div class="settings-group glass">
-                    <h3>Сбор средств</h3>
-                    <div class="control-row"><label>Название цели</label><input type="text" id="set-goal-title" value="На новую видеокарту" onchange="saveGoal()"></div>
-                    <div class="control-row"><label>Целевая сумма</label><input type="number" id="set-goal-target" value="100000" onchange="saveGoal()"></div>
-                    <div class="control-row"><label>Собрано сейчас</label><input type="number" id="set-goal-current" value="0" onchange="saveGoal()"></div>
-                </div>
-            </div>
-
-            <div id="tab-music" class="tab-content hidden">
-                <div class="settings-group glass">
-                    <h3>Очередь треков</h3>
-                    <div class="control-row"><label>Громкость музыки в OBS (%)</label><input type="range" id="set-music-volume" min="0" max="100" value="50" onchange="saveSettings()"></div>
-                    <button class="btn" onclick="skipTrack()">Пропустить текущий</button>
-                    <button class="btn btn-danger" onclick="clearQueue()">Очистить очередь</button>
-                    <div id="admin-music-queue" style="margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px; min-height: 100px;">
-                        Очередь пуста
-                    </div>
-                </div>
-            </div>
+    <!-- ВЬЮ ВИДЖЕТА (Для OBS) -->
+    <div id="widget-view" class="glass-panel rounded-[2rem] px-10 py-6 flex flex-col items-center justify-center">
+        <div id="display-widget" class="text-6xl md:text-8xl font-black text-indigo-400 glow-text tracking-wider tabular-nums">
+            00:00:00
         </div>
     </div>
 
-    <!-- ================= МОБИЛЬНАЯ ВЕРСИЯ ================= -->
-    <div id="mobile-view" class="hidden">
-        <div class="mobile-card glass">
-            <h2>Отправка Доната</h2>
-            <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 14px;">Вставьте скопированный текст из Kaspi.kz</p>
-            <textarea id="kaspi-input" placeholder="Пополнение: 2 000 ₸&#10;Иван И.&#10;Доступно: ...&#10;Сообщение&#10;Привет, крутой стрим!"></textarea>
-            <button id="send-btn" class="btn" onclick="processKaspiText()">Отправить на стрим</button>
-            <div id="mobile-status"></div>
+    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ -->
+    <div id="control-panel" class="glass-panel rounded-3xl p-8 max-w-md w-full flex flex-col gap-8 hidden">
+        <div>
+            <h1 class="text-2xl font-bold text-center mb-1">Таймер стрима</h1>
+            <p class="text-center text-xs text-gray-400">Синхронизация через Firebase</p>
         </div>
-    </div>
 
-    <!-- ================= ВИДЖЕТЫ (OBS) ================= -->
-    <div id="widget-alert" class="widget-container hidden">
-        <div id="alert-box">
-            <div id="alert-name">Имя</div>
-            <div id="alert-amount">1000 ₸</div>
-            <div id="alert-message">Сообщение</div>
+        <div id="display-control" class="text-5xl font-black text-center text-indigo-400 glow-text tracking-wider tabular-nums">
+            00:00:00
         </div>
-    </div>
 
-    <div id="widget-top" class="widget-container hidden" style="align-items: flex-start; justify-content: flex-start;">
-        <div id="top-list"></div>
-    </div>
+        <!-- Кнопки управления -->
+        <div class="flex gap-3 justify-center">
+            <button id="btn-start" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold transition shadow-lg shadow-indigo-600/20 text-sm">Старт</button>
+            <button id="btn-pause" class="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-xl font-bold transition shadow-lg shadow-amber-500/20 text-sm">Пауза</button>
+            <button id="btn-reset" class="flex-1 py-3 bg-red-500 hover:bg-red-400 rounded-xl font-bold transition shadow-lg shadow-red-500/20 text-sm">Сброс</button>
+        </div>
 
-    <div id="widget-goal" class="widget-container hidden" style="align-items: flex-end; justify-content: center; padding-bottom: 50px;">
-        <div id="goal-box">
-            <div class="goal-title" id="goal-title-display">Цель сбора</div>
-            <div class="goal-bar-bg">
-                <div class="goal-bar-fill" id="goal-fill"></div>
-                <div class="goal-text" id="goal-text-display">0 / 1000 ₸ (0%)</div>
+        <!-- Ручная установка времени -->
+        <div class="border-t border-gray-700/50 pt-5 mt-2">
+            <label class="block text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Задать вручную (ЧЧ:ММ:СС)</label>
+            <div class="flex gap-2 items-center">
+                <input type="number" id="inp-h" placeholder="00" min="0" class="w-16 bg-gray-800/80 rounded-xl text-center p-2 border border-gray-600 focus:border-indigo-500 outline-none transition font-bold">
+                <span class="font-bold text-gray-400">:</span>
+                <input type="number" id="inp-m" placeholder="00" min="0" max="59" class="w-16 bg-gray-800/80 rounded-xl text-center p-2 border border-gray-600 focus:border-indigo-500 outline-none transition font-bold">
+                <span class="font-bold text-gray-400">:</span>
+                <input type="number" id="inp-s" placeholder="00" min="0" max="59" class="w-16 bg-gray-800/80 rounded-xl text-center p-2 border border-gray-600 focus:border-indigo-500 outline-none transition font-bold">
+                
+                <button id="btn-set" class="ml-auto px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-xl font-bold transition text-sm">ОК</button>
             </div>
         </div>
-    </div>
 
-    <div id="widget-music" class="widget-container hidden">
-        <!-- Скрытый плеер и всплывашка с названием трека -->
-        <div id="youtube-player-container" style="position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none;">
-            <div id="ytplayer"></div>
-        </div>
-        <div id="music-info-box" class="glass">
-            <div class="music-icon">🎵</div>
-            <div>
-                <div style="font-size: 12px; color: var(--accent);">Сейчас играет</div>
-                <div id="music-title" style="font-weight: bold; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Трек</div>
-            </div>
+        <!-- Ссылка для OBS -->
+        <div class="border-t border-gray-700/50 pt-5 mt-2">
+            <button id="btn-copy-link" class="w-full px-4 py-3 bg-emerald-500 hover:bg-emerald-400 text-gray-900 rounded-xl font-bold transition shadow-lg shadow-emerald-500/20 flex justify-center items-center gap-2">
+                Скопировать ссылку для OBS
+            </button>
+            <p class="text-[10px] text-gray-500 text-center mt-3">Скопируй и добавь как "Источник браузера" в OBS</p>
         </div>
     </div>
 
-    <!-- ================= СКРИПТЫ (Firebase + Логика) ================= -->
+    <!-- FIREBASE & LOGIC -->
     <script type="module">
-        // 1. Инициализация Firebase (Используем CDN)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue, push, update, remove, child, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-        // КОНФИГ ИЗ ТЗ
+        // Твой конфиг Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
             authDomain: "tt-widget-88711.firebaseapp.com",
@@ -248,421 +112,140 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const timerRef = ref(db, 'stream_stopwatch');
 
-        // 2. Маршрутизация (Routing)
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode') || 'admin';
+        // Локальное состояние
+        let state = {
+            isRunning: false,
+            startTime: 0,
+            accumulated: 0
+        };
+
+        // Элементы DOM
+        const displayWidget = document.getElementById('display-widget');
+        const displayControl = document.getElementById('display-control');
+        const controlPanel = document.getElementById('control-panel');
         
-        // Скрываем всё, показываем нужный экран
-        document.querySelectorAll('body > div').forEach(el => el.classList.add('hidden'));
-        const activeView = document.getElementById(mode === 'admin' ? 'admin-view' : 
-                                                   mode === 'mobile' ? 'mobile-view' : 
-                                                   mode.replace('_', '-')); // widget_alert -> widget-alert
-        if(activeView) activeView.classList.remove('hidden');
+        // Определение режима (Виджет или Панель)
+        const urlParams = new URLSearchParams(window.location.search);
+        const isWidget = urlParams.get('widget') === 'true';
 
-        if(mode.startsWith('widget')) document.body.classList.add('widget-mode');
+        if (isWidget) {
+            document.body.classList.add('widget-mode');
+        } else {
+            document.body.classList.add('control-mode');
+            controlPanel.classList.remove('hidden');
+        }
 
-        // Глобальные переменные для настроек
-        let settings = { ttsVolume: 1, topCount: 5, musicVolume: 50 };
-        let ytPlayer = null;
+        // Подписка на изменения из базы (работает и там, и там)
+        onValue(timerRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                state = data;
+            }
+        });
 
-        // ================= ЛОГИКА АДМИНКИ =================
-        if (mode === 'admin') {
-            const baseUrl = window.location.origin + window.location.pathname;
-            document.getElementById('link-alert').value = baseUrl + "?mode=widget_alert";
-            document.getElementById('link-top').value = baseUrl + "?mode=widget_top";
-            document.getElementById('link-goal').value = baseUrl + "?mode=widget_goal";
-            document.getElementById('link-music').value = baseUrl + "?mode=widget_music";
-            document.getElementById('link-mobile').value = baseUrl + "?mode=mobile";
+        // Функция форматирования миллисекунд в ЧЧ:ММ:СС
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
 
-            window.switchTab = (tabId) => {
-                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-                document.getElementById(tabId).classList.remove('hidden');
-                event.target.classList.add('active');
-            };
+            const pad = (num) => num.toString().padStart(2, '0');
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
 
-            window.copyLink = (id) => {
-                const input = document.getElementById(id);
-                input.select();
-                document.execCommand("copy");
-                alert("Ссылка скопирована!");
-            };
+        // Главный цикл рендера (используем requestAnimationFrame для плавности)
+        function updateDisplay() {
+            let currentElapsed = state.accumulated;
+            
+            if (state.isRunning) {
+                currentElapsed += (Date.now() - state.startTime);
+            }
 
-            // Загрузка настроек
-            onValue(ref(db, 'settings'), (snapshot) => {
-                if(snapshot.exists()) {
-                    settings = { ...settings, ...snapshot.val() };
-                    document.getElementById('set-tts-volume').value = settings.ttsVolume;
-                    document.getElementById('set-top-count').value = settings.topCount;
-                    document.getElementById('set-music-volume').value = settings.musicVolume;
-                }
-            });
+            const formattedTime = formatTime(currentElapsed);
+            
+            if (isWidget) {
+                displayWidget.textContent = formattedTime;
+            } else {
+                displayControl.textContent = formattedTime;
+            }
 
-            // Загрузка цели
-            onValue(ref(db, 'goals'), (snapshot) => {
-                if(snapshot.exists()) {
-                    const data = snapshot.val();
-                    document.getElementById('set-goal-title').value = data.title || '';
-                    document.getElementById('set-goal-target').value = data.target || 0;
-                    document.getElementById('set-goal-current').value = data.current || 0;
-                }
-            });
+            requestAnimationFrame(updateDisplay);
+        }
+        requestAnimationFrame(updateDisplay);
 
-            // Загрузка Топа для редактирования
-            onValue(ref(db, 'top'), (snapshot) => {
-                const container = document.getElementById('admin-top-list');
-                container.innerHTML = '';
-                if(snapshot.exists()) {
-                    const data = snapshot.val();
-                    Object.keys(data).forEach(name => {
-                        const div = document.createElement('div');
-                        div.style = "display: flex; gap: 10px; align-items: center;";
-                        div.innerHTML = `
-                            <input type="text" value="${name}" disabled style="flex:2">
-                            <input type="number" value="${data[name]}" id="top-val-${name}" style="flex:1">
-                            <button class="btn" onclick="updateTopUser('${name}')">Save</button>
-                            <button class="btn btn-danger" onclick="removeTopUser('${name}')">X</button>
-                        `;
-                        container.appendChild(div);
+        // --- ЛОГИКА ТОЛЬКО ДЛЯ ПАНЕЛИ УПРАВЛЕНИЯ ---
+        if (!isWidget) {
+            const btnStart = document.getElementById('btn-start');
+            const btnPause = document.getElementById('btn-pause');
+            const btnReset = document.getElementById('btn-reset');
+            const btnSet = document.getElementById('btn-set');
+            const btnCopy = document.getElementById('btn-copy-link');
+
+            const inpH = document.getElementById('inp-h');
+            const inpM = document.getElementById('inp-m');
+            const inpS = document.getElementById('inp-s');
+
+            btnStart.addEventListener('click', () => {
+                if (!state.isRunning) {
+                    set(timerRef, {
+                        isRunning: true,
+                        startTime: Date.now(),
+                        accumulated: state.accumulated
                     });
                 }
             });
 
-            // Очередь музыки
-            onValue(ref(db, 'musicQueue'), (snapshot) => {
-                const container = document.getElementById('admin-music-queue');
-                container.innerHTML = '';
-                if(snapshot.exists()) {
-                    const data = snapshot.val();
-                    Object.values(data).forEach(track => {
-                        container.innerHTML += `<div style="margin-bottom: 5px;">🎵 ${track.url}</div>`;
-                    });
-                } else {
-                    container.innerHTML = 'Очередь пуста';
-                }
-            });
-
-            // Функции админки
-            window.saveSettings = debounce(() => {
-                const newSettings = {
-                    ttsVolume: parseFloat(document.getElementById('set-tts-volume').value),
-                    topCount: parseInt(document.getElementById('set-top-count').value),
-                    musicVolume: parseInt(document.getElementById('set-music-volume').value)
-                };
-                update(ref(db, 'settings'), newSettings);
-            }, 500);
-
-            window.saveGoal = debounce(() => {
-                update(ref(db, 'goals'), {
-                    title: document.getElementById('set-goal-title').value,
-                    target: parseFloat(document.getElementById('set-goal-target').value),
-                    current: parseFloat(document.getElementById('set-goal-current').value)
-                });
-            }, 500);
-
-            window.updateTopUser = (name) => {
-                const val = parseFloat(document.getElementById(`top-val-${name}`).value);
-                update(ref(db, `top`), { [name]: val });
-            };
-            window.removeTopUser = (name) => remove(ref(db, `top/${name}`));
-            window.clearTop = () => remove(ref(db, 'top'));
-            window.skipTrack = () => update(ref(db, 'settings'), { forceSkip: Date.now() });
-            window.clearQueue = () => remove(ref(db, 'musicQueue'));
-        }
-
-        // ================= ЛОГИКА ТЕЛЕФОНА (ПАРСЕР KASPI) =================
-        if (mode === 'mobile') {
-            window.processKaspiText = () => {
-                const text = document.getElementById('kaspi-input').value;
-                const status = document.getElementById('mobile-status');
-                
-                if(!text.trim()) {
-                    status.innerText = "Вставьте текст!";
-                    status.style.color = "#ff4757";
-                    return;
-                }
-
-                // Парсинг
-                let amount = 0, name = "Аноним", message = "", ytLink = null;
-                
-                // Ищем сумму
-                const amountMatch = text.match(/Пополнение:\s*([\d\s]+)\s*₸/);
-                if(amountMatch) amount = parseInt(amountMatch[1].replace(/\s/g, ''));
-                
-                // Ищем имя (строка после Пополнение)
-                const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-                const popIndex = lines.findIndex(l => l.includes('Пополнение:'));
-                if(popIndex !== -1 && lines.length > popIndex + 1) {
-                    name = lines[popIndex + 1];
-                    if(name.includes('С карты другого банка')) name = "Неизвестный";
-                }
-
-                // Ищем сообщение
-                const msgIndex = lines.findIndex(l => l === 'Сообщение');
-                if(msgIndex !== -1 && lines.length > msgIndex + 1) {
-                    message = lines.slice(msgIndex + 1).join(' ');
-                }
-
-                // Ищем YouTube ссылку
-                const ytMatch = message.match(/(https?:\/\/(?:www\.)?(?:youtube\.com|youtu\.be)\/[^\s]+)/);
-                if(ytMatch) {
-                    ytLink = ytMatch[1];
-                    message = message.replace(ytLink, '').trim(); // Убираем ссылку из озвучки
-                    if(message === "") message = "Заказ музыки";
-                } else if (message === "") {
-                    message = "Без сообщения";
-                }
-
-                if(amount <= 0) {
-                    status.innerText = "Сумма не найдена. Проверьте текст.";
-                    status.style.color = "#ff4757";
-                    return;
-                }
-
-                // 1. Пушим донат
-                const donationRef = push(ref(db, 'donations'));
-                set(donationRef, {
-                    name, amount, message, hasMusic: !!ytLink, timestamp: Date.now(), isRead: false
-                });
-
-                // 2. Обновляем Топ (Транзакция)
-                const topRef = ref(db, `top/${name}`);
-                runTransaction(topRef, (currentVal) => {
-                    return (currentVal || 0) + amount;
-                });
-
-                // 3. Обновляем Цель
-                const goalRef = ref(db, 'goals/current');
-                runTransaction(goalRef, (currentVal) => {
-                    return (currentVal || 0) + amount;
-                });
-
-                // 4. Если есть музыка, добавляем в очередь
-                if(ytLink) {
-                    push(ref(db, 'musicQueue'), { url: ytLink, addedBy: name, timestamp: Date.now() });
-                }
-
-                // Очистка UI
-                document.getElementById('kaspi-input').value = '';
-                status.innerText = `Успешно отправлено: ${name} - ${amount}₸`;
-                status.style.color = "#00ff88";
-                setTimeout(() => status.innerText = "", 3000);
-            };
-        }
-
-        // ================= ВИДЖЕТ АЛЕРТА =================
-        if (mode === 'widget_alert') {
-            let isAlertPlaying = false;
-            let alertQueue = [];
-
-            // Синтез звука (Пищалка), чтобы не зависеть от внешних mp3
-            function playBeep() {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(800, ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.5);
-            }
-
-            function processAlertQueue() {
-                if(isAlertPlaying || alertQueue.length === 0) return;
-                isAlertPlaying = true;
-                const donat = alertQueue.shift();
-
-                document.getElementById('alert-name').innerText = donat.name;
-                document.getElementById('alert-amount').innerText = donat.amount + ' ₸';
-                document.getElementById('alert-message').innerText = donat.message;
-
-                const box = document.getElementById('alert-box');
-                box.classList.add('show');
-                playBeep();
-
-                // TTS
-                setTimeout(() => {
-                    if('speechSynthesis' in window) {
-                        const utterance = new SpeechSynthesisUtterance(`${donat.name} задонатил ${donat.amount} тенге. ${donat.message}`);
-                        onValue(ref(db, 'settings/ttsVolume'), snap => {
-                            if(snap.exists()) utterance.volume = snap.val();
-                        }, {onlyOnce: true});
-                        
-                        utterance.onend = () => finishAlert(box);
-                        utterance.onerror = () => finishAlert(box); // Фолбэк
-                        window.speechSynthesis.speak(utterance);
-                    } else {
-                        setTimeout(() => finishAlert(box), 5000);
-                    }
-                }, 1000);
-            }
-
-            function finishAlert(box) {
-                box.classList.remove('show');
-                setTimeout(() => {
-                    isAlertPlaying = false;
-                    processAlertQueue();
-                }, 1000); // Пауза перед следующим
-            }
-
-            // Слушаем новые донаты
-            let initialLoad = true;
-            onValue(ref(db, 'donations'), (snapshot) => {
-                if(initialLoad) { initialLoad = false; return; } // Игнорим старые при загрузке страницы
-                snapshot.forEach(childSnap => {
-                    const data = childSnap.val();
-                    if(!data.isRead) {
-                        alertQueue.push(data);
-                        update(ref(db, `donations/${childSnap.key}`), { isRead: true });
-                        processAlertQueue();
-                    }
-                });
-            });
-        }
-
-        // ================= ВИДЖЕТ ТОПА =================
-        if (mode === 'widget_top') {
-            onValue(ref(db, 'settings/topCount'), snap => {
-                if(snap.exists()) settings.topCount = snap.val();
-            });
-
-            onValue(ref(db, 'top'), (snapshot) => {
-                const list = document.getElementById('top-list');
-                list.innerHTML = '';
-                if(!snapshot.exists()) return;
-
-                const data = snapshot.val();
-                const sorted = Object.entries(data)
-                                     .sort((a, b) => b[1] - a[1])
-                                     .slice(0, settings.topCount || 5);
-
-                sorted.forEach(([name, amount], index) => {
-                    const item = document.createElement('div');
-                    item.className = 'top-item glass';
-                    item.innerHTML = `<span class="name">${index+1}. ${name}</span><span class="amount">${amount} ₸</span>`;
-                    list.appendChild(item);
-                });
-            });
-        }
-
-        // ================= ВИДЖЕТ ЦЕЛИ =================
-        if (mode === 'widget_goal') {
-            onValue(ref(db, 'goals'), (snapshot) => {
-                if(!snapshot.exists()) return;
-                const data = snapshot.val();
-                const title = data.title || 'Сбор';
-                const current = parseFloat(data.current) || 0;
-                const target = parseFloat(data.target) || 1;
-                
-                let percent = (current / target) * 100;
-                if(percent > 100) percent = 100;
-
-                document.getElementById('goal-title-display').innerText = title;
-                document.getElementById('goal-text-display').innerText = `${current} / ${target} ₸ (${Math.round(percent)}%)`;
-                document.getElementById('goal-fill').style.width = `${percent}%`;
-            });
-        }
-
-        // ================= ВИДЖЕТ МУЗЫКИ =================
-        if (mode === 'widget_music') {
-            let currentQueue = [];
-            let currentTrackId = null;
-
-            // Загрузка YouTube API
-            const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-            window.onYouTubeIframeAPIReady = () => {
-                ytPlayer = new YT.Player('ytplayer', {
-                    height: '100', width: '100',
-                    events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
-                });
-            };
-
-            function extractVideoID(url) {
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-                const match = url.match(regExp);
-                return (match && match[2].length === 11) ? match[2] : null;
-            }
-
-            function onPlayerReady(event) {
-                // Подгружаем настройки громкости
-                onValue(ref(db, 'settings/musicVolume'), snap => {
-                    if(snap.exists() && ytPlayer) ytPlayer.setVolume(snap.val());
-                });
-
-                // Слушаем пропуск
-                onValue(ref(db, 'settings/forceSkip'), snap => {
-                    if(snap.exists() && currentTrackId) {
-                        remove(ref(db, `musicQueue/${currentTrackId}`));
-                        playNext();
-                    }
-                });
-
-                // Слушаем очередь
-                onValue(ref(db, 'musicQueue'), snapshot => {
-                    currentQueue = [];
-                    if(snapshot.exists()) {
-                        snapshot.forEach(child => {
-                            currentQueue.push({ id: child.key, ...child.val() });
-                        });
-                        // Сортировка по времени
-                        currentQueue.sort((a,b) => a.timestamp - b.timestamp);
-                    } else {
-                        document.getElementById('music-info-box').classList.remove('show');
-                        if(ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
-                        currentTrackId = null;
-                    }
-                    playNext();
-                });
-            }
-
-            function playNext() {
-                // Если уже играет или очередь пуста - ничего не делаем
-                if(currentQueue.length === 0) return;
-                if(ytPlayer.getPlayerState() === 1) return; // 1 = playing
-
-                const track = currentQueue[0];
-                currentTrackId = track.id;
-                const vidId = extractVideoID(track.url);
-
-                if(vidId) {
-                    ytPlayer.loadVideoById(vidId);
-                    document.getElementById('music-title').innerText = "Заказ от: " + track.addedBy;
-                    document.getElementById('music-info-box').classList.add('show');
-                } else {
-                    // Невалидная ссылка - удаляем и идем дальше
-                    remove(ref(db, `musicQueue/${track.id}`));
-                }
-            }
-
-            function onPlayerStateChange(event) {
-                // 0 = ended
-                if (event.data === 0 && currentTrackId) {
-                    document.getElementById('music-info-box').classList.remove('show');
-                    remove(ref(db, `musicQueue/${currentTrackId}`)).then(() => {
-                        currentTrackId = null;
-                        // playNext вызовется через onValue listener очереди
+            btnPause.addEventListener('click', () => {
+                if (state.isRunning) {
+                    const newAccumulated = state.accumulated + (Date.now() - state.startTime);
+                    set(timerRef, {
+                        isRunning: false,
+                        startTime: 0,
+                        accumulated: newAccumulated
                     });
                 }
-            }
-        }
+            });
 
-        // Утилита Debounce
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => { clearTimeout(timeout); func(...args); };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+            btnReset.addEventListener('click', () => {
+                set(timerRef, {
+                    isRunning: false,
+                    startTime: 0,
+                    accumulated: 0
+                });
+                inpH.value = ''; inpM.value = ''; inpS.value = '';
+            });
+
+            btnSet.addEventListener('click', () => {
+                const h = parseInt(inpH.value || 0) * 3600000;
+                const m = parseInt(inpM.value || 0) * 60000;
+                const s = parseInt(inpS.value || 0) * 1000;
+                const totalMs = h + m + s;
+
+                set(timerRef, {
+                    isRunning: false,
+                    startTime: 0,
+                    accumulated: totalMs
+                });
+            });
+
+            btnCopy.addEventListener('click', async () => {
+                const widgetUrl = window.location.origin + window.location.pathname + "?widget=true";
+                try {
+                    await navigator.clipboard.writeText(widgetUrl);
+                    const originalText = btnCopy.textContent;
+                    btnCopy.textContent = "Скопировано!";
+                    btnCopy.classList.replace('bg-emerald-500', 'bg-emerald-600');
+                    setTimeout(() => {
+                        btnCopy.textContent = originalText;
+                        btnCopy.classList.replace('bg-emerald-600', 'bg-emerald-500');
+                    }, 2000);
+                } catch (err) {
+                    alert("Не удалось скопировать. Скопируй ссылку вручную: " + widgetUrl);
+                }
+            });
         }
     </script>
 </body>
