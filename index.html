@@ -1,421 +1,1229 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Stopwatch Ultimate Designer</title>
-    
-    <!-- Подключаем шрифт Unbounded -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- Подключаем Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <style>
-        body {
-            font-family: 'Unbounded', sans-serif;
-            transition: background-color 0.3s;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SUPREME WIDGET V13 PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+:root {
+  --gold: #ffd700;
+  --silver: #c8c8c8;
+  --bronze: #cd7f32;
+  --red: #ff0044;
+  --bg: #080808;
+  --panel: #111111;
+  --border: #1e1e1e;
+  --border-hi: #2e2e2e;
+  --text-dim: #555;
+  --text-mid: #888;
+  --text: #cccccc;
+  --text-bright: #ffffff;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --sidebar-w: 420px;
+  --ac-blue: #00c2ff;
+}
+*{box-sizing:border-box;outline:none;margin:0;padding:0;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#222;border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:#333;}
+body{font-family:'Unbounded',sans-serif;background:transparent;color:var(--text-bright);overflow:hidden;}
+.admin-shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;height:100vh;background:var(--bg);position:fixed;inset:0;}
+.sidebar{display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--border);overflow:hidden;}
+.sidebar-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--red),#880022);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;letter-spacing:-1px;}
+.logo-name{font-size:13px;font-weight:900;letter-spacing:0.5px;}
+.logo-name span{color:var(--red);}
+.ver-tag{font-size:9px;font-weight:700;color:var(--text-dim);background:#151515;padding:3px 7px;border-radius:20px;border:1px solid var(--border);letter-spacing:0.5px;}
+.tabs{display:flex;gap:3px;padding:10px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;}
+.tab{flex:1;padding:8px 6px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;border:none;cursor:pointer;transition:all .2s;color:var(--text-dim);background:transparent;white-space:nowrap;}
+.tab.on{background:var(--red);color:#fff;box-shadow:0 2px 10px rgba(255,0,68,.3);}
+.tab:not(.on):hover{color:var(--text);background:#1a1a1a;}
+.sidebar-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.donate-form-card{background:linear-gradient(135deg,#0d0007,#07000d);border:1px solid rgba(255,0,68,.25);border-radius:var(--radius-lg);padding:16px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;}
+.donate-form-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top left,rgba(255,0,68,.07),transparent 60%);pointer-events:none;}
+.donate-form-title{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#fff;}
+.donate-form-title .dft-icon{width:22px;height:22px;border-radius:6px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:11px;}
+.donate-input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;}
+.donate-amount-wrap{position:relative;}
+.donate-amount-wrap input{padding-right:12px !important;}
+.donate-name-input{width:100%;}
+.donate-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.live-preview-strip{background:#0a0a0a;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.lp-label{font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.lp-value{font-size:12px;font-weight:900;color:var(--ac-blue);}
+.lp-name{font-size:10px;font-weight:700;color:var(--text);}
+.lp-sep{width:1px;height:24px;background:var(--border);}
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;background:#151515;border:1px solid var(--border);border-radius:var(--radius-md);cursor:pointer;transition:all .2s;user-select:none;}
+.sec-head:hover{background:#1a1a1a;border-color:var(--border-hi);}
+.sec-head.on{border-color:var(--red);background:#150007;}
+.sec-head-l{display:flex;align-items:center;gap:9px;}
+.sec-dot{width:18px;height:18px;border-radius:50%;background:#1e1e1e;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:900;color:var(--text-dim);flex-shrink:0;}
+.sec-head.on .sec-dot{background:var(--red);color:#fff;}
+.sec-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text);}
+.sec-head.on .sec-name{color:#fff;}
+.sec-chevron{font-size:9px;color:var(--text-dim);transition:transform .2s;}
+.sec-head.on .sec-chevron{transform:rotate(180deg);}
+.sec-body{padding:13px;background:#0c0c0c;border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius-md) var(--radius-md);display:flex;flex-direction:column;gap:11px;animation:fadeIn 0.2s ease-out;}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fr{display:flex;gap:9px;}
+.fr > *{flex:1;}
+label,.lbl{font-size:9px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;}
+input[type=text],input[type=number],select,textarea{background:#080808;border:1px solid var(--border);color:var(--text-bright);padding:9px 11px;border-radius:var(--radius-sm);font-family:'Unbounded';font-size:11px;width:100%;transition:border-color .2s,box-shadow .2s;}
+textarea{resize:vertical;min-height:54px;line-height:1.5;}
+input:focus,select:focus,textarea:focus{border-color:var(--red);box-shadow:0 0 0 2px rgba(255,0,68,.1);}
+select option{background:#111;}
+.rr{display:flex;align-items:center;gap:8px;}
+input[type=range]{flex:1;accent-color:var(--red);cursor:pointer;height:3px;background:var(--border);border-radius:2px;border:none;padding:0;}
+.rv{font-size:10px;color:var(--text-bright);min-width:34px;text-align:right;font-variant-numeric:tabular-nums;background:#080808;padding:3px 6px;border-radius:4px;border:1px solid var(--border);}
+.color-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.color-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.ci{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;color:var(--text-dim);font-weight:700;text-transform:uppercase;}
+input[type=color]{width:100%;height:30px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:#000;padding:2px;}
+.cb-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;}
+.cb-row label{font-size:10px;color:var(--text);font-weight:700;text-transform:none;letter-spacing:0;}
+input[type=checkbox]{width:15px;height:15px;accent-color:var(--red);cursor:pointer;}
+.divider{height:1px;background:var(--border);width:100%;margin:3px 0;}
+.sub-lbl{font-size:10px;font-weight:900;color:var(--text-bright);text-transform:uppercase;letter-spacing:.5px;}
+.btn{font-family:'Unbounded';text-transform:uppercase;font-weight:700;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.3px;}
+.btn-red{background:linear-gradient(135deg,#ff0044,#cc0034);color:#fff;padding:15px;border-radius:var(--radius-md);font-size:12px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(255,0,68,.2);}
+.btn-red:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(255,0,68,.35);}
+.btn-blue{background:linear-gradient(135deg,#0088cc,#005588);color:#fff;padding:13px 16px;border-radius:var(--radius-md);font-size:11px;font-weight:900;width:100%;box-shadow:0 4px 15px rgba(0,194,255,.2);}
+.btn-blue:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(0,194,255,.35);}
+.btn-blue:active{transform:scale(.97);}
+.btn-green{background:linear-gradient(135deg,#00aa44,#007730);color:#fff;padding:12px;border-radius:var(--radius-sm);font-size:10px;width:100%;box-shadow:0 2px 10px rgba(0,170,68,.2);}
+.btn-green:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,170,68,.3);}
+.btn-purple{background:linear-gradient(135deg,#7700ff,#5500cc);color:#fff;padding:12px;border-radius:var(--radius-sm);font-size:10px;width:100%;box-shadow:0 2px 10px rgba(119,0,255,.2);}
+.btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(119,0,255,.3);}
+.btn-ghost{background:transparent;color:var(--text-mid);padding:10px;border-radius:var(--radius-sm);font-size:9px;flex:1;border:1px dashed var(--border-hi);}
+.btn-ghost:hover{background:#151515;color:var(--text);border-color:#444;}
+.btn-flat{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;border:1px solid var(--border);}
+.btn-flat:hover{background:#1c1c1c;border-color:var(--border-hi);}
+.btn-del{background:rgba(255,0,0,.07);color:#ff4444;padding:5px 8px;border-radius:5px;font-size:8px;border:1px solid rgba(255,0,0,.15);}
+.btn-del:hover{background:#ff4444;color:#fff;}
+.btn-add-panel{background:#151515;color:var(--text);padding:11px;border-radius:var(--radius-sm);font-size:10px;flex:1;border:1px solid var(--border);transition: all 0.2s;}
+.btn-add-panel:hover{background:#1c1c1c; transform: translateY(-1px);}
+.actions{display:flex;flex-direction:column;gap:8px;padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
+.file-wrap{position:relative;overflow:hidden;display:inline-block;width:100%;}
+.file-wrap input[type=file]{font-size:100px;position:absolute;left:0;top:0;opacity:0;cursor:pointer;height:100%;width:100%;}
+.file-btn{background:#080808;border:1px solid var(--border);color:var(--text-mid);padding:9px 11px;border-radius:var(--radius-sm);font-size:10px;width:100%;text-align:center;font-family:'Unbounded';font-weight:700;text-transform:uppercase;letter-spacing:.3px;transition:all .2s;cursor:pointer;}
+.file-wrap:hover .file-btn{border-color:var(--red);color:var(--text-bright);}
+.file-ok{font-size:9px;color:#00cc44;margin-top:3px;font-weight:700;}
+.file-err{font-size:9px;color:#ff4444;margin-top:3px;font-weight:700;}
+.preview-zone{position:relative;background:#0a0a0a;background-image:radial-gradient(#1c1c1c 1px,transparent 1px);background-size:22px 22px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.pz-label{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;color:#222;text-transform:uppercase;letter-spacing:1.5px;pointer-events:none;z-index:5;white-space:nowrap;}
+.pz-mode{position:absolute;top:14px;right:16px;font-size:8px;font-weight:700;color:#1e1e1e;text-transform:uppercase;letter-spacing:1px;pointer-events:none;z-index:5;}
+.widget-scene{position:relative;width:100%;height:100%;transform-origin:center center;}
+.static-panel{position:absolute;z-index:10;transition: top 0.3s ease, left 0.3s ease;}
+.static-panel.sel .glass{outline:1.5px solid rgba(0,255,180,.7);outline-offset:4px;}
+.glass{position:relative;width:100%;height:100%;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.07);box-shadow: inset 0 0 20px rgba(255,255,255,.02), 0 8px 32px rgba(0,0,0,.6);overflow:hidden;transition: all 0.3s ease;}
+.goal-wrap{display:flex;flex-direction:column;width:100%;height:100%;}
+.goal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px;flex-wrap:wrap;gap:4px;}
+.prog-track{width:100%;background:rgba(0,0,0,.6);overflow:hidden;border:1px solid rgba(255,255,255,.05);position:relative;box-shadow: inset 0 2px 10px rgba(0,0,0,.5);}
+.prog-fill{height:100%;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden;}
+.prog-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);animation:shimmer 2.5s infinite linear;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.ld-section{margin-top:13px;}
+.ld-label{display:inline-flex;align-items:center;gap:5px;font-weight:900;text-transform:uppercase;letter-spacing:2px;padding:4px 10px;border-radius:20px;margin-bottom:8px;white-space:nowrap;}
+.donor-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:5px;}
+.donor-item{display:flex;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.04); transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2);}
+.chal-wrap{display:flex;flex-direction:column;width:100%;height:100%;justify-content:center;}
+.chal-row{display:flex;justify-content:space-between;align-items:center;width:100%;}
+.chal-brand{display:flex;align-items:center;}
+.icon-mask{background-color:#fff;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;flex-shrink:0;}
+.chal-title{font-weight:800;text-transform:uppercase;letter-spacing:1px;}
+.chal-divider{height:1px;width:100%;margin:7px 0;opacity:.15;}
+.chal-label{opacity:.7;font-weight:700;}
+.chal-val,.chal-total{font-weight:900;text-align:right;}
+.ed{cursor:text;border-bottom:1px dashed rgba(255,255,255,.2);transition:all .15s;}
+.ed:hover{background:rgba(255,255,255,.05);}
+.ed:focus{background:rgba(255,255,255,.1);outline:none;border-bottom:2px solid var(--red);}
+.obs-mode .ed{border:none !important;background:transparent !important;pointer-events:none;}
 
-        /* Эффект Liquid Glass */
-        .glass-panel {
-            background: rgba(15, 15, 20, 0.5);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-        }
+.alert-scene{width:100vw;height:100vh;background:transparent;position:relative;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;padding-bottom:50px;}
+.particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+.alert-card{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:28px 36px;gap:12px;text-align:center;min-width:380px;max-width:580px;overflow:hidden;}
+.alert-card::before{content:'';position:absolute;inset:0;background:inherit;filter:blur(0);z-index:-1;}
+.alert-media{width:100%;max-height:180px;overflow:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.alert-media img,.alert-media video{width:100%;height:100%;object-fit:cover;border-radius:10px;max-height:180px;}
+.a-label{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:3px;opacity:.75;}
+.a-name{font-weight:900;text-transform:uppercase;letter-spacing:1px;line-height:1;}
+.a-amount{font-weight:900;line-height:1;}
+.a-msg{font-weight:700;line-height:1.3;margin-top:8px;max-width:90%;word-wrap:break-word;}
+.a-bar{width:80%;height:3px;border-radius:2px;opacity:.4;animation:barShrink linear forwards;transform-origin:left center;}
+@keyframes barShrink{0%{transform:scaleX(1);}100%{transform:scaleX(0);}}
+.alert-enter-active{animation:alertIn .65s cubic-bezier(.34,1.56,.64,1) both;}
+.alert-leave-active{animation:alertOut .45s ease-in both;}
+@keyframes alertIn{0%{transform:translateY(70px) scale(.85);opacity:0;}100%{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes alertOut{0%{transform:translateY(0) scale(1);opacity:1;}100%{transform:translateY(-60px) scale(.9);opacity:0;}}
+.a-label{animation:textUp .4s .15s ease both;}
+.a-name{animation:textUp .4s .25s ease both;}
+.a-amount{animation:textUp .4s .35s ease both;}
+.a-msg{animation:textUp .4s .45s ease both;}
+@keyframes textUp{0%{transform:translateY(16px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+.glow-card{animation:glowPulse 2s ease-in-out infinite;}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 25px var(--ac,rgba(255,215,0,.3));}50%{box-shadow:0 0 60px var(--ac,rgba(255,215,0,.6)),0 0 100px var(--ac,rgba(255,215,0,.15));}}
+.alert-preview-wrap{width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;position:relative;}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:#151515;border:1px solid var(--border);color:var(--text);padding:11px 18px;border-radius:var(--radius-md);font-size:10px;font-weight:700;transition:all .25s;opacity:0;z-index:99999;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:#00aa44;color:#00cc44;}
+.toast.err{border-color:#ff4444;color:#ff4444;}
+.fb-status{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;padding:6px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:#0a0a0a;}
+.fb-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition: background 0.3s;}
+.fb-dot.ok{background:#00cc44;box-shadow:0 0 8px #00cc44; animation: pulseDot 2s infinite;}
+.fb-dot.err{background:#ff4444; box-shadow:0 0 8px #ff4444;}
+@keyframes pulseDot { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
 
-        /* Динамические стили, управляемые через CSS-переменные из JS */
-        :root {
-            --main-color: #818cf8;
-            --flash-color: #f472b6;
-            --glow-radius: 24px;
-        }
+/* МОБИЛЬНАЯ ВЕРСИЯ - НОВЫЙ ДИЗАЙН ПУЛЬТА */
+.mobile-kaspi-view { display: flex; flex-direction: column; height: 100dvh; background: var(--bg); padding: 0; gap: 0; overflow: hidden; }
+.mob-topbar { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: var(--panel); border-bottom: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 10; }
+.mob-logo { font-size: 16px; font-weight: 900; }
+.mob-logo span { color: var(--red); }
+.mob-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
 
-        .dynamic-glow {
-            color: var(--main-color);
-            text-shadow: 0px 0px var(--glow-radius) var(--main-color), 0px 0px 8px rgba(255, 255, 255, 0.3);
-        }
+/* Гигантские кнопки пресетов */
+.btn-huge-preset {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 18px;
+  padding: 20px 10px; border-radius: 14px; border: none;
+  background: rgba(0, 204, 68, 0.08); color: #00cc44; border: 2px solid rgba(0, 204, 68, 0.25);
+  cursor: pointer; transition: all 0.1s; display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-preset:active { transform: scale(0.95); background: rgba(0, 204, 68, 0.2); }
 
-        /* --- ПРАЗДНИЧНЫЕ АНИМАЦИИ ДЛЯ OBS --- */
-        @keyframes custom-card-pulse {
-            0%, 100% { 
-                border-color: rgba(255, 255, 255, 0.06); 
-                box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.4);
-            }
-            50% { 
-                border-color: var(--flash-color); 
-                box-shadow: 0 0 60px 15px var(--flash-color), inset 0 0 20px var(--flash-color);
-                transform: scale(1.03);
-            }
-        }
+/* Своя сумма */
+.huge-input {
+  heigh: 80px; background: #080808; border: 2px solid var(--border); color: #fff;
+  padding: 20px; border-radius: 18px; font-family: 'Unbounded'; font-size: 24px; font-weight: 900;
+  width: 100%; text-align: center; margin-bottom: 20px; transition: border-color 0.2s;
+  touch-action: manipulation; 
+}
+.huge-input:focus { border-color: #00cc44; outline: none; box-shadow: 0 0 15px rgba(0, 204, 68, 0.2); }
 
-        @keyframes custom-text-pulse {
-            0%, 100% { 
-                color: var(--main-color);
-                text-shadow: 0px 0px var(--glow-radius) var(--main-color), 0px 0px 8px rgba(255, 255, 255, 0.3);
-            }
-            50% { 
-                color: var(--flash-color);
-                text-shadow: 0px 0px calc(var(--glow-radius) * 2) var(--flash-color), 0px 0px 20px #ffffff;
-                transform: scale(1.05);
-            }
-        }
+/* Гигантская кнопка добавления */
+.btn-huge-add {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 18px; text-transform: uppercase;
+  padding: 24px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #00aa44, #007730); color: #fff; width: 100%;
+  box-shadow: 0 6px 20px rgba(0, 170, 68, 0.3); cursor: pointer; transition: all 0.1s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-add:active { transform: scale(0.96); box-shadow: 0 2px 10px rgba(0, 170, 68, 0.2); }
+.btn-huge-add:disabled { opacity: 0.3; pointer-events: none; }
 
-        .animate-milestone-card {
-            animation: custom-card-pulse 3s ease-in-out 2;
-            transition: all 0.5s ease-in-out;
-        }
+/* Кнопки очистки */
+.btn-huge-clear {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 15px;
+  padding: 20px; border-radius: 14px; border: none;
+  background: rgba(255, 0, 68, 0.1); color: #ff0044; border: 2px solid rgba(255, 0, 68, 0.3);
+  cursor: pointer; transition: all 0.1s; width: 100%;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-clear:active { transform: scale(0.96); background: rgba(255, 0, 68, 0.25); }
 
-        .animate-milestone-text {
-            animation: custom-text-pulse 3s ease-in-out 2;
-            transition: all 0.5s ease-in-out;
-        }
+.btn-huge-clear-donors {
+  font-family: 'Unbounded'; font-weight: 900; font-size: 15px;
+  padding: 20px; border-radius: 14px; border: none;
+  background: rgba(255, 153, 0, 0.1); color: #ff9900; border: 2px solid rgba(255, 153, 0, 0.3);
+  cursor: pointer; transition: all 0.1s; width: 100%;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-huge-clear-donors:active { transform: scale(0.96); background: rgba(255, 153, 0, 0.25); }
 
-        /* Режимы экрана */
-        body.widget-mode {
-            background: transparent !important;
-        }
-        body.widget-mode #control-panel {
-            display: none !important;
-        }
-        body.control-mode #widget-view-container {
-            display: none !important;
-        }
-    </style>
+.mob-fb-dot { width: 10px; height: 10px; border-radius: 50%; background: #555; transition: background .3s; }
+.mob-fb-dot.ok { background: #00cc44; box-shadow: 0 0 10px #00cc44; animation: pulseDot 2s infinite; }
+.mob-fb-dot.err { background: #ff4444; box-shadow: 0 0 10px #ff4444; }
+
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   КРАСИВЫЙ ПЕРЕЛИВАЮЩИЙСЯ ДОНАТЕР
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.shimmer-donor-bg {
+  background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(255,255,255,0.2), rgba(255,215,0,0.1));
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+  border: 1px solid rgba(255,215,0,0.5) !important;
+  box-shadow: 0 0 15px rgba(255,215,0,0.2) !important;
+}
+.shimmer-donor-bg span {
+  background: linear-gradient(90deg, #ffd700 0%, #fff 50%, #ffd700 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite;
+  filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
+  font-weight: 900;
+}
+@keyframes shine { to { background-position: 200% center; } }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ВИДЖЕТ МУЗЫКИ ДЛЯ OBS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.music-scene { width: 100vw; height: 100vh; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+
+/* IDLE ANIMATED TEXT */
+.idle-music-text {
+  position: absolute; top: var(--idle-top, 50%); left: var(--idle-left, 50%);
+  transform: translate(-50%, -50%); font-size: var(--idle-size, 32px);
+  font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 3px; text-align: center; white-space: pre-wrap; line-height: 1.3;
+  background: linear-gradient(90deg, var(--idle-c1, #ff0088) 0%, var(--idle-c2, #00c2ff) 33%, var(--idle-c3, #ffd700) 66%, var(--idle-c1, #ff0088) 100%);
+  background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  animation: idleShimmer var(--idle-speed, 3s) linear infinite;
+  filter: drop-shadow(0 0 var(--idle-glow-px, 20px) var(--idle-glow-color, #00c2ff));
+  z-index: 10; pointer-events: none; transition: opacity 0.4s ease;
+}
+@keyframes idleShimmer { 0% { background-position: 0% 50%; } 100% { background-position: 300% 50%; } }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   OBS URL CARD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.obs-url-card { background: #0a0a0a; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.obs-url-title { font-size: 9px; font-weight: 900; color: var(--text-dim); text-transform: uppercase; letter-spacing: .8px; display: flex; align-items: center; gap: 6px; }
+.obs-url-display { background: #080808; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; font-size: 9px; color: var(--text-dim); font-family: monospace; word-break: break-all; line-height: 1.5; min-height: 28px; letter-spacing: .2px; }
+.obs-btn-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.btn-obs { background: #151515; border: 1px solid var(--border); color: var(--text-mid); padding: 10px 6px 8px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 8px; font-weight: 900; text-transform: uppercase; letter-spacing: .3px; cursor: pointer; transition: all .2s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.btn-obs:hover { background: #1c1c1c; border-color: var(--border-hi); color: var(--text); }
+.btn-obs.active { border-color: var(--red); background: rgba(255,0,68,.07); color: #fff; }
+.btn-obs.copied { border-color: #00cc44 !important; color: #00cc44 !important; background: rgba(0,204,68,.07) !important; }
+.btn-obs-icon { font-size: 16px; line-height: 1; }
+.btn-obs-sub { font-size: 7px; color: var(--text-dim); font-weight: 400; text-transform: none; }
+.btn-obs.copied .btn-obs-sub { color: #00cc44; }
+.btn-copy-url { background: linear-gradient(135deg, #1a1a1a, #111); border: 1px solid var(--border-hi); color: var(--text); padding: 9px 14px; border-radius: var(--radius-sm); font-family: 'Unbounded'; font-size: 10px; font-weight: 700; cursor: pointer; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; text-transform: uppercase; letter-spacing: .3px; }
+.btn-copy-url:hover { background: #1c1c1c; border-color: #444; }
+.btn-copy-url.copied { border-color: #00cc44; color: #00cc44; background: rgba(0,204,68,.07); }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   PREVIEW IDLE TEXT (admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.idle-preview-box { background: #050505; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 70px; overflow: hidden; position: relative; }
+.idle-preview-text { font-family: 'Unbounded', sans-serif; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; text-align: center; white-space: pre-wrap; line-height: 1.3; display: block; background: linear-gradient(90deg, var(--p-idle-c1, #ff0088) 0%, var(--p-idle-c2, #00c2ff) 33%, var(--p-idle-c3, #ffd700) 66%, var(--p-idle-c1, #ff0088) 100%); background-size: 300% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: idleShimmer var(--p-idle-speed, 3s) linear infinite; filter: drop-shadow(0 0 var(--p-idle-glow-px, 12px) var(--p-idle-glow-color, #00c2ff)); }
+
+@media(max-width:900px){
+  :root{--sidebar-w:100%;}
+  body{overflow:auto;}
+  .desktop-only { display: none !important; }
+}
+@media(min-width:901px){
+  .mobile-only { display: none !important; }
+}
+</style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <!-- ВЬЮ ВИДЖЕТА (Для OBS) -->
-    <div id="widget-view-container" class="p-10">
-        <div id="widget-view" class="glass-panel rounded-[2rem] px-14 py-8 flex flex-col items-center justify-center text-center min-w-[380px] transition-all duration-500">
-            <!-- Надпись сверху -->
-            <div id="widget-label" class="font-bold tracking-[0.25em] uppercase mb-2 select-none transition-all duration-300 whitespace-nowrap">
-                СТРИМ ИДЕТ
-            </div>
-            <!-- Цифры секундомера -->
-            <div id="display-widget" class="text-6xl md:text-8xl font-black dynamic-glow tracking-wider tabular-nums select-none transition-all duration-300">
-                00:00:00
-            </div>
+<div id="app" :class="{'obs-mode':mode!=='admin'}">
+
+  <div v-if="mode==='alert'" class="alert-scene">
+    <canvas ref="pcvs" class="particle-canvas"></canvas>
+    <transition name="alert">
+      <div v-if="alertVis" class="alert-card glow-card" :style="alertCardStyle">
+        <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
+        <div v-if="alertCfg.mediaType==='video'&&alertCfg.videoUrl" class="alert-media">
+          <video :src="alertCfg.videoUrl" autoplay muted loop playsinline></video>
         </div>
+        <div v-else-if="alertCfg.mediaType==='image'&&alertCfg.imageData" class="alert-media">
+          <img :src="alertCfg.imageData" alt="">
+        </div>
+        <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+        <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
+        <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
+        <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+      </div>
+    </transition>
+  </div>
+
+  <div v-else-if="mode==='music'" class="music-scene">
+    <div class="idle-music-text" :style="idleTextStyle">{{ musicCfg.idleText || 'Заказ музыки 250' }}</div>
+    <div style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99;">
+      <div id="yt-music-widget"></div>
+    </div>
+  </div>
+
+  <div v-else-if="mode==='widget'" class="widget-scene" :style="sceneStyle">
+    <div v-for="p in panels" :key="p.id" class="static-panel" :style="cardPos(p)">
+      <component :is="compFor(p.type)" :p="p" :is-obs="true"></component>
+    </div>
+  </div>
+
+  <div v-else class="admin-shell">
+    <div id="yt-player" style="position:fixed; width:1px; height:1px; opacity:0; pointer-events:none; z-index:-99; bottom:0; left:0;"></div>
+    
+    <div class="admin-alert-overlay" style="position:fixed; bottom: 30px; right: 30px; z-index: 99999; pointer-events:none; display:flex; align-items:flex-end; justify-content:flex-end;">
+      <transition name="alert">
+        <div v-if="alertVis && !isMobile" class="alert-card glow-card" :style="alertCardStyle" style="transform: scale(0.6); transform-origin: bottom right; min-width: 320px;">
+          <div class="a-bar" :style="{background:alertCfg.amountColor||'#ffd700',animationDuration:(alertCfg.duration||7)+'s'}" :key="alertKey"></div>
+          <div class="a-label" :style="{color:alertCfg.labelColor||'#aaa'}">{{alertCfg.labelText||'НОВЫЙ ДОНАТ!'}}</div>
+          <div class="a-name" :style="{color:alertCfg.nameColor||'#fff',fontSize:(alertCfg.nameFontSize||32)+'px'}">{{curDonation.name}}</div>
+          <div class="a-amount" :style="{color:alertCfg.amountColor||'#ffd700',fontSize:(alertCfg.amountFontSize||48)+'px'}">{{curDonation.amount}} ₸</div>
+          <div v-if="curDonation.msg" class="a-msg" :style="{color:alertCfg.msgColor||'#fff',fontSize:(alertCfg.msgFontSize||24)+'px'}">{{curDonation.msg}}</div>
+        </div>
+      </transition>
     </div>
 
-    <!-- ПАНЕЛЬ УПРАВЛЕНИЯ (КОНСТРУКТОР) -->
-    <div id="control-panel" class="glass-panel rounded-3xl p-6 max-w-lg w-full flex flex-col gap-5 hidden max-h-[90vh] overflow-y-auto">
-        <div class="text-center">
-            <h1 class="text-xl font-bold text-indigo-400">Таймер-Конструктор</h1>
-            <p class="text-[10px] text-gray-400 mt-0.5">Полная кастомизация + Синхронизация в OBS</p>
+    <div v-if="isMobile" class="mobile-kaspi-view mobile-only">
+      <div class="mob-topbar">
+        <div class="mob-logo">ПУЛЬТ <span>PRO</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:11px;color:var(--text-dim);font-weight:900;">{{fbLoaded?'СВЯЗЬ ✓':'ОЖИДАНИЕ'}}</span>
+          <div class="mob-fb-dot" :class="{ok:fbLoaded,err:!fbLoaded}"></div>
         </div>
-
-        <!-- Превью таймера в админке -->
-        <div class="bg-black/40 rounded-2xl p-4 border border-white/5 text-center flex flex-col items-center justify-center">
-            <div id="control-label-preview" class="font-bold tracking-widest uppercase mb-1 text-gray-300">
-                СТРИМ ИДЕТ
-            </div>
-            <div id="display-control" class="text-4xl font-black dynamic-glow tracking-wider tabular-nums">
-                00:00:00
-            </div>
+      </div>
+      
+      <div class="mob-scroll">
+        <div v-if="!fbLoaded" style="text-align:center; padding: 40px 20px; color: var(--text-dim); font-size: 14px; font-weight: 900; line-height: 1.5;">
+          ⏳ Подключение к базе данных...<br>
+          <span style="font-size: 10px; font-weight: 400;">(защита от сброса дизайна)</span>
         </div>
-
-        <!-- Раздел 1: Управление временем -->
-        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
-            <div class="flex gap-2 justify-center">
-                <button id="btn-start" class="flex-1 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition text-xs uppercase tracking-wider">Старт</button>
-                <button id="btn-pause" class="flex-1 py-2 bg-amber-500 hover:bg-amber-400 text-gray-900 rounded-lg font-bold transition text-xs uppercase tracking-wider">Пауза</button>
-                <button id="btn-reset" class="flex-1 py-2 bg-red-500 hover:bg-red-400 rounded-lg font-bold transition text-xs uppercase tracking-wider">Сброс</button>
-            </div>
-            <div class="flex gap-2 items-center justify-between border-t border-white/5 pt-2">
-                <div class="flex gap-1 items-center">
-                    <input type="number" id="inp-h" placeholder="00" min="0" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
-                    <span class="text-gray-600 font-bold">:</span>
-                    <input type="number" id="inp-m" placeholder="00" min="0" max="59" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
-                    <span class="text-gray-600 font-bold">:</span>
-                    <input type="number" id="inp-s" placeholder="00" min="0" max="59" class="w-12 bg-gray-900 rounded-md text-center p-1.5 border border-gray-700 text-xs font-bold">
-                </div>
-                <button id="btn-set" class="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 rounded-lg font-bold transition text-xs uppercase">Задать время</button>
-            </div>
-        </div>
-
-        <!-- Раздел 2: Кастомизация надписи -->
-        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Настройка надписи</h2>
-            <div>
-                <label class="block text-[10px] text-gray-400 mb-1">Текст</label>
-                <input type="text" id="inp-label" placeholder="СТРИМ ИДЕТ" class="w-full bg-gray-900 rounded-lg px-3 py-2 border border-gray-700 focus:border-indigo-500 outline-none transition text-xs">
-            </div>
-            <div>
-                <div class="flex justify-between text-[10px] text-gray-400 mb-1">
-                    <label>Размер надписи</label>
-                    <span id="val-label-size">14px</span>
-                </div>
-                <input type="range" id="scale-label" min="10" max="42" value="14" class="w-full accent-indigo-500">
-            </div>
-        </div>
-
-        <!-- Раздел 3: Кастомизация цветов и эффектов -->
-        <div class="bg-white/5 rounded-xl p-3 border border-white/5 flex flex-col gap-3">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Цвета и Свечение</h2>
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[10px] text-gray-400 mb-1">Основной цвет</label>
-                    <div class="flex gap-2 items-center bg-gray-900 p-1.5 rounded-lg border border-gray-700">
-                        <input type="color" id="cp-main" value="#818cf8" class="w-8 h-6 bg-transparent border-0 cursor-pointer">
-                        <span id="txt-main-color" class="text-[10px] font-mono text-gray-400">#818CF8</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[10px] text-gray-400 mb-1">Цвет вспышки (30м)</label>
-                    <div class="flex gap-2 items-center bg-gray-900 p-1.5 rounded-lg border border-gray-700">
-                        <input type="color" id="cp-flash" value="#f472b6" class="w-8 h-6 bg-transparent border-0 cursor-pointer">
-                        <span id="txt-flash-color" class="text-[10px] font-mono text-gray-400">#F472B6</span>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between text-[10px] text-gray-400 mb-1">
-                    <label>Интенсивность Glow (Свечение)</label>
-                    <span id="val-glow">24px</span>
-                </div>
-                <input type="range" id="scale-glow" min="4" max="60" value="24" class="w-full accent-indigo-500">
-            </div>
-        </div>
-
-        <!-- Сохранение и вывод ссылки -->
-        <div class="flex flex-col gap-2 mt-1">
-            <button id="btn-save-design" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-bold text-xs uppercase tracking-widest transition shadow-lg shadow-indigo-600/10">
-                Применить настройки дизайна
-            </button>
-            <button id="btn-copy-link" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-400 text-gray-900 rounded-xl font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-emerald-500/10">
-                Скопировать ссылку для OBS
-            </button>
-        </div>
-    </div>
-
-    <!-- FIREBASE & CORE LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-
-        // Конфиг базы данных
-        const firebaseConfig = {
-            apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU",
-            authDomain: "tt-widget-88711.firebaseapp.com",
-            databaseURL: "https://tt-widget-88711-default-rtdb.firebaseio.com",
-            projectId: "tt-widget-88711",
-            storageBucket: "tt-widget-88711.firebasestorage.app",
-            messagingSenderId: "997435022478",
-            appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const timerRef = ref(db, 'stream_stopwatch_designer');
-
-        // Модель данных с дефолтными настройками стиля
-        let state = {
-            isRunning: false,
-            startTime: 0,
-            accumulated: 0,
-            labelText: "СТРИМ ИДЕТ",
-            labelSize: "14px",
-            mainColor: "#818cf8",
-            flashColor: "#f472b6",
-            glowRadius: "24px"
-        };
-
-        // Элементы
-        const displayWidget = document.getElementById('display-widget');
-        const widgetLabel = document.getElementById('widget-label');
-        const displayControl = document.getElementById('display-control');
-        const controlLabelPreview = document.getElementById('control-label-preview');
-        const controlPanel = document.getElementById('control-panel');
         
-        let lastTriggeredSecond = -1;
+        <div v-else style="display:flex; flex-direction:column; gap:25px; max-width: 500px; margin: 0 auto; width: 100%;">
+          
+          <div style="text-align:center; font-size:14px; font-weight:900; color:#fff; text-transform:uppercase; letter-spacing: 1px;">💰 Быстро в копилку</div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+             <button class="btn-huge-preset" @click="addKztSilently(100)">+ 100 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(250)">+ 250 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(500)">+ 500 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(1000)">+ 1000 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(2000)">+ 2000 ₸</button>
+             <button class="btn-huge-preset" @click="addKztSilently(5000)">+ 5000 ₸</button>
+          </div>
 
-        // Режим работы
-        const urlParams = new URLSearchParams(window.location.search);
-        const isWidget = urlParams.get('widget') === 'true';
+          <div style="margin-top: 10px;">
+            <input type="number" v-model.number="quickKzt" placeholder="Своя сумма ₸" class="huge-input">
+            <button class="btn-huge-add" @click="addKztSilently()" :disabled="!quickKzt">
+              ➕ ДОБАВИТЬ {{ quickKzt || 0 }} ₸
+            </button>
+          </div>
 
-        if (isWidget) {
-            document.body.classList.add('widget-mode');
-        } else {
-            document.body.classList.add('control-mode');
-            controlPanel.classList.remove('hidden');
-        }
+          <div style="display:flex; flex-direction:column; gap:15px; margin-top:20px; border-top: 1px solid var(--border); padding-top:25px;">
+            <button class="btn-huge-clear" @click="clearProgress">🗑️ ОЧИСТИТЬ СУММУ СБОРОВ</button>
+          </div>
 
-        // Обновление CSS переменных на странице
-        function applyDesignStyles(data) {
-            document.documentElement.style.setProperty('--main-color', data.mainColor || '#818cf8');
-            document.documentElement.style.setProperty('--flash-color', data.flashColor || '#f472b6');
-            document.documentElement.style.setProperty('--glow-radius', data.glowRadius || '24px');
-            
-            // Размер текста надписи
-            widgetLabel.style.fontSize = data.labelSize || '14px';
-            controlLabelPreview.style.fontSize = data.labelSize || '14px';
-            
-            // Цвет надписи делаем чуть блеклым от основного для стиля
-            widgetLabel.style.color = (data.mainColor || '#818cf8') + 'cc'; 
-            controlLabelPreview.style.color = (data.mainColor || '#818cf8') + 'cc'; 
-        }
+        </div>
+      </div>
+    </div>
 
-        // Прием данных из Firebase
-        onValue(timerRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                state = data;
+    <template v-else>
+      <div class="sidebar desktop-only">
+        <div class="sidebar-head">
+          <div class="logo"><div class="logo-mark">W</div><div class="logo-name">WIDGET <span>PRO</span></div></div>
+          <div class="ver-tag">v13 PRO</div>
+        </div>
+        <div class="tabs">
+          <button class="tab" :class="{on:tab==='widgets'}" @click="tab='widgets'">🎯 Виджеты</button>
+          <button class="tab" :class="{on:tab==='music'}" @click="tab='music'">🎵 Клип (OBS)</button>
+          <button class="tab" :class="{on:tab==='alert'}" @click="tab='alert'">🎉 Alert</button>
+        </div>
+        <div class="sidebar-body">
+
+          <template v-if="tab==='widgets'">
+            <div class="fb-status"><div class="fb-dot" :class="{ok:fbLoaded,err:!fbLoaded}"></div><span>{{fbLoaded ? 'Firebase подключён' : 'Ожидание Firebase...'}}</span></div>
+            <div class="donate-form-card">
+              <div class="donate-form-title"><div class="dft-icon">⭐</div>Быстрый донат</div>
+              <div class="live-preview-strip" v-if="quickName||quickAmount">
+                <div><div class="lp-label">Донатер</div><div class="lp-name">{{quickName||'—'}}</div></div><div class="lp-sep"></div>
+                <div style="text-align:right"><div class="lp-label">Сумма</div><div class="lp-value">{{quickAmount ? Number(quickAmount).toLocaleString('ru') + ' ₸' : '—'}}</div></div>
+              </div>
+              <div class="donate-input-row">
+                <div class="fg"><label>Имя донатера</label><input class="donate-name-input" type="text" v-model="quickName" placeholder="Иван Петров" @keydown.enter="doQuickDonate"></div>
+                <div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="quickAmount" placeholder="500" min="0" @keydown.enter="doQuickDonate"></div></div>
+              </div>
+              <div class="fg"><label>Сообщение</label><textarea v-model="quickMessage" placeholder="Крутой стрим, продолжай в том же духе!" style="min-height:40px" @keydown.enter.prevent="doQuickDonate"></textarea></div>
+              <div class="donate-btn-row">
+                <button class="btn btn-blue" @click="doQuickDonate">▶ В OBS + ЦЕЛЬ</button>
+                <button class="btn btn-purple" @click="doQuickTest">🧪 Тест локально</button>
+              </div>
+            </div>
+
+            <div class="fr"><button class="btn btn-add-panel" @click="addPanel('goal')">✚ ЦЕЛЬ</button><button class="btn btn-add-panel" @click="addPanel('challenge')">✚ ЧЕЛЛЕНДЖ</button></div>
+
+            <div v-for="(p,i) in panels" :key="p.id">
+              <div class="sec-head" :class="{on:selId===p.id}" @click="selId=selId===p.id?null:p.id">
+                <div class="sec-head-l"><div class="sec-dot">{{i+1}}</div><div class="sec-name">{{p.type==='goal'?'🎯 ЦЕЛЬ':'⚡ ЧЕЛЛЕНДЖ'}}</div></div>
+                <div style="display:flex;gap:7px;align-items:center"><button class="btn btn-del" @click.stop="removePanel(p.id)">✕</button><span class="sec-chevron">▼</span></div>
+              </div>
+              <div v-if="selId===p.id" class="sec-body">
+                <div class="fr"><div class="fg"><label>Позиция X</label><input type="number" v-model.number="p.x"></div><div class="fg"><label>Позиция Y</label><input type="number" v-model.number="p.y"></div></div>
+                <div class="divider"></div>
+                <template v-if="p.type==='goal'">
+                  <div class="fr"><div class="fg"><label>Текущая сумма</label><input type="number" v-model.number="p.current"></div><div class="fg"><label>Цель</label><input type="text" v-model="p.max"></div></div>
+                  
+                  <div class="fr"><div class="fg"><label>Текст: Последний донат</label><input type="text" v-model="p.lastDonorLabel"></div><div class="fg"><label>Размер метки</label><div class="rr"><input type="range" min="6" max="24" v-model.number="p.lastDonorLabelSize"><span class="rv">{{p.lastDonorLabelSize||8}}</span></div></div></div>
+                  
+                  <div class="fg">
+                    <label>Отображение донатов</label>
+                    <select v-model="p.donorDisplayMode">
+                      <option value="list">Список донатеров</option>
+                      <option value="last">Только последний донат (Без сбора)</option>
+                    </select>
+                  </div>
+                  
+                  <div class="fg" v-if="p.donorDisplayMode === 'last'">
+                    <label>Последний донат (ручной ввод)</label>
+                    <input type="text" v-model="p.lastDonorStr" placeholder="Имя — 500">
+                  </div>
+                  <div class="fg" v-else>
+                    <label>Список донатеров</label>
+                    <textarea v-model="p.donorsRaw" placeholder="Иван — 500"></textarea>
+                  </div>
+                </template>
+                <template v-if="p.type==='challenge'">
+                  <div class="fg"><label>Логотип</label><div class="file-wrap"><div class="file-btn">📁 Выбрать изображение</div><input type="file" accept="image/*" @change="uploadIcon($event,p)"></div></div>
+                  <div class="fr"><div class="cb-row" style="flex:1"><label>Разделитель</label><input type="checkbox" v-model="p.showDivider"></div><div class="cb-row" style="flex:1"><label>Счётчик</label><input type="checkbox" v-model="p.showCount"></div></div>
+                </template>
                 
-                // Рендерим тексты
-                widgetLabel.textContent = state.labelText || "СТРИМ ИДЕТ";
-                controlLabelPreview.textContent = state.labelText || "СТРИМ ИДЕТ";
-                
-                // Применяем стили к CSS
-                applyDesignStyles(state);
+                <div class="divider"></div>
+                <div class="sub-lbl">Шрифты и Текст</div>
+                <div class="fr">
+                  <div class="fg"><label>Размер заголовка</label><div class="rr"><input type="range" min="10" max="72" v-model.number="p.titleSize"><span class="rv">{{p.titleSize||16}}</span></div></div>
+                  <div class="fg"><label>Размер цифр</label><div class="rr"><input type="range" min="10" max="72" v-model.number="p.textSize"><span class="rv">{{p.textSize||14}}</span></div></div>
+                </div>
 
-                // Если мы в админке, подтягиваем текущие параметры в инпуты
-                if (!isWidget) {
-                    if (document.activeElement !== document.getElementById('inp-label')) {
-                        document.getElementById('inp-label').value = state.labelText || "СТРИМ ИДЕТ";
-                    }
-                    document.getElementById('cp-main').value = state.mainColor || "#818cf8";
-                    document.getElementById('cp-flash').value = state.flashColor || "#f472b6";
-                    document.getElementById('txt-main-color').textContent = (state.mainColor || "#818cf8").toUpperCase();
-                    document.getElementById('txt-flash-color').textContent = (state.flashColor || "#f472b6").toUpperCase();
-                    
-                    const sizeVal = parseInt(state.labelSize || 14);
-                    document.getElementById('scale-label').value = sizeVal;
-                    document.getElementById('val-label-size').textContent = sizeVal + 'px';
+                <div class="divider"></div>
+                <div class="sub-lbl">Цвета элементов</div>
+                <div class="color-grid">
+                  <div class="ci"><span>Текст</span><input type="color" v-model="p.cText"></div>
+                  <div class="ci"><span>Акцент</span><input type="color" v-model="p.cAccent"></div>
+                  <div class="ci" v-if="p.type==='goal'"><span>Полоса 1</span><input type="color" v-model="p.cBar1"></div>
+                  <div class="ci" v-if="p.type==='goal'"><span>Полоса 2</span><input type="color" v-model="p.cBar2"></div>
+                  <div class="ci" v-if="p.type==='challenge'"><span>Иконка</span><input type="color" v-model="p.cIcon"></div>
+                </div>
 
-                    const glowVal = parseInt(state.glowRadius || 24);
-                    document.getElementById('scale-glow').value = glowVal;
-                    document.getElementById('val-glow').textContent = glowVal + 'px';
-                }
-            }
-        });
+                <div class="divider"></div>
+                <div class="sub-lbl">Настройки панели</div>
+                <div class="fg"><label>Ширина панели</label><div class="rr"><input type="range" min="200" max="1000" step="10" v-model.number="p.width"><span class="rv">{{p.width||400}}</span></div></div>
+                <div class="fr"><div class="fg"><label>Фон</label><input type="color" v-model="p.bgColor"></div><div class="fg"><label>Прозрачность фона</label><div class="rr"><input type="range" min="0" max="1" step=".01" v-model.number="p.bgOpacity"><span class="rv">{{p.bgOpacity}}</span></div></div></div>
+              </div>
+            </div>
+            
+            <div class="sec-head"><div class="sec-head-l"><div class="sec-name">⚙ Глобальные настройки OBS</div></div></div>
+            <div class="sec-body">
+              <div class="fg"><label>Масштаб сцены</label><div class="rr"><input type="range" min=".5" max="2" step=".01" v-model.number="globalScale"><span class="rv">{{globalScale||1}}</span></div></div>
+            </div>
+          </template>
 
-        // Время
-        function formatTime(ms) {
-            const totalSeconds = Math.floor(ms / 1000);
-            const hours = Math.floor(totalSeconds / 3600);
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            const pad = (num) => num.toString().padStart(2, '0');
-            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+          <template v-if="tab==='music'">
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-dot" style="background:var(--ac-blue);color:#fff">▶</div><div class="sec-name">Настройка Музыки</div></div></div>
+            <div class="sec-body">
+              <div class="cb-row" style="margin-bottom:10px;">
+                <label>Слушать музыку в этой админке на ПК<br><span style="color:var(--text-dim);font-weight:400;font-size:8px;">(Музыка играет ТУТ, чтобы её было слышно на стриме)</span></label>
+                <input type="checkbox" v-model="musicCfg.adminEnablePlayer" @change="toggleAdminPlayer">
+              </div>
+
+              <div class="music-queue-card" v-if="musicQueue.length > 0" style="margin-bottom:15px; background: #000;">
+                <div class="music-queue-header">
+                  <div class="music-queue-title"><div class="mq-icon">🎵</div>Музыка ({{musicQueue.length}})</div>
+                  <button class="btn-clear-queue" @click="clearQueue">🗑 Очистить</button>
+                </div>
+                <div class="volume-control-wrap">
+                  <span class="volume-icon">{{ musicVolume > 0 ? '🔊' : '🔈' }}</span>
+                  <input type="range" class="volume-slider" min="0" max="100" v-model.number="musicVolume" @input="changeVolume">
+                  <span class="volume-value">{{ musicVolume }}%</span>
+                </div>
+                <div v-for="(track, idx) in musicQueue" :key="track.uid" class="queue-item" :class="{playing: idx===0}">
+                  <div class="track-info">
+                    <div class="track-status" :class="{now: idx===0}">
+                      <template v-if="idx===0"><div class="bar-anim"><span></span><span></span><span></span></div>Играет</template>
+                      <template v-else>⏳ #{{idx}}</template>
+                    </div>
+                  </div>
+                  <button v-if="idx===0" class="btn-skip" @click="skipTrack(0)">⏭ Скип</button>
+                  <button v-else class="btn-remove" @click="skipTrack(idx)">✕</button>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="sub-lbl">✨ Текст заказа музыки</div>
+              <div class="fg">
+                <label>Текст надписи</label>
+                <textarea v-model="musicCfg.idleText" placeholder="Заказ музыки 250" style="min-height:60px;"></textarea>
+              </div>
+              
+              <div class="idle-preview-box" :style="idlePreviewStyle">
+                <span class="idle-preview-text" :style="{fontSize: Math.min(musicCfg.idleSize||32, 28)+'px'}">
+                  {{ musicCfg.idleText || 'Заказ музыки 250' }}
+                </span>
+              </div>
+
+              <div class="fg">
+                <label>Позиция X — горизонталь (%)</label>
+                <div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleLeft"><span class="rv">{{musicCfg.idleLeft}}%</span></div>
+              </div>
+              <div class="fg">
+                <label>Позиция Y — вертикаль (%)</label>
+                <div class="rr"><input type="range" min="0" max="100" v-model.number="musicCfg.idleTop"><span class="rv">{{musicCfg.idleTop}}%</span></div>
+              </div>
+              <div class="fg">
+                <label>Размер шрифта (px)</label>
+                <div class="rr"><input type="range" min="12" max="120" v-model.number="musicCfg.idleSize"><span class="rv">{{musicCfg.idleSize}}px</span></div>
+              </div>
+              <div class="fg">
+                <label>Размер свечения (glow)</label>
+                <div class="rr"><input type="range" min="0" max="80" v-model.number="musicCfg.idleGlowSize"><span class="rv">{{musicCfg.idleGlowSize}}px</span></div>
+              </div>
+              <div class="fg">
+                <label>Скорость переливания (сек)</label>
+                <div class="rr"><input type="range" min="0.5" max="15" step="0.5" v-model.number="musicCfg.idleSpeed"><span class="rv">{{musicCfg.idleSpeed}}s</span></div>
+              </div>
+              <div class="divider"></div>
+              <div class="sub-lbl" style="margin-bottom:2px">🎨 Цвета градиента</div>
+              <div class="color-grid">
+                <div class="ci"><span>Цвет 1</span><input type="color" v-model="musicCfg.idleColor1"></div>
+                <div class="ci"><span>Цвет 2</span><input type="color" v-model="musicCfg.idleColor2"></div>
+                <div class="ci"><span>Цвет 3</span><input type="color" v-model="musicCfg.idleColor3"></div>
+                <div class="ci"><span>Свечение</span><input type="color" v-model="musicCfg.idleGlowColor"></div>
+              </div>
+            </div>
+          </template>
+
+          <template v-if="tab==='alert'">
+            <div class="sec-head on"><div class="sec-head-l"><div class="sec-name">Запустить Alert вручную</div></div></div>
+            <div class="sec-body">
+              <div class="fr"><div class="fg"><label>Имя</label><input type="text" v-model="tName" placeholder="Иван"></div><div class="fg"><label>Сумма</label><div class="donate-amount-wrap"><input type="number" v-model.number="tAmount" placeholder="500"></div></div></div>
+              <div class="fg"><label>Сообщение</label><textarea v-model="tMessage" placeholder="Текст"></textarea></div>
+              <button class="btn btn-green" @click="doTrigger">▶ В OBS</button>
+            </div>
+
+            <div class="sec-head" :class="{on:alertOpen}" @click="alertOpen=!alertOpen">
+              <div class="sec-head-l"><div class="sec-name">🔔 Звук при донате (играет на ПК)</div></div>
+              <span class="sec-chevron">▼</span>
+            </div>
+            <div v-if="alertOpen" class="sec-body">
+              <div class="cb-row">
+                <label>Включить звук при донате</label>
+                <input type="checkbox" v-model="alertCfg.soundEnabled">
+              </div>
+              <template v-if="alertCfg.soundEnabled">
+                <div class="fg">
+                  <label>Тип звука</label>
+                  <select v-model="alertCfg.soundType">
+                    <option value="chime">🎵 Chime — колокольчики</option>
+                    <option value="ding">🔔 Ding — один звук</option>
+                    <option value="fanfare">🎺 Fanfare — фанфара</option>
+                    <option value="cash">💰 Cash — кассовый</option>
+                  </select>
+                </div>
+                <div class="fg">
+                  <label>Громкость звука</label>
+                  <div class="rr">
+                    <input type="range" min="0" max="100" v-model.number="alertCfg.soundVolume">
+                    <span class="rv">{{alertCfg.soundVolume}}%</span>
+                  </div>
+                </div>
+                <button class="btn btn-flat" @click="() => playDonationSound(true)">🔊 Тест звука</button>
+              </template>
+            </div>
+
+            <div class="sec-head" :class="{on:ttsOpen}" @click="ttsOpen=!ttsOpen">
+              <div class="sec-head-l"><div class="sec-name">🗣 Озвучка сообщений (TTS играет на ПК)</div></div>
+              <span class="sec-chevron">▼</span>
+            </div>
+            <div v-if="ttsOpen" class="sec-body">
+              <div class="cb-row">
+                <label>Включить озвучку донатов</label>
+                <input type="checkbox" v-model="alertCfg.ttsEnabled">
+              </div>
+              <template v-if="alertCfg.ttsEnabled">
+                <div class="fg">
+                  <label>Громкость голоса</label>
+                  <div class="rr">
+                    <input type="range" min="0" max="100" v-model.number="alertCfg.ttsVolume">
+                    <span class="rv">{{alertCfg.ttsVolume}}%</span>
+                  </div>
+                </div>
+                <button class="btn btn-flat" @click="testTTSVoice">🗣 Тест голоса</button>
+              </template>
+            </div>
+          </template>
+
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-red" @click="saveAll">💾 СОХРАНИТЬ ВСЁ</button>
+          
+          <div class="obs-url-card">
+            <div class="obs-url-title">📡 OBS Browser Source URL</div>
+            <div class="obs-btn-grid">
+              <button class="btn-obs" :class="{active: obsSelected==='widget', copied: copiedObs.widget}" @click="selectObs('widget')">
+                <span class="btn-obs-icon">🎯</span><span>Виджет</span>
+                <span class="btn-obs-sub">{{copiedObs.widget ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+              <button class="btn-obs" :class="{active: obsSelected==='music', copied: copiedObs.music}" @click="selectObs('music')">
+                <span class="btn-obs-icon">🎵</span><span>Музыка</span>
+                <span class="btn-obs-sub">{{copiedObs.music ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+              <button class="btn-obs" :class="{active: obsSelected==='alert', copied: copiedObs.alert}" @click="selectObs('alert')">
+                <span class="btn-obs-icon">🎉</span><span>Alert</span>
+                <span class="btn-obs-sub">{{copiedObs.alert ? '✓ скопирован' : 'нажми'}}</span>
+              </button>
+            </div>
+            <div v-if="obsSelected" class="obs-url-display">{{ currentObsUrl }}</div>
+            <button v-if="obsSelected" class="btn-copy-url" :class="{copied: copiedObs[obsSelected]}" @click="copyObs(obsSelected)">
+              {{ copiedObs[obsSelected] ? '✓ URL скопирован!' : '📋 Копировать URL' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-zone desktop-only" ref="previewZone">
+        <div class="pz-label">PREVIEW · NO DRAG · USE X/Y</div>
+        <div class="pz-mode">OBS OVERLAY</div>
+
+        <div v-if="tab==='alert'" class="alert-preview-wrap">
+          </div>
+
+        <div v-if="tab==='widgets'" class="widget-scene" :style="sceneStyle" ref="wscene">
+          <div v-for="p in panels" :key="p.id" class="static-panel" :class="{sel:selId===p.id}" :style="cardPos(p)" @click="selId=p.id">
+            <component :is="compFor(p.type)" :p="p" :is-obs="false"></component>
+          </div>
+        </div>
+
+        <div v-if="tab==='music'" class="preview-music-wrap">
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;">
+            <span class="idle-preview-text" :style="{...idlePreviewStyle, fontSize: Math.min(musicCfg.idleSize||32, 22)+'px', position:'static', transform:'none'}">
+              {{ musicCfg.idleText || 'Заказ музыки 250' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <div class="toast" :class="{show:toast.show,ok:toast.type==='ok',err:toast.type==='err'}">{{toast.msg}}</div>
+</div>
+
+<script type="text/x-template" id="tpl-goal">
+<div class="glass" :style="glassStyle">
+  <div class="goal-wrap" :style="{padding:(p.padding||20)+'px', position:'relative'}">
+    <div class="goal-top" v-if="p.donorDisplayMode !== 'last'">
+      <span :contenteditable="!isObs" class="ed" :style="{fontSize:(p.titleSize||16)+'px',fontWeight:900,color:p.cText||'#fff',textTransform:'uppercase',letterSpacing:'1px'}" @blur="p.title=$event.target.innerText">{{p.title||'Цель стрима'}}</span>
+      <span :style="{fontSize:(p.textSize||14)+'px',fontWeight:900,color:p.cAccent||'#ffd700'}">{{formatNum(p.current||0)}} ₸ / {{p.max||'50 000'}} ₸</span>
+    </div>
+    <div class="prog-track" v-if="p.donorDisplayMode !== 'last'" :style="{height:(p.barHeight||14)+'px',borderRadius:(p.radius||15)+'px'}">
+      <div class="prog-fill" :style="{width:pct+'%',background:'linear-gradient(90deg,'+(p.cBar1||'#ff0044')+','+(p.cBar2||'#ff6600')+')',borderRadius:(p.radius||15)+'px'}"></div>
+    </div>
+    <div class="ld-section" v-if="p.donorDisplayMode === 'last' ? p.lastDonorStr : donors.length" :style="{marginTop: p.donorDisplayMode === 'last' ? '0' : '13px'}">
+      <div class="ld-label" :style="{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:p.cText||'#ccc', fontSize:(p.lastDonorLabelSize||8)+'px'}"><span>🎁</span>{{p.lastDonorLabel||'ПОСЛЕДНИЙ ДОНАТ'}}</div>
+      <ul class="donor-list">
+        <li v-if="p.donorDisplayMode === 'last'" class="donor-item shimmer-donor-bg" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px'}">
+          <span>{{ p.lastDonorStr?.split('—')[0]?.trim() || '—' }}</span>
+          <span>{{ p.lastDonorStr?.split('—')[1]?.trim() ? p.lastDonorStr.split('—')[1].trim() + ' ₸' : '' }}</span>
+        </li>
+        <template v-else>
+          <li v-for="(d,i) in donors" :key="i" class="donor-item" :style="{fontSize:(p.textSize||14)+'px',borderRadius:(p.radius||15)+'px',color:p.cText||'#ccc'}">
+            <span>{{d.name}}</span><span>{{d.amount ? d.amount + ' ₸' : ''}}</span>
+          </li>
+        </template>
+      </ul>
+    </div>
+  </div>
+</div>
+</script>
+
+<script type="text/x-template" id="tpl-challenge">
+<div class="glass" :style="glassStyle">
+  <div class="chal-wrap" :style="{padding:(p.padding||20)+'px'}">
+    <div class="chal-row">
+      <div class="chal-brand">
+        <div v-if="p.iconData" class="icon-mask" :style="{width:(p.iconSize||35)+'px',height:(p.iconSize||35)+'px',backgroundColor:p.cIcon||'#fff',maskImage:'url('+p.iconData+')',WebkitMaskImage:'url('+p.iconData+')',marginRight:(p.iconGap||15)+'px'}"></div>
+        <span :contenteditable="!isObs" class="ed chal-title" :style="{fontSize:(p.titleSize||16)+'px',color:p.cText||'#fff'}" @blur="p.title=$event.target.innerText">{{p.title||'Челлендж'}}</span>
+      </div>
+      <div v-if="p.showCount">
+        <div class="chal-val" :style="{fontSize:(p.textSize||16)+'px',color:p.cAccent||'#ffd700'}">{{p.current||0}} ₸</div>
+        <div class="chal-total" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#888'}">/ {{p.max||'0'}} ₸</div>
+      </div>
+    </div>
+    <div v-if="p.showDivider" class="chal-divider" :style="{background:p.cAccent||'#fff'}"></div>
+    <div v-if="p.showCount" style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="chal-label" :style="{fontSize:(p.textSize ? p.textSize * 0.75 : 12)+'px',color:p.cText||'#aaa'}">Прогресс</span>
+      <span :style="{fontSize:(p.textSize||14)+'px',color:p.cAccent||'#ffd700',fontWeight:900}">{{pct}}%</span>
+    </div>
+  </div>
+</div>
+</script>
+
+<script>
+const { createApp, reactive, computed, ref, onMounted, defineComponent } = Vue;
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function hexToRgb(h){
+  let r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+function cleanNum(v){ return Math.round(parseFloat(String(v).replace(/\s/g,'').replace(/[^\d.]/g,'')) || 0); }
+
+const GoalComp = defineComponent({
+  template:'#tpl-goal', props:['p','isObs'],
+  computed:{
+    pct(){ const c=this.p.current||0,m=parseFloat(String(this.p.max).replace(/\s/g,''))||1; return Math.min(100,Math.round(c/m*100)); },
+    donors(){
+      const raw=this.p.donorsRaw||'';
+      return raw.split(/[\n,]+/).map(s=>s.trim()).filter(Boolean).map(s=>{
+        const m=s.match(/^(.+?)[—\-–]\s*(.+)$/); return m?{name:m[1].trim(),amount:m[2].trim()}:{name:s,amount:''};
+      });
+    },
+    glassStyle(){
+      const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
+      return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'80px'};
+    }
+  },
+  methods:{ 
+    formatNum(n){ return Number(n).toLocaleString('ru'); }
+  }
+});
+const ChalComp = defineComponent({
+  template:'#tpl-challenge', props:['p','isObs'],
+  computed:{
+    pct(){ const c=this.p.current||0,m=parseFloat(String(this.p.max).replace(/\s/g,''))||1; return Math.min(100,Math.round(c/m*100)); },
+    glassStyle(){
+      const p=this.p, bg=p.bgColor||'#111111', op=p.bgOpacity!==undefined?p.bgOpacity:0.75;
+      return {background:`rgba(${hexToRgb(bg)},${op})`,borderRadius:(p.radius||15)+'px',width:(p.width||400)+'px',minHeight:'60px'};
+    }
+  }
+});
+const FB_CFG = { apiKey: "AIzaSyDuxR5hsWmfIWrjgrsU4zVEnIVppUZxNNU", authDomain: "tt-widget-88711.firebaseapp.com", databaseURL: "https://tt-widget-88711-default-rtdb.firebaseio.com", projectId: "tt-widget-88711", storageBucket: "tt-widget-88711.firebasestorage.app", messagingSenderId: "997435022478", appId: "1:997435022478:web:a0ad462f2a7dd074d27ddf" };
+let db = null;
+try { firebase.initializeApp(FB_CFG); db = firebase.database(); } catch(e){ console.warn('Firebase err:', e); }
+
+const STORAGE_KEY = 'wv12_state';
+function loadState(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); }catch(e){ return null; } }
+function saveState(s){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){} }
+
+createApp({
+  components:{ 'goal-widget':GoalComp, 'challenge-widget':ChalComp },
+  setup(){
+    const saved = loadState() || {};
+    const urlMode = new URLSearchParams(location.search).get('mode');
+    const mode = ref(urlMode||'admin');
+    const tab  = ref('widgets');
+    const selId= ref(null);
+    const alertOpen = ref(false);
+    const ttsOpen = ref(false);
+    const globalScale = ref(saved.globalScale||1);
+    
+    // ПРЕДОХРАНИТЕЛЬ
+    const fbLoaded = ref(false); 
+
+    const quickKzt = ref('');
+
+    const isMobile = ref(mode.value === 'admin' && window.innerWidth <= 900);
+    window.addEventListener('resize', () => { 
+      if(mode.value === 'admin') isMobile.value = window.innerWidth <= 900; 
+    });
+
+    function debounce(fn, delay) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), delay); }; }
+
+    const kaspiPaste = ref('');
+    const musicQueue = reactive([]);
+    const musicVolume = ref(100);
+
+    const panels = reactive(saved.panels || []);
+    if(!panels.length) panels.push({
+      id:uid(),type:'goal',title:'Цель стрима',current:0,max:'50000',
+      lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ', donorsRaw:'', lastDonorLabelSize:8,
+      donorDisplayMode: 'list', lastDonorStr: '',
+      width:420,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8,
+      cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff',
+      titleSize:16,textSize:14,barHeight:14,x:80,y:60
+    });
+    const alertCfg = reactive(Object.assign({
+      labelText:'НОВЫЙ ДОНАТ!',duration:7,mediaType:'none',
+      bgColor:'#111111',bgOpacity:.9,labelColor:'#aaaaaa',nameColor:'#ffffff',
+      amountColor:'#ffd700',borderColor:'#ffd700',msgColor:'#ffffff',
+      nameFontSize:32,amountFontSize:48,msgFontSize:24,
+      cardRadius:16,particleColor:'#ffd700',particleCount:80,
+      soundEnabled: true, soundVolume: 70, soundType: 'chime',
+      ttsEnabled: true, ttsVoice: '', ttsVolume: 100
+    }, saved.alertCfg||{}));
+    const musicCfg = reactive(Object.assign({
+      emptyText: 'Музыки нет', scale: 1, textColor: '#ffffff', cAccent: '#00c2ff', adminEnablePlayer: true,
+      idleText: 'Заказ музыки 250', idleLeft: 50, idleTop: 50, idleSize: 36, idleGlowSize: 22, idleSpeed: 3,
+      idleColor1: '#ff0088', idleColor2: '#00c2ff', idleColor3: '#ffd700', idleGlowColor: '#00c2ff'
+    }, saved.musicCfg||{}));
+    const alertVis = ref(false), alertKey = ref(0), curDonation = reactive({name:'',amount:'', msg:''});
+    let alertTimer = null;
+    const quickName = ref(''), quickAmount = ref(''), quickMessage = ref('');
+    const tName = ref(''), tAmount = ref(null), tMessage = ref('');
+    const toast = reactive({show:false,msg:'',type:'ok'});
+    const obsSelected = ref('');
+    const copiedObs = reactive({widget:false, music:false, alert:false});
+    const currentObsUrl = computed(() => obsSelected.value ? `${location.href.split('?')[0]}?mode=${obsSelected.value}` : '');
+
+    function selectObs(type) { obsSelected.value = type; }
+    let toastTm;
+    function showToast(msg,type='ok'){ toast.msg=msg; toast.type=type; toast.show=true; clearTimeout(toastTm); toastTm=setTimeout(()=>toast.show=false,2500); }
+
+    const sceneStyle = computed(()=>({ transform:`scale(${globalScale.value})` }));
+    const alertCardStyle = computed(()=>{ const c=alertCfg, bg=c.bgColor||'#111111', op=c.bgOpacity!==undefined?c.bgOpacity:.9; return { background:`rgba(${hexToRgb(bg)},${op})`, borderRadius:(c.cardRadius||16)+'px', border:`1px solid ${c.borderColor||'rgba(255,215,0,.3)'}`, '--ac':`rgba(${hexToRgb(c.amountColor||'#ffd700')},.4)` }; });
+    const idleTextStyle = computed(() => ({ '--idle-top': (musicCfg.idleTop || 50) + '%', '--idle-left': (musicCfg.idleLeft || 50) + '%', '--idle-size': (musicCfg.idleSize || 36) + 'px', '--idle-c1': musicCfg.idleColor1 || '#ff0088', '--idle-c2': musicCfg.idleColor2 || '#00c2ff', '--idle-c3': musicCfg.idleColor3 || '#ffd700', '--idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--idle-glow-px': (musicCfg.idleGlowSize || 22) + 'px', '--idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
+    const idlePreviewStyle = computed(() => ({ '--p-idle-c1': musicCfg.idleColor1 || '#ff0088', '--p-idle-c2': musicCfg.idleColor2 || '#00c2ff', '--p-idle-c3': musicCfg.idleColor3 || '#ffd700', '--p-idle-glow-color': musicCfg.idleGlowColor || '#00c2ff', '--p-idle-glow-px': Math.min(musicCfg.idleGlowSize || 22, 18) + 'px', '--p-idle-speed': (musicCfg.idleSpeed || 3) + 's', }));
+    function playTTSVoice(text, isTest = false) {
+      if (mode.value !== 'admin' && !isTest) return;
+      if (isMobile.value && !isTest) return; 
+      if (!alertCfg.ttsEnabled || !text) return;
+      
+      let cleanText = text.replace(/https?:\/\/\S+/gi, '').replace(/www\.\S+/gi, '').trim();
+      if (!cleanText) return;
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = 'ru-RU';
+      utterance.volume = (alertCfg.ttsVolume || 100) / 100;
+
+      let voices = window.speechSynthesis.getVoices();
+      let ruVoices = voices.filter(v => v.lang.includes('ru'));
+      let msVoice = ruVoices.find(v => v.name.includes('Microsoft'));
+      
+      if (msVoice) utterance.voice = msVoice;
+      else if (ruVoices.length > 0) utterance.voice = ruVoices[0];
+
+      window.speechSynthesis.speak(utterance);
+    }
+    
+    function testTTSVoice() { playTTSVoice("Проверка озвучки! Теперь голос 100 процентов звучит тут, в админ-панели.", true); }
+
+    function playDonationSound(isTest = false) {
+      if (mode.value !== 'admin' && !isTest) return;
+      if (isMobile.value && !isTest) return; 
+      if (!alertCfg.soundEnabled) return;
+      
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const vol = (alertCfg.soundVolume || 70) / 100;
+        const type = alertCfg.soundType || 'chime';
+        if (type === 'chime') {
+          [[523.25, 0], [659.25, 0.13], [783.99, 0.26], [1046.5, 0.39]].forEach(([freq, delay]) => {
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'sine'; osc.frequency.value = freq; const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(vol * 0.45, t + 0.04); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+            osc.start(t); osc.stop(t + 0.8);
+          });
+        } else if (type === 'ding') {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination);
+          osc.type = 'sine'; osc.frequency.value = 880; gain.gain.setValueAtTime(0, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+          osc.start(); osc.stop(ctx.currentTime + 1.6);
+        } else if (type === 'fanfare') {
+          [[392, 0], [523, 0.14], [659, 0.28], [784, 0.42], [1047, 0.56]].forEach(([freq, delay]) => {
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'triangle'; osc.frequency.value = freq; const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(vol * 0.3, t + 0.05); 
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+            osc.start(t); osc.stop(t + 0.5);
+          });
+        } else if (type === 'cash') {
+          [[1200, 0, 0.08], [900, 0.09, 0.06], [1500, 0.18, 0.05]].forEach(([freq, delay, dur]) => {
+            const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination);
+            osc.type = 'square'; osc.frequency.value = freq; const t = ctx.currentTime + delay;
+            gain.gain.setValueAtTime(0, t); gain.gain.linearRampToValueAtTime(vol * 0.2, t + 0.01); gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+            osc.start(t); osc.stop(t + dur + 0.02);
+          });
         }
+      } catch(e) { console.warn('Sound error:', e); }
+    }
 
-        function triggerMilestoneAnimation() {
-            const card = document.getElementById('widget-view');
-            const text = document.getElementById('display-widget');
-            card.classList.remove('animate-milestone-card');
-            text.classList.remove('animate-milestone-text');
-            void card.offsetWidth; void text.offsetWidth; // перезапуск CSS анимации
-            card.classList.add('animate-milestone-card');
-            text.classList.add('animate-milestone-text');
+    function extractAndCleanYT(msg) {
+      const ytRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})\S*/gi;
+      let tracks = [];
+      let cleanMsg = msg.replace(ytRegex, (m, vid) => { tracks.push(vid); return ''; }).trim();
+      return { cleanMsg, tracks };
+    }
+
+    function handleKaspiPaste() {
+      const txt = kaspiPaste.value;
+      if (!txt) return;
+      const lines = txt.split('\n').map(l => l.trim()).filter(Boolean);
+      let name = '', amount = '', msg = '';
+      const popIdx = lines.findIndex(l => l.toLowerCase().includes('пополнение') || l.toLowerCase().includes('перевод'));
+      if (popIdx !== -1) {
+        amount = cleanNum(lines[popIdx]);
+        if (popIdx + 1 < lines.length && !lines[popIdx + 1].toLowerCase().includes('доступно')) name = lines[popIdx + 1];
+      }
+      const msgIdx = lines.findIndex(l => l.toLowerCase() === 'сообщение' || l.toLowerCase().includes('сообщение:'));
+      if (msgIdx !== -1) msg = lines.slice(msgIdx + 1).join(' '); 
+      if (amount) quickAmount.value = amount;
+      if (name) quickName.value = name;
+      if (msg) quickMessage.value = msg;
+    }
+
+    function cardPos(p){ return {left:(p.x||0)+'px',top:(p.y||0)+'px',width:(p.width||400)+'px'}; }
+    function compFor(type){ return type==='goal'?'goal-widget':'challenge-widget'; }
+    function addPanel(type){ panels.push({ id:uid(),type,title:type==='goal'?'Цель стрима':'Челлендж', current:0,max:'50000',lastDonorLabel:'ПОСЛЕДНИЙ ДОНАТ',donorsRaw:'', donorDisplayMode: 'list', lastDonorStr: '', width:400,padding:20,radius:15,bgColor:'#111111',bgOpacity:.8, cText:'#cccccc',cBar1:'#ff0044',cBar2:'#ff6600',cAccent:'#ffd700',cIcon:'#ffffff', titleSize:16,textSize:14, x:80+(panels.length*30),y:60+(panels.length*30) }); }
+    function removePanel(id){ const i=panels.findIndex(p=>p.id===id); if(i>=0) panels.splice(i,1); }
+    function uploadIcon(e,p){ const f=e.target.files[0]; if(!f) return;
+      const r=new FileReader(); r.onload=ev=>{ p.iconData=ev.target.result; }; r.readAsDataURL(f); }
+
+    function buildState(){ return { panels: JSON.parse(JSON.stringify(panels)), alertCfg: JSON.parse(JSON.stringify(alertCfg)), musicCfg: JSON.parse(JSON.stringify(musicCfg)), globalScale: globalScale.value }; }
+    const _doPushFirebase = debounce((state) => { if(db){ try{ db.ref('config').set(state); }catch(e){} } }, 600);
+    
+    function pushState(){ 
+      if(isMobile.value && !fbLoaded.value) return; // Защита для мобилки
+      const state = buildState(); saveState(state); _doPushFirebase(state); 
+    }
+    
+    const _doPushQueue = debounce(() => { if(db) db.ref('musicQueue').set(JSON.parse(JSON.stringify(musicQueue))); }, 400);
+    function pushQueueState() { _doPushQueue(); }
+    const _pushVolume = debounce((v) => { if(db) db.ref('musicVolume').set(v); }, 300);
+    function changeVolume() { _pushVolume(musicVolume.value); applyVolume(); }
+    function applyVolume() { if (window.ytPlayerObj && typeof window.ytPlayerObj.setVolume === 'function') { window.ytPlayerObj.setVolume(musicVolume.value); } }
+
+    function addKztSilently(presetAmount) {
+      if(isMobile.value && !fbLoaded.value) return;
+      const amtKzt = presetAmount || cleanNum(quickKzt.value);
+      if (!amtKzt) return;
+      
+      panels.forEach(p => {
+        if (p.type === 'goal') {
+          p.current = (p.current || 0) + amtKzt;
+          let maxVal = parseFloat(String(p.max).replace(/\s/g, '')) || 1;
+          if (p.current >= maxVal) { p.current = 0; }
         }
+        if (p.type === 'challenge') {
+          p.current = (p.current || 0) + amtKzt;
+        }
+      });
+      
+      pushState();
+      showToast(`✓ Добавлено ${amtKzt} ₸ в копилку`, 'ok');
+      if (!presetAmount) quickKzt.value = '';
+    }
 
-        function updateDisplay() {
-            let currentElapsed = state.accumulated || 0;
-            if (state.isRunning) {
-                currentElapsed += (Date.now() - state.startTime);
-            }
+    function doQuickDonate(){
+      if(isMobile.value && !fbLoaded.value) return;
+      const name = quickName.value.trim() || 'Аноним';
+      const amt = cleanNum(quickAmount.value);
+      if(!amt) { showToast('Сумма не найдена!','err'); return; }
+      const extracted = extractAndCleanYT(quickMessage.value);
+      panels.forEach(p => {
+        if (p.type === 'goal') {
+          p.current = (p.current || 0) + amt;
+          let raw = (p.donorsRaw || '').replace('Пусто — 0', '').trim();
+          let lines = raw.split(/[\n]+/).map(s => s.trim()).filter(Boolean);
+          let parsedDonors = [];
+          
+          lines.forEach(line => {
+            let parts = line.split(/[—\-–]/);
+            if (parts.length >= 2) {
+              let n = parts[0].trim(); let a = cleanNum(parts.slice(1).join('-'));
+              parsedDonors.push({ name: n, amount: a });
+            } else { parsedDonors.push({ name: line, amount: 0, original: line }); }
+          });
 
-            const formattedTime = formatTime(currentElapsed);
-            if (isWidget) {
-                displayWidget.textContent = formattedTime;
+          let existing = parsedDonors.find(d => d.name.toLowerCase() === name.toLowerCase());
+          if (existing && existing.original === undefined) { existing.amount += amt; } else { parsedDonors.push({ name: name, amount: amt }); }
+          parsedDonors.sort((a, b) => b.amount - a.amount);
+          
+          p.donorsRaw = parsedDonors.map(d => { if (d.original !== undefined) return d.original;
+            return `${d.name} — ${Number(d.amount).toLocaleString('ru')}`; }).join('\n');
+          p.lastDonorStr = `${name} — ${Number(amt).toLocaleString('ru')}`;
+          
+          let maxVal = parseFloat(String(p.max).replace(/\s/g, '')) || 1;
+          if (p.current >= maxVal) {
+            p.current = 0;
+          }
+        }
+        if (p.type === 'challenge') { p.current = (p.current || 0) + amt; }
+      });
+      
+      triggerAlert(name, amt, extracted.cleanMsg, true); 
+      pushState();
+      if (extracted.tracks.length > 0) { extracted.tracks.forEach(vid => { musicQueue.push({ uid: uid(), videoId: vid }); }); pushQueueState(); }
+      showToast(`✓ Отправлено: ${name}`,'ok'); quickName.value=''; quickAmount.value=''; quickMessage.value=''; kaspiPaste.value='';
+    }
+
+    function doQuickTest(){ const extracted = extractAndCleanYT(quickMessage.value.trim() || 'Тест!'); triggerAlert(quickName.value.trim()||'Тест', cleanNum(quickAmount.value)||500, extracted.cleanMsg, false, true); }
+    function doTrigger(){ const extracted = extractAndCleanYT(tMessage.value.trim()); triggerAlert(tName.value.trim(), cleanNum(tAmount.value), extracted.cleanMsg, true); }
+    
+    function triggerAlert(name, amt, msg, pushToFB, isTest = false){
+      if(pushToFB && db){
+        try{ db.ref('alert').set({ name, amount: amt, msg, ts: Date.now(), cfg: JSON.parse(JSON.stringify(alertCfg)) }); }catch(e){}
+        return; 
+      }
+      
+      curDonation.name=name;
+      curDonation.amount=Number(cleanNum(amt)).toLocaleString('ru'); curDonation.msg=msg;
+      alertKey.value++; 
+      alertVis.value=true; 
+      clearTimeout(alertTimer); 
+      alertTimer = setTimeout(()=>alertVis.value=false, (alertCfg.duration||7)*1000+600);
+      
+      playDonationSound(isTest);
+      playTTSVoice(msg, isTest);
+    }
+    
+    // БЕЗ ПОДТВЕРЖДЕНИЙ ДЛЯ МГНОВЕННОЙ ОЧИСТКИ
+    function clearProgress() { 
+      if(isMobile.value && !fbLoaded.value) return;
+      panels.forEach(p => { p.current = 0; }); 
+      pushState(); 
+      showToast('🗑️ Сборы очищены', 'ok'); 
+    }
+    
+    function clearDonors() { 
+      if(isMobile.value && !fbLoaded.value) return;
+      panels.forEach(p => { if(p.type === 'goal') { p.donorsRaw = ''; p.lastDonorStr = ''; } }); 
+      pushState(); 
+      showToast('🗑️ Донатеры очищены', 'ok'); 
+    }
+
+    function saveAll(){ pushState(); showToast('✓ Сохранено!','ok'); }
+    
+    function copyObs(type){
+      const url = `${location.href.split('?')[0]}?mode=${type}`;
+      navigator.clipboard.writeText(url).then(()=>{ showToast('✓ URL скопирован!','ok'); copiedObs[type] = true; setTimeout(() => { copiedObs[type] = false; }, 2500); });
+    }
+
+    function skipTrack(idx) { musicQueue.splice(idx, 1); pushQueueState(); }
+    function clearQueue() { musicQueue.splice(0, musicQueue.length); pushQueueState(); }
+
+    function toggleAdminPlayer() {
+      pushState();
+      if (!musicCfg.adminEnablePlayer && window.ytPlayerObj && typeof window.ytPlayerObj.stopVideo === 'function') { window.ytPlayerObj.stopVideo(); } else { checkQueuePlay(); }
+    }
+
+    let currentTrackUid = null;
+    let trackTimer = null;
+
+    function checkQueuePlay() {
+      if (mode.value === 'alert' || mode.value === 'widget' || isMobile.value) return;
+      if (mode.value === 'admin' && !musicCfg.adminEnablePlayer) {
+        if (window.ytPlayerObj && typeof window.ytPlayerObj.stopVideo === 'function') window.ytPlayerObj.stopVideo();
+        if (trackTimer) clearTimeout(trackTimer);
+        return;
+      }
+      if (!window.ytPlayerObj || !window.ytPlayerObj.loadVideoById) return;
+      if (musicQueue.length === 0) { 
+        window.ytPlayerObj.stopVideo(); 
+        currentTrackUid = null; 
+        if (trackTimer) clearTimeout(trackTimer);
+        return; 
+      }
+      const nextTrack = musicQueue[0];
+      if (currentTrackUid !== nextTrack.uid) {
+        currentTrackUid = nextTrack.uid;
+        window.ytPlayerObj.loadVideoById(nextTrack.videoId);
+        applyVolume();
+        if (trackTimer) clearTimeout(trackTimer);
+        trackTimer = setTimeout(() => {
+          shiftQueueFromPlayer();
+        }, 300000);
+      }
+    }
+
+    function shiftQueueFromPlayer() {
+      if (trackTimer) clearTimeout(trackTimer);
+      if (mode.value === 'music' && musicQueue.length > 0) {
+        musicQueue.shift();
+        pushQueueState();
+      } else if (mode.value === 'admin' && musicCfg.adminEnablePlayer && musicQueue.length > 0) {
+        musicQueue.shift();
+        pushQueueState();
+      }
+    }
+
+    window.onYouTubeIframeAPIReady = () => {
+      if (mode.value === 'alert' || mode.value === 'widget') return;
+      if (isMobile.value) return; 
+
+      const containerId = mode.value === 'music' ? 'yt-music-widget' : 'yt-player';
+      window.ytPlayerObj = new YT.Player(containerId, {
+        height: '100%', 
+        width: '100%',
+        host: 'https://www.youtube-nocookie.com', 
+        playerVars: { 
+          'autoplay': 1, 
+          'controls': 0,
+          'rel': 0,
+          'modestbranding': 1,
+          'iv_load_policy': 3 
+        },
+        events: {
+          'onReady': () => { applyVolume(); checkQueuePlay(); },
+          'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) shiftQueueFromPlayer(); },
+          'onError': () => shiftQueueFromPlayer()
+        }
+      });
+    };
+
+    onMounted(()=>{
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+        window.speechSynthesis.getVoices();
+      }
+
+      if(mode.value === 'admin' || mode.value === 'music'){
+        let tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        let fst = document.getElementsByTagName('script')[0]; fst.parentNode.insertBefore(tag, fst);
+      }
+      
+      if(db) {
+        if (mode.value === 'alert' || mode.value === 'admin') {
+          let isFirstAlertLoad = true;
+          db.ref('alert').on('value', s => {
+            const d = s.val();
+            if (d) {
+              if (isFirstAlertLoad) {
+                isFirstAlertLoad = false;
+              } else {
+                if (d.cfg) Object.assign(alertCfg, d.cfg);
+                triggerAlert(d.name, cleanNum(d.amount), d.msg, false);
+              }
             } else {
-                displayControl.textContent = formattedTime;
+              isFirstAlertLoad = false;
             }
-
-            // Проверка на отметку 30 минут (1800 сек)
-            const totalSeconds = Math.floor(currentElapsed / 1000);
-            if (state.isRunning && totalSeconds !== lastTriggeredSecond) {
-                lastTriggeredSecond = totalSeconds;
-                if (totalSeconds > 0 && totalSeconds % 1800 === 0) {
-                    triggerMilestoneAnimation();
-                }
-            }
-            requestAnimationFrame(updateDisplay);
+          });
         }
-        requestAnimationFrame(updateDisplay);
+        
+        if(mode.value!=='alert') db.ref('config').on('value', s=>{ 
+          const d=s.val(); 
+          if(d){
+            if(d.panels){ d.panels.forEach((nP, i)=>{ if(!panels[i]) panels.push(nP); else Object.keys(nP).forEach(k=>{ panels[i][k]=nP[k]; }); }); if(panels.length>d.panels.length) panels.splice(d.panels.length); }
+            if(d.globalScale) globalScale.value=d.globalScale;
+            if(d.musicCfg) Object.keys(d.musicCfg).forEach(k => musicCfg[k] = d.musicCfg[k]);
+          }
+          // КОГДА ДАННЫЕ С БАЗЫ ПРИШЛИ, ВКЛЮЧАЕМ ИНТЕРФЕЙС
+          fbLoaded.value = true;
+        });
+        
+        db.ref('musicQueue').on('value', snap => {
+          const q = snap.val() || []; musicQueue.splice(0, musicQueue.length, ...q);
+          checkQueuePlay();
+        });
+        db.ref('musicVolume').on('value', snap => { const vol = snap.val(); if (vol !== null) { musicVolume.value = vol; applyVolume(); } });
+      }
+    });
 
-        // --- ИНТЕРФЕЙС НАСТРОЕК В АДМИНКЕ ---
-        if (!isWidget) {
-            const cpMain = document.getElementById('cp-main');
-            const cpFlash = document.getElementById('cp-flash');
-            const scaleLabel = document.getElementById('scale-label');
-            const scaleGlow = document.getElementById('scale-glow');
-            const inpLabel = document.getElementById('inp-label');
-
-            // Живой апдейт цифр в админке при перетаскивании ползунков
-            scaleLabel.addEventListener('input', (e) => {
-                document.getElementById('val-label-size').textContent = e.target.value + 'px';
-            });
-            scaleGlow.addEventListener('input', (e) => {
-                document.getElementById('val-glow').textContent = e.target.value + 'px';
-            });
-            cpMain.addEventListener('input', (e) => {
-                document.getElementById('txt-main-color').textContent = e.target.value.toUpperCase();
-            });
-            cpFlash.addEventListener('input', (e) => {
-                document.getElementById('txt-flash-color').textContent = e.target.value.toUpperCase();
-            });
-
-            // Кнопка сохранения ВСЕГО дизайна в Firebase
-            document.getElementById('btn-save-design').addEventListener('click', () => {
-                set(timerRef, {
-                    ...state,
-                    labelText: inpLabel.value.trim() || "СТРИМ ИДЕТ",
-                    labelSize: scaleLabel.value + 'px',
-                    mainColor: cpMain.value,
-                    flashColor: cpFlash.value,
-                    glowRadius: scaleGlow.value + 'px'
-                });
-            });
-
-            // Кнопки таймера
-            document.getElementById('btn-start').addEventListener('click', () => {
-                if (!state.isRunning) {
-                    set(timerRef, { ...state, isRunning: true, startTime: Date.now() });
-                }
-            });
-
-            document.getElementById('btn-pause').addEventListener('click', () => {
-                if (state.isRunning) {
-                    const newAccumulated = (state.accumulated || 0) + (Date.now() - state.startTime);
-                    set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: newAccumulated });
-                }
-            });
-
-            document.getElementById('btn-reset').addEventListener('click', () => {
-                set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: 0 });
-            });
-
-            document.getElementById('btn-set').addEventListener('click', () => {
-                const h = parseInt(document.getElementById('inp-h').value || 0) * 3600000;
-                const m = parseInt(document.getElementById('inp-m').value || 0) * 60000;
-                const s = parseInt(document.getElementById('inp-s').value || 0) * 1000;
-                set(timerRef, { ...state, isRunning: false, startTime: 0, accumulated: (h + m + s) });
-            });
-
-            document.getElementById('btn-copy-link').addEventListener('click', async () => {
-                const widgetUrl = window.location.origin + window.location.pathname + "?widget=true";
-                try {
-                    await navigator.clipboard.writeText(widgetUrl);
-                    const btn = document.getElementById('btn-copy-link');
-                    const originalText = btn.textContent;
-                    btn.textContent = "ССЫЛКА СКОПИРОВАНА!";
-                    btn.classList.replace('bg-emerald-500', 'bg-emerald-600');
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.classList.replace('bg-emerald-600', 'bg-emerald-500');
-                    }, 2000);
-                } catch (err) {
-                    alert("Скопируй вручную: " + widgetUrl);
-                }
-            });
-        }
-    </script>
+    return { 
+      mode,tab,selId,alertOpen,ttsOpen,globalScale,fbLoaded,panels,alertCfg,musicCfg,
+      alertVis,alertKey,curDonation,isMobile,kaspiPaste,
+      handleKaspiPaste,uploadIcon,
+      quickName,quickAmount,quickMessage,
+      tName,tAmount,tMessage,
+      musicQueue,skipTrack,clearQueue,
+      musicVolume,changeVolume,
+      quickKzt, addKztSilently,
+      toast,sceneStyle,alertCardStyle,
+      idleTextStyle, idlePreviewStyle,
+      cardPos,compFor,
+      addPanel,removePanel,clearProgress,clearDonors,
+      doQuickDonate,doQuickTest,doTrigger,
+      saveAll,copyObs,
+      playDonationSound,
+      toggleAdminPlayer,
+      testTTSVoice,
+      obsSelected, copiedObs, currentObsUrl, selectObs,
+    };
+  }
+}).mount('#app');
+</script>
 </body>
 </html>
