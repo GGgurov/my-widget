@@ -1,367 +1,590 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Overlay Panel</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:ital,wght@1,800;1,900&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Общие настройки сцены */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            background-color: #0a0a0c; /* Темный фон для панели управления */
-            font-family: 'Orbitron', sans-serif;
-            color: #fff;
-            overflow-x: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stream Overlay PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:ital,wght@0,700;0,900;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+@property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#08080f;font-family:'Orbitron',sans-serif;color:#fff;display:flex;min-height:100vh;overflow-x:hidden}
+body.stream-mode{background:transparent!important}
 
-        /* Когда включен режим стрима, делаем весь фон прозрачным */
-        body.stream-mode {
-            background: transparent !important;
-        }
+/* === LAYOUT === */
+.app{display:flex;gap:0;width:100%;min-height:100vh}
+.control-panel{width:380px;min-width:380px;background:#0e0e18;border-right:1px solid #1e1e30;padding:20px;overflow-y:auto;max-height:100vh;flex-shrink:0}
+.preview-area{flex:1;display:flex;align-items:center;justify-content:center;background:#05050c;position:relative;padding:20px}
 
-        /* Контейнер стрима 9:16 (Пропорции Tik Tok / Shorts) */
-        .stream-container {
-            width: 450px; /* Для превью в панели, в OBS растянется как надо */
-            height: 800px;
-            aspect-ratio: 9 / 16;
-            position: relative;
-            background: transparent;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            justify-content: flex-start;
-            border: 2px dashed #333; /* Граница превью, исчезнет в OBS */
-        }
+/* === CONTROL PANEL === */
+.cp-header{font-size:13px;font-weight:700;color:#a100ff;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #1e1e30}
+.section{margin-bottom:12px;background:#12121e;border:1px solid #1e1e30;border-radius:10px;overflow:hidden}
+.section-head{padding:10px 14px;font-size:11px;font-weight:700;color:#8080a0;text-transform:uppercase;letter-spacing:1px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.section-head:hover{background:#1a1a28}
+.section-head .arr{transition:transform .25s}
+.section-head.open .arr{transform:rotate(180deg)}
+.section-body{padding:12px 14px;border-top:1px solid #1a1a28;display:none}
+.section-body.open{display:block}
 
-        body.stream-mode .stream-container {
-            border: none;
-            width: 100vw;
-            height: 100vh;
-            padding: 4vh 4vw;
-        }
+.ctrl-row{margin-bottom:10px}
+.ctrl-row label{display:block;font-size:10px;color:#606080;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.ctrl-row input[type=text],.ctrl-row input[type=number],.ctrl-row select{width:100%;background:#0a0a14;border:1px solid #2a2a3e;padding:7px 10px;border-radius:7px;color:#fff;font-family:inherit;font-size:11px}
+.ctrl-row input[type=range]{width:100%;accent-color:#a100ff;cursor:pointer}
+.val{font-size:10px;color:#a100ff;float:right}
+.color-row{display:flex;gap:8px}
+.color-row input[type=color]{flex:1;height:36px;border:1px solid #2a2a3e;background:#0a0a14;border-radius:7px;cursor:pointer;padding:2px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.toggle-row span{font-size:11px;color:#9090b0}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider-t{position:absolute;inset:0;background:#2a2a3e;border-radius:20px;cursor:pointer;transition:.3s}
+.slider-t:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle input:checked+.slider-t{background:#a100ff}
+.toggle input:checked+.slider-t:before{transform:translateX(16px)}
 
-        /* --- ВЕРХНЯЯ РАМКА (ДЛЯ ВЕБКИ) --- */
-        .webcam-frame {
-            position: relative;
-            width: 100%;
-            height: 32%;
-            border-radius: 24px;
-            background: transparent; /* Полная прозрачность внутри */
-            display: flex;
-            align-items: flex-start;
-            padding: 15px;
-        }
+.btn{width:100%;padding:9px;border:none;border-radius:8px;font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all .2s;margin-top:4px}
+.btn-grad{background:linear-gradient(90deg,#a100ff,#ff007f);color:#fff}
+.btn-grad:hover{filter:brightness(1.2)}
+.btn-outline{background:transparent;border:1px solid #3a3a5a;color:#8080a0}
+.btn-outline:hover{border-color:#a100ff;color:#a100ff}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.preset-btn{padding:7px;border:1px solid #2a2a3e;border-radius:7px;background:#0a0a14;color:#9090b0;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;transition:all .2s}
+.preset-btn:hover,.preset-btn.active{border-color:var(--pc,#a100ff);color:var(--pc,#a100ff);background:rgba(161,0,255,.08)}
 
-        /* Анимированная градиентная рамка через маску */
-        .webcam-frame::before, .game-frame::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            padding: 4px; /* Толщина рамки */
-            background: linear-gradient(var(--angle, 135deg), var(--color-1, #0088cc), var(--color-2, #a100ff), var(--color-3, #ff007f));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            animation: rotateGradients var(--anim-speed, 4s) linear infinite;
-        }
+.anim-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.anim-opt{padding:6px;border:1px solid #2a2a3e;border-radius:7px;background:#0a0a14;color:#9090b0;font-family:inherit;font-size:9px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;text-align:center;transition:all .2s}
+.anim-opt:hover,.anim-opt.active{border-color:#ff007f;color:#ff007f;background:rgba(255,0,127,.08)}
 
-        /* Соцсети в углу рамки */
-        .social-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px 12px;
-            border-radius: 12px;
-            backdrop-filter: blur(4px);
-        }
+/* === STREAM OVERLAY === */
+.stream-container{width:360px;height:640px;position:relative;background:transparent;display:flex;flex-direction:column;padding:16px;justify-content:flex-start;border:1px dashed #222}
+body.stream-mode .stream-container{border:none;width:100vw;height:100vh;padding:4vh 4vw}
+body.stream-mode .control-panel,.stream-mode .preview-area{display:none}
+body.stream-mode .app{display:block}
 
-        .social-icons {
-            display: flex;
-            gap: 6px;
-        }
+/* === WEBCAM FRAME === */
+.webcam-frame{position:relative;width:100%;height:30%;border-radius:20px;background:transparent;display:flex;align-items:flex-start;padding:12px;transition:opacity .4s}
+.webcam-frame::before{content:'';position:absolute;inset:0;border-radius:20px;padding:3px;background:conic-gradient(from var(--angle),var(--c1),var(--c2),var(--c3),var(--c1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;animation:spinBorder var(--bspeed,4s) linear infinite}
+.glow-on .webcam-frame::before,.glow-on .game-frame::before{filter:blur(0px) drop-shadow(0 0 6px var(--c1)) drop-shadow(0 0 12px var(--c2))}
 
-        .icon {
-            width: 18px;
-            height: 18px;
-            fill: #fff;
-        }
+/* === SOCIAL BOX === */
+.social-box{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,var(--box-opacity,.5));padding:6px 11px;border-radius:10px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.05);transition:opacity .4s}
+.social-icons{display:flex;gap:5px}
+.icon{width:16px;height:16px;fill:#fff}
+.nickname-top{font-family:'Montserrat',sans-serif;font-style:italic;font-weight:900;font-size:12px;letter-spacing:1px;text-transform:lowercase}
 
-        .nickname-top {
-            font-family: 'Montserrat', sans-serif;
-            font-style: italic;
-            font-weight: 900;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: lowercase;
-        }
+/* === STATUS BAR === */
+.status-bar{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,var(--box-opacity,.5));padding:5px 10px;border-radius:8px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.05);margin-top:6px;transition:opacity .4s}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#ff3e3e;animation:livePulse 1.2s ease-in-out infinite}
+.status-text{font-size:9px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.8)}
+.status-game{font-size:9px;color:rgba(255,255,255,.5);margin-left:auto;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-        /* --- СРЕДНЯЯ ПАНЕЛЬ (РАЗДЕЛИТЕЛЬ) --- */
-        .divider-zone {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 25px 0;
-            padding: 0 10px;
-            position: relative;
-        }
+/* === DIVIDER === */
+.divider-zone{display:flex;justify-content:space-between;align-items:center;margin:18px 0;padding:0 6px;position:relative;transition:opacity .4s}
+.main-logo{font-family:'Montserrat',sans-serif;font-style:italic;font-weight:900;font-size:26px;text-transform:lowercase;color:rgba(255,255,255,.12);letter-spacing:2px}
+.arrows-left,.arrows-right{display:flex;gap:3px;font-size:16px;color:rgba(255,255,255,.15)}
+.arr{animation:arrowBlink 1.5s infinite var(--delay,0s)}
 
-        .main-logo {
-            font-family: 'Montserrat', sans-serif;
-            font-style: italic;
-            font-weight: 900;
-            font-size: 32px;
-            text-transform: lowercase;
-            color: rgba(255, 255, 255, 0.15); /* Полупрозрачный как на фото */
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(161, 0, 255, 0.2);
-        }
+/* === GAME FRAME === */
+.game-frame{position:relative;width:100%;flex-grow:1;border-radius:20px;background:transparent;transition:opacity .4s}
+.game-frame::before{content:'';position:absolute;inset:0;border-radius:20px;padding:3px;background:conic-gradient(from var(--angle),var(--c1),var(--c2),var(--c3),var(--c1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;animation:spinBorder var(--bspeed,4s) linear infinite}
 
-        /* Анимация стрелочек (бегущие огоньки) */
-        .arrows-left, .arrows-right {
-            display: flex;
-            gap: 4px;
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.2);
-        }
+/* === PARTICLES === */
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:20px}
+.particle{position:absolute;border-radius:50%;animation:particleFloat linear infinite;opacity:0}
 
-        .arr {
-            animation: arrowBlink 1.5s infinite var(--delay, 0s);
-        }
+/* === CHAT ALERT === */
+.chat-alert{position:absolute;bottom:20px;left:12px;right:12px;background:rgba(0,0,0,.7);border-left:3px solid var(--c1);border-radius:0 10px 10px 0;padding:8px 12px;backdrop-filter:blur(8px);animation:slideInAlert .5s ease;display:none}
+.chat-alert.show{display:block}
+.chat-name{font-size:10px;font-weight:700;color:var(--c1)}
+.chat-msg{font-size:9px;color:rgba(255,255,255,.7);margin-top:2px}
 
-        /* --- НИЖНЯЯ РАМКА (ДЛЯ ИГРЫ) --- */
-        .game-frame {
-            position: relative;
-            width: 100%;
-            flex-grow: 1; /* Занимает все оставшееся место */
-            border-radius: 24px;
-            background: transparent; /* Полная прозрачность внутри */
-        }
+/* === CORNER DECORATION === */
+.corner-tl,.corner-tr,.corner-bl,.corner-br{position:absolute;width:20px;height:20px;pointer-events:none;opacity:.6}
+.corner-tl{top:5px;left:5px;border-top:2px solid var(--c1);border-left:2px solid var(--c1);border-radius:4px 0 0 0}
+.corner-tr{top:5px;right:5px;border-top:2px solid var(--c2);border-right:2px solid var(--c2);border-radius:0 4px 0 0}
+.corner-bl{bottom:5px;left:5px;border-bottom:2px solid var(--c2);border-left:2px solid var(--c2);border-radius:0 0 0 4px}
+.corner-br{bottom:5px;right:5px;border-bottom:2px solid var(--c3);border-right:2px solid var(--c3);border-radius:0 0 4px 0}
 
-        /* АНИМАЦИИ */
-        @keyframes rotateGradients {
-            0% { --angle: 0deg; filter: hue-rotate(0deg); }
-            100% { --angle: 360deg; filter: hue-rotate(360deg); }
-        }
+/* === ANIMATIONS === */
+@keyframes spinBorder{to{--angle:360deg}}
+@keyframes arrowBlink{0%,100%{color:rgba(255,255,255,.08);text-shadow:none}50%{color:var(--c3);text-shadow:0 0 8px var(--c3)}}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
+@keyframes particleFloat{0%{transform:translateY(100%) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-600px) scale(1.5);opacity:0}}
+@keyframes slideInAlert{from{transform:translateX(-20px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-        @keyframes arrowBlink {
-            0%, 100% { color: rgba(255, 255, 255, 0.1); text-shadow: none; }
-            50% { color: var(--color-3, #ff007f); text-shadow: 0 0 8px var(--color-3, #ff007f); }
-        }
+/* Entry animations */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes bounceIn{0%{opacity:0;transform:scale(.3)}50%{transform:scale(1.1)}70%{transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
+@keyframes glitchIn{0%{opacity:0;transform:skewX(20deg) scaleX(1.3);filter:blur(4px)}100%{opacity:1;transform:none;filter:none}}
+@keyframes zoomIn{from{opacity:0;transform:scale(2)}to{opacity:1;transform:scale(1)}}
+@keyframes typewriter{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0% 0 0)}}
+@keyframes flipIn{from{opacity:0;transform:rotateX(90deg)}to{opacity:1;transform:rotateX(0)}}
 
-        /* --- ПАНЕЛЬ УПРАВЛЕНИЯ (ДЛЯ ТЕБЯ) --- */
-        .control-panel {
-            position: fixed;
-            left: 30px;
-            top: 30px;
-            background: #13131a;
-            border: 1px solid #252533;
-            padding: 25px;
-            border-radius: 16px;
-            width: 340px;
-            z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+.anim-fadeup .social-box,.anim-fadeup .status-bar{animation:fadeInUp .8s ease both}
+.anim-fadeup .status-bar{animation-delay:.2s}
+.anim-slideleft .social-box,.anim-slideleft .status-bar{animation:slideInLeft .6s ease both}
+.anim-slideleft .status-bar{animation-delay:.15s}
+.anim-bounce .social-box{animation:bounceIn .8s ease both}
+.anim-bounce .status-bar{animation:bounceIn .8s .2s ease both}
+.anim-glitch .social-box{animation:glitchIn .6s ease both}
+.anim-glitch .status-bar{animation:glitchIn .6s .15s ease both}
+.anim-zoom .social-box{animation:zoomIn .5s ease both}
+.anim-zoom .status-bar{animation:zoomIn .5s .15s ease both}
+.anim-flip .social-box{animation:flipIn .6s ease both}
+.anim-flip .status-bar{animation:flipIn .6s .2s ease both}
 
-        body.stream-mode .control-panel {
-            display: none !important; /* Полностью скрываем в OBS */
-        }
+/* Glow variants */
+.pulseglow .webcam-frame::before,.pulseglow .game-frame::before{animation:spinBorder var(--bspeed,4s) linear infinite,pulseGlow 2s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{filter:blur(0) drop-shadow(0 0 4px var(--c1))}50%{filter:blur(0) drop-shadow(0 0 16px var(--c2)) drop-shadow(0 0 30px var(--c3))}}
 
-        .control-panel h2 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #a100ff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .control-group {
-            margin-bottom: 15px;
-        }
-
-        .control-group label {
-            display: block;
-            font-size: 12px;
-            color: #8c8c9e;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-
-        .control-group input[type="text"], .control-group input[type="range"] {
-            width: 100%;
-            background: #1c1c24;
-            border: 1px solid #2d2d3d;
-            padding: 10px;
-            border-radius: 8px;
-            color: white;
-            font-family: inherit;
-        }
-
-        .color-pickers {
-            display: flex;
-            gap: 10px;
-        }
-
-        .color-pickers input[type="color"] {
-            flex: 1;
-            height: 40px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-        }
-
-        .btn-copy {
-            width: 100%;
-            background: linear-gradient(90deg, #a100ff, #ff007f);
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: transform 0.2s;
-        }
-
-        .btn-copy:active {
-            transform: scale(0.98);
-        }
-
-        /* Свойство для плавной анимации градиента */
-        @property --angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
-        }
-    </style>
+.rainbowborder .webcam-frame::before,.rainbowborder .game-frame::before{background:conic-gradient(from var(--angle),#ff0000,#ff8800,#ffff00,#00ff00,#0088ff,#8800ff,#ff0000)!important}
+</style>
 </head>
 <body>
+<div class="app" id="app">
 
-    <div class="control-panel" id="panel">
-        <h2>Настройки Стрима</h2>
-        <div class="control-group">
-            <label>Твой Никнейм</label>
-            <input type="text" id="nickInput" value="elgurov" oninput="updateOverlay()">
+<!-- ===== CONTROL PANEL ===== -->
+<div class="control-panel" id="cpanel">
+  <div class="cp-header">⚡ Stream Overlay PRO</div>
+
+  <!-- PRESETS -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">🎨 Пресеты тем <span class="arr">▾</span></div>
+    <div class="section-body open">
+      <div class="presets">
+        <button class="preset-btn active" style="--pc:#a100ff" onclick="applyPreset('cyber')">💜 Cyberpunk</button>
+        <button class="preset-btn" style="--pc:#00d4ff" onclick="applyPreset('ocean')">🔵 Ocean</button>
+        <button class="preset-btn" style="--pc:#ff6600" onclick="applyPreset('fire')">🔥 Fire</button>
+        <button class="preset-btn" style="--pc:#00ff41" onclick="applyPreset('matrix')">💚 Matrix</button>
+        <button class="preset-btn" style="--pc:#ffd700" onclick="applyPreset('gold')">⭐ Gold</button>
+        <button class="preset-btn" style="--pc:#ff1493" onclick="applyPreset('pink')">🌸 Neon Pink</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NICKNAME -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">👤 Профиль <span class="arr">▾</span></div>
+    <div class="section-body open">
+      <div class="ctrl-row">
+        <label>Никнейм</label>
+        <input type="text" id="nickInput" value="elgurov" oninput="updateOverlay()">
+      </div>
+      <div class="ctrl-row">
+        <label>Статус / Игра</label>
+        <input type="text" id="statusInput" value="Warzone · Ranked" oninput="updateOverlay()">
+      </div>
+      <div class="toggle-row">
+        <span>Показать статус-бар</span>
+        <label class="toggle"><input type="checkbox" id="showStatus" checked onchange="updateOverlay()"><span class="slider-t"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- COLORS -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">🌈 Цвета градиента <span class="arr">▾</span></div>
+    <div class="section-body open">
+      <div class="ctrl-row">
+        <label>Цвет 1 / Цвет 2 / Цвет 3</label>
+        <div class="color-row">
+          <input type="color" id="col1" value="#0088cc" oninput="updateOverlay()">
+          <input type="color" id="col2" value="#a100ff" oninput="updateOverlay()">
+          <input type="color" id="col3" value="#ff007f" oninput="updateOverlay()">
         </div>
-        <div class="control-group">
-            <label>Цвета Градиента (3 штуки)</label>
-            <div class="color-pickers">
-                <input type="color" id="col1" value="#0088cc" oninput="updateOverlay()">
-                <input type="color" id="col2" value="#a100ff" oninput="updateOverlay()">
-                <input type="color" id="col3" value="#ff007f" oninput="updateOverlay()">
-            </div>
+      </div>
+      <div class="ctrl-row">
+        <label>Стиль рамки</label>
+        <select id="borderStyle" onchange="updateBorderStyle()">
+          <option value="normal">Обычный</option>
+          <option value="pulseglow">Пульсирующий Glow</option>
+          <option value="rainbowborder">Радуга</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ANIMATION -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">✨ Анимации появления <span class="arr">▾</span></div>
+    <div class="section-body open">
+      <div class="ctrl-row"><label>Тип анимации соцсетей</label></div>
+      <div class="anim-grid">
+        <button class="anim-opt active" onclick="setAnim(this,'fadeup')">Fade Up</button>
+        <button class="anim-opt" onclick="setAnim(this,'slideleft')">Slide Left</button>
+        <button class="anim-opt" onclick="setAnim(this,'bounce')">Bounce</button>
+        <button class="anim-opt" onclick="setAnim(this,'glitch')">Glitch</button>
+        <button class="anim-opt" onclick="setAnim(this,'zoom')">Zoom</button>
+        <button class="anim-opt" onclick="setAnim(this,'flip')">Flip</button>
+      </div>
+      <div class="ctrl-row" style="margin-top:10px">
+        <label>Скорость рамок <span class="val" id="speedVal">4s</span></label>
+        <input type="range" id="speedInput" min="1" max="12" value="4" step="0.5" oninput="updateSpeed()">
+      </div>
+      <button class="btn btn-outline" onclick="replayAnim()" style="margin-top:6px">▶ Переиграть анимацию</button>
+    </div>
+  </div>
+
+  <!-- PARTICLES -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">💫 Частицы <span class="arr">▾</span></div>
+    <div class="section-body">
+      <div class="toggle-row">
+        <span>Включить частицы</span>
+        <label class="toggle"><input type="checkbox" id="showParticles" onchange="toggleParticles()"><span class="slider-t"></span></label>
+      </div>
+      <div class="ctrl-row">
+        <label>Количество <span class="val" id="partVal">20</span></label>
+        <input type="range" id="partCount" min="5" max="60" value="20" step="5" oninput="updateParticleCount()">
+      </div>
+      <div class="ctrl-row">
+        <label>Размер <span class="val" id="partSizeVal">3px</span></label>
+        <input type="range" id="partSize" min="1" max="8" value="3" step="1" oninput="updateParticleSize()">
+      </div>
+    </div>
+  </div>
+
+  <!-- OPACITY -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">🔲 Прозрачность блоков <span class="arr">▾</span></div>
+    <div class="section-body">
+      <div class="ctrl-row">
+        <label>Верхняя рамка (вебка) <span class="val" id="opWcVal">100%</span></label>
+        <input type="range" id="opWc" min="0" max="1" value="1" step="0.05" oninput="updateOpacity()">
+      </div>
+      <div class="ctrl-row">
+        <label>Соцсети / соцбокс <span class="val" id="opSbVal">50%</span></label>
+        <input type="range" id="opSb" min="0.1" max="1" value="0.5" step="0.05" oninput="updateOpacity()">
+      </div>
+      <div class="ctrl-row">
+        <label>Разделитель (лого) <span class="val" id="opDvVal">100%</span></label>
+        <input type="range" id="opDv" min="0" max="1" value="1" step="0.05" oninput="updateOpacity()">
+      </div>
+      <div class="ctrl-row">
+        <label>Нижняя рамка (игра) <span class="val" id="opGfVal">100%</span></label>
+        <input type="range" id="opGf" min="0" max="1" value="1" step="0.05" oninput="updateOpacity()">
+      </div>
+    </div>
+  </div>
+
+  <!-- VISIBILITY -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">👁 Показ / скрытие блоков <span class="arr">▾</span></div>
+    <div class="section-body">
+      <div class="toggle-row">
+        <span>Верхняя рамка</span>
+        <label class="toggle"><input type="checkbox" id="visWc" checked onchange="toggleVis('webcam',this.checked)"><span class="slider-t"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span>Соцсети</span>
+        <label class="toggle"><input type="checkbox" id="visSb" checked onchange="toggleVis('social-box',this.checked)"><span class="slider-t"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span>Разделитель</span>
+        <label class="toggle"><input type="checkbox" id="visDv" checked onchange="toggleVis('divider',this.checked)"><span class="slider-t"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span>Нижняя рамка</span>
+        <label class="toggle"><input type="checkbox" id="visGf" checked onchange="toggleVis('game',this.checked)"><span class="slider-t"></span></label>
+      </div>
+      <div class="toggle-row">
+        <span>Угловые декорации</span>
+        <label class="toggle"><input type="checkbox" id="visCorners" checked onchange="toggleVis('corners',this.checked)"><span class="slider-t"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT ALERT -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">💬 Тест оповещения чата <span class="arr">▾</span></div>
+    <div class="section-body">
+      <div class="ctrl-row">
+        <label>Имя чатера</label>
+        <input type="text" id="alertName" value="pro_viewer228" oninput="">
+      </div>
+      <div class="ctrl-row">
+        <label>Сообщение</label>
+        <input type="text" id="alertMsg" value="ты лучший стример!!" oninput="">
+      </div>
+      <div class="ctrl-row">
+        <label>Длительность (сек) <span class="val" id="alertDurVal">4s</span></label>
+        <input type="range" id="alertDur" min="2" max="10" value="4" step="1" oninput="document.getElementById('alertDurVal').innerText=this.value+'s'">
+      </div>
+      <button class="btn btn-outline" onclick="showChatAlert()">📨 Показать оповещение</button>
+    </div>
+  </div>
+
+  <!-- EXPORT -->
+  <div style="padding-top:8px">
+    <button class="btn btn-grad" onclick="copyObsLink()">📋 Скопировать ссылку для OBS</button>
+    <button class="btn btn-outline" style="margin-top:6px" onclick="openStreamMode()">🔴 Открыть в режиме стрима</button>
+  </div>
+</div>
+
+<!-- ===== PREVIEW AREA ===== -->
+<div class="preview-area">
+  <div style="position:absolute;top:14px;left:50%;transform:translateX(-50%);font-size:9px;color:#333;text-transform:uppercase;letter-spacing:2px">Preview 360×640</div>
+  
+  <div class="stream-container" id="stream">
+    
+    <!-- WEBCAM FRAME -->
+    <div class="webcam-frame" id="webcam">
+      <div style="display:flex;flex-direction:column;gap:5px;width:100%">
+        <div class="social-box" id="social-box">
+          <div class="social-icons">
+            <!-- Telegram -->
+            <svg class="icon" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
+            <!-- TikTok -->
+            <svg class="icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.22 8.22 0 004.81 1.55V6.79a4.85 4.85 0 01-1.04-.1z"/></svg>
+          </div>
+          <div class="nickname-top class-nick">elgurov</div>
         </div>
-        <div class="control-group">
-            <label>Скорость анимации рамок</label>
-            <input type="range" id="speedInput" min="1" max="10" value="4" step="0.5" oninput="updateOverlay()">
+        <div class="status-bar" id="status-bar">
+          <div class="live-dot"></div>
+          <div class="status-text">LIVE</div>
+          <div class="status-game class-status">Warzone · Ranked</div>
         </div>
-        <button class="btn-copy" onclick="copyObsLink()">Скопировать ссылку для OBS</button>
+      </div>
     </div>
 
-    <div class="stream-container">
-        
-        <div class="webcam-frame" id="webcam">
-            <div class="social-box">
-                <div class="social-icons">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.62.15-.15 2.7-2.48 2.75-2.7.01-.03.01-.14-.05-.2-.06-.06-.14-.04-.2-.03-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.37.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .24z"/></svg>
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M11.571 4.714h1.715v5.143H11.57zm4.715 0H18v5.143h-1.714zM6 0L1.714 4.286v15.428h5.143V24l4.286-4.286h3.428L22.286 12V0zm14.571 11.143l-3.428 3.428h-3.429l-3 3v-3H6.857V1.714h13.714Z"/></svg>
-                </div>
-                <div class="nickname-top class-nick">elgurov</div>
-            </div>
-        </div>
-
-        <div class="divider-zone">
-            <div class="arrows-left">
-                <span class="arr" style="--delay: 0s">▶</span>
-                <span class="arr" style="--delay: 0.2s">▶</span>
-                <span class="arr" style="--delay: 0.4s">▶</span>
-            </div>
-            
-            <div class="main-logo class-nick">elgurov</div>
-            
-            <div class="arrows-right">
-                <span class="arr" style="--delay: 0.4s">◀</span>
-                <span class="arr" style="--delay: 0.2s">◀</span>
-                <span class="arr" style="--delay: 0s">◀</span>
-            </div>
-        </div>
-
-        <div class="game-frame" id="game"></div>
-
+    <!-- DIVIDER -->
+    <div class="divider-zone" id="divider">
+      <div class="arrows-left">
+        <span class="arr" style="--delay:0s">▶</span>
+        <span class="arr" style="--delay:.2s">▶</span>
+        <span class="arr" style="--delay:.4s">▶</span>
+      </div>
+      <div class="main-logo class-nick">elgurov</div>
+      <div class="arrows-right">
+        <span class="arr" style="--delay:.4s">◀</span>
+        <span class="arr" style="--delay:.2s">◀</span>
+        <span class="arr" style="--delay:0s">◀</span>
+      </div>
     </div>
 
-    <script>
-        // Функция динамического обновления стилей и текста
-        function updateOverlay() {
-            const nick = document.getElementById('nickInput').value;
-            const c1 = document.getElementById('col1').value;
-            const c2 = document.getElementById('col2').value;
-            const c3 = document.getElementById('col3').value;
-            const speed = document.getElementById('speedInput').value;
+    <!-- GAME FRAME -->
+    <div class="game-frame" id="game">
+      <div class="particles" id="particles"></div>
+      <!-- Corners -->
+      <div class="corners" id="corners">
+        <div class="corner-tl"></div>
+        <div class="corner-tr"></div>
+        <div class="corner-bl"></div>
+        <div class="corner-br"></div>
+      </div>
+      <!-- Chat alert -->
+      <div class="chat-alert" id="chatAlert">
+        <div class="chat-name" id="alertNameDisp">pro_viewer228</div>
+        <div class="chat-msg" id="alertMsgDisp">ты лучший стример!!</div>
+      </div>
+    </div>
 
-            // Применяем никнейм ко всем нужным полям
-            document.querySelectorAll('.class-nick').forEach(el => {
-                el.innerText = nick;
-            });
+  </div>
+</div>
 
-            // Закидываем CSS-переменные в корневой элемент для анимаций рамок
-            document.documentElement.style.setProperty('--color-1', c1);
-            document.documentElement.style.setProperty('--color-2', c2);
-            document.documentElement.style.setProperty('--color-3', c3);
-            document.documentElement.style.setProperty('--anim-speed', speed + 's');
-        }
+</div>
 
-        // Логика генерации ссылки для OBS
-        function copyObsLink() {
-            const nick = encodeURIComponent(document.getElementById('nickInput').value);
-            const c1 = encodeURIComponent(document.getElementById('col1').value);
-            const c2 = encodeURIComponent(document.getElementById('col2').value);
-            const c3 = encodeURIComponent(document.getElementById('col3').value);
-            const speed = document.getElementById('speedInput').value;
+<script>
+const R=document.documentElement;
+let particlesEnabled=false;
+let currentAnim='fadeup';
+let alertTimer=null;
 
-            // Создаем URL с параметрами
-            const generatedLink = `${window.location.origin}${window.location.pathname}?stream=true&nick=${nick}&c1=${c1}&c2=${c2}&c3=${c3}&speed=${speed}`;
-            
-            // Копируем в буфер обмена
-            navigator.clipboard.writeText(generatedLink).then(() => {
-                alert('Ссылка для OBS успешно скопирована! Вставь её в источник "Браузер".');
-            }).catch(err => {
-                alert('Ошибка при копировании, скопируй вручную из адресной строки, добавив параметры.');
-            });
-        }
+const presets={
+  cyber:{c1:'#0088cc',c2:'#a100ff',c3:'#ff007f'},
+  ocean:{c1:'#00d4ff',c2:'#0055ff',c3:'#00ffcc'},
+  fire:{c1:'#ff2200',c2:'#ff8800',c3:'#ffdd00'},
+  matrix:{c1:'#00ff41',c2:'#00cc33',c3:'#006600'},
+  gold:{c1:'#ffd700',c2:'#ff8c00',c3:'#ffec6e'},
+  pink:{c1:'#ff1493',c2:'#ff69b4',c3:'#da70d6'}
+};
 
-        // Проверяем параметры в URL при загрузке страницы
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            
-            if (urlParams.get('stream') === 'true') {
-                // Если ссылка открыта для стрима — скрываем панель настроек и убираем фон страницы
-                document.body.classList.add('stream-mode');
-                
-                // Считываем кастомные настройки из ссылки
-                if(urlParams.get('nick')) document.getElementById('nickInput').value = urlParams.get('nick');
-                if(urlParams.get('c1')) document.getElementById('col1').value = urlParams.get('c1');
-                if(urlParams.get('c2')) document.getElementById('col2').value = urlParams.get('c2');
-                if(urlParams.get('c3')) document.getElementById('col3').value = urlParams.get('c3');
-                if(urlParams.get('speed')) document.getElementById('speedInput').value = urlParams.get('speed');
-            }
-            
-            // Инициализируем отрисовку
-            updateOverlay();
-        }
-    </script>
+function toggleSection(h){
+  h.classList.toggle('open');
+  h.nextElementSibling.classList.toggle('open');
+}
+
+function applyPreset(name){
+  const p=presets[name];
+  document.getElementById('col1').value=p.c1;
+  document.getElementById('col2').value=p.c2;
+  document.getElementById('col3').value=p.c3;
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  updateOverlay();
+}
+
+function setAnim(el,name){
+  document.querySelectorAll('.anim-opt').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  currentAnim=name;
+  applyAnim();
+}
+
+function applyAnim(){
+  const wc=document.getElementById('webcam');
+  wc.className='webcam-frame anim-'+currentAnim;
+  // Re-trigger
+  void wc.offsetWidth;
+}
+
+function replayAnim(){
+  const wc=document.getElementById('webcam');
+  wc.className='webcam-frame';
+  void wc.offsetWidth;
+  wc.className='webcam-frame anim-'+currentAnim;
+}
+
+function updateOverlay(){
+  const nick=document.getElementById('nickInput').value;
+  const c1=document.getElementById('col1').value;
+  const c2=document.getElementById('col2').value;
+  const c3=document.getElementById('col3').value;
+  const status=document.getElementById('statusInput').value;
+  const showStatus=document.getElementById('showStatus').checked;
+
+  document.querySelectorAll('.class-nick').forEach(el=>el.innerText=nick);
+  document.querySelectorAll('.class-status').forEach(el=>el.innerText=status);
+  R.style.setProperty('--c1',c1);
+  R.style.setProperty('--c2',c2);
+  R.style.setProperty('--c3',c3);
+  document.getElementById('status-bar').style.display=showStatus?'flex':'none';
+  updateOpacity();
+}
+
+function updateSpeed(){
+  const v=document.getElementById('speedInput').value;
+  document.getElementById('speedVal').innerText=v+'s';
+  R.style.setProperty('--bspeed',v+'s');
+}
+
+function updateBorderStyle(){
+  const v=document.getElementById('borderStyle').value;
+  const stream=document.getElementById('stream');
+  stream.classList.remove('pulseglow','rainbowborder','glow-on');
+  if(v==='pulseglow'){stream.classList.add('pulseglow','glow-on')}
+  else if(v==='rainbowborder'){stream.classList.add('rainbowborder')}
+}
+
+function updateOpacity(){
+  const wc=parseFloat(document.getElementById('opWc').value);
+  const sb=parseFloat(document.getElementById('opSb').value);
+  const dv=parseFloat(document.getElementById('opDv').value);
+  const gf=parseFloat(document.getElementById('opGf').value);
+  document.getElementById('opWcVal').innerText=Math.round(wc*100)+'%';
+  document.getElementById('opSbVal').innerText=Math.round(sb*100)+'%';
+  document.getElementById('opDvVal').innerText=Math.round(dv*100)+'%';
+  document.getElementById('opGfVal').innerText=Math.round(gf*100)+'%';
+  document.getElementById('webcam').style.opacity=wc;
+  R.style.setProperty('--box-opacity',sb);
+  document.getElementById('divider').style.opacity=dv;
+  document.getElementById('game').style.opacity=gf;
+}
+
+function toggleVis(id,show){
+  const el=document.getElementById(id==='social-box'?'social-box':id==='corners'?'corners':id==='divider'?'divider':id==='webcam'?'webcam':'game');
+  if(el) el.style.transition='opacity .5s, transform .5s';
+  if(!show){el.style.opacity='0';el.style.transform='scale(0.95)'}
+  else{el.style.opacity='';el.style.transform='';updateOpacity()}
+}
+
+function toggleParticles(){
+  particlesEnabled=document.getElementById('showParticles').checked;
+  if(particlesEnabled){buildParticles()}
+  else{document.getElementById('particles').innerHTML=''}
+}
+
+function buildParticles(){
+  const container=document.getElementById('particles');
+  container.innerHTML='';
+  if(!particlesEnabled)return;
+  const count=parseInt(document.getElementById('partCount').value);
+  const size=parseInt(document.getElementById('partSize').value);
+  const c1=document.getElementById('col1').value;
+  const c2=document.getElementById('col2').value;
+  const c3=document.getElementById('col3').value;
+  const colors=[c1,c2,c3];
+  for(let i=0;i<count;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const left=Math.random()*100;
+    const delay=Math.random()*5;
+    const dur=3+Math.random()*5;
+    const s=size*(0.5+Math.random()*1.5);
+    const col=colors[Math.floor(Math.random()*3)];
+    p.style.cssText=`left:${left}%;width:${s}px;height:${s}px;background:${col};animation-duration:${dur}s;animation-delay:${delay}s;box-shadow:0 0 ${s*2}px ${col}`;
+    container.appendChild(p);
+  }
+}
+
+function updateParticleCount(){
+  const v=document.getElementById('partCount').value;
+  document.getElementById('partVal').innerText=v;
+  if(particlesEnabled)buildParticles();
+}
+
+function updateParticleSize(){
+  const v=document.getElementById('partSize').value;
+  document.getElementById('partSizeVal').innerText=v+'px';
+  if(particlesEnabled)buildParticles();
+}
+
+function showChatAlert(){
+  const name=document.getElementById('alertName').value;
+  const msg=document.getElementById('alertMsg').value;
+  const dur=parseInt(document.getElementById('alertDur').value)*1000;
+  const el=document.getElementById('chatAlert');
+  document.getElementById('alertNameDisp').innerText=name;
+  document.getElementById('alertMsgDisp').innerText=msg;
+  el.classList.remove('show');
+  void el.offsetWidth;
+  el.classList.add('show');
+  if(alertTimer)clearTimeout(alertTimer);
+  alertTimer=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+function copyObsLink(){
+  const nick=encodeURIComponent(document.getElementById('nickInput').value);
+  const c1=encodeURIComponent(document.getElementById('col1').value);
+  const c2=encodeURIComponent(document.getElementById('col2').value);
+  const c3=encodeURIComponent(document.getElementById('col3').value);
+  const speed=document.getElementById('speedInput').value;
+  const status=encodeURIComponent(document.getElementById('statusInput').value);
+  const anim=currentAnim;
+  const link=`${window.location.origin}${window.location.pathname}?stream=true&nick=${nick}&c1=${c1}&c2=${c2}&c3=${c3}&speed=${speed}&status=${status}&anim=${anim}`;
+  navigator.clipboard.writeText(link).then(()=>alert('✅ Ссылка скопирована! Вставь в OBS → Источник → Браузер')).catch(()=>prompt('Скопируй вручную:',link));
+}
+
+function openStreamMode(){
+  const nick=encodeURIComponent(document.getElementById('nickInput').value);
+  const c1=encodeURIComponent(document.getElementById('col1').value);
+  const c2=encodeURIComponent(document.getElementById('col2').value);
+  const c3=encodeURIComponent(document.getElementById('col3').value);
+  const speed=document.getElementById('speedInput').value;
+  const status=encodeURIComponent(document.getElementById('statusInput').value);
+  const link=`${window.location.href.split('?')[0]}?stream=true&nick=${nick}&c1=${c1}&c2=${c2}&c3=${c3}&speed=${speed}&status=${status}`;
+  window.open(link,'_blank');
+}
+
+// URL params on load
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('stream')==='true'){
+    document.body.classList.add('stream-mode');
+    if(p.get('nick'))document.getElementById('nickInput').value=p.get('nick');
+    if(p.get('c1'))document.getElementById('col1').value=p.get('c1');
+    if(p.get('c2'))document.getElementById('col2').value=p.get('c2');
+    if(p.get('c3'))document.getElementById('col3').value=p.get('c3');
+    if(p.get('speed'))document.getElementById('speedInput').value=p.get('speed');
+    if(p.get('status'))document.getElementById('statusInput').value=p.get('status');
+    if(p.get('anim'))currentAnim=p.get('anim');
+  }
+  updateOverlay();
+  updateSpeed();
+  applyAnim();
+})();
+</script>
 </body>
 </html>
